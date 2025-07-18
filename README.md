@@ -46,7 +46,7 @@ project/
 
 1.  **Clone the repository:**
     ```bash
-    git clone <repository_url>
+    git clone 
     cd explainium-2.0
     ```
 

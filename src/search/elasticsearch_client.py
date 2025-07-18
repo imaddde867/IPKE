@@ -5,8 +5,14 @@ ELASTICSEARCH_URL = "http://elasticsearch:9200"
 INDEX_NAME = "documents"
 
 class ElasticsearchClient:
-    def __init__(self, max_retries=10, retry_delay=5):
+    def __init__(self):
         self.es = None
+        self._initialized = False
+
+    def _initialize(self, max_retries=10, retry_delay=5):
+        if self._initialized:
+            return
+        
         for i in range(max_retries):
             try:
                 self.es = Elasticsearch(ELASTICSEARCH_URL)
@@ -14,6 +20,7 @@ class ElasticsearchClient:
                 if self.es.ping():
                     print(f"Successfully connected to Elasticsearch at {ELASTICSEARCH_URL}")
                     self.create_index(max_retries=max_retries, retry_delay=retry_delay)
+                    self._initialized = True
                     return
                 else:
                     print(f"Elasticsearch ping failed. Retrying in {retry_delay} seconds...")
@@ -59,6 +66,7 @@ class ElasticsearchClient:
         raise ConnectionError("Could not create Elasticsearch index after multiple retries.")
 
     def index_document(self, document_data: dict):
+        self._initialize()
         try:
             self.es.index(index=INDEX_NAME, id=document_data['document_id'], document=document_data)
             print(f"Document {document_data['document_id']} indexed in Elasticsearch.")
@@ -66,6 +74,7 @@ class ElasticsearchClient:
             print(f"Error indexing document {document_data['document_id']}: {e}")
 
     def search_documents(self, query: str, field: str = "extracted_text", size: int = 10) -> list:
+        self._initialize()
         search_body = {
             "query": {
                 "match": {

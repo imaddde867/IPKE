@@ -1,5 +1,4 @@
 from celery import Celery
-from src.processors.document_processor import process_document, process_video, get_file_type
 from src.database.database import SessionLocal, init_db
 from src.database import crud
 from src.search.elasticsearch_client import es_client
@@ -17,6 +16,9 @@ def setup_database(sender, **kwargs):
 
 @celery_app.task
 def process_document_task(file_path: str):
+    # Import document processor functions only when needed
+    from src.processors.document_processor import process_document, process_video, get_file_type
+    
     print(f"Received file for processing: {file_path}")
     file_type = get_file_type(file_path)
     
