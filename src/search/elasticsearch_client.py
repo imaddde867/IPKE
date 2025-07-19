@@ -1,28 +1,50 @@
 from elasticsearch import Elasticsearch, BadRequestError
+from src.logging_config import get_logger
+from src.exceptions import SearchError, ServiceUnavailableError
 import time
+
+logger = get_logger(__name__)
 
 ELASTICSEARCH_URL = "http://elasticsearch:9200"
 INDEX_NAME = "documents"
 
 class ElasticsearchClient:
-    def __init__(self, max_retries=10, retry_delay=5):
+    def __init__(self):
         self.es = None
+        self._initialized = False
+    
+    def _ensure_connection(self, max_retries=3, retry_delay=2):
+        """Lazy initialization of Elasticsearch connection."""
+        if self._initialized and self.es is not None:
+            return
+        
+        logger.info(f"Initializing Elasticsearch connection to {ELASTICSEARCH_URL}")
+        
         for i in range(max_retries):
             try:
                 self.es = Elasticsearch(ELASTICSEARCH_URL)
                 # Ping to check connection
                 if self.es.ping():
-                    print(f"Successfully connected to Elasticsearch at {ELASTICSEARCH_URL}")
-                    self.create_index(max_retries=max_retries, retry_delay=retry_delay)
+                    logger.info(f"Successfully connected to Elasticsearch at {ELASTICSEARCH_URL}")
+                    self._create_index()
+                    self._initialized = True
                     return
                 else:
-                    print(f"Elasticsearch ping failed. Retrying in {retry_delay} seconds...")
+                    logger.warning(f"Elasticsearch ping failed. Retrying in {retry_delay} seconds...")
             except Exception as e:
-                print(f"Error connecting to Elasticsearch (attempt {i+1}/{max_retries}): {e}. Retrying in {retry_delay} seconds...")
-            time.sleep(retry_delay)
-        raise ConnectionError("Could not connect to Elasticsearch after multiple retries.")
+                logger.warning(f"Error connecting to Elasticsearch (attempt {i+1}/{max_retries}): {e}")
+                if i < max_retries - 1:  # Don't sleep on the last attempt
+                    time.sleep(retry_delay)
+        
+        raise ServiceUnavailableError(
+            "Could not connect to Elasticsearch after multiple retries",
+            service_name="Elasticsearch",
+            service_url=ELASTICSEARCH_URL,
+            retry_count=max_retries
+        )
 
-    def create_index(self, max_retries=10, retry_delay=5):
+    def _create_index(self, max_retries=3, retry_delay=2):
+        """Create the Elasticsearch index if it doesn't exist."""
         for i in range(max_retries):
             try:
                 if not self.es.indices.exists(index=INDEX_NAME):
@@ -44,38 +66,69 @@ class ElasticsearchClient:
                                 }},
                                 "key_phrases": {"type": "keyword"},
                                 "processing_timestamp": {"type": "date"},
-                                "document_sections": {"type": "object"} # Added for sections
+                                "document_sections": {"type": "object"}
                             }
                         }
                     })
-                    print(f"Elasticsearch index '{INDEX_NAME}' created.")
+                    logger.info(f"Elasticsearch index '{INDEX_NAME}' created")
+                else:
+                    logger.info(f"Elasticsearch index '{INDEX_NAME}' already exists")
                 return
             except BadRequestError as e:
-                print(f"Elasticsearch BadRequestError during index creation (attempt {i+1}/{max_retries}): {e}. Retrying in {retry_delay} seconds...")
-                time.sleep(retry_delay)
+                logger.warning(f"Elasticsearch BadRequestError during index creation (attempt {i+1}/{max_retries}): {e}")
+                if i < max_retries - 1:
+                    time.sleep(retry_delay)
             except Exception as e:
-                print(f"Unexpected error during index creation: {e}")
-                raise
-        raise ConnectionError("Could not create Elasticsearch index after multiple retries.")
+                logger.error(f"Unexpected error during index creation: {e}")
+                raise SearchError(
+                    f"Failed to create Elasticsearch index: {str(e)}",
+                    index_name=INDEX_NAME,
+                    operation="create_index"
+                ) from e
+        
+        raise SearchError(
+            "Could not create Elasticsearch index after multiple retries",
+            index_name=INDEX_NAME,
+            operation="create_index"
+        )
 
     def index_document(self, document_data: dict):
+        """Index a document in Elasticsearch."""
         try:
+            self._ensure_connection()
             self.es.index(index=INDEX_NAME, id=document_data['document_id'], document=document_data)
-            print(f"Document {document_data['document_id']} indexed in Elasticsearch.")
+            logger.info(f"Document {document_data['document_id']} indexed in Elasticsearch")
         except Exception as e:
-            print(f"Error indexing document {document_data['document_id']}: {e}")
+            raise SearchError(
+                f"Failed to index document {document_data.get('document_id', 'unknown')}",
+                index_name=INDEX_NAME,
+                operation="index_document",
+                details={'document_id': document_data.get('document_id')}
+            ) from e
 
-    def search_documents(self, query: str, field: str = "extracted_text", size: int = 10) -> list:
-        search_body = {
-            "query": {
-                "match": {
-                    field: query
-                }
-            },
-            "size": size
-        }
-        response = self.es.search(index=INDEX_NAME, body=search_body)
-        return [hit['_source'] for hit in response['hits']['hits']]
+    def search_documents(self, query: str, field: str = "extracted_text", size: int = 10) -> dict:
+        """Search documents in Elasticsearch."""
+        try:
+            self._ensure_connection()
+            search_body = {
+                "query": {
+                    "match": {
+                        field: query
+                    }
+                },
+                "size": size
+            }
+            response = self.es.search(index=INDEX_NAME, body=search_body)
+            logger.info(f"Search completed: query='{query}', field='{field}', results={len(response['hits']['hits'])}")
+            return response
+        except Exception as e:
+            raise SearchError(
+                f"Search failed for query: {query}",
+                query=query,
+                index_name=INDEX_NAME,
+                operation="search",
+                details={'field': field, 'size': size}
+            ) from e
 
-# Initialize the Elasticsearch client globally
+# Initialize the Elasticsearch client globally (lazy initialization)
 es_client = ElasticsearchClient()
