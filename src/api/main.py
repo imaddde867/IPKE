@@ -1,7 +1,8 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from src.api.celery_worker import process_document_task, get_task_status, retry_failed_task
-from src.database.database import get_db, init_db
+from src.database.database import get_db, init_db, get_connection_pool_status
+from src.database.migrations import run_migrations, get_migration_status
 from src.database import models, crud
 from src.search.elasticsearch_client import es_client
 from src.middleware import ErrorHandlingMiddleware, RequestLoggingMiddleware
@@ -54,6 +55,12 @@ def on_startup():
         log_processing_step(logger, "database_initialization", "started")
         init_db()
         log_processing_step(logger, "database_initialization", "completed")
+        
+        log_processing_step(logger, "database_migrations", "started")
+        migration_count = run_migrations()
+        log_processing_step(logger, "database_migrations", "completed")
+        logger.info(f"Database migrations completed: {migration_count} migrations applied")
+        
         logger.info("Application startup completed successfully")
     except Exception as e:
         log_processing_step(logger, "database_initialization", "failed")
@@ -239,9 +246,32 @@ def get_document(document_id: int, db: Session = Depends(get_db)):
         ) from e
 
 @app.get("/documents/")
-def get_all_documents(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    documents = db.query(models.Document).offset(skip).limit(limit).all()
-    return documents
+def get_all_documents(
+    page: int = 1, 
+    per_page: int = 20, 
+    status: str = None, 
+    file_type: str = None, 
+    db: Session = Depends(get_db)
+):
+    """Get documents with pagination and optional filtering."""
+    try:
+        from src.database.crud import get_documents
+        
+        logger.info(f"Documents list request: page={page}, per_page={per_page}, status={status}, file_type={file_type}")
+        
+        result = get_documents(db, page=page, per_page=per_page, status=status, file_type=file_type)
+        
+        logger.info(f"Documents retrieved: {len(result['items'])} of {result['total']} total")
+        
+        return result
+        
+    except Exception as e:
+        logger.error(f"Failed to retrieve documents: {str(e)}")
+        raise DatabaseError(
+            "Failed to retrieve documents",
+            operation="select",
+            table="documents"
+        ) from e
 
 @app.get("/documents/{document_id}/entities/")
 def get_document_entities(document_id: int, db: Session = Depends(get_db)):
@@ -445,4 +475,121 @@ def get_task_statistics():
         raise HTTPException(
             status_code=500,
             detail=f"Failed to retrieve task statistics: {str(e)}"
+        )
+
+# Database management endpoints
+
+@app.get("/admin/database/pool-status")
+def get_database_pool_status():
+    """Get current database connection pool status."""
+    correlation_id = set_correlation_id()
+    
+    try:
+        pool_status = get_connection_pool_status()
+        logger.info("Database pool status retrieved", extra={
+            'pool_status': pool_status,
+            'correlation_id': correlation_id
+        })
+        
+        return {
+            **pool_status,
+            'correlation_id': correlation_id
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to get database pool status: {str(e)}", extra={
+            'error': str(e),
+            'correlation_id': correlation_id
+        })
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to retrieve database pool status: {str(e)}"
+        )
+
+@app.get("/admin/database/migration-status")
+def get_database_migration_status():
+    """Get current database migration status."""
+    correlation_id = set_correlation_id()
+    
+    try:
+        migration_status = get_migration_status()
+        logger.info("Database migration status retrieved", extra={
+            'migration_status': migration_status,
+            'correlation_id': correlation_id
+        })
+        
+        return {
+            **migration_status,
+            'correlation_id': correlation_id
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to get migration status: {str(e)}", extra={
+            'error': str(e),
+            'correlation_id': correlation_id
+        })
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to retrieve migration status: {str(e)}"
+        )
+
+@app.post("/admin/database/run-migrations")
+def run_database_migrations():
+    """Manually run pending database migrations."""
+    correlation_id = set_correlation_id()
+    
+    try:
+        logger.info("Manual migration run requested", extra={
+            'correlation_id': correlation_id
+        })
+        
+        migration_count = run_migrations()
+        
+        logger.info(f"Manual migrations completed: {migration_count} applied", extra={
+            'migrations_applied': migration_count,
+            'correlation_id': correlation_id
+        })
+        
+        return {
+            'status': 'completed',
+            'migrations_applied': migration_count,
+            'correlation_id': correlation_id
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to run migrations: {str(e)}", extra={
+            'error': str(e),
+            'correlation_id': correlation_id
+        })
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to run migrations: {str(e)}"
+        )
+
+@app.get("/admin/database/statistics")
+def get_database_statistics(db: Session = Depends(get_db)):
+    """Get database processing statistics."""
+    correlation_id = set_correlation_id()
+    
+    try:
+        from src.database.crud import get_processing_statistics
+        
+        stats = get_processing_statistics(db)
+        logger.info("Database statistics retrieved", extra={
+            'correlation_id': correlation_id
+        })
+        
+        return {
+            **stats,
+            'correlation_id': correlation_id
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to get database statistics: {str(e)}", extra={
+            'error': str(e),
+            'correlation_id': correlation_id
+        })
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to retrieve database statistics: {str(e)}"
         )

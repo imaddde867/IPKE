@@ -15,6 +15,12 @@ class DatabaseConfig:
     name: str = "knowledge_db"
     user: str = "user"
     password: str = "password"
+    # Connection pooling settings
+    pool_size: int = 10
+    max_overflow: int = 20
+    pool_recycle: int = 3600
+    pool_pre_ping: bool = True
+    connect_timeout: int = 10
     
     @property
     def url(self) -> str:
@@ -144,6 +150,12 @@ class ConfigManager:
         self.config.database.name = os.getenv("DB_NAME", self.config.database.name)
         self.config.database.user = os.getenv("DB_USER", self.config.database.user)
         self.config.database.password = os.getenv("DB_PASSWORD", self.config.database.password)
+        # Connection pooling configuration
+        self.config.database.pool_size = int(os.getenv("DB_POOL_SIZE", str(self.config.database.pool_size)))
+        self.config.database.max_overflow = int(os.getenv("DB_MAX_OVERFLOW", str(self.config.database.max_overflow)))
+        self.config.database.pool_recycle = int(os.getenv("DB_POOL_RECYCLE", str(self.config.database.pool_recycle)))
+        self.config.database.pool_pre_ping = os.getenv("DB_POOL_PRE_PING", "true").lower() == "true"
+        self.config.database.connect_timeout = int(os.getenv("DB_CONNECT_TIMEOUT", str(self.config.database.connect_timeout)))
         
         # Redis configuration
         self.config.redis.host = os.getenv("REDIS_HOST", self.config.redis.host)

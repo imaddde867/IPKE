@@ -15,9 +15,16 @@ class Document(Base):
     metadata_json = Column(JSON)  # Store Tika metadata as JSON
     classification_category = Column(String)
     classification_score = Column(Float)
-    status = Column(String)
+    status = Column(String, index=True)
     processing_timestamp = Column(DateTime, default=datetime.utcnow)
     document_sections = Column(JSON) # New column for extracted sections
+    
+    # Enhanced processing tracking fields
+    processing_duration_seconds = Column(Float)
+    retry_count = Column(Integer, default=0, index=True)
+    last_error = Column(Text)
+    processing_started_at = Column(DateTime)
+    processing_completed_at = Column(DateTime)
 
     entities = relationship("ExtractedEntity", back_populates="document")
     key_phrases = relationship("KeyPhrase", back_populates="document")
@@ -162,3 +169,33 @@ class EquipmentPersonnel(Base):
     # Relationship backrefs for easy access
     equipment = relationship("Equipment", back_populates="equipment_personnels")
     personnel = relationship("Personnel", back_populates="equipment_personnels")
+
+class ProcessingLog(Base):
+    """Track processing steps and errors for documents."""
+    __tablename__ = "processing_logs"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    document_id = Column(Integer, ForeignKey("documents.id", ondelete="CASCADE"), index=True)
+    step_name = Column(String(100), nullable=False, index=True)
+    status = Column(String(20), nullable=False, index=True)  # started, completed, failed
+    start_time = Column(DateTime, nullable=False, default=datetime.utcnow)
+    end_time = Column(DateTime)
+    duration_seconds = Column(Float)
+    error_message = Column(Text)
+    metadata_json = Column(JSON)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    
+    # Relationship to document
+    document = relationship("Document")
+
+class SystemHealth(Base):
+    """Store system health check results and metrics."""
+    __tablename__ = "system_health"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    service_name = Column(String(50), nullable=False, index=True)
+    status = Column(String(20), nullable=False, index=True)  # healthy, unhealthy, degraded
+    response_time_ms = Column(Float)
+    error_message = Column(Text)
+    metadata_json = Column(JSON)
+    checked_at = Column(DateTime, nullable=False, default=datetime.utcnow, index=True)
