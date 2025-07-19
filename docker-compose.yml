@@ -62,7 +62,7 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile
-    command: celery -A src.api.celery_worker worker --loglevel=${CELERY_LOG_LEVEL:-info}
+    command: celery -A src.api.celery_worker worker --loglevel=${CELERY_LOG_LEVEL:-info} --concurrency=${CELERY_CONCURRENCY:-2} --queues=document_processing,retry_queue,celery
     volumes:
       - .:/app
     depends_on:
@@ -103,6 +103,35 @@ services:
       - DEBUG=${DEBUG:-true}
       - LOG_LEVEL=${LOG_LEVEL:-INFO}
       - LOG_FORMAT=${LOG_FORMAT:-json}
+      # Celery configuration
+      - CELERY_LOG_LEVEL=${CELERY_LOG_LEVEL:-info}
+      - CELERY_CONCURRENCY=${CELERY_CONCURRENCY:-2}
+      - CELERY_MAX_RETRIES=${CELERY_MAX_RETRIES:-3}
+      - CELERY_RETRY_DELAY=${CELERY_RETRY_DELAY:-60}
+
+  celery_beat:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    command: celery -A src.api.celery_worker beat --loglevel=${CELERY_LOG_LEVEL:-info}
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - celery_worker
+    environment:
+      - PYTHONPATH=/app
+      # Redis configuration
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_DB=${REDIS_DB:-0}
+      # Application configuration
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+      - DEBUG=${DEBUG:-true}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - LOG_FORMAT=${LOG_FORMAT:-json}
+      # Celery configuration
+      - CELERY_LOG_LEVEL=${CELERY_LOG_LEVEL:-info}
 
   tika:
     image: "apache/tika:latest"

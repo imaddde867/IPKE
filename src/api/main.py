@@ -1,6 +1,6 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from src.api.celery_worker import process_document_task
+from src.api.celery_worker import process_document_task, get_task_status, retry_failed_task
 from src.database.database import get_db, init_db
 from src.database import models, crud
 from src.search.elasticsearch_client import es_client
@@ -344,3 +344,105 @@ def search_documents(query: str, field: str = "extracted_text", size: int = 10):
             operation="search",
             details={'field': field, 'size': size}
         ) from e
+# Task status tracking endpoints
+
+@app.get("/tasks/{task_id}/status")
+def get_task_status_endpoint(task_id: str):
+    """Get detailed status information for a processing task."""
+    correlation_id = set_correlation_id()
+    
+    try:
+        logger.info(f"Task status request: {task_id}", extra={
+            'task_id': task_id,
+            'correlation_id': correlation_id
+        })
+        
+        # Get task status from Celery
+        status_info = get_task_status.delay(task_id).get(timeout=10)
+        
+        logger.info(f"Task status retrieved: {task_id}", extra={
+            'task_id': task_id,
+            'task_state': status_info.get('state'),
+            'correlation_id': correlation_id
+        })
+        
+        return {
+            **status_info,
+            'correlation_id': correlation_id
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to get task status: {task_id} - {str(e)}", extra={
+            'task_id': task_id,
+            'error': str(e),
+            'correlation_id': correlation_id
+        })
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to retrieve task status: {str(e)}"
+        )
+
+@app.post("/tasks/{task_id}/retry")
+def retry_task_endpoint(task_id: str, db: Session = Depends(get_db)):
+    """Manually retry a failed task from the dead letter queue."""
+    correlation_id = set_correlation_id()
+    
+    try:
+        logger.info(f"Task retry request: {task_id}", extra={
+            'task_id': task_id,
+            'correlation_id': correlation_id
+        })
+        
+        # This would typically look up the original task details from a dead letter table
+        # For now, we'll return an error indicating manual intervention is needed
+        logger.warning(f"Manual task retry requested but not implemented: {task_id}")
+        
+        return {
+            'status': 'not_implemented',
+            'message': 'Manual task retry requires implementation of dead letter queue storage',
+            'task_id': task_id,
+            'correlation_id': correlation_id
+        }
+        
+    except Exception as e:
+        logger.error(f"Failed to retry task: {task_id} - {str(e)}", extra={
+            'task_id': task_id,
+            'error': str(e),
+            'correlation_id': correlation_id
+        })
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to retry task: {str(e)}"
+        )
+
+@app.get("/tasks/stats")
+def get_task_statistics():
+    """Get overall task processing statistics."""
+    correlation_id = set_correlation_id()
+    
+    try:
+        # This would typically query task statistics from the database or Celery
+        # For now, return basic information
+        stats = {
+            'active_tasks': 'Not implemented',
+            'completed_tasks': 'Not implemented', 
+            'failed_tasks': 'Not implemented',
+            'dead_letter_tasks': 'Not implemented',
+            'correlation_id': correlation_id
+        }
+        
+        logger.info("Task statistics requested", extra={
+            'correlation_id': correlation_id
+        })
+        
+        return stats
+        
+    except Exception as e:
+        logger.error(f"Failed to get task statistics: {str(e)}", extra={
+            'error': str(e),
+            'correlation_id': correlation_id
+        })
+        raise HTTPException(
+            status_code=500,
+            detail=f"Failed to retrieve task statistics: {str(e)}"
+        )

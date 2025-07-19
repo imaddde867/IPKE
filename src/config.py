@@ -85,6 +85,17 @@ class ProcessingConfig:
     retry_delay_seconds: int = 2
 
 @dataclass
+class CeleryConfig:
+    """Celery task queue configuration settings."""
+    log_level: str = "info"
+    concurrency: int = 2
+    max_retries: int = 3
+    retry_delay: int = 60
+    task_soft_time_limit: int = 1800  # 30 minutes
+    task_time_limit: int = 2400       # 40 minutes
+    result_expires: int = 3600        # 1 hour
+
+@dataclass
 class LoggingConfig:
     """Logging configuration settings."""
     level: str = "INFO"
@@ -100,6 +111,7 @@ class AppConfig:
     tika: TikaConfig = field(default_factory=TikaConfig)
     api: APIConfig = field(default_factory=APIConfig)
     processing: ProcessingConfig = field(default_factory=ProcessingConfig)
+    celery: CeleryConfig = field(default_factory=CeleryConfig)
     logging: LoggingConfig = field(default_factory=LoggingConfig)
     
     # Environment settings
@@ -165,6 +177,12 @@ class ConfigManager:
         self.config.processing.service_connection_timeout_seconds = int(os.getenv("SERVICE_CONNECTION_TIMEOUT_SECONDS", str(self.config.processing.service_connection_timeout_seconds)))
         self.config.processing.max_retry_attempts = int(os.getenv("MAX_RETRY_ATTEMPTS", str(self.config.processing.max_retry_attempts)))
         self.config.processing.retry_delay_seconds = int(os.getenv("RETRY_DELAY_SECONDS", str(self.config.processing.retry_delay_seconds)))
+        
+        # Celery configuration
+        self.config.celery.log_level = os.getenv("CELERY_LOG_LEVEL", self.config.celery.log_level)
+        self.config.celery.concurrency = int(os.getenv("CELERY_CONCURRENCY", str(self.config.celery.concurrency)))
+        self.config.celery.max_retries = int(os.getenv("CELERY_MAX_RETRIES", str(self.config.celery.max_retries)))
+        self.config.celery.retry_delay = int(os.getenv("CELERY_RETRY_DELAY", str(self.config.celery.retry_delay)))
         
         # Logging configuration
         self.config.logging.level = os.getenv("LOG_LEVEL", self.config.logging.level)
