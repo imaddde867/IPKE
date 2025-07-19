@@ -5,9 +5,9 @@ services:
     build:
       context: .
       dockerfile: docker/Dockerfile
-    command: uvicorn src.api.main:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn src.api.main:app --host ${API_HOST:-0.0.0.0} --port ${API_PORT:-8000} --reload
     ports:
-      - "8000:8000"
+      - "${API_PORT:-8000}:${API_PORT:-8000}"
     volumes:
       - .:/app
     depends_on:
@@ -17,17 +17,52 @@ services:
       - elasticsearch
     environment:
       - PYTHONPATH=/app
+      # Database configuration
+      - DB_HOST=${DB_HOST:-db}
+      - DB_PORT=${DB_PORT:-5432}
+      - DB_NAME=${DB_NAME:-knowledge_db}
+      - DB_USER=${DB_USER:-user}
+      - DB_PASSWORD=${DB_PASSWORD:-password}
+      # Redis configuration
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_DB=${REDIS_DB:-0}
+      # Elasticsearch configuration
+      - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-elasticsearch}
+      - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
+      - ELASTICSEARCH_INDEX=${ELASTICSEARCH_INDEX:-documents}
+      # Tika configuration
+      - TIKA_HOST=${TIKA_HOST:-tika}
+      - TIKA_PORT=${TIKA_PORT:-9998}
+      # API configuration
+      - API_HOST=${API_HOST:-0.0.0.0}
+      - API_PORT=${API_PORT:-8000}
+      - API_RELOAD=${API_RELOAD:-true}
+      - CORS_ORIGINS=${CORS_ORIGINS:-http://localhost,http://localhost:3000,http://127.0.0.1,http://127.0.0.1:3000}
+      # Processing configuration
+      - UPLOAD_DIRECTORY=${UPLOAD_DIRECTORY:-./uploaded_files}
+      - MAX_FILE_SIZE_MB=${MAX_FILE_SIZE_MB:-100}
+      - TIKA_TIMEOUT_SECONDS=${TIKA_TIMEOUT_SECONDS:-300}
+      - TIKA_OCR_TIMEOUT_SECONDS=${TIKA_OCR_TIMEOUT_SECONDS:-300}
+      - SERVICE_CONNECTION_TIMEOUT_SECONDS=${SERVICE_CONNECTION_TIMEOUT_SECONDS:-5}
+      - MAX_RETRY_ATTEMPTS=${MAX_RETRY_ATTEMPTS:-3}
+      - RETRY_DELAY_SECONDS=${RETRY_DELAY_SECONDS:-2}
+      # Application configuration
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+      - DEBUG=${DEBUG:-true}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - LOG_FORMAT=${LOG_FORMAT:-json}
 
   redis:
     image: "redis:alpine"
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT:-6379}:6379"
 
   celery_worker:
     build:
       context: .
       dockerfile: docker/Dockerfile
-    command: celery -A src.api.celery_worker worker --loglevel=info
+    command: celery -A src.api.celery_worker worker --loglevel=${CELERY_LOG_LEVEL:-info}
     volumes:
       - .:/app
     depends_on:
@@ -38,30 +73,61 @@ services:
       - elasticsearch
     environment:
       - PYTHONPATH=/app
+      # Database configuration
+      - DB_HOST=${DB_HOST:-db}
+      - DB_PORT=${DB_PORT:-5432}
+      - DB_NAME=${DB_NAME:-knowledge_db}
+      - DB_USER=${DB_USER:-user}
+      - DB_PASSWORD=${DB_PASSWORD:-password}
+      # Redis configuration
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_DB=${REDIS_DB:-0}
+      # Elasticsearch configuration
+      - ELASTICSEARCH_HOST=${ELASTICSEARCH_HOST:-elasticsearch}
+      - ELASTICSEARCH_PORT=${ELASTICSEARCH_PORT:-9200}
+      - ELASTICSEARCH_INDEX=${ELASTICSEARCH_INDEX:-documents}
+      # Tika configuration
+      - TIKA_HOST=${TIKA_HOST:-tika}
+      - TIKA_PORT=${TIKA_PORT:-9998}
+      # Processing configuration
+      - UPLOAD_DIRECTORY=${UPLOAD_DIRECTORY:-./uploaded_files}
+      - MAX_FILE_SIZE_MB=${MAX_FILE_SIZE_MB:-100}
+      - TIKA_TIMEOUT_SECONDS=${TIKA_TIMEOUT_SECONDS:-300}
+      - TIKA_OCR_TIMEOUT_SECONDS=${TIKA_OCR_TIMEOUT_SECONDS:-300}
+      - SERVICE_CONNECTION_TIMEOUT_SECONDS=${SERVICE_CONNECTION_TIMEOUT_SECONDS:-5}
+      - MAX_RETRY_ATTEMPTS=${MAX_RETRY_ATTEMPTS:-3}
+      - RETRY_DELAY_SECONDS=${RETRY_DELAY_SECONDS:-2}
+      # Application configuration
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+      - DEBUG=${DEBUG:-true}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - LOG_FORMAT=${LOG_FORMAT:-json}
 
   tika:
     image: "apache/tika:latest"
     ports:
-      - "9998:9998"
+      - "${TIKA_PORT:-9998}:9998"
 
   db:
     image: "postgres:13-alpine"
     environment:
-      POSTGRES_DB: knowledge_db
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ${DB_NAME:-knowledge_db}
+      POSTGRES_USER: ${DB_USER:-user}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "${DB_PORT:-5432}:5432"
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.14.0
     environment:
       - xpack.security.enabled=false
       - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
     ports:
-      - "9200:9200"
+      - "${ELASTICSEARCH_PORT:-9200}:9200"
       - "9300:9300"
     volumes:
       - elasticsearch_data:/usr/share/elasticsearch/data

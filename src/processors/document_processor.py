@@ -9,10 +9,12 @@ from src.ai.classifier import classifier
 from src.ai.keyphrase_extractor import keyphrase_extractor
 from src.exceptions import ProcessingError, AIError, ServiceUnavailableError
 from src.logging_config import get_logger, log_processing_step, log_error
+from src.config import config_manager
 
 logger = get_logger(__name__)
 
-TIKA_SERVER_URL = "http://tika:9998"
+# Get Tika URL from configuration
+TIKA_SERVER_URL = config_manager.get_tika_url()
 
 # Define the candidate labels for document classification
 CANDIDATE_LABELS = [
@@ -273,13 +275,13 @@ def process_document(file_path: str):
             headers = {
                 'Accept': 'application/json',  # Request JSON output
                 'X-Tika-OCRTesseractPath': '/usr/bin/tesseract',  # Assuming Tesseract is installed in Tika container
-                'X-Tika-OCRTimeout': '300',  # 5 minutes timeout for OCR
+                'X-Tika-OCRTimeout': str(config_manager.get_config().processing.tika_ocr_timeout_seconds),  # OCR timeout from config
                 'X-Tika-PDFextractInlineImages': 'true',  # Extract images from PDF
                 'X-Tika-PDFOcrStrategy': 'ocr_and_text_extraction',  # OCR and text extraction
             }
             # Use /rmeta endpoint for rich metadata and content
             try:
-                response = requests.put(f"{TIKA_SERVER_URL}/rmeta", data=file, headers=headers, timeout=300)
+                response = requests.put(f"{TIKA_SERVER_URL}/rmeta", data=file, headers=headers, timeout=config_manager.get_config().processing.tika_timeout_seconds)
                 response.raise_for_status()  # Raise an exception for HTTP errors
             except requests.exceptions.Timeout:
                 raise ServiceUnavailableError(

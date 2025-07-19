@@ -1,20 +1,26 @@
 from elasticsearch import Elasticsearch, BadRequestError
 from src.logging_config import get_logger
 from src.exceptions import SearchError, ServiceUnavailableError
+from src.config import config_manager
 import time
 
 logger = get_logger(__name__)
 
-ELASTICSEARCH_URL = "http://elasticsearch:9200"
-INDEX_NAME = "documents"
+# Get configuration from config manager
+ELASTICSEARCH_URL = config_manager.get_elasticsearch_url()
+INDEX_NAME = config_manager.get_config().elasticsearch.index_name
 
 class ElasticsearchClient:
     def __init__(self):
         self.es = None
         self._initialized = False
     
-    def _ensure_connection(self, max_retries=3, retry_delay=2):
+    def _ensure_connection(self, max_retries=None, retry_delay=None):
         """Lazy initialization of Elasticsearch connection."""
+        if max_retries is None:
+            max_retries = config_manager.get_config().processing.max_retry_attempts
+        if retry_delay is None:
+            retry_delay = config_manager.get_config().processing.retry_delay_seconds
         if self._initialized and self.es is not None:
             return
         
@@ -43,8 +49,12 @@ class ElasticsearchClient:
             retry_count=max_retries
         )
 
-    def _create_index(self, max_retries=3, retry_delay=2):
+    def _create_index(self, max_retries=None, retry_delay=None):
         """Create the Elasticsearch index if it doesn't exist."""
+        if max_retries is None:
+            max_retries = config_manager.get_config().processing.max_retry_attempts
+        if retry_delay is None:
+            retry_delay = config_manager.get_config().processing.retry_delay_seconds
         for i in range(max_retries):
             try:
                 if not self.es.indices.exists(index=INDEX_NAME):

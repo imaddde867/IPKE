@@ -14,6 +14,7 @@ lib/
 lib64/
 parts/
 sdist/
+.kiro
 var/
 wheels/
 pip-wheel-metadata/

@@ -1,11 +1,10 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from src.database.models import Base
+from src.config import config_manager
 
-# Database connection string
-# This should ideally come from environment variables for production
-# DATABASE_URL = "postgresql://user:password@db:5432/knowledge_db"
-DATABASE_URL = "postgresql://user:password@db:5432/knowledge_db"
+# Get database URL from configuration
+DATABASE_URL = config_manager.get_database_url()
 
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

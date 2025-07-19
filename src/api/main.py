@@ -7,6 +7,7 @@ from src.search.elasticsearch_client import es_client
 from src.middleware import ErrorHandlingMiddleware, RequestLoggingMiddleware
 from src.logging_config import get_logger, set_correlation_id, log_processing_step
 from src.exceptions import DatabaseError, ValidationError, SearchError
+from src.config import config_manager, config
 from sqlalchemy.orm import Session
 import os
 import uuid
@@ -14,6 +15,9 @@ import time
 
 # Initialize logging
 logger = get_logger(__name__)
+
+# Print configuration summary on startup
+config_manager.print_config_summary()
 
 app = FastAPI(
     title="Industrial Knowledge Extraction System",
@@ -25,24 +29,19 @@ app = FastAPI(
 app.add_middleware(ErrorHandlingMiddleware)
 app.add_middleware(RequestLoggingMiddleware, log_request_body=False, log_response_body=False)
 
-# CORS configuration
-origins = [
-    "http://localhost",
-    "http://localhost:3000",  # Allow requests from your React frontend
-    "http://127.0.0.1",
-    "http://127.0.0.1:3000",
-]
-
+# CORS configuration from config
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=config.api.cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-UPLOAD_DIRECTORY = "./uploaded_files"
-TIKA_SERVER_URL = "http://tika:9998"
+# Configuration from config manager
+UPLOAD_DIRECTORY = config.processing.upload_directory
+TIKA_SERVER_URL = config_manager.get_tika_url()
+MAX_FILE_SIZE = config.processing.max_file_size_mb * 1024 * 1024  # Convert MB to bytes
 os.makedirs(UPLOAD_DIRECTORY, exist_ok=True)
 
 # Initialize database tables on startup
@@ -120,7 +119,7 @@ def detailed_health_check(db: Session = Depends(get_db)):
     # Check Tika server
     try:
         import requests
-        response = requests.get(f"{TIKA_SERVER_URL}/version", timeout=5)
+        response = requests.get(f"{TIKA_SERVER_URL}/version", timeout=config.processing.service_connection_timeout_seconds)
         if response.status_code == 200:
             health_status["services"]["tika"] = {"status": "healthy", "type": "Apache Tika"}
         else:
@@ -141,7 +140,11 @@ def detailed_health_check(db: Session = Depends(get_db)):
     # Check Redis (Celery broker)
     try:
         import redis
-        r = redis.Redis(host='redis', port=6379, db=0)
+        r = redis.Redis(
+            host=config.redis.host, 
+            port=config.redis.port, 
+            db=config.redis.db
+        )
         r.ping()
         health_status["services"]["redis"] = {"status": "healthy", "type": "Redis"}
     except Exception as e:
@@ -167,12 +170,11 @@ async def create_upload_file(file: UploadFile = File(...)):
     if not file.filename:
         raise ValidationError("Filename is required", field="filename")
     
-    # Check file size (limit to 100MB)
-    max_size = 100 * 1024 * 1024  # 100MB
+    # Check file size using configured limit
     file_content = await file.read()
-    if len(file_content) > max_size:
+    if len(file_content) > MAX_FILE_SIZE:
         raise ValidationError(
-            f"File size exceeds maximum allowed size of {max_size} bytes",
+            f"File size exceeds maximum allowed size of {MAX_FILE_SIZE} bytes ({config.processing.max_file_size_mb}MB)",
             field="file_size",
             value=len(file_content)
         )

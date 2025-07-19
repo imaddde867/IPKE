@@ -5,12 +5,16 @@ from src.database import crud
 from src.search.elasticsearch_client import es_client
 from src.logging_config import get_logger, set_correlation_id, log_processing_step, log_error
 from src.exceptions import DatabaseError, ProcessingError, SearchError
+from src.config import config_manager
 import time
+
+# Get Redis URL from configuration
+redis_url = config_manager.get_redis_url()
 
 celery_app = Celery(
     'knowledge_extraction',
-    broker='redis://redis:6379/0',
-    backend='redis://redis:6379/0'
+    broker=redis_url,
+    backend=redis_url
 )
 
 # Initialize logging
