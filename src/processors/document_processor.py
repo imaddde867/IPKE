@@ -7,6 +7,10 @@ import re
 from src.ai.ner_extractor import ner_extractor
 from src.ai.classifier import classifier
 from src.ai.keyphrase_extractor import keyphrase_extractor
+from src.exceptions import ProcessingError, AIError, ServiceUnavailableError
+from src.logging_config import get_logger, log_processing_step, log_error
+
+logger = get_logger(__name__)
 
 TIKA_SERVER_URL = "http://tika:9998"
 
@@ -237,7 +241,7 @@ def _extract_personnel_data(text: str, entities: list) -> list[dict]:
 # --- Main Processing Functions ---
 
 def process_document(file_path: str):
-    print(f"Processing document/image with Tika: {file_path}")
+    logger.info(f"Starting document processing with Tika: {file_path}")
     filename = os.path.basename(file_path)
     extracted_text = ""
     metadata = {}
@@ -254,7 +258,17 @@ def process_document(file_path: str):
     personnel_data = []
     document_sections = {}
 
+    # Validate file exists
+    if not os.path.exists(file_path):
+        raise ProcessingError(
+            f"File not found: {file_path}",
+            file_path=file_path,
+            processing_stage="file_validation"
+        )
+
     try:
+        log_processing_step(logger, "tika_extraction", "started", extra_data={'filename': filename})
+        
         with open(file_path, 'rb') as file:
             headers = {
                 'Accept': 'application/json',  # Request JSON output
@@ -264,8 +278,21 @@ def process_document(file_path: str):
                 'X-Tika-PDFOcrStrategy': 'ocr_and_text_extraction',  # OCR and text extraction
             }
             # Use /rmeta endpoint for rich metadata and content
-            response = requests.put(f"{TIKA_SERVER_URL}/rmeta", data=file, headers=headers)
-            response.raise_for_status()  # Raise an exception for HTTP errors
+            try:
+                response = requests.put(f"{TIKA_SERVER_URL}/rmeta", data=file, headers=headers, timeout=300)
+                response.raise_for_status()  # Raise an exception for HTTP errors
+            except requests.exceptions.Timeout:
+                raise ServiceUnavailableError(
+                    f"Tika server timeout processing {filename}",
+                    service_name="Apache Tika",
+                    service_url=TIKA_SERVER_URL
+                )
+            except requests.exceptions.ConnectionError:
+                raise ServiceUnavailableError(
+                    f"Cannot connect to Tika server",
+                    service_name="Apache Tika",
+                    service_url=TIKA_SERVER_URL
+                )
             
             tika_output = response.json()
             
@@ -279,14 +306,32 @@ def process_document(file_path: str):
                 # Extract document sections
                 document_sections = extract_sections(extracted_text)
 
-                # Perform NER on the extracted text
-                extracted_entities = ner_extractor.extract_entities(extracted_text)
+                log_processing_step(logger, "tika_extraction", "completed", extra_data={'text_length': len(extracted_text)})
 
-                # Classify the document
-                classification_result = classifier.classify_document(extracted_text, CANDIDATE_LABELS)
+                # Perform AI processing with error handling
+                try:
+                    log_processing_step(logger, "ner_extraction", "started")
+                    extracted_entities = ner_extractor.extract_entities(extracted_text)
+                    log_processing_step(logger, "ner_extraction", "completed", extra_data={'entities_count': len(extracted_entities)})
+                except Exception as e:
+                    log_error(logger, e, "NER extraction failed - continuing with empty entities")
+                    extracted_entities = []
 
-                # Extract key phrases
-                key_phrases = keyphrase_extractor.extract_keyphrases(extracted_text)
+                try:
+                    log_processing_step(logger, "document_classification", "started")
+                    classification_result = classifier.classify_document(extracted_text, CANDIDATE_LABELS)
+                    log_processing_step(logger, "document_classification", "completed", extra_data={'category': classification_result.get('category')})
+                except Exception as e:
+                    log_error(logger, e, "Document classification failed - using default")
+                    classification_result = {"category": "unclassified", "score": 0.0}
+
+                try:
+                    log_processing_step(logger, "keyphrase_extraction", "started")
+                    key_phrases = keyphrase_extractor.extract_keyphrases(extracted_text)
+                    log_processing_step(logger, "keyphrase_extraction", "completed", extra_data={'keyphrases_count': len(key_phrases)})
+                except Exception as e:
+                    log_error(logger, e, "Keyphrase extraction failed - continuing with empty list")
+                    key_phrases = []
 
                 # Extract structured data
                 equipment_data = _extract_equipment_data(extracted_text, extracted_entities)
@@ -300,20 +345,26 @@ def process_document(file_path: str):
                 status = "failed"
 
     except requests.exceptions.RequestException as e:
-        print(f"Error communicating with Tika server: {e}")
-        extracted_text = f"Error processing {filename} with Tika: {e}"
-        metadata = {"source": "tika_processor", "original_path": file_path, "filename": filename, "error": str(e)}
-        status = "failed"
+        raise ServiceUnavailableError(
+            f"Error communicating with Tika server: {str(e)}",
+            service_name="Apache Tika",
+            service_url=TIKA_SERVER_URL,
+            details={'filename': filename}
+        ) from e
     except json.JSONDecodeError as e:
-        print(f"Error decoding Tika JSON response: {e}")
-        extracted_text = f"Error decoding Tika JSON response for {filename}: {e}"
-        metadata = {"source": "tika_processor", "original_path": file_path, "filename": filename, "error": str(e)}
-        status = "failed"
+        raise ProcessingError(
+            f"Error decoding Tika JSON response for {filename}",
+            file_path=file_path,
+            processing_stage="tika_response_parsing",
+            details={'json_error': str(e)}
+        ) from e
     except Exception as e:
-        print(f"An unexpected error occurred: {e}")
-        extracted_text = f"An unexpected error occurred while processing {filename}: {e}"
-        metadata = {"source": "tika_processor", "original_path": file_path, "filename": filename, "error": str(e)}
-        status = "failed"
+        raise ProcessingError(
+            f"Unexpected error processing {filename}",
+            file_path=file_path,
+            processing_stage="document_processing",
+            details={'error': str(e)}
+        ) from e
 
     return {
         "filename": filename,

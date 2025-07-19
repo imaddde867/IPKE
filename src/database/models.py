@@ -33,7 +33,7 @@ class ExtractedEntity(Base):
     id = Column(Integer, primary_key=True, index=True)
     document_id = Column(Integer, ForeignKey("documents.id"))
     text = Column(String)
-    entity_type = Column(String) # e.g., PER, ORG, LOC, or custom types like EQUIPMENT, PROCEDURE
+    entity_type = Column(String) # for example PER, ORG, LOC, or custom types like EQUIPMENT, PROCEDURE
     score = Column(Float)
     start_char = Column(Integer)
     end_char = Column(Integer)
@@ -54,23 +54,44 @@ class Equipment(Base):
     id = Column(Integer, primary_key=True, index=True)
     document_id = Column(Integer, ForeignKey("documents.id"))
     name = Column(String, index=True)
-    type = Column(String) # e.g., Pump, Motor, Valve, Sensor
-    specifications = Column(JSON) # e.g., {"power": "10HP", "voltage": "480V"}
+    type = Column(String) #  for example = Pump, Motor, Valve, Sensor
+    specifications = Column(JSON) # for example = {"power": "10HP", "voltage": "480V"}
     location = Column(String, nullable=True)
     confidence = Column(Float, nullable=True) # New column for confidence
 
     document = relationship("Document", back_populates="equipment")
+    # List of EquipmentPersonnel associations for this equipment
+    equipment_personnels = relationship("EquipmentPersonnel", back_populates="equipment", cascade="all, delete-orphan")
+    # List of ProcedureEquipment associations for this equipment
+    procedure_equipments = relationship("ProcedureEquipment", back_populates="equipment", cascade="all, delete-orphan")
+
+
+
+class Step(Base):
+    __tablename__ = "steps"
+    id = Column(Integer, primary_key=True, index=True)
+    procedure_id = Column(Integer, ForeignKey("procedures.id"))
+    step_number = Column(Integer)
+    description = Column(Text)
+    expected_result = Column(Text, nullable=True)
+    confidence = Column(Float, nullable=True)
+
+    procedure = relationship("Procedure", back_populates="steps")
 
 class Procedure(Base):
     __tablename__ = "procedures"
     id = Column(Integer, primary_key=True, index=True)
     document_id = Column(Integer, ForeignKey("documents.id"))
     title = Column(String, index=True)
-    steps = Column(JSON) # e.g., [{"step_number": 1, "description": "..."}]
+    steps = relationship("Step", back_populates="procedure", cascade="all, delete-orphan")
     category = Column(String, nullable=True) # e.g., Startup, Shutdown, Maintenance
     confidence = Column(Float, nullable=True) # New column for confidence
 
     document = relationship("Document", back_populates="procedures")
+    # List of ProcedureEquipment associations for this procedure
+    procedure_equipments = relationship("ProcedureEquipment", back_populates="procedure", cascade="all, delete-orphan")
+    # List of ProcedurePersonnel associations for this procedure
+    procedure_personnels = relationship("ProcedurePersonnel", back_populates="procedure", cascade="all, delete-orphan")
 
 class SafetyInformation(Base):
     __tablename__ = "safety_information"
@@ -107,3 +128,37 @@ class Personnel(Base):
     confidence = Column(Float, nullable=True) # New column for confidence
 
     document = relationship("Document", back_populates="personnel")
+    # List of EquipmentPersonnel associations for this personnel
+    equipment_personnels = relationship("EquipmentPersonnel", back_populates="personnel", cascade="all, delete-orphan")
+    # List of ProcedurePersonnel associations for this personnel
+    procedure_personnels = relationship("ProcedurePersonnel", back_populates="personnel", cascade="all, delete-orphan")
+
+class ProcedureEquipment(Base):
+    __tablename__ = "procedure_equipment"
+    id = Column(Integer, primary_key=True, index=True)
+    procedure_id = Column(Integer, ForeignKey("procedures.id"))  # Link to Procedure
+    equipment_id = Column(Integer, ForeignKey("equipment.id"))   # Link to Equipment
+
+    # Relationship backrefs for easy access
+    procedure = relationship("Procedure", back_populates="procedure_equipments")
+    equipment = relationship("Equipment", back_populates="procedure_equipments")
+
+class ProcedurePersonnel(Base):
+    __tablename__ = "procedure_personnel"
+    id = Column(Integer, primary_key=True, index=True)
+    procedure_id = Column(Integer, ForeignKey("procedures.id"))  # Link to Procedure
+    personnel_id = Column(Integer, ForeignKey("personnel.id"))   # Link to Personnel
+
+    # Relationship backrefs for easy access
+    procedure = relationship("Procedure", back_populates="procedure_personnels")
+    personnel = relationship("Personnel", back_populates="procedure_personnels")
+
+class EquipmentPersonnel(Base):
+    __tablename__ = "equipment_personnel"
+    id = Column(Integer, primary_key=True, index=True)
+    equipment_id = Column(Integer, ForeignKey("equipment.id"))   # Link to Equipment
+    personnel_id = Column(Integer, ForeignKey("personnel.id"))   # Link to Personnel
+
+    # Relationship backrefs for easy access
+    equipment = relationship("Equipment", back_populates="equipment_personnels")
+    personnel = relationship("Personnel", back_populates="equipment_personnels")

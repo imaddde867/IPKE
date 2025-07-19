@@ -1,21 +1,29 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from src.api.celery_worker import process_document_task
-from src.database.database import get_db, init_db, engine
+from src.database.database import get_db, init_db
 from src.database import models, crud
 from src.search.elasticsearch_client import es_client
+from src.middleware import ErrorHandlingMiddleware, RequestLoggingMiddleware
+from src.logging_config import get_logger, set_correlation_id, log_processing_step
+from src.exceptions import DatabaseError, ValidationError, SearchError
 from sqlalchemy.orm import Session
-from sqlalchemy import text
 import os
-import asyncio
+import uuid
 import time
-import logging
-from typing import Dict, Any
-import redis
-import requests
-from elasticsearch import Elasticsearch
 
-app = FastAPI()
+# Initialize logging
+logger = get_logger(__name__)
+
+app = FastAPI(
+    title="Industrial Knowledge Extraction System",
+    description="AI-powered system for extracting structured knowledge from industrial documentation",
+    version="1.0.0"
+)
+
+# Add middleware (order matters - error handling should be first)
+app.add_middleware(ErrorHandlingMiddleware)
+app.add_middleware(RequestLoggingMiddleware, log_request_body=False, log_response_body=False)
 
 # CORS configuration
 origins = [
@@ -34,294 +42,199 @@ app.add_middleware(
 )
 
 UPLOAD_DIRECTORY = "./uploaded_files"
+TIKA_SERVER_URL = "http://tika:9998"
 os.makedirs(UPLOAD_DIRECTORY, exist_ok=True)
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-# Service configuration
-SERVICES_CONFIG = {
-    "postgresql": {
-        "host": "db",
-        "port": 5432,
-        "timeout": 5
-    },
-    "elasticsearch": {
-        "url": "http://elasticsearch:9200",
-        "timeout": 5
-    },
-    "redis": {
-        "host": "redis",
-        "port": 6379,
-        "timeout": 5
-    },
-    "tika": {
-        "url": "http://tika:9998",
-        "timeout": 5
-    }
-}
-
-async def check_postgresql_health() -> Dict[str, Any]:
-    """Check PostgreSQL database connectivity"""
-    try:
-        with engine.connect() as connection:
-            result = connection.execute(text("SELECT 1"))
-            result.fetchone()
-        return {
-            "status": "healthy",
-            "message": "PostgreSQL connection successful",
-            "response_time": None
-        }
-    except Exception as e:
-        logger.error(f"PostgreSQL health check failed: {e}")
-        return {
-            "status": "unhealthy",
-            "message": f"PostgreSQL connection failed: {str(e)}",
-            "response_time": None
-        }
-
-async def check_elasticsearch_health() -> Dict[str, Any]:
-    """Check Elasticsearch connectivity"""
-    start_time = time.time()
-    try:
-        # Use requests for a simple health check to avoid version compatibility issues
-        response = requests.get(
-            f"{SERVICES_CONFIG['elasticsearch']['url']}/_cluster/health",
-            timeout=SERVICES_CONFIG["elasticsearch"]["timeout"]
-        )
-        response_time = time.time() - start_time
-        
-        if response.status_code == 200:
-            health_data = response.json()
-            return {
-                "status": "healthy" if health_data["status"] in ["green", "yellow"] else "unhealthy",
-                "message": f"Elasticsearch cluster status: {health_data['status']}",
-                "response_time": round(response_time * 1000, 2),
-                "cluster_name": health_data.get("cluster_name"),
-                "number_of_nodes": health_data.get("number_of_nodes")
-            }
-        else:
-            return {
-                "status": "unhealthy",
-                "message": f"Elasticsearch returned status code: {response.status_code}",
-                "response_time": round(response_time * 1000, 2)
-            }
-    except Exception as e:
-        response_time = time.time() - start_time
-        logger.error(f"Elasticsearch health check failed: {e}")
-        return {
-            "status": "unhealthy",
-            "message": f"Elasticsearch connection failed: {str(e)}",
-            "response_time": round(response_time * 1000, 2)
-        }
-
-async def check_redis_health() -> Dict[str, Any]:
-    """Check Redis connectivity"""
-    start_time = time.time()
-    try:
-        r = redis.Redis(
-            host=SERVICES_CONFIG["redis"]["host"],
-            port=SERVICES_CONFIG["redis"]["port"],
-            socket_timeout=SERVICES_CONFIG["redis"]["timeout"]
-        )
-        r.ping()
-        response_time = time.time() - start_time
-        
-        return {
-            "status": "healthy",
-            "message": "Redis connection successful",
-            "response_time": round(response_time * 1000, 2)
-        }
-    except Exception as e:
-        response_time = time.time() - start_time
-        logger.error(f"Redis health check failed: {e}")
-        return {
-            "status": "unhealthy",
-            "message": f"Redis connection failed: {str(e)}",
-            "response_time": round(response_time * 1000, 2)
-        }
-
-async def check_tika_health() -> Dict[str, Any]:
-    """Check Apache Tika server connectivity"""
-    start_time = time.time()
-    try:
-        response = requests.get(
-            f"{SERVICES_CONFIG['tika']['url']}/version",
-            timeout=SERVICES_CONFIG["tika"]["timeout"]
-        )
-        response_time = time.time() - start_time
-        
-        if response.status_code == 200:
-            return {
-                "status": "healthy",
-                "message": "Tika server is responding",
-                "response_time": round(response_time * 1000, 2),
-                "version": response.text.strip()
-            }
-        else:
-            return {
-                "status": "unhealthy",
-                "message": f"Tika server returned status code: {response.status_code}",
-                "response_time": round(response_time * 1000, 2)
-            }
-    except Exception as e:
-        response_time = time.time() - start_time
-        logger.error(f"Tika health check failed: {e}")
-        return {
-            "status": "unhealthy",
-            "message": f"Tika server connection failed: {str(e)}",
-            "response_time": round(response_time * 1000, 2)
-        }
-
-async def verify_service_dependencies(max_retries: int = 5, retry_delay: int = 5) -> bool:
-    """Verify all service dependencies are available with retry logic"""
-    services = ["postgresql", "elasticsearch", "redis", "tika"]
-    
-    for service in services:
-        logger.info(f"Verifying {service} dependency...")
-        
-        for attempt in range(max_retries):
-            try:
-                if service == "postgresql":
-                    result = await check_postgresql_health()
-                elif service == "elasticsearch":
-                    result = await check_elasticsearch_health()
-                elif service == "redis":
-                    result = await check_redis_health()
-                elif service == "tika":
-                    result = await check_tika_health()
-                
-                if result["status"] == "healthy":
-                    logger.info(f"{service} dependency verified successfully")
-                    break
-                else:
-                    logger.warning(f"{service} dependency check failed (attempt {attempt + 1}/{max_retries}): {result['message']}")
-                    
-            except Exception as e:
-                logger.error(f"Error checking {service} dependency (attempt {attempt + 1}/{max_retries}): {e}")
-            
-            if attempt < max_retries - 1:
-                logger.info(f"Retrying {service} dependency check in {retry_delay} seconds...")
-                await asyncio.sleep(retry_delay)
-            else:
-                logger.error(f"Failed to verify {service} dependency after {max_retries} attempts")
-                return False
-    
-    logger.info("All service dependencies verified successfully")
-    return True
-
-# Initialize database tables and verify dependencies on startup
+# Initialize database tables on startup
 @app.on_event("startup")
-async def on_startup():
-    logger.info("Starting application initialization...")
+def on_startup():
+    correlation_id = set_correlation_id()
+    logger.info("Application startup initiated", extra={'startup_correlation_id': correlation_id})
     
-    # Initialize database tables
     try:
+        log_processing_step(logger, "database_initialization", "started")
         init_db()
-        logger.info("Database tables initialized successfully")
+        log_processing_step(logger, "database_initialization", "completed")
+        logger.info("Application startup completed successfully")
     except Exception as e:
-        logger.error(f"Failed to initialize database tables: {e}")
+        log_processing_step(logger, "database_initialization", "failed")
+        logger.error(f"Application startup failed: {str(e)}", exc_info=True)
         raise
-    
-    # Verify service dependencies
-    try:
-        dependencies_ok = await verify_service_dependencies()
-        if not dependencies_ok:
-            logger.warning("Some service dependencies are not available - application may have limited functionality")
-        else:
-            logger.info("All service dependencies are available")
-    except Exception as e:
-        logger.error(f"Error during dependency verification: {e}")
-        logger.warning("Continuing startup despite dependency verification errors")
 
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to the Industrial Knowledge Extraction System!"}
+    logger.info("Root endpoint accessed")
+    return {
+        "message": "Welcome to the Industrial Knowledge Extraction System!",
+        "correlation_id": set_correlation_id()
+    }
 
 @app.get("/health")
-async def health_check():
-    """Basic health check endpoint"""
+def health_check():
+    """Basic health check endpoint."""
     return {
         "status": "healthy",
-        "message": "Industrial Knowledge Extraction System is running",
-        "timestamp": time.time()
+        "timestamp": time.time(),
+        "correlation_id": set_correlation_id()
     }
 
 @app.get("/health/detailed")
-async def detailed_health_check():
-    """Detailed health check with service dependency status"""
-    start_time = time.time()
-    
-    # Check all service dependencies
-    services_health = {}
-    overall_status = "healthy"
-    
-    # Check PostgreSQL
-    pg_health = await check_postgresql_health()
-    services_health["postgresql"] = pg_health
-    if pg_health["status"] != "healthy":
-        overall_status = "degraded"
-    
-    # Check Elasticsearch
-    es_health = await check_elasticsearch_health()
-    services_health["elasticsearch"] = es_health
-    if es_health["status"] != "healthy":
-        overall_status = "degraded"
-    
-    # Check Redis
-    redis_health = await check_redis_health()
-    services_health["redis"] = redis_health
-    if redis_health["status"] != "healthy":
-        overall_status = "degraded"
-    
-    # Check Tika
-    tika_health = await check_tika_health()
-    services_health["tika"] = tika_health
-    if tika_health["status"] != "healthy":
-        overall_status = "degraded"
-    
-    total_response_time = time.time() - start_time
-    
-    # Count healthy vs unhealthy services
-    healthy_services = sum(1 for service in services_health.values() if service["status"] == "healthy")
-    total_services = len(services_health)
-    
-    response = {
-        "status": overall_status,
-        "message": f"{healthy_services}/{total_services} services are healthy",
+def detailed_health_check(db: Session = Depends(get_db)):
+    """Detailed health check with service dependency verification."""
+    correlation_id = set_correlation_id()
+    health_status = {
+        "status": "healthy",
         "timestamp": time.time(),
-        "total_response_time_ms": round(total_response_time * 1000, 2),
-        "services": services_health,
-        "summary": {
-            "healthy_services": healthy_services,
-            "total_services": total_services,
-            "critical_services_down": total_services - healthy_services
-        }
+        "correlation_id": correlation_id,
+        "services": {}
     }
     
-    # Return appropriate HTTP status code
-    if overall_status == "healthy":
-        return response
-    else:
-        # Return 503 Service Unavailable if any critical service is down
-        raise HTTPException(status_code=503, detail=response)
+    # Check database connection
+    try:
+        db.execute("SELECT 1")
+        health_status["services"]["database"] = {"status": "healthy", "type": "PostgreSQL"}
+    except Exception as e:
+        health_status["services"]["database"] = {
+            "status": "unhealthy", 
+            "type": "PostgreSQL",
+            "error": str(e)
+        }
+        health_status["status"] = "degraded"
+    
+    # Check Elasticsearch
+    try:
+        es_health = es_client.es.cluster.health()
+        health_status["services"]["elasticsearch"] = {
+            "status": "healthy" if es_health["status"] in ["green", "yellow"] else "unhealthy",
+            "type": "Elasticsearch",
+            "cluster_status": es_health["status"]
+        }
+    except Exception as e:
+        health_status["services"]["elasticsearch"] = {
+            "status": "unhealthy",
+            "type": "Elasticsearch", 
+            "error": str(e)
+        }
+        health_status["status"] = "degraded"
+    
+    # Check Tika server
+    try:
+        import requests
+        response = requests.get(f"{TIKA_SERVER_URL}/version", timeout=5)
+        if response.status_code == 200:
+            health_status["services"]["tika"] = {"status": "healthy", "type": "Apache Tika"}
+        else:
+            health_status["services"]["tika"] = {
+                "status": "unhealthy",
+                "type": "Apache Tika",
+                "error": f"HTTP {response.status_code}"
+            }
+            health_status["status"] = "degraded"
+    except Exception as e:
+        health_status["services"]["tika"] = {
+            "status": "unhealthy",
+            "type": "Apache Tika",
+            "error": str(e)
+        }
+        health_status["status"] = "degraded"
+    
+    # Check Redis (Celery broker)
+    try:
+        import redis
+        r = redis.Redis(host='redis', port=6379, db=0)
+        r.ping()
+        health_status["services"]["redis"] = {"status": "healthy", "type": "Redis"}
+    except Exception as e:
+        health_status["services"]["redis"] = {
+            "status": "unhealthy",
+            "type": "Redis",
+            "error": str(e)
+        }
+        health_status["status"] = "degraded"
+    
+    logger.info(
+        f"Health check completed: {health_status['status']}",
+        extra={'health_status': health_status['status'], 'services_checked': len(health_status['services'])}
+    )
+    
+    return health_status
 
 @app.post("/uploadfile/")
 async def create_upload_file(file: UploadFile = File(...)):
-    file_location = os.path.join(UPLOAD_DIRECTORY, file.filename)
-    with open(file_location, "wb+") as file_object:
-        file_object.write(file.file.read())
+    correlation_id = set_correlation_id()
     
-    task = process_document_task.delay(file_location)
-    return {"info": f"file '{file.filename}' saved at '{file_location}'. Task ID: {task.id}"}
+    # Validate file
+    if not file.filename:
+        raise ValidationError("Filename is required", field="filename")
+    
+    # Check file size (limit to 100MB)
+    max_size = 100 * 1024 * 1024  # 100MB
+    file_content = await file.read()
+    if len(file_content) > max_size:
+        raise ValidationError(
+            f"File size exceeds maximum allowed size of {max_size} bytes",
+            field="file_size",
+            value=len(file_content)
+        )
+    
+    logger.info(
+        f"File upload started: {file.filename}",
+        extra={
+            'filename': file.filename,
+            'file_size': len(file_content),
+            'content_type': file.content_type
+        }
+    )
+    
+    try:
+        # Save file
+        file_location = os.path.join(UPLOAD_DIRECTORY, file.filename)
+        with open(file_location, "wb") as file_object:
+            file_object.write(file_content)
+        
+        # Queue processing task
+        task = process_document_task.delay(file_location, correlation_id)
+        
+        logger.info(
+            f"File uploaded and queued for processing: {file.filename}",
+            extra={
+                'filename': file.filename,
+                'file_location': file_location,
+                'task_id': task.id
+            }
+        )
+        
+        return {
+            "info": f"File '{file.filename}' uploaded successfully",
+            "task_id": task.id,
+            "correlation_id": correlation_id,
+            "file_location": file_location
+        }
+        
+    except Exception as e:
+        logger.error(f"File upload failed for {file.filename}: {str(e)}", exc_info=True)
+        raise
 
 @app.get("/documents/{document_id}")
 def get_document(document_id: int, db: Session = Depends(get_db)):
-    db_document = db.query(models.Document).filter(models.Document.id == document_id).first()
-    if db_document is None:
-        raise HTTPException(status_code=404, detail="Document not found")
-    return db_document
+    try:
+        logger.info(f"Retrieving document: {document_id}")
+        db_document = db.query(models.Document).filter(models.Document.id == document_id).first()
+        if db_document is None:
+            raise HTTPException(status_code=404, detail="Document not found")
+        
+        logger.info(f"Document retrieved successfully: {document_id}")
+        return db_document
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise DatabaseError(
+            f"Failed to retrieve document {document_id}",
+            operation="select",
+            table="documents",
+            details={'document_id': document_id}
+        ) from e
 
 @app.get("/documents/")
 def get_all_documents(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
@@ -386,8 +299,46 @@ def get_document_sections(document_id: int, db: Session = Depends(get_db)):
 
 @app.get("/search/")
 def search_documents(query: str, field: str = "extracted_text", size: int = 10):
-    if field not in ["extracted_text", "filename", "classification_category", "extracted_entities.text", "key_phrases", "document_sections"]:
-        raise HTTPException(status_code=400, detail="Invalid search field")
+    # Validate inputs
+    if not query or not query.strip():
+        raise ValidationError("Search query cannot be empty", field="query", value=query)
     
-    results = es_client.search_documents(query=query, field=field, size=size)
-    return results
+    valid_fields = ["extracted_text", "filename", "classification_category", "extracted_entities.text", "key_phrases", "document_sections"]
+    if field not in valid_fields:
+        raise ValidationError(
+            f"Invalid search field. Must be one of: {', '.join(valid_fields)}",
+            field="field",
+            value=field,
+            validation_rule="must_be_in_allowed_list"
+        )
+    
+    if size < 1 or size > 100:
+        raise ValidationError(
+            "Size must be between 1 and 100",
+            field="size",
+            value=size,
+            validation_rule="range_1_to_100"
+        )
+    
+    try:
+        logger.info(
+            f"Search request: query='{query}', field='{field}', size={size}",
+            extra={'search_query': query, 'search_field': field, 'search_size': size}
+        )
+        
+        results = es_client.search_documents(query=query, field=field, size=size)
+        
+        logger.info(
+            f"Search completed: found {len(results.get('hits', {}).get('hits', []))} results",
+            extra={'search_query': query, 'results_count': len(results.get('hits', {}).get('hits', []))}
+        )
+        
+        return results
+        
+    except Exception as e:
+        raise SearchError(
+            f"Search failed for query: {query}",
+            query=query,
+            operation="search",
+            details={'field': field, 'size': size}
+        ) from e

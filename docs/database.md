@@ -1,6 +1,36 @@
 # Database Schema
 
-This document outlines the PostgreSQL database schema used by the Industrial Knowledge Extraction System. The schema is managed using SQLAlchemy ORM.
+This document provides a professional overview of the PostgreSQL database schema for the Industrial Knowledge Extraction System. It highlights the normalization process, relationship modeling, and best practices implemented to ensure a robust, scalable, and maintainable data architecture.
+
+---
+
+## **Schema Progress Summary**
+- Normalized procedure steps: replaced the old JSON steps field in `Procedure` with a dedicated `Step` table.
+- Added a `Step` table: each step is a separate row linked to its parent procedure.
+- Added a `ProcedureEquipment` table: represents the many-to-many relationship between procedures and equipment.
+- Updated relationships in `Procedure` and `Equipment` models to use the new association table.
+- All major entities (Processes, Sub-processes/Steps, Equipment, Personnel, Safety_Info, Technical_Specs) are now normalized tables.
+- Documentation and code are kept in sync for clarity and onboarding.
+
+---
+
+## **Entity-Relationship Diagram**
+
+```mermaid
+erDiagram
+    Document ||--o{ Procedure : contains
+    Document ||--o{ Equipment : contains
+    Document ||--o{ Personnel : contains
+    Document ||--o{ SafetyInformation : contains
+    Document ||--o{ TechnicalSpecification : contains
+    Procedure ||--o{ Step : has
+    Procedure ||--o{ ProcedureEquipment : links
+    Equipment ||--o{ ProcedureEquipment : links
+    ProcedureEquipment }o--|| Equipment : uses
+    ProcedureEquipment }o--|| Procedure : used_in
+```
+
+---
 
 ## Models and Tables
 
@@ -69,77 +99,32 @@ Stores structured data about equipment mentioned in documents.
 | `id`                  | `Integer` | Primary key, unique identifier                  | `PRIMARY KEY`, `INDEX` |
 | `document_id`         | `Integer` | Foreign key to `Document` table                 | `FOREIGN KEY (documents.id)` |
 | `name`                | `String`  | Name of the equipment                           | `INDEX`          |
-| `type`                | `String`  | Type of equipment (e.g., `Pump`, `Motor`, `Valve`) |                  |
-| `specifications`      | `JSON`    | Key-value pairs of equipment specifications     |                  |
-| `location`            | `String`  | Location of the equipment (if extracted)        | `NULLABLE`       |
-| `confidence`          | `Float`   | Confidence score of the extraction              | `NULLABLE`       |
+| `type`                | `String`  | Type of equipment (e.g., `Pump`, `
+
+### `EquipmentPersonnel` Table
+
+Represents the many-to-many relationship between equipment and personnel. Each row links one piece of equipment to one person responsible for or associated with that equipment.
+
+| Column Name     | Type      | Description                                 | Constraints      |
+|-----------------|-----------|---------------------------------------------|------------------|
+| `id`            | `Integer` | Primary key, unique identifier              | `PRIMARY KEY`, `INDEX` |
+| `equipment_id`  | `Integer` | Foreign key to `Equipment` table            | `FOREIGN KEY (equipment.id)` |
+| `personnel_id`  | `Integer` | Foreign key to `Personnel` table            | `FOREIGN KEY (personnel.id)` |
 
 **Relationships:**
-- Many-to-one with `Document`
+- Many-to-one with `Equipment`
+- Many-to-one with `Personnel`
 
-### `Procedure` Table
+### `ProcedurePersonnel` Table
 
-Stores structured data about procedures mentioned in documents.
+Represents the many-to-many relationship between procedures and personnel. Each row links one procedure to one person involved in that procedure.
 
-| Column Name           | Type      | Description                                     | Constraints      |
-|-----------------------|-----------|-------------------------------------------------|------------------|
-| `id`                  | `Integer` | Primary key, unique identifier                  | `PRIMARY KEY`, `INDEX` |
-| `document_id`         | `Integer` | Foreign key to `Document` table                 | `FOREIGN KEY (documents.id)` |
-| `title`               | `String`  | Title of the procedure                          | `INDEX`          |
-| `steps`               | `JSON`    | Ordered list of procedure steps                 |                  |
-| `category`            | `String`  | Category of the procedure (e.g., `Startup`, `Maintenance`) | `NULLABLE`       |
-| `confidence`          | `Float`   | Confidence score of the extraction              | `NULLABLE`       |
+| Column Name     | Type      | Description                                 | Constraints      |
+|-----------------|-----------|---------------------------------------------|------------------|
+| `id`            | `Integer` | Primary key, unique identifier              | `PRIMARY KEY`, `INDEX` |
+| `procedure_id`  | `Integer` | Foreign key to `Procedure` table            | `FOREIGN KEY (procedures.id)` |
+| `personnel_id`  | `Integer` | Foreign key to `Personnel` table            | `FOREIGN KEY (personnel.id)` |
 
 **Relationships:**
-- Many-to-one with `Document`
-
-### `SafetyInformation` Table
-
-Stores structured data about safety information.
-
-| Column Name           | Type      | Description                                     | Constraints      |
-|-----------------------|-----------|-------------------------------------------------|------------------|
-| `id`                  | `Integer` | Primary key, unique identifier                  | `PRIMARY KEY`, `INDEX` |
-| `document_id`         | `Integer` | Foreign key to `Document` table                 | `FOREIGN KEY (documents.id)` |
-| `hazard`              | `String`  | Description of the hazard                       |                  |
-| `precaution`          | `String`  | Recommended precaution or action               |                  |
-| `ppe_required`        | `String`  | Personal Protective Equipment required          |                  |
-| `severity`            | `String`  | Severity of the hazard (e.g., `High`, `Medium`) | `NULLABLE`       |
-| `confidence`          | `Float`   | Confidence score of the extraction              | `NULLABLE`       |
-
-**Relationships:**
-- Many-to-one with `Document`
-
-### `TechnicalSpecification` Table
-
-Stores structured data about technical specifications.
-
-| Column Name           | Type      | Description                                     | Constraints      |
-|-----------------------|-----------|-------------------------------------------------|------------------|
-| `id`                  | `Integer` | Primary key, unique identifier                  | `PRIMARY KEY`, `INDEX` |
-| `document_id`         | `Integer` | Foreign key to `Document` table                 | `FOREIGN KEY (documents.id)` |
-| `parameter`           | `String`  | Name of the technical parameter                 |                  |
-| `value`               | `String`  | Value of the parameter                          |                  |
-| `unit`                | `String`  | Unit of measurement (e.g., `C`, `psi`, `mm`)    | `NULLABLE`       |
-| `tolerance`           | `String`  | Tolerance of the measurement (e.g., `+/- 0.1mm`) | `NULLABLE`       |
-| `confidence`          | `Float`   | Confidence score of the extraction              | `NULLABLE`       |
-
-**Relationships:**
-- Many-to-one with `Document`
-
-### `Personnel` Table
-
-Stores structured data about personnel mentioned in documents.
-
-| Column Name           | Type      | Description                                     | Constraints      |
-|-----------------------|-----------|-------------------------------------------------|------------------|
-| `id`                  | `Integer` | Primary key, unique identifier                  | `PRIMARY KEY`, `INDEX` |
-| `document_id`         | `Integer` | Foreign key to `Document` table                 | `FOREIGN KEY (documents.id)` |
-| `name`                | `String`  | Name of the personnel                           | `INDEX`          |
-| `role`                | `String`  | Role or job title                               |                  |
-| `responsibilities`    | `Text`    | Description of responsibilities                 | `NULLABLE`       |
-| `certifications`      | `JSON`    | List of certifications (e.g., `["OSHA 30"]`)  | `NULLABLE`       |
-| `confidence`          | `Float`   | Confidence score of the extraction              | `NULLABLE`       |
-
-**Relationships:**
-- Many-to-one with `Document`
+- Many-to-one with `Procedure`
+- Many-to-one with `Personnel`

@@ -1,37 +1,121 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from src.database.models import Document, ExtractedEntity, KeyPhrase, Equipment, Procedure, SafetyInformation, TechnicalSpecification, Personnel
+from src.exceptions import DatabaseError, ValidationError
+from src.logging_config import get_logger, log_error
 from datetime import datetime
 
+logger = get_logger(__name__)
+
 def create_document(db: Session, filename: str, file_type: str, extracted_text: str, metadata_json: dict, classification_category: str, classification_score: float, status: str, document_sections: dict):
-    db_document = Document(
-        filename=filename,
-        file_type=file_type,
-        extracted_text=extracted_text,
-        metadata_json=metadata_json,
-        classification_category=classification_category,
-        classification_score=classification_score,
-        status=status,
-        processing_timestamp=datetime.utcnow(),
-        document_sections=document_sections
-    )
-    db.add(db_document)
-    db.commit()
-    db.refresh(db_document)
-    return db_document
+    # Validate inputs
+    if not filename or not filename.strip():
+        raise ValidationError("Filename cannot be empty", field="filename")
+    
+    if not file_type or not file_type.strip():
+        raise ValidationError("File type cannot be empty", field="file_type")
+    
+    if classification_score < 0 or classification_score > 1:
+        raise ValidationError(
+            "Classification score must be between 0 and 1",
+            field="classification_score",
+            value=classification_score
+        )
+    
+    try:
+        db_document = Document(
+            filename=filename,
+            file_type=file_type,
+            extracted_text=extracted_text or "",
+            metadata_json=metadata_json or {},
+            classification_category=classification_category or "unclassified",
+            classification_score=classification_score,
+            status=status,
+            processing_timestamp=datetime.utcnow(),
+            document_sections=document_sections or {}
+        )
+        
+        db.add(db_document)
+        db.commit()
+        db.refresh(db_document)
+        
+        logger.info(
+            f"Document created successfully: {filename}",
+            extra={'document_id': db_document.id, 'filename': filename, 'file_type': file_type}
+        )
+        
+        return db_document
+        
+    except IntegrityError as e:
+        db.rollback()
+        raise DatabaseError(
+            f"Database integrity error creating document: {filename}",
+            operation="create_document",
+            table="documents",
+            details={'filename': filename, 'integrity_error': str(e)}
+        ) from e
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise DatabaseError(
+            f"Database error creating document: {filename}",
+            operation="create_document",
+            table="documents",
+            details={'filename': filename}
+        ) from e
 
 def create_extracted_entity(db: Session, document_id: int, text: str, entity_type: str, score: float, start_char: int, end_char: int):
-    db_entity = ExtractedEntity(
-        document_id=document_id,
-        text=text,
-        entity_type=entity_type,
-        score=score,
-        start_char=start_char,
-        end_char=end_char
-    )
-    db.add(db_entity)
-    db.commit()
-    db.refresh(db_entity)
-    return db_entity
+    # Validate inputs
+    if not text or not text.strip():
+        raise ValidationError("Entity text cannot be empty", field="text")
+    
+    if not entity_type or not entity_type.strip():
+        raise ValidationError("Entity type cannot be empty", field="entity_type")
+    
+    if score < 0 or score > 1:
+        raise ValidationError(
+            "Entity score must be between 0 and 1",
+            field="score",
+            value=score
+        )
+    
+    if start_char < 0 or end_char < 0 or start_char >= end_char:
+        raise ValidationError(
+            "Invalid character positions",
+            field="character_positions",
+            details={'start_char': start_char, 'end_char': end_char}
+        )
+    
+    try:
+        db_entity = ExtractedEntity(
+            document_id=document_id,
+            text=text.strip(),
+            entity_type=entity_type.strip(),
+            score=score,
+            start_char=start_char,
+            end_char=end_char
+        )
+        
+        db.add(db_entity)
+        db.commit()
+        db.refresh(db_entity)
+        return db_entity
+        
+    except IntegrityError as e:
+        db.rollback()
+        raise DatabaseError(
+            f"Database integrity error creating entity for document {document_id}",
+            operation="create_extracted_entity",
+            table="extracted_entities",
+            details={'document_id': document_id, 'text': text, 'integrity_error': str(e)}
+        ) from e
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise DatabaseError(
+            f"Database error creating entity for document {document_id}",
+            operation="create_extracted_entity",
+            table="extracted_entities",
+            details={'document_id': document_id, 'text': text}
+        ) from e
 
 def create_key_phrase(db: Session, document_id: int, phrase: str):
     db_key_phrase = KeyPhrase(
