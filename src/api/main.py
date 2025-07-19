@@ -4,10 +4,26 @@ from src.api.celery_worker import process_document_task
 from src.database.database import get_db, init_db
 from src.database import models, crud
 from src.search.elasticsearch_client import es_client
+from src.middleware import ErrorHandlingMiddleware, RequestLoggingMiddleware
+from src.logging_config import get_logger, set_correlation_id, log_processing_step
+from src.exceptions import DatabaseError, ValidationError, SearchError
 from sqlalchemy.orm import Session
 import os
+import uuid
+import time
 
-app = FastAPI()
+# Initialize logging
+logger = get_logger(__name__)
+
+app = FastAPI(
+    title="Industrial Knowledge Extraction System",
+    description="AI-powered system for extracting structured knowledge from industrial documentation",
+    version="1.0.0"
+)
+
+# Add middleware (order matters - error handling should be first)
+app.add_middleware(ErrorHandlingMiddleware)
+app.add_middleware(RequestLoggingMiddleware, log_request_body=False, log_response_body=False)
 
 # CORS configuration
 origins = [
@@ -26,32 +42,199 @@ app.add_middleware(
 )
 
 UPLOAD_DIRECTORY = "./uploaded_files"
+TIKA_SERVER_URL = "http://tika:9998"
 os.makedirs(UPLOAD_DIRECTORY, exist_ok=True)
 
 # Initialize database tables on startup
 @app.on_event("startup")
 def on_startup():
-    init_db()
+    correlation_id = set_correlation_id()
+    logger.info("Application startup initiated", extra={'startup_correlation_id': correlation_id})
+    
+    try:
+        log_processing_step(logger, "database_initialization", "started")
+        init_db()
+        log_processing_step(logger, "database_initialization", "completed")
+        logger.info("Application startup completed successfully")
+    except Exception as e:
+        log_processing_step(logger, "database_initialization", "failed")
+        logger.error(f"Application startup failed: {str(e)}", exc_info=True)
+        raise
 
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to the Industrial Knowledge Extraction System!"}
+    logger.info("Root endpoint accessed")
+    return {
+        "message": "Welcome to the Industrial Knowledge Extraction System!",
+        "correlation_id": set_correlation_id()
+    }
+
+@app.get("/health")
+def health_check():
+    """Basic health check endpoint."""
+    return {
+        "status": "healthy",
+        "timestamp": time.time(),
+        "correlation_id": set_correlation_id()
+    }
+
+@app.get("/health/detailed")
+def detailed_health_check(db: Session = Depends(get_db)):
+    """Detailed health check with service dependency verification."""
+    correlation_id = set_correlation_id()
+    health_status = {
+        "status": "healthy",
+        "timestamp": time.time(),
+        "correlation_id": correlation_id,
+        "services": {}
+    }
+    
+    # Check database connection
+    try:
+        db.execute("SELECT 1")
+        health_status["services"]["database"] = {"status": "healthy", "type": "PostgreSQL"}
+    except Exception as e:
+        health_status["services"]["database"] = {
+            "status": "unhealthy", 
+            "type": "PostgreSQL",
+            "error": str(e)
+        }
+        health_status["status"] = "degraded"
+    
+    # Check Elasticsearch
+    try:
+        es_health = es_client.es.cluster.health()
+        health_status["services"]["elasticsearch"] = {
+            "status": "healthy" if es_health["status"] in ["green", "yellow"] else "unhealthy",
+            "type": "Elasticsearch",
+            "cluster_status": es_health["status"]
+        }
+    except Exception as e:
+        health_status["services"]["elasticsearch"] = {
+            "status": "unhealthy",
+            "type": "Elasticsearch", 
+            "error": str(e)
+        }
+        health_status["status"] = "degraded"
+    
+    # Check Tika server
+    try:
+        import requests
+        response = requests.get(f"{TIKA_SERVER_URL}/version", timeout=5)
+        if response.status_code == 200:
+            health_status["services"]["tika"] = {"status": "healthy", "type": "Apache Tika"}
+        else:
+            health_status["services"]["tika"] = {
+                "status": "unhealthy",
+                "type": "Apache Tika",
+                "error": f"HTTP {response.status_code}"
+            }
+            health_status["status"] = "degraded"
+    except Exception as e:
+        health_status["services"]["tika"] = {
+            "status": "unhealthy",
+            "type": "Apache Tika",
+            "error": str(e)
+        }
+        health_status["status"] = "degraded"
+    
+    # Check Redis (Celery broker)
+    try:
+        import redis
+        r = redis.Redis(host='redis', port=6379, db=0)
+        r.ping()
+        health_status["services"]["redis"] = {"status": "healthy", "type": "Redis"}
+    except Exception as e:
+        health_status["services"]["redis"] = {
+            "status": "unhealthy",
+            "type": "Redis",
+            "error": str(e)
+        }
+        health_status["status"] = "degraded"
+    
+    logger.info(
+        f"Health check completed: {health_status['status']}",
+        extra={'health_status': health_status['status'], 'services_checked': len(health_status['services'])}
+    )
+    
+    return health_status
 
 @app.post("/uploadfile/")
 async def create_upload_file(file: UploadFile = File(...)):
-    file_location = os.path.join(UPLOAD_DIRECTORY, file.filename)
-    with open(file_location, "wb+") as file_object:
-        file_object.write(file.file.read())
+    correlation_id = set_correlation_id()
     
-    task = process_document_task.delay(file_location)
-    return {"info": f"file '{file.filename}' saved at '{file_location}'. Task ID: {task.id}"}
+    # Validate file
+    if not file.filename:
+        raise ValidationError("Filename is required", field="filename")
+    
+    # Check file size (limit to 100MB)
+    max_size = 100 * 1024 * 1024  # 100MB
+    file_content = await file.read()
+    if len(file_content) > max_size:
+        raise ValidationError(
+            f"File size exceeds maximum allowed size of {max_size} bytes",
+            field="file_size",
+            value=len(file_content)
+        )
+    
+    logger.info(
+        f"File upload started: {file.filename}",
+        extra={
+            'filename': file.filename,
+            'file_size': len(file_content),
+            'content_type': file.content_type
+        }
+    )
+    
+    try:
+        # Save file
+        file_location = os.path.join(UPLOAD_DIRECTORY, file.filename)
+        with open(file_location, "wb") as file_object:
+            file_object.write(file_content)
+        
+        # Queue processing task
+        task = process_document_task.delay(file_location, correlation_id)
+        
+        logger.info(
+            f"File uploaded and queued for processing: {file.filename}",
+            extra={
+                'filename': file.filename,
+                'file_location': file_location,
+                'task_id': task.id
+            }
+        )
+        
+        return {
+            "info": f"File '{file.filename}' uploaded successfully",
+            "task_id": task.id,
+            "correlation_id": correlation_id,
+            "file_location": file_location
+        }
+        
+    except Exception as e:
+        logger.error(f"File upload failed for {file.filename}: {str(e)}", exc_info=True)
+        raise
 
 @app.get("/documents/{document_id}")
 def get_document(document_id: int, db: Session = Depends(get_db)):
-    db_document = db.query(models.Document).filter(models.Document.id == document_id).first()
-    if db_document is None:
-        raise HTTPException(status_code=404, detail="Document not found")
-    return db_document
+    try:
+        logger.info(f"Retrieving document: {document_id}")
+        db_document = db.query(models.Document).filter(models.Document.id == document_id).first()
+        if db_document is None:
+            raise HTTPException(status_code=404, detail="Document not found")
+        
+        logger.info(f"Document retrieved successfully: {document_id}")
+        return db_document
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise DatabaseError(
+            f"Failed to retrieve document {document_id}",
+            operation="select",
+            table="documents",
+            details={'document_id': document_id}
+        ) from e
 
 @app.get("/documents/")
 def get_all_documents(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
@@ -116,8 +299,46 @@ def get_document_sections(document_id: int, db: Session = Depends(get_db)):
 
 @app.get("/search/")
 def search_documents(query: str, field: str = "extracted_text", size: int = 10):
-    if field not in ["extracted_text", "filename", "classification_category", "extracted_entities.text", "key_phrases", "document_sections"]:
-        raise HTTPException(status_code=400, detail="Invalid search field")
+    # Validate inputs
+    if not query or not query.strip():
+        raise ValidationError("Search query cannot be empty", field="query", value=query)
     
-    results = es_client.search_documents(query=query, field=field, size=size)
-    return results
+    valid_fields = ["extracted_text", "filename", "classification_category", "extracted_entities.text", "key_phrases", "document_sections"]
+    if field not in valid_fields:
+        raise ValidationError(
+            f"Invalid search field. Must be one of: {', '.join(valid_fields)}",
+            field="field",
+            value=field,
+            validation_rule="must_be_in_allowed_list"
+        )
+    
+    if size < 1 or size > 100:
+        raise ValidationError(
+            "Size must be between 1 and 100",
+            field="size",
+            value=size,
+            validation_rule="range_1_to_100"
+        )
+    
+    try:
+        logger.info(
+            f"Search request: query='{query}', field='{field}', size={size}",
+            extra={'search_query': query, 'search_field': field, 'search_size': size}
+        )
+        
+        results = es_client.search_documents(query=query, field=field, size=size)
+        
+        logger.info(
+            f"Search completed: found {len(results.get('hits', {}).get('hits', []))} results",
+            extra={'search_query': query, 'results_count': len(results.get('hits', {}).get('hits', []))}
+        )
+        
+        return results
+        
+    except Exception as e:
+        raise SearchError(
+            f"Search failed for query: {query}",
+            query=query,
+            operation="search",
+            details={'field': field, 'size': size}
+        ) from e

@@ -18,4 +18,3 @@ SQLAlchemy
 elasticsearch
 pytest
 httpx
-
