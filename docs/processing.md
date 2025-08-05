@@ -1,76 +1,235 @@
 # Document Processing Pipeline
 
-This document details the multi-modal document processing pipeline within the Industrial Knowledge Extraction System. The pipeline is designed to ingest various document types, extract raw content, and enrich it with AI-powered insights.
+## Overview
 
-## Data Flow Architecture
+Multi-modal processing pipeline that transforms enterprise documents into structured knowledge with AI-powered extraction and relationship mapping.
+
+## Processing Flow
 
 ```
-Input Documents → Multi-Modal Processing → AI Understanding → 
-Classification → Metadata Extraction → Database Storage → 
-Search Indexing → Web Interface → User Access
+Document Upload → Content Extraction → AI Analysis → 
+Knowledge Structuring → Relationship Mapping → Graph Generation
 ```
 
-## Components and Technologies
+## Stage 1: Content Extraction
 
-The processing pipeline is orchestrated by Celery tasks and leverages several open-source tools for different stages:
+### Multi-Modal Processing
+- **Documents:** Apache Tika for PDF, DOCX, PPT, images with OCR
+- **Videos:** FFmpeg audio extraction + OpenAI Whisper transcription
+- **Images:** OCR text extraction and visual content analysis
+- **Structured Data:** ERP/CMMS/QMS data parsing
 
-### 1. File Ingestion and Type Detection
+### Technologies
+```python
+# Document processing
+tika_response = requests.put(f"{TIKA_URL}/rmeta", data=file_content)
 
-- **Location:** `src/api/main.py` (upload endpoint), `src/processors/document_processor.py` (`get_file_type`)
-- **Description:** Documents are uploaded via the FastAPI endpoint and saved to a local `uploaded_files` directory. The `get_file_type` function performs basic file type detection based on file extensions (e.g., PDF, DOCX, images, videos).
+# Video processing
+audio = ffmpeg.input(video_path).audio
+whisper_model.transcribe(audio_path)
 
-### 2. Multi-Modal Content Extraction
+# Image processing
+pytesseract.image_to_string(image)
+```
 
-- **Location:** `src/processors/document_processor.py` (`process_document`, `process_video`)
-- **Technologies:**
-    - **Apache Tika:** Used for extracting text content and metadata from various document formats (PDF, DOCX, PPT, etc.) and images (with OCR capabilities).
-        - Tika is run as a separate Docker service (`apache/tika:latest`).
-        - The system interacts with Tika's `/rmeta` endpoint to get rich JSON output.
-        - OCR is enabled for scanned documents and images.
-    - **FFmpeg:** Used for extracting audio streams from video files.
-    - **OpenAI Whisper:** Used for performing Speech-to-Text (STT) transcription on extracted audio from videos.
-- **Output:** Raw extracted text content and comprehensive metadata.
+## Stage 2: AI Analysis
 
-### 3. AI-Powered Content Understanding
+### Named Entity Recognition
+```python
+# Extract entities (persons, organizations, equipment)
+ner_model = "dslim/bert-base-NER"
+entities = ner_pipeline(extracted_text)
+```
 
-- **Location:** `src/ai/ner_extractor.py`, `src/ai/classifier.py`, `src/ai/keyphrase_extractor.py`, `src/processors/document_processor.py`
-- **Technologies:** Hugging Face `transformers` library.
-    - **Named Entity Recognition (NER):**
-        - **Module:** `src/ai/ner_extractor.py`
-        - **Model:** `dslim/bert-base-NER` (pre-trained BERT model for NER).
-        - **Function:** Identifies and extracts entities like persons, organizations, locations, etc., from the extracted text.
-    - **Content Classification:**
-        - **Module:** `src/ai/classifier.py`
-        - **Model:** `facebook/bart-large-mnli` (zero-shot classification model).
-        - **Function:** Categorizes documents into predefined industrial categories (e.g., Operational Procedures, Safety Documentation) with a confidence score.
-    - **Keyphrase Extraction:**
-        - **Module:** `src/ai/keyphrase_extractor.py`
-        - **Library:** `KeyBERT` (uses Sentence-BERT internally).
-        - **Function:** Extracts relevant keywords and key phrases from the document content.
+### Content Classification
+```python
+# Categorize documents
+classifier = "facebook/bart-large-mnli"
+categories = ["Operational", "Safety", "Equipment", "Quality"]
+classification = classifier(text, categories)
+```
 
-### 4. Advanced Metadata and Structured Data Extraction
+### Key Phrase Extraction
+```python
+# Extract important phrases
+from keybert import KeyBERT
+kw_model = KeyBERT()
+keywords = kw_model.extract_keywords(text, keyphrase_ngram_range=(1, 3))
+```
 
-- **Location:** `src/processors/document_processor.py` (`_extract_equipment_data`, `_extract_procedure_data`, `_extract_safety_information`, `_extract_technical_specifications`, `_extract_personnel_data`, `extract_sections`)
-- **Description:** This stage focuses on transforming unstructured text into structured, actionable data based on predefined categories. It uses a combination of:
-    - **Regular Expressions (Regex):** For pattern matching specific data points (e.g., measurements, dates, specific phrases).
-    - **Keyword Matching:** Identifying relevant sections or data based on predefined lists of keywords.
-    - **Contextual Analysis:** Looking for information in the vicinity of identified entities or keywords.
-    - **Section Extraction:** Identifying logical sections within the document to provide context for extracted data.
-- **Output:** Populated lists of structured data for Equipment, Procedures, Safety Information, Technical Specifications, and Personnel, each with an associated confidence score.
+## Stage 3: Knowledge Structuring
 
-### 5. Database Storage
+### Tacit Knowledge Detection
+```python
+# Identify implicit knowledge patterns
+tacit_detector = TacitKnowledgeDetector()
+patterns = tacit_detector.detect_patterns(content)
 
-- **Location:** `src/database/models.py`, `src/database/crud.py`, `src/api/celery_worker.py`
-- **Technology:** PostgreSQL, SQLAlchemy ORM.
-- **Function:** All extracted raw content, metadata, AI insights (NER, classification, keyphrases), and structured data are persisted into a normalized PostgreSQL database schema.
+# Extract decision trees
+decision_extractor = DecisionTreeExtractor()
+decisions = decision_extractor.extract_patterns(content)
+```
 
-### 6. Search Indexing
+### Structured Data Extraction
+```python
+# Equipment data
+equipment_pattern = r'\b(?:pump|motor|valve|sensor)\b.*?(?:specifications|model|type)'
+equipment_data = extract_structured_data(text, equipment_pattern)
 
-- **Location:** `src/search/elasticsearch_client.py`, `src/api/celery_worker.py`
-- **Technology:** Elasticsearch.
-- **Function:** After successful database storage, relevant document information (extracted text, classification, entities, keyphrases, sections) is indexed into Elasticsearch for fast full-text and faceted search capabilities.
+# Procedures
+procedure_pattern = r'\b(?:step|procedure|process)\s*\d+[:\.]?\s*(.+?)(?=\n|$)'
+procedures = extract_procedures(text, procedure_pattern)
+
+# Safety information
+safety_pattern = r'\b(?:warning|caution|danger|hazard)\b[:\s]*(.+?)(?=\n|$)'
+safety_info = extract_safety_data(text, safety_pattern)
+```
+
+## Stage 4: Relationship Mapping
+
+### Process Dependencies
+```python
+# Map process relationships
+dependency_mapper = ProcessDependencyMapper()
+dependencies = dependency_mapper.identify_dependencies(knowledge_items)
+
+# Types: prerequisite, parallel, downstream, conditional
+```
+
+### Equipment-Maintenance Correlation
+```python
+# Link equipment to maintenance patterns
+correlator = EquipmentMaintenanceCorrelator()
+correlations = correlator.correlate_maintenance(equipment, procedures)
+
+# Types: preventive, corrective, predictive
+```
+
+### Skill-Function Mapping
+```python
+# Map skills to job functions
+skill_linker = SkillFunctionLinker()
+links = skill_linker.link_skills(personnel, procedures)
+
+# Proficiency: basic, intermediate, advanced, expert
+```
+
+### Compliance Connections
+```python
+# Connect regulations to procedures
+compliance_connector = ComplianceProcedureConnector()
+connections = compliance_connector.connect_compliance(procedures, safety_info)
+
+# Regulations: OSHA, EPA, ISO, FDA
+```
+
+## Stage 5: Knowledge Graph Generation
+
+### Graph Construction
+```python
+# Build comprehensive knowledge graph
+graph_builder = KnowledgeGraphBuilder()
+graph = graph_builder.build_graph(
+    knowledge_items=items,
+    dependencies=dependencies,
+    correlations=correlations,
+    skill_links=links,
+    compliance_connections=connections
+)
+```
+
+### Graph Analytics
+```python
+# Analyze relationships
+traversal_engine = GraphTraversalEngine(graph)
+analysis = traversal_engine.analyze_dependencies()
+
+# Results: critical paths, bottlenecks, circular dependencies
+```
 
 ## Asynchronous Processing
 
-- **Technology:** Celery, Redis.
-- **Function:** All heavy-lifting tasks, such as content extraction, AI processing, and database/Elasticsearch indexing, are performed asynchronously by Celery workers. This ensures the FastAPI application remains responsive and can handle multiple concurrent file uploads without blocking.
+### Celery Task Queue
+```python
+@celery.task
+def process_document_task(file_path):
+    # Stage 1: Extract content
+    content = extract_content(file_path)
+    
+    # Stage 2: AI analysis
+    entities = extract_entities(content)
+    classification = classify_content(content)
+    
+    # Stage 3: Structure knowledge
+    knowledge_items = structure_knowledge(content, entities)
+    
+    # Stage 4: Map relationships
+    relationships = map_relationships(knowledge_items)
+    
+    # Stage 5: Generate graph
+    graph = generate_knowledge_graph(knowledge_items, relationships)
+    
+    # Store results
+    store_in_database(knowledge_items, relationships, graph)
+    index_in_elasticsearch(content, knowledge_items)
+```
+
+### Task Monitoring
+```python
+# Check task status
+task_result = AsyncResult(task_id)
+status = task_result.status  # PENDING, SUCCESS, FAILURE
+
+# Get task progress
+progress = task_result.info
+```
+
+## Quality Assurance
+
+### Confidence Scoring
+```python
+# Multi-factor confidence calculation
+def calculate_confidence(extraction_score, pattern_match, context_relevance):
+    base_confidence = extraction_score * 0.4
+    pattern_boost = pattern_match * 0.3
+    context_boost = context_relevance * 0.3
+    return min(1.0, base_confidence + pattern_boost + context_boost)
+```
+
+### Evidence Tracking
+```python
+# Track extraction evidence
+evidence = {
+    "pattern_matches": ["safety check required before startup"],
+    "entity_mentions": ["safety inspection", "equipment startup"],
+    "confidence_factors": ["direct_mention", "pattern_match", "context_relevance"]
+}
+```
+
+### Validation Pipeline
+```python
+# Validate extracted relationships
+def validate_relationship(source, target, relationship_type, evidence):
+    # Check for circular dependencies
+    # Validate confidence thresholds
+    # Ensure evidence quality
+    # Cross-reference with existing knowledge
+    return validation_result
+```
+
+## Performance Optimization
+
+### Caching Strategy
+- Model caching for repeated AI operations
+- Result caching for expensive computations
+- Database query optimization with indexes
+
+### Parallel Processing
+- Multi-threaded content extraction
+- Batch processing for large document sets
+- Distributed task execution with multiple workers
+
+### Memory Management
+- Streaming processing for large files
+- Model loading optimization
+- Garbage collection for long-running tasks

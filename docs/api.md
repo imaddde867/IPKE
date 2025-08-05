@@ -1,204 +1,131 @@
 # API Documentation
 
-This document describes the RESTful API endpoints provided by the Industrial Knowledge Extraction System backend, built with FastAPI.
-
 ## Base URL
+`http://localhost:8000` (local development)
 
-`http://localhost:8000` (when running locally via Docker Compose)
+## Document Processing
 
-## Endpoints
+### Upload Document
+```http
+POST /documents/upload
+Content-Type: multipart/form-data
 
-### 1. Root Endpoint
-
-`GET /`
-
-Returns a welcome message.
+Body: file (PDF, DOCX, PPT, image, video)
+```
 
 **Response:**
 ```json
 {
-  "message": "Welcome to the Industrial Knowledge Extraction System!"
+  "info": "file 'example.pdf' saved. Task ID: abc123"
 }
 ```
 
-### 2. Upload Document
+### Get Documents
+```http
+GET /documents/
+GET /documents/{document_id}
+```
 
-`POST /uploadfile/`
+**Query Parameters:**
+- `skip` (int): Pagination offset (default: 0)
+- `limit` (int): Max results (default: 100)
 
-Uploads a document (PDF, DOCX, PPT, image, or video) for processing. The processing is asynchronous, handled by Celery.
+## Knowledge Extraction
 
-**Request:**
-- **Method:** `POST`
-- **Content-Type:** `multipart/form-data`
-- **Body:**
-  - `file`: The file to upload.
+### Extract Knowledge
+```http
+POST /knowledge/extract
+Body: {"document_id": 1}
+```
 
-**Response:**
-```json
-{
-  "info": "file '<filename>' saved at '<file_location>'. Task ID: <celery_task_id>"
+### Get Knowledge Items
+```http
+GET /knowledge/items
+GET /knowledge/items?domain=safety&confidence_min=0.8
+```
+
+### Get Relationships
+```http
+GET /knowledge/relationships
+GET /knowledge/relationships?type=process_dependency
+```
+
+## Knowledge Graph
+
+### Build Graph
+```http
+GET /graph/build
+Body: {"knowledge_items": [...], "relationships": [...]}
+```
+
+### Query Graph
+```http
+POST /graph/query
+Body: {
+  "type": "find_paths",
+  "source": "PROC_001",
+  "target": "PROC_002"
 }
 ```
 
-### 3. Get All Documents
+### Get Visualization Data
+```http
+GET /graph/visualization
+GET /graph/visualization?layout=hierarchical&filter=process
+```
 
-`GET /documents/`
+## Extracted Data Endpoints
 
-Retrieves a list of all processed documents stored in the database.
+### Get Extracted Entities
+```http
+GET /documents/{document_id}/entities/
+```
 
-**Query Parameters:**
-- `skip` (integer, optional): Number of documents to skip (for pagination). Default is `0`.
-- `limit` (integer, optional): Maximum number of documents to return. Default is `100`.
+### Get Equipment Data
+```http
+GET /documents/{document_id}/equipment/
+```
 
-**Response:**
-Returns a JSON array of `Document` objects.
+### Get Procedures
+```http
+GET /documents/{document_id}/procedures/
+```
 
-### 4. Get Document by ID
+### Get Safety Information
+```http
+GET /documents/{document_id}/safety_info/
+```
 
-`GET /documents/{document_id}`
+### Get Personnel Data
+```http
+GET /documents/{document_id}/personnel/
+```
 
-Retrieves a single processed document by its ID.
+## Search
 
-**Path Parameters:**
-- `document_id` (integer, required): The ID of the document.
+### Search Documents
+```http
+GET /search/?query=safety&field=extracted_text&size=10
+```
 
-**Response:**
-Returns a `Document` object.
+**Fields:** `extracted_text`, `filename`, `classification_category`, `extracted_entities.text`, `key_phrases`, `document_sections`
 
-**Error Responses:**
-- `404 Not Found`: If the document with the given ID does not exist.
+## System Health
 
-### 5. Get Extracted Entities for a Document
+### Health Check
+```http
+GET /health
+GET /health/detailed
+```
 
-`GET /documents/{document_id}/entities/`
+## Response Formats
 
-Retrieves all Named Entities extracted from a specific document.
+All endpoints return JSON with standard HTTP status codes:
+- `200`: Success
+- `404`: Resource not found
+- `422`: Validation error
+- `500`: Server error
 
-**Path Parameters:**
-- `document_id` (integer, required): The ID of the document.
+## Authentication
 
-**Response:**
-Returns a JSON array of `ExtractedEntity` objects.
-
-**Error Responses:**
-- `404 Not Found`: If no entities are found for the document.
-
-### 6. Get Key Phrases for a Document
-
-`GET /documents/{document_id}/keyphrases/`
-
-Retrieves all key phrases extracted from a specific document.
-
-**Path Parameters:**
-- `document_id` (integer, required): The ID of the document.
-
-**Response:**
-Returns a JSON array of `KeyPhrase` objects.
-
-**Error Responses:**
-- `404 Not Found`: If no key phrases are found for the document.
-
-### 7. Get Equipment Data for a Document
-
-`GET /documents/{document_id}/equipment/`
-
-Retrieves structured equipment data extracted from a specific document.
-
-**Path Parameters:**
-- `document_id` (integer, required): The ID of the document.
-
-**Response:**
-Returns a JSON array of `Equipment` objects.
-
-**Error Responses:**
-- `404 Not Found`: If no equipment data is found for the document.
-
-### 8. Get Procedure Data for a Document
-
-`GET /documents/{document_id}/procedures/`
-
-Retrieves structured procedure data extracted from a specific document.
-
-**Path Parameters:**
-- `document_id` (integer, required): The ID of the document.
-
-**Response:**
-Returns a JSON array of `Procedure` objects.
-
-**Error Responses:**
-- `404 Not Found`: If no procedure data is found for the document.
-
-### 9. Get Safety Information for a Document
-
-`GET /documents/{document_id}/safety_info/`
-
-Retrieves structured safety information extracted from a specific document.
-
-**Path Parameters:**
-- `document_id` (integer, required): The ID of the document.
-
-**Response:**
-Returns a JSON array of `SafetyInformation` objects.
-
-**Error Responses:**
-- `404 Not Found`: If no safety information is found for the document.
-
-### 10. Get Technical Specifications for a Document
-
-`GET /documents/{document_id}/technical_specs/`
-
-Retrieves structured technical specifications extracted from a specific document.
-
-**Path Parameters:**
-- `document_id` (integer, required): The ID of the document.
-
-**Response:**
-Returns a JSON array of `TechnicalSpecification` objects.
-
-**Error Responses:**
-- `404 Not Found`: If no technical specifications are found for the document.
-
-### 11. Get Personnel Data for a Document
-
-`GET /documents/{document_id}/personnel/`
-
-Retrieves structured personnel data extracted from a specific document.
-
-**Path Parameters:**
-- `document_id` (integer, required): The ID of the document.
-
-**Response:**
-Returns a JSON array of `Personnel` objects.
-
-**Error Responses:**
-- `404 Not Found`: If no personnel data is found for the document.
-
-### 12. Get Document Sections
-
-`GET /documents/{document_id}/sections/`
-
-Retrieves the extracted sections of a specific document.
-
-**Path Parameters:**
-- `document_id` (integer, required): The ID of the document.
-
-**Response:**
-Returns a JSON object where keys are section titles and values are section content.
-
-**Error Responses:**
-- `404 Not Found`: If the document or its sections are not found.
-
-### 13. Search Documents
-
-`GET /search/`
-
-Performs a full-text search across processed documents using Elasticsearch.
-
-**Query Parameters:**
-- `query` (string, required): The search query string.
-- `field` (string, optional): The field to search within. Defaults to `extracted_text`. 
-  Allowed values: `extracted_text`, `filename`, `classification_category`, `extracted_entities.text`, `key_phrases`, `document_sections`.
-- `size` (integer, optional): The maximum number of search results to return. Default is `10`.
-
-**Response:**
-Returns a JSON array of matching document objects from Elasticsearch.
+Currently no authentication required for local development. Production deployments should implement appropriate security measures.

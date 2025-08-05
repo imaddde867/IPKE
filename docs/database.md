@@ -1,130 +1,194 @@
 # Database Schema
 
-This document provides a professional overview of the PostgreSQL database schema for the Industrial Knowledge Extraction System. It highlights the normalization process, relationship modeling, and best practices implemented to ensure a robust, scalable, and maintainable data architecture.
+## Overview
 
----
+PostgreSQL database with normalized schema supporting enterprise knowledge extraction, relationship mapping, and graph analytics.
 
-## **Schema Progress Summary**
-- Normalized procedure steps: replaced the old JSON steps field in `Procedure` with a dedicated `Step` table.
-- Added a `Step` table: each step is a separate row linked to its parent procedure.
-- Added a `ProcedureEquipment` table: represents the many-to-many relationship between procedures and equipment.
-- Updated relationships in `Procedure` and `Equipment` models to use the new association table.
-- All major entities (Processes, Sub-processes/Steps, Equipment, Personnel, Safety_Info, Technical_Specs) are now normalized tables.
-- Documentation and code are kept in sync for clarity and onboarding.
+## Core Tables
 
----
-
-## **Entity-Relationship Diagram**
-
-```mermaid
-erDiagram
-    Document ||--o{ Procedure : contains
-    Document ||--o{ Equipment : contains
-    Document ||--o{ Personnel : contains
-    Document ||--o{ SafetyInformation : contains
-    Document ||--o{ TechnicalSpecification : contains
-    Procedure ||--o{ Step : has
-    Procedure ||--o{ ProcedureEquipment : links
-    Equipment ||--o{ ProcedureEquipment : links
-    ProcedureEquipment }o--|| Equipment : uses
-    ProcedureEquipment }o--|| Procedure : used_in
+### Documents
+```sql
+documents (
+  id SERIAL PRIMARY KEY,
+  filename VARCHAR INDEX,
+  file_type VARCHAR,
+  extracted_text TEXT,
+  metadata_json JSON,
+  classification_category VARCHAR,
+  classification_score FLOAT,
+  status VARCHAR INDEX,
+  processing_timestamp TIMESTAMP DEFAULT NOW(),
+  document_sections JSON
+)
 ```
 
----
+### Knowledge Items
+```sql
+knowledge_items (
+  id SERIAL PRIMARY KEY,
+  process_id VARCHAR UNIQUE INDEX,
+  name VARCHAR INDEX,
+  description TEXT,
+  knowledge_type VARCHAR INDEX,
+  domain VARCHAR INDEX,
+  hierarchy_level INTEGER INDEX,
+  confidence_score FLOAT,
+  completeness_index FLOAT,
+  criticality_level VARCHAR,
+  source_document_id INTEGER REFERENCES documents(id)
+)
+```
 
-## Models and Tables
+### Workflow Dependencies
+```sql
+workflow_dependencies (
+  id SERIAL PRIMARY KEY,
+  source_process_id VARCHAR REFERENCES knowledge_items(process_id),
+  target_process_id VARCHAR REFERENCES knowledge_items(process_id),
+  dependency_type VARCHAR INDEX,
+  strength FLOAT,
+  conditions JSON,
+  confidence FLOAT
+)
+```
 
-### `Document` Table
+## Extracted Data Tables
 
-Stores metadata and extracted high-level information for each processed document.
+### Equipment
+```sql
+equipment (
+  id SERIAL PRIMARY KEY,
+  document_id INTEGER REFERENCES documents(id),
+  name VARCHAR INDEX,
+  type VARCHAR,
+  specifications JSON,
+  location VARCHAR,
+  confidence FLOAT
+)
+```
 
-| Column Name           | Type      | Description                                     | Constraints      |
-|-----------------------|-----------|-------------------------------------------------|------------------|
-| `id`                  | `Integer` | Primary key, unique identifier                  | `PRIMARY KEY`, `INDEX` |
-| `filename`            | `String`  | Original filename                               | `INDEX`          |
-| `file_type`           | `String`  | Type of file (e.g., `document`, `image`, `video`) |                  |
-| `extracted_text`      | `Text`    | Full text extracted from the document           |                  |
-| `metadata_json`       | `JSON`    | Raw metadata from Tika or other processors      |                  |
-| `classification_category` | `String`  | Predicted document category                     |                  |
-| `classification_score`| `Float`   | Confidence score of the classification          |                  |
-| `status`              | `String`  | Processing status (e.g., `processed`, `failed`) |                  |
-| `processing_timestamp`| `DateTime`| Timestamp of when the document was processed    | `DEFAULT CURRENT_TIMESTAMP` |
-| `document_sections`   | `JSON`    | Extracted sections of the document (key-value pairs) |                  |
+### Procedures
+```sql
+procedures (
+  id SERIAL PRIMARY KEY,
+  document_id INTEGER REFERENCES documents(id),
+  title VARCHAR INDEX,
+  category VARCHAR,
+  confidence FLOAT
+)
 
-**Relationships:**
-- One-to-many with `ExtractedEntity` (via `document_id`)
-- One-to-many with `KeyPhrase` (via `document_id`)
-- One-to-many with `Equipment` (via `document_id`)
-- One-to-many with `Procedure` (via `document_id`)
-- One-to-many with `SafetyInformation` (via `document_id`)
-- One-to-many with `TechnicalSpecification` (via `document_id`)
-- One-to-many with `Personnel` (via `document_id`)
+steps (
+  id SERIAL PRIMARY KEY,
+  procedure_id INTEGER REFERENCES procedures(id),
+  step_number INTEGER,
+  description TEXT,
+  expected_result TEXT,
+  confidence FLOAT
+)
+```
 
-### `ExtractedEntity` Table
+### Personnel
+```sql
+personnel (
+  id SERIAL PRIMARY KEY,
+  document_id INTEGER REFERENCES documents(id),
+  name VARCHAR INDEX,
+  role VARCHAR,
+  responsibilities TEXT,
+  certifications JSON,
+  confidence FLOAT
+)
+```
 
-Stores Named Entities extracted from the document text.
+## Relationship Tables
 
-| Column Name           | Type      | Description                                     | Constraints      |
-|-----------------------|-----------|-------------------------------------------------|------------------|
-| `id`                  | `Integer` | Primary key, unique identifier                  | `PRIMARY KEY`, `INDEX` |
-| `document_id`         | `Integer` | Foreign key to `Document` table                 | `FOREIGN KEY (documents.id)` |
-| `text`                | `String`  | The extracted entity text                       |                  |
-| `entity_type`         | `String`  | Type of entity (e.g., `PER`, `ORG`, `LOC`, `EQUIPMENT`) |                  |
-| `score`               | `Float`   | Confidence score of the entity extraction       |                  |
-| `start_char`          | `Integer` | Starting character index in `extracted_text`    |                  |
-| `end_char`            | `Integer` | Ending character index in `extracted_text`      |                  |
+### Process Dependencies
+```sql
+procedure_equipment (
+  id SERIAL PRIMARY KEY,
+  procedure_id INTEGER REFERENCES procedures(id),
+  equipment_id INTEGER REFERENCES equipment(id)
+)
 
-**Relationships:**
-- Many-to-one with `Document`
+procedure_personnel (
+  id SERIAL PRIMARY KEY,
+  procedure_id INTEGER REFERENCES procedures(id),
+  personnel_id INTEGER REFERENCES personnel(id)
+)
+```
 
-### `KeyPhrase` Table
+## Advanced Knowledge Tables
 
-Stores key phrases extracted from the document text.
+### Decision Trees
+```sql
+decision_trees (
+  id SERIAL PRIMARY KEY,
+  process_id VARCHAR REFERENCES knowledge_items(process_id),
+  decision_point VARCHAR,
+  decision_type VARCHAR INDEX,
+  conditions JSON,
+  outcomes JSON,
+  confidence FLOAT,
+  priority VARCHAR
+)
+```
 
-| Column Name           | Type      | Description                                     | Constraints      |
-|-----------------------|-----------|-------------------------------------------------|------------------|
-| `id`                  | `Integer` | Primary key, unique identifier                  | `PRIMARY KEY`, `INDEX` |
-| `document_id`         | `Integer` | Foreign key to `Document` table                 | `FOREIGN KEY (documents.id)` |
-| `phrase`              | `String`  | The extracted key phrase                        |                  |
+### Optimization Patterns
+```sql
+optimization_patterns (
+  id SERIAL PRIMARY KEY,
+  pattern_type VARCHAR INDEX,
+  name VARCHAR,
+  description TEXT,
+  domain VARCHAR INDEX,
+  conditions JSON,
+  improvements JSON,
+  success_metrics JSON,
+  confidence FLOAT,
+  impact_level VARCHAR
+)
+```
 
-**Relationships:**
-- Many-to-one with `Document`
+### Knowledge Gaps
+```sql
+knowledge_gaps (
+  id SERIAL PRIMARY KEY,
+  gap_type VARCHAR INDEX,
+  title VARCHAR,
+  description TEXT,
+  domain VARCHAR INDEX,
+  affected_processes JSON,
+  impact_assessment JSON,
+  priority VARCHAR INDEX,
+  status VARCHAR INDEX,
+  identified_at TIMESTAMP DEFAULT NOW()
+)
+```
 
-### `Equipment` Table
+## Indexes and Performance
 
-Stores structured data about equipment mentioned in documents.
+**Key Indexes:**
+- `documents(filename, status, processing_timestamp)`
+- `knowledge_items(process_id, domain, hierarchy_level)`
+- `workflow_dependencies(source_process_id, target_process_id, dependency_type)`
+- `equipment(name, type)`, `procedures(title, category)`, `personnel(name, role)`
 
-| Column Name           | Type      | Description                                     | Constraints      |
-|-----------------------|-----------|-------------------------------------------------|------------------|
-| `id`                  | `Integer` | Primary key, unique identifier                  | `PRIMARY KEY`, `INDEX` |
-| `document_id`         | `Integer` | Foreign key to `Document` table                 | `FOREIGN KEY (documents.id)` |
-| `name`                | `String`  | Name of the equipment                           | `INDEX`          |
-| `type`                | `String`  | Type of equipment (e.g., `Pump`, `
+**Performance Features:**
+- JSON columns for flexible metadata storage
+- Confidence scoring on all extracted data
+- Hierarchical process organization
+- Full-text search integration with Elasticsearch
 
-### `EquipmentPersonnel` Table
+## Migration Management
 
-Represents the many-to-many relationship between equipment and personnel. Each row links one piece of equipment to one person responsible for or associated with that equipment.
+Database migrations managed with Alembic:
+```bash
+# Create migration
+alembic revision --autogenerate -m "description"
 
-| Column Name     | Type      | Description                                 | Constraints      |
-|-----------------|-----------|---------------------------------------------|------------------|
-| `id`            | `Integer` | Primary key, unique identifier              | `PRIMARY KEY`, `INDEX` |
-| `equipment_id`  | `Integer` | Foreign key to `Equipment` table            | `FOREIGN KEY (equipment.id)` |
-| `personnel_id`  | `Integer` | Foreign key to `Personnel` table            | `FOREIGN KEY (personnel.id)` |
+# Apply migrations
+alembic upgrade head
 
-**Relationships:**
-- Many-to-one with `Equipment`
-- Many-to-one with `Personnel`
-
-### `ProcedurePersonnel` Table
-
-Represents the many-to-many relationship between procedures and personnel. Each row links one procedure to one person involved in that procedure.
-
-| Column Name     | Type      | Description                                 | Constraints      |
-|-----------------|-----------|---------------------------------------------|------------------|
-| `id`            | `Integer` | Primary key, unique identifier              | `PRIMARY KEY`, `INDEX` |
-| `procedure_id`  | `Integer` | Foreign key to `Procedure` table            | `FOREIGN KEY (procedures.id)` |
-| `personnel_id`  | `Integer` | Foreign key to `Personnel` table            | `FOREIGN KEY (personnel.id)` |
-
-**Relationships:**
-- Many-to-one with `Procedure`
-- Many-to-one with `Personnel`
+# Rollback
+alembic downgrade -1
+```

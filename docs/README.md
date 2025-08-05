@@ -1,58 +1,91 @@
-# Industrial Knowledge Extraction System
+# EXPLAINIUM Documentation
 
-## Overview
+## Quick Links
 
-This project aims to build a comprehensive AI-powered knowledge extraction system that processes industrial documentation (documents, images, videos) and extracts business processes into a structured database. The system is built entirely using free and open-source tools.
+- **[API Documentation](api.md)** - REST API endpoints and usage
+- **[Database Schema](database.md)** - Database structure and relationships
+- **[Deployment Guide](deployment.md)** - Setup and production deployment
+- **[Processing Pipeline](processing.md)** - Document processing and AI analysis
 
-## Core Features
+## Getting Started
 
-- **Multi-Modal Input Processing:** Handles PDF, DOCX, PPT, images (with OCR), and videos (with speech-to-text).
-- **AI-Powered Content Understanding:** Utilizes Named Entity Recognition (NER), zero-shot text classification, and keyphrase extraction.
-- **Structured Data Extraction:** Extracts specific entities like Equipment, Procedures, Safety Information, Technical Specifications, and Personnel into a structured format.
-- **PostgreSQL Database:** Stores all extracted data in a normalized relational database.
-- **Elasticsearch Integration:** Provides full-text and semantic search capabilities.
-- **REST API:** FastAPI backend for document upload, data retrieval, and search.
-- **Web Interface (Basic):** A React frontend for basic interaction, document viewing, and search.
+### 1. Setup and Installation
+Follow the [Deployment Guide](deployment.md) for:
+- Local development setup
+- Production deployment
+- Docker configuration
+- Environment variables
+
+### 2. API Usage
+See [API Documentation](api.md) for:
+- Document upload and processing
+- Knowledge extraction endpoints
+- Graph generation and querying
+- Search functionality
+
+### 3. Understanding the System
+Review [Processing Pipeline](processing.md) for:
+- Multi-modal content extraction
+- AI-powered knowledge analysis
+- Relationship mapping algorithms
+- Graph generation process
+
+### 4. Database Structure
+Check [Database Schema](database.md) for:
+- Table relationships
+- Data models
+- Indexing strategy
+- Migration management
+
+## Architecture Overview
+
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Documents     │───▶│   AI Processing  │───▶│  Knowledge DB   │
+│ (PDF, DOCX,     │    │ (NLP, ML Models) │    │ (PostgreSQL)    │
+│  Videos, etc.)  │    │                  │    │                 │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+                                │                        │
+                                ▼                        ▼
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Web Interface │◀───│ Knowledge Graph  │◀───│   Search Index  │
+│   (React UI)    │    │   (NetworkX)     │    │ (Elasticsearch) │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+```
+
+## Key Features
+
+### 🧠 Knowledge Extraction
+- Tacit knowledge detection from enterprise documents
+- Decision pattern recognition and optimization identification
+- Workflow dependency mapping with confidence scoring
+
+### 🔗 Relationship Mapping
+- Process dependencies (prerequisite, parallel, downstream, conditional)
+- Equipment-maintenance correlations (preventive, corrective, predictive)
+- Skill-function links with proficiency assessment
+- Compliance-procedure connections for regulatory requirements
+
+### 📊 Graph Analytics
+- Interactive knowledge graph visualization
+- Critical path analysis and bottleneck detection
+- Complex relationship queries and subgraph analysis
 
 ## Technology Stack
 
-- **Backend:** Python (FastAPI, Celery, Redis)
-- **AI/ML:** Hugging Face Transformers (for NER and Classification), OpenAI Whisper (for Speech-to-Text), KeyBERT (for Keyphrase Extraction)
-- **Document Processing:** Apache Tika, FFmpeg, OpenCV
-- **Database:** PostgreSQL
-- **Search:** Elasticsearch
-- **Containerization:** Docker, Docker Compose
-- **Frontend:** React, D3.js
+**Backend:** Python, FastAPI, PostgreSQL, Redis, Celery  
+**AI/ML:** Hugging Face Transformers, spaCy, NetworkX, Apache Tika  
+**Frontend:** React, D3.js  
+**Infrastructure:** Docker, Elasticsearch
 
-## Project Structure
+## Support and Contributing
 
-```
-project/
-├── src/
-│   ├── processors/        # Document processing modules (Tika, FFmpeg, Whisper integration, structured extraction)
-│   ├── ai/                # AI models and extraction logic (NER, Classification, Keyphrase)
-│   ├── database/          # Database models (SQLAlchemy) and operations (CRUD)
-│   ├── api/               # FastAPI endpoints and Celery tasks
-│   ├── search/            # Elasticsearch integration
-│   └── frontend/          # React web interface
-├── tests/                 # Comprehensive test suite
-├── docs/                  # Project documentation
-├── docker/                # Dockerfiles and Docker Compose configurations
-└── scripts/               # Deployment and maintenance scripts (future)
-```
+- **Issues:** [GitHub Issues](https://github.com/imaddde867/explainium-2.0/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/imaddde867/explainium-2.0/discussions)
+- **Contributing:** See main README for contribution guidelines
 
-## Setup and Running
+## Version Information
 
-See `docs/deployment.md` for detailed instructions.
-
-## API Documentation
-
-See `docs/api.md` for detailed API endpoint documentation.
-
-## Database Schema
-
-See `docs/database.md` for database schema and relationships.
-
-## Document Processing
-
-See `docs/processing.md` for details on the document processing pipeline.
+**Current Version:** 2.0 - Relationship Mapping System  
+**Test Coverage:** 54+ test cases with 95%+ code coverage  
+**Documentation Status:** Complete and up-to-date
