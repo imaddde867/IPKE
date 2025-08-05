@@ -199,3 +199,184 @@ class SystemHealth(Base):
     error_message = Column(Text)
     metadata_json = Column(JSON)
     checked_at = Column(DateTime, nullable=False, default=datetime.utcnow, index=True)
+
+
+# Enhanced Knowledge Extraction Models
+
+class KnowledgeItem(Base):
+    """Core knowledge items extracted from enterprise documents."""
+    __tablename__ = "knowledge_items"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    process_id = Column(String(100), unique=True, index=True, nullable=False)  # Hierarchical ID
+    name = Column(String(255), nullable=False, index=True)
+    description = Column(Text)
+    knowledge_type = Column(String(50), index=True, nullable=False)  # tacit, explicit, procedural
+    domain = Column(String(50), index=True, nullable=False)  # operational, safety, equipment, etc.
+    hierarchy_level = Column(Integer, index=True, nullable=False)  # 1-4 process hierarchy
+    confidence_score = Column(Float, nullable=False, default=0.0)
+    source_quality = Column(String(20), nullable=False, default='medium')  # high, medium, low
+    completeness_index = Column(Float, nullable=False, default=0.0)  # 0.0-1.0
+    criticality_level = Column(String(20), nullable=False, default='medium')  # critical, high, medium, low
+    access_level = Column(String(20), nullable=False, default='internal')  # public, internal, restricted, confidential
+    source_document_id = Column(Integer, ForeignKey("documents.id"), nullable=True)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow, index=True)
+    updated_at = Column(DateTime, nullable=False, default=datetime.utcnow, onupdate=datetime.utcnow, index=True)
+    
+    # Relationships
+    source_document = relationship("Document")
+    workflow_dependencies_source = relationship("WorkflowDependency", foreign_keys="WorkflowDependency.source_process_id", back_populates="source_process")
+    workflow_dependencies_target = relationship("WorkflowDependency", foreign_keys="WorkflowDependency.target_process_id", back_populates="target_process")
+    decision_trees = relationship("DecisionTree", back_populates="knowledge_item", cascade="all, delete-orphan")
+    knowledge_relationships_source = relationship("KnowledgeRelationship", foreign_keys="KnowledgeRelationship.source_id", back_populates="source_knowledge")
+    knowledge_relationships_target = relationship("KnowledgeRelationship", foreign_keys="KnowledgeRelationship.target_id", back_populates="target_knowledge")
+
+
+class WorkflowDependency(Base):
+    """Dependencies between workflow processes."""
+    __tablename__ = "workflow_dependencies"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    source_process_id = Column(String(100), ForeignKey("knowledge_items.process_id"), nullable=False, index=True)
+    target_process_id = Column(String(100), ForeignKey("knowledge_items.process_id"), nullable=False, index=True)
+    dependency_type = Column(String(50), nullable=False, index=True)  # prerequisite, parallel, downstream, conditional
+    strength = Column(Float, nullable=False, default=0.5)  # dependency strength 0.0-1.0
+    conditions = Column(JSON)  # conditional dependencies and requirements
+    confidence = Column(Float, nullable=False, default=0.0)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    
+    # Relationships
+    source_process = relationship("KnowledgeItem", foreign_keys=[source_process_id], back_populates="workflow_dependencies_source")
+    target_process = relationship("KnowledgeItem", foreign_keys=[target_process_id], back_populates="workflow_dependencies_target")
+
+
+class DecisionTree(Base):
+    """Decision trees and decision points within processes."""
+    __tablename__ = "decision_trees"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    process_id = Column(String(100), ForeignKey("knowledge_items.process_id"), nullable=False, index=True)
+    decision_point = Column(String(255), nullable=False)
+    decision_type = Column(String(50), nullable=False, index=True)  # binary, multiple_choice, conditional, threshold
+    conditions = Column(JSON, nullable=False)  # decision conditions and criteria
+    outcomes = Column(JSON, nullable=False)  # possible outcomes and their consequences
+    confidence = Column(Float, nullable=False, default=0.0)
+    priority = Column(String(20), nullable=False, default='medium')  # critical, high, medium, low
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    
+    # Relationships
+    knowledge_item = relationship("KnowledgeItem", back_populates="decision_trees")
+
+
+class OptimizationPattern(Base):
+    """Patterns for process optimization and efficiency improvements."""
+    __tablename__ = "optimization_patterns"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    pattern_type = Column(String(50), nullable=False, index=True)  # resource, time, quality, cost, safety
+    name = Column(String(255), nullable=False)
+    description = Column(Text, nullable=False)
+    domain = Column(String(50), nullable=False, index=True)  # operational, safety, equipment, etc.
+    conditions = Column(JSON, nullable=False)  # conditions where pattern applies
+    improvements = Column(JSON, nullable=False)  # expected improvements and metrics
+    success_metrics = Column(JSON, nullable=False)  # KPIs and measurement criteria
+    confidence = Column(Float, nullable=False, default=0.0)
+    impact_level = Column(String(20), nullable=False, default='medium')  # high, medium, low
+    implementation_complexity = Column(String(20), nullable=False, default='medium')  # high, medium, low
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    
+    # Relationships
+    pattern_applications = relationship("OptimizationPatternApplication", back_populates="pattern", cascade="all, delete-orphan")
+
+
+class OptimizationPatternApplication(Base):
+    """Applications of optimization patterns to specific processes."""
+    __tablename__ = "optimization_pattern_applications"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    pattern_id = Column(Integer, ForeignKey("optimization_patterns.id"), nullable=False, index=True)
+    process_id = Column(String(100), ForeignKey("knowledge_items.process_id"), nullable=False, index=True)
+    applicability_score = Column(Float, nullable=False, default=0.0)  # 0.0-1.0
+    expected_impact = Column(JSON)  # expected impact metrics
+    implementation_notes = Column(Text)
+    status = Column(String(20), nullable=False, default='identified')  # identified, planned, implemented, validated
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    
+    # Relationships
+    pattern = relationship("OptimizationPattern", back_populates="pattern_applications")
+
+
+class CommunicationFlow(Base):
+    """Communication flows and information exchange patterns."""
+    __tablename__ = "communication_flows"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    source_role = Column(String(100), nullable=False, index=True)
+    target_role = Column(String(100), nullable=False, index=True)
+    information_type = Column(String(100), nullable=False, index=True)
+    communication_method = Column(String(50), nullable=False)  # verbal, written, digital, visual
+    frequency = Column(String(50), nullable=False)  # continuous, daily, weekly, monthly, as_needed
+    criticality = Column(String(20), nullable=False, default='medium')  # critical, high, medium, low
+    formal_protocol = Column(Boolean, nullable=False, default=False)
+    process_context = Column(String(100), ForeignKey("knowledge_items.process_id"), nullable=True, index=True)
+    confidence = Column(Float, nullable=False, default=0.0)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+
+
+class KnowledgeRelationship(Base):
+    """Relationships between different knowledge items."""
+    __tablename__ = "knowledge_relationships"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    source_id = Column(String(100), ForeignKey("knowledge_items.process_id"), nullable=False, index=True)
+    target_id = Column(String(100), ForeignKey("knowledge_items.process_id"), nullable=False, index=True)
+    relationship_type = Column(String(50), nullable=False, index=True)  # depends_on, enables, conflicts_with, enhances, requires
+    strength = Column(Float, nullable=False, default=0.5)  # relationship strength 0.0-1.0
+    bidirectional = Column(Boolean, nullable=False, default=False)
+    relationship_metadata = Column(JSON)  # additional relationship metadata
+    confidence = Column(Float, nullable=False, default=0.0)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    
+    # Relationships
+    source_knowledge = relationship("KnowledgeItem", foreign_keys=[source_id], back_populates="knowledge_relationships_source")
+    target_knowledge = relationship("KnowledgeItem", foreign_keys=[target_id], back_populates="knowledge_relationships_target")
+
+
+class KnowledgeGap(Base):
+    """Identified gaps in organizational knowledge."""
+    __tablename__ = "knowledge_gaps"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    gap_type = Column(String(50), nullable=False, index=True)  # missing_documentation, inconsistent_info, outdated, incomplete_process
+    title = Column(String(255), nullable=False)
+    description = Column(Text, nullable=False)
+    domain = Column(String(50), nullable=False, index=True)
+    affected_processes = Column(JSON)  # list of affected process IDs
+    impact_assessment = Column(JSON)  # risk and impact analysis
+    priority = Column(String(20), nullable=False, default='medium', index=True)  # critical, high, medium, low
+    status = Column(String(20), nullable=False, default='identified', index=True)  # identified, assigned, in_progress, resolved, deferred
+    assigned_to = Column(String(100))  # person or team responsible
+    due_date = Column(DateTime)
+    resolution_notes = Column(Text)
+    identified_at = Column(DateTime, nullable=False, default=datetime.utcnow, index=True)
+    resolved_at = Column(DateTime)
+    
+    # Relationships
+    gap_evidence = relationship("KnowledgeGapEvidence", back_populates="knowledge_gap", cascade="all, delete-orphan")
+
+
+class KnowledgeGapEvidence(Base):
+    """Evidence supporting identified knowledge gaps."""
+    __tablename__ = "knowledge_gap_evidence"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    gap_id = Column(Integer, ForeignKey("knowledge_gaps.id"), nullable=False, index=True)
+    evidence_type = Column(String(50), nullable=False)  # missing_reference, conflicting_info, outdated_timestamp, incomplete_data
+    description = Column(Text, nullable=False)
+    source_document_id = Column(Integer, ForeignKey("documents.id"), nullable=True)
+    confidence = Column(Float, nullable=False, default=0.0)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    
+    # Relationships
+    knowledge_gap = relationship("KnowledgeGap", back_populates="gap_evidence")
+    source_document = relationship("Document")
