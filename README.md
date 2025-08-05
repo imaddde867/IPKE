@@ -58,19 +58,19 @@ Access the API at `http://localhost:8000` and frontend at `http://localhost:3000
 
 ## Core Features
 
-### 🧠 Knowledge Extraction
+### 1- Knowledge Extraction
 - **Tacit Knowledge Detection:** Identifies implicit decision patterns and optimization opportunities
 - **Workflow Dependencies:** Maps process relationships with confidence scoring
 - **Decision Trees:** Extracts conditional logic and decision-making patterns
 - **Resource Optimization:** Detects efficiency opportunities across multiple dimensions
 
-### 🔗 Relationship Mapping
+### 2- Relationship Mapping
 - **Process Dependencies:** Prerequisite, parallel, downstream, and conditional relationships
 - **Equipment-Maintenance:** Links equipment to maintenance patterns (preventive, corrective, predictive)
 - **Skill-Function:** Maps personnel skills to job functions with proficiency assessment
 - **Compliance-Procedure:** Connects regulatory requirements (OSHA, EPA, ISO, FDA) to procedures
 
-### 📊 Knowledge Graph Analytics
+### 3- Knowledge Graph Analytics
 - **Graph Construction:** Multi-modal graphs from extracted relationships
 - **Critical Path Analysis:** Bottleneck detection and circular dependency resolution
 - **Interactive Visualization:** Multiple layout algorithms with filtering capabilities
