@@ -1,0 +1,32 @@
+Industrial Safety Manual
+
+Equipment: Safety Valve Model SV-100
+Type: Pressure Relief Valve
+Specifications: Max Pressure 150 PSI, Temperature Range -20°C to 200°C
+Location: Main Production Line
+
+Procedure: Emergency Shutdown
+Category: Safety
+Steps:
+1. Press emergency stop button
+2. Close main valve
+3. Evacuate personnel
+4. Contact supervisor
+
+Safety Information:
+Hazard: High Pressure Steam
+Precaution: Wear protective equipment
+PPE Required: Safety goggles, heat-resistant gloves
+Severity: High
+
+Technical Specifications:
+Parameter: Operating Pressure
+Value: 120
+Unit: PSI
+Tolerance: ±5
+
+Personnel:
+Name: John Smith
+Role: Safety Officer
+Responsibilities: Monitor safety protocols
+Certifications: OSHA 30-Hour, First Aid
