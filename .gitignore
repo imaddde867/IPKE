@@ -138,8 +138,12 @@ Thumbs.db
 
 # Project specific
 uploaded_files/
+documents_samples/
 logs/
 *.log
+test_*.txt
+test_*.db
+*.sqlite
 
 # Docker
 .dockerignore

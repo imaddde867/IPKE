@@ -13,7 +13,6 @@ from src.exceptions import DatabaseError, ValidationError, SearchError
 from src.config import config_manager, config
 from sqlalchemy.orm import Session
 import os
-import uuid
 import time
 
 # Initialize logging
@@ -107,7 +106,8 @@ def detailed_health_check(db: Session = Depends(get_db)):
     
     # Check database connection
     try:
-        db.execute("SELECT 1")
+        from sqlalchemy import text
+        db.execute(text("SELECT 1"))
         health_status["services"]["database"] = {"status": "healthy", "type": "PostgreSQL"}
     except Exception as e:
         health_status["services"]["database"] = {
@@ -119,6 +119,8 @@ def detailed_health_check(db: Session = Depends(get_db)):
     
     # Check Elasticsearch
     try:
+        if es_client.es is None:
+            es_client._ensure_connection()
         es_health = es_client.es.cluster.health()
         health_status["services"]["elasticsearch"] = {
             "status": "healthy" if es_health["status"] in ["green", "yellow"] else "unhealthy",
