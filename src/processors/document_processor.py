@@ -67,98 +67,358 @@ def extract_sections(text: str) -> dict:
 
 def _extract_equipment_data(text: str, entities: list) -> list[dict]:
     equipment_list = []
-    # Look for common equipment names and associated specs using regex and NER
+    processed_equipment = set()  # Track processed equipment to avoid duplicates
+    
+    # Enhanced equipment patterns with more specific matching
     equipment_patterns = {
-        "Pump": r"\b(pump|centrifugal pump|gear pump)\b",
-        "Motor": r"\b(motor|electric motor|induction motor)\b",
-        "Valve": r"\b(valve|ball valve|gate valve|check valve)\b",
-        "Sensor": r"\b(sensor|temperature sensor|pressure sensor)\b"
+        "Motor": r"\b(?:primary\s+motor|electric\s+motor|induction\s+motor|motor)\b",
+        "Pump": r"\b(?:cooling\s+pump|centrifugal\s+pump|gear\s+pump|pump)\b",
+        "Valve": r"\b(?:ball\s+valve|gate\s+valve|check\s+valve|valve)\b",
+        "Sensor": r"\b(?:temperature\s+sensor|pressure\s+sensor|sensor)\b",
+        "Compressor": r"\b(?:air\s+compressor|compressor)\b",
+        "Tank": r"\b(?:storage\s+tank|pressure\s+tank|tank)\b"
     }
+    
+    # Enhanced specification patterns with better capture groups
     spec_patterns = {
-        "power": r"(\d+\.?\d*)\s*(HP|kW|W)\b",
-        "voltage": r"(\d+)\s*(V|volt)\b",
-        "flow_rate": r"(\d+\.?\d*)\s*(gpm|l/s|m3/hr)\b",
-        "pressure": r"(\d+\.?\d*)\s*(psi|bar|kPa)\b"
+        "power": r"(\d+(?:\.\d+)?)\s*(HP|kW|W|horsepower)\b",
+        "voltage": r"(\d+)\s*(V|volt|volts)\b",
+        "flow_rate": r"(\d+(?:\.\d+)?)\s*(GPM|gpm|l/s|m3/hr|gallons per minute)\b",
+        "pressure": r"(\d+(?:\.\d+)?)\s*(PSI|psi|bar|kPa|pounds per square inch)\b",
+        "temperature": r"(\d+(?:\.\d+)?)\s*°?\s*(F|C|fahrenheit|celsius)\b",
+        "phase": r"(\d+)\s*-?\s*(phase)\b",
+        "rpm": r"(\d+(?:\.\d+)?)\s*(RPM|rpm|revolutions per minute)\b",
+        "amperage": r"(\d+(?:\.\d+)?)\s*(A|amp|amps|amperes)\b"
     }
 
+    # First, look for structured equipment specifications (like "Primary Motor: 10 HP electric motor, 480V, 3-phase")
+    structured_patterns = [
+        r"([A-Za-z\s]+(?:motor|pump|valve|sensor|compressor|tank))\s*:\s*([^\n\r]+)",
+        r"([A-Za-z\s]+(?:motor|pump|valve|sensor|compressor|tank))\s*-\s*([^\n\r]+)",
+        r"([A-Za-z\s]+(?:motor|pump|valve|sensor|compressor|tank))\s*\|\s*([^\n\r]+)"
+    ]
+    
+    for pattern in structured_patterns:
+        for match in re.finditer(pattern, text, re.IGNORECASE):
+            equipment_name = match.group(1).strip()
+            spec_text = match.group(2).strip()
+            
+            # Determine equipment type
+            eq_type = "Generic"
+            for type_name, type_pattern in equipment_patterns.items():
+                if re.search(type_pattern, equipment_name, re.IGNORECASE):
+                    eq_type = type_name
+                    break
+            
+            # Extract specifications from the spec text
+            specs = {}
+            for spec_name, spec_re in spec_patterns.items():
+                spec_match = re.search(spec_re, spec_text, re.IGNORECASE)
+                if spec_match:
+                    value = spec_match.group(1)
+                    unit = spec_match.group(2)
+                    specs[spec_name] = f"{value} {unit}"
+            
+            # Create unique key for deduplication
+            eq_key = f"{equipment_name.lower()}_{eq_type.lower()}"
+            if eq_key not in processed_equipment and specs:
+                equipment_list.append({
+                    "name": equipment_name,
+                    "type": eq_type,
+                    "specifications": specs,
+                    "location": None,
+                    "confidence": 0.9
+                })
+                processed_equipment.add(eq_key)
+
+    # Then look for equipment mentions with nearby specifications (only if not already found in structured sections)
     for eq_type, pattern in equipment_patterns.items():
         for match in re.finditer(pattern, text, re.IGNORECASE):
             name = match.group(0).strip()
+            
+            # Create unique key for deduplication
+            eq_key = f"{name.lower()}_{eq_type.lower()}"
+            if eq_key in processed_equipment:
+                continue
+            
+            # Skip if this equipment was found in a specification section
+            in_spec_section = False
+            for existing_eq in equipment_list:
+                if (existing_eq['type'] == eq_type and 
+                    existing_eq['confidence'] >= 0.9 and  # High confidence from structured extraction
+                    name.lower() in existing_eq['name'].lower()):
+                    in_spec_section = True
+                    break
+            
+            if in_spec_section:
+                continue
+            
             specs = {}
-            # Search for specs in a window around the equipment name
-            context_start = max(0, match.start() - 100)
-            context_end = min(len(text), match.end() + 100)
+            # Search for specs in a focused window around the equipment name
+            context_start = max(0, match.start() - 150)
+            context_end = min(len(text), match.end() + 150)
             context_text = text[context_start:context_end]
 
             for spec_name, spec_re in spec_patterns.items():
                 spec_match = re.search(spec_re, context_text, re.IGNORECASE)
                 if spec_match:
-                    specs[spec_name] = spec_match.group(0).strip()
+                    value = spec_match.group(1)
+                    unit = spec_match.group(2)
+                    specs[spec_name] = f"{value} {unit}"
             
-            equipment_list.append({"name": name, "type": eq_type, "specifications": specs, "location": None, "confidence": 0.8}) # Assign a default confidence
+            # Only add if we found some specifications and it's not a duplicate
+            if specs and len(specs) >= 2:  # Require at least 2 specs to avoid noise
+                equipment_list.append({
+                    "name": name,
+                    "type": eq_type,
+                    "specifications": specs,
+                    "location": None,
+                    "confidence": 0.7
+                })
+                processed_equipment.add(eq_key)
 
-    # Refine with NER entities if available and relevant
-    for entity in entities:
-        if entity['entity_group'] == 'ORG' or entity['entity_group'] == 'PRODUCT': # Assuming these might be equipment names/models
-            if any(kw in entity['word'].lower() for kw in equipment_patterns.keys()):
-                # Avoid duplicates, merge specs if already found
-                found = False
-                for eq in equipment_list:
-                    if eq["name"].lower() == entity['word'].lower():
-                        found = True
-                        break
-                if not found:
-                    equipment_list.append({"name": entity['word'], "type": "Generic", "specifications": {}, "location": None, "confidence": entity['score']}) # Use NER score as confidence
+    # Look for equipment in specification sections
+    spec_section_pattern = r"(?:EQUIPMENT\s+SPECIFICATIONS?|TECHNICAL\s+SPECIFICATIONS?|SPECIFICATIONS?)\s*:?\s*\n((?:[^\n]*\n)*?)(?:\n\s*[A-Z][A-Z\s]+:|$)"
+    spec_section_match = re.search(spec_section_pattern, text, re.IGNORECASE | re.MULTILINE)
+    
+    if spec_section_match:
+        spec_section = spec_section_match.group(1)
+        
+        # Look for equipment lines in the specification section
+        equipment_lines = re.findall(r"([A-Za-z\s]+(?:motor|pump|valve|sensor|compressor|tank))\s*:?\s*([^\n\r]+)", spec_section, re.IGNORECASE)
+        
+        for equipment_name, spec_line in equipment_lines:
+            equipment_name = equipment_name.strip()
+            
+            # Determine equipment type
+            eq_type = "Generic"
+            for type_name, type_pattern in equipment_patterns.items():
+                if re.search(type_pattern, equipment_name, re.IGNORECASE):
+                    eq_type = type_name
+                    break
+            
+            # Create unique key for deduplication
+            eq_key = f"{equipment_name.lower()}_{eq_type.lower()}"
+            if eq_key in processed_equipment:
+                continue
+            
+            # Extract specifications
+            specs = {}
+            for spec_name, spec_re in spec_patterns.items():
+                spec_match = re.search(spec_re, spec_line, re.IGNORECASE)
+                if spec_match:
+                    value = spec_match.group(1)
+                    unit = spec_match.group(2)
+                    specs[spec_name] = f"{value} {unit}"
+            
+            if specs:
+                equipment_list.append({
+                    "name": equipment_name,
+                    "type": eq_type,
+                    "specifications": specs,
+                    "location": None,
+                    "confidence": 0.95
+                })
+                processed_equipment.add(eq_key)
 
     return equipment_list
 
 def _extract_procedure_data(text: str, entities: list) -> list[dict]:
     procedures = []
-    # Look for common procedure titles and numbered/bulleted steps
-    procedure_titles = re.findall(r'\b(Procedure|Operating Instructions|Maintenance Steps|Installation Guide)\b[\s\S]{0,50}\n', text, re.IGNORECASE)
+    processed_procedures = set()
     
-    for title_match in procedure_titles:
-        title = title_match.strip()
-        steps = []
-        # Attempt to find steps following the title
-        # This is a very basic step extraction, needs improvement for complex documents
-        step_matches = re.findall(r'^\s*(\d+\.\s*|\*\s*|\-\s*)(.*?)(?=\n\s*(\d+\.\s*|\*\s*|\-\s*)|$)', text[text.find(title):], re.MULTILINE | re.DOTALL)
-        
-        for i, step_tuple in enumerate(step_matches):
-            step_text = step_tuple[1].strip()
-            if step_text:
-                steps.append({"step_number": i + 1, "description": step_text})
-        
-        if steps:
-            procedures.append({"title": title, "steps": steps, "category": None, "confidence": 0.7}) # Assign a default confidence
+    # Enhanced procedure patterns
+    procedure_patterns = {
+        "Safety Procedures": r"(?:SAFETY\s+PROCEDURES?|SAFETY\s+INSTRUCTIONS?)\s*:?\s*\n((?:[^\n]*\n)*?)(?:\n\s*[A-Z][A-Z\s]+:|$)",
+        "Maintenance Schedule": r"(?:MAINTENANCE\s+SCHEDULE|MAINTENANCE\s+PROCEDURES?)\s*:?\s*\n((?:[^\n]*\n)*?)(?:\n\s*[A-Z][A-Z\s]+:|$)",
+        "Operating Instructions": r"(?:OPERATING\s+INSTRUCTIONS?|OPERATION\s+PROCEDURES?)\s*:?\s*\n((?:[^\n]*\n)*?)(?:\n\s*[A-Z][A-Z\s]+:|$)",
+        "Installation Guide": r"(?:INSTALLATION\s+GUIDE|INSTALLATION\s+PROCEDURES?)\s*:?\s*\n((?:[^\n]*\n)*?)(?:\n\s*[A-Z][A-Z\s]+:|$)",
+        "Emergency Procedures": r"(?:EMERGENCY\s+PROCEDURES?|EMERGENCY\s+SHUTDOWN)\s*:?\s*\n((?:[^\n]*\n)*?)(?:\n\s*[A-Z][A-Z\s]+:|$)"
+    }
+    
+    # Extract procedures from structured sections
+    for category, pattern in procedure_patterns.items():
+        match = re.search(pattern, text, re.IGNORECASE | re.MULTILINE)
+        if match:
+            section_text = match.group(1).strip()
+            if not section_text:
+                continue
+                
+            steps = []
+            
+            # Look for different step formats
+            step_patterns = [
+                r"^\s*(\d+\.)\s*(.+?)(?=\n\s*\d+\.|$)",  # Numbered steps
+                r"^\s*([•\-\*])\s*(.+?)(?=\n\s*[•\-\*]|$)",  # Bullet points
+                r"^([A-Za-z]+:)\s*(.+?)(?=\n[A-Za-z]+:|$)"  # Daily:, Weekly:, etc.
+            ]
+            
+            for step_pattern in step_patterns:
+                step_matches = re.findall(step_pattern, section_text, re.MULTILINE | re.DOTALL)
+                if step_matches:
+                    for i, (marker, step_text) in enumerate(step_matches):
+                        step_text = step_text.strip().replace('\n', ' ')
+                        if step_text and len(step_text) > 5:  # Filter out very short steps
+                            steps.append({
+                                "step_number": i + 1,
+                                "description": step_text
+                            })
+                    break  # Use the first pattern that matches
+            
+            # If no structured steps found, treat the whole section as one procedure
+            if not steps and len(section_text) > 20:
+                # Split by sentences or lines
+                lines = [line.strip() for line in section_text.split('\n') if line.strip()]
+                for i, line in enumerate(lines):
+                    if len(line) > 10:  # Filter out very short lines
+                        steps.append({
+                            "step_number": i + 1,
+                            "description": line
+                        })
+            
+            if steps:
+                proc_key = category.lower()
+                if proc_key not in processed_procedures:
+                    procedures.append({
+                        "title": category,
+                        "steps": steps,
+                        "category": category,
+                        "confidence": 0.9
+                    })
+                    processed_procedures.add(proc_key)
 
-    # If no specific titles, try to extract any numbered/bulleted lists as a generic procedure
-    if not procedures:
-        steps = []
-        step_matches = re.findall(r'^\s*(\d+\.\s*|\*\s*|\-\s*)(.*?)(?=\n\s*(\d+\.\s*|\*\s*|\-\s*)|$)', text, re.MULTILINE | re.DOTALL)
-        for i, step_tuple in enumerate(step_matches):
-            step_text = step_tuple[1].strip()
-            if step_text:
-                steps.append({"step_number": i + 1, "description": step_text})
-        if steps:
-            procedures.append({"title": "General Procedure", "steps": steps, "category": None, "confidence": 0.6}) # Assign a lower confidence
+    # Look for standalone procedure titles with following steps
+    standalone_patterns = [
+        r"\b(Procedure|Operating Instructions|Maintenance Steps|Installation Guide|Setup Process|Calibration Process)\b\s*:?\s*\n((?:[^\n]*\n)*?)(?:\n\s*[A-Z][A-Z\s]+:|$)"
+    ]
+    
+    for pattern in standalone_patterns:
+        matches = re.finditer(pattern, text, re.IGNORECASE | re.MULTILINE)
+        for match in matches:
+            title = match.group(1).strip()
+            section_text = match.group(2).strip()
+            
+            proc_key = title.lower()
+            if proc_key in processed_procedures or not section_text:
+                continue
+            
+            steps = []
+            # Extract numbered or bulleted steps
+            step_matches = re.findall(r'^\s*(\d+\.|\*|\-)\s*(.+?)(?=\n\s*(\d+\.|\*|\-)|$)', section_text, re.MULTILINE | re.DOTALL)
+            
+            for i, step_tuple in enumerate(step_matches):
+                step_text = step_tuple[1].strip().replace('\n', ' ')
+                if step_text and len(step_text) > 5:
+                    steps.append({
+                        "step_number": i + 1,
+                        "description": step_text
+                    })
+            
+            if steps:
+                procedures.append({
+                    "title": title,
+                    "steps": steps,
+                    "category": "General",
+                    "confidence": 0.8
+                })
+                processed_procedures.add(proc_key)
 
     return procedures
 
 def _extract_safety_information(text: str, entities: list) -> list[dict]:
     safety_info_list = []
-    # Look for hazard/precaution keywords and associated PPE
-    hazard_patterns = [
-        r"\b(danger|warning|caution|hazard|risk)\b[\s\S]{0,100}?(?:\b(avoid|do not|ensure|wear)\b[\s\S]{0,100}?(?:\b(gloves|helmet|goggles|respirator|ear protection|safety glasses)\b)?)",
-        r"\b(PPE required|Personal Protective Equipment)\b[\s\S]{0,100}?(?:\b(gloves|helmet|goggles|respirator|ear protection|safety glasses)\b)"
-    ]
-    ppe_keywords = ["gloves", "helmet", "goggles", "respirator", "ear protection", "safety glasses"]
+    processed_safety = set()
+    
+    # Look for safety sections first
+    safety_section_pattern = r"(?:SAFETY\s+PROCEDURES?|SAFETY\s+INFORMATION|SAFETY\s+REQUIREMENTS?)\s*:?\s*\n((?:[^\n]*\n)*?)(?:\n\s*[A-Z][A-Z\s]+:|$)"
+    safety_section_match = re.search(safety_section_pattern, text, re.IGNORECASE | re.MULTILINE)
+    
+    if safety_section_match:
+        safety_section = safety_section_match.group(1)
+        
+        # Extract safety requirements from the section
+        safety_lines = [line.strip() for line in safety_section.split('\n') if line.strip()]
+        
+        for line in safety_lines:
+            if len(line) < 10:  # Skip very short lines
+                continue
+                
+            # Determine hazard type and PPE requirements
+            hazard = "General Safety"
+            precaution = line
+            ppe_required = []
+            severity = "Medium"
+            
+            # Check for specific hazards
+            if any(word in line.lower() for word in ['danger', 'warning', 'hazard']):
+                severity = "High"
+                if 'danger' in line.lower():
+                    hazard = "Danger"
+                elif 'warning' in line.lower():
+                    hazard = "Warning"
+                else:
+                    hazard = "Hazard"
+            
+            # Extract PPE requirements
+            ppe_keywords = {
+                'safety goggles': ['goggles', 'safety glasses', 'eye protection'],
+                'protective gloves': ['gloves', 'hand protection'],
+                'hard hat': ['helmet', 'hard hat', 'head protection'],
+                'respirator': ['respirator', 'breathing protection'],
+                'ear protection': ['ear protection', 'hearing protection'],
+                'safety shoes': ['safety shoes', 'steel toe', 'foot protection']
+            }
+            
+            for ppe_type, keywords in ppe_keywords.items():
+                if any(keyword in line.lower() for keyword in keywords):
+                    ppe_required.append(ppe_type)
+            
+            safety_key = line.lower()[:50]  # Use first 50 chars as key
+            if safety_key not in processed_safety:
+                safety_info_list.append({
+                    "hazard": hazard,
+                    "precaution": precaution,
+                    "ppe_required": ', '.join(ppe_required) if ppe_required else 'See document',
+                    "severity": severity,
+                    "confidence": 0.9
+                })
+                processed_safety.add(safety_key)
 
-    for pattern in hazard_patterns:
-        for match in re.finditer(pattern, text, re.IGNORECASE | re.DOTALL):
-            hazard_text = match.group(0).strip()
-            ppe_found = [ppe for ppe in ppe_keywords if ppe in hazard_text.lower()]
-            safety_info_list.append({"hazard": hazard_text, "precaution": "See context", "ppe_required": ', '.join(ppe_found), "severity": None, "confidence": 0.8}) # Assign a default confidence
+    # Look for specific safety patterns throughout the document (only if not already covered)
+    if not safety_info_list:  # Only run if no safety section was found
+        safety_patterns = [
+            r"Always\s+wear\s+([^.]+)",
+            r"(?:Must|Should|Required to)\s+wear\s+([^.]+)",
+            r"Emergency\s+shutdown\s+([^.]+)",
+            r"In\s+case\s+of\s+([^.]+)",
+            r"(?:Danger|Warning|Caution):\s*([^.]+)"
+        ]
+        
+        for pattern in safety_patterns:
+            matches = re.finditer(pattern, text, re.IGNORECASE)
+            for match in matches:
+                full_text = match.group(0).strip()
+                requirement = match.group(1).strip()
+                
+                # Determine hazard type
+                hazard = "Safety Requirement"
+                if 'emergency' in full_text.lower():
+                    hazard = "Emergency Procedure"
+                elif 'wear' in full_text.lower():
+                    hazard = "PPE Requirement"
+                elif any(word in full_text.lower() for word in ['danger', 'warning', 'caution']):
+                    hazard = full_text.split(':')[0].strip()
+                
+                safety_key = full_text.lower()[:50]
+                if safety_key not in processed_safety:
+                    safety_info_list.append({
+                        "hazard": hazard,
+                        "precaution": requirement,
+                        "ppe_required": requirement if 'wear' in full_text.lower() else 'See document',
+                        "severity": "High" if 'danger' in full_text.lower() else "Medium",
+                        "confidence": 0.8
+                    })
+                    processed_safety.add(safety_key)
     
     # Further extraction could use NER entities for specific chemicals (e.g., CHEM) or conditions
     return safety_info_list
@@ -206,38 +466,119 @@ def _extract_technical_specifications(text: str, entities: list) -> list[dict]:
 
 def _extract_personnel_data(text: str, entities: list) -> list[dict]:
     personnel_list = []
-    # Look for NER entities classified as 'PERSON' and try to find roles/certifications nearby
-    role_keywords = ["engineer", "technician", "operator", "manager", "supervisor", "specialist"]
+    processed_personnel = set()
+    
+    # Look for personnel sections first
+    personnel_section_pattern = r"(?:PERSONNEL|STAFF|TEAM|CONTACTS?)\s*:?\s*\n((?:[^\n]*\n)*?)(?:\n\s*[A-Z][A-Z\s]+:|$)"
+    personnel_section_match = re.search(personnel_section_pattern, text, re.IGNORECASE | re.MULTILINE)
+    
+    if personnel_section_match:
+        personnel_section = personnel_section_match.group(1)
+        
+        # Look for name - role - certification patterns
+        personnel_patterns = [
+            r"([A-Z][a-z]+\s+[A-Z][a-z]+)\s*-\s*([^,\n]+?)(?:,\s*([^,\n]+?))?(?:\n|$)",  # Name - Role, Certification
+            r"([A-Z][a-z]+\s+[A-Z][a-z]+)\s*:\s*([^,\n]+?)(?:,\s*([^,\n]+?))?(?:\n|$)",  # Name: Role, Certification
+        ]
+        
+        for pattern in personnel_patterns:
+            matches = re.finditer(pattern, personnel_section, re.IGNORECASE)
+            for match in matches:
+                name = match.group(1).strip()
+                role = match.group(2).strip() if match.group(2) else "Unknown"
+                certification_text = match.group(3).strip() if match.group(3) else ""
+                
+                # Parse certifications
+                certifications = []
+                if certification_text:
+                    # Look for common certification patterns
+                    cert_patterns = [
+                        r"PE\s+certified",
+                        r"OSHA\s*\d+\s+certified",
+                        r"[A-Z]{2,}\s+certified",
+                        r"certified\s+[A-Za-z\s]+",
+                        r"licensed\s+[A-Za-z\s]+"
+                    ]
+                    
+                    for cert_pattern in cert_patterns:
+                        cert_matches = re.findall(cert_pattern, certification_text, re.IGNORECASE)
+                        certifications.extend(cert_matches)
+                
+                name_key = name.lower()
+                if name_key not in processed_personnel:
+                    personnel_list.append({
+                        "name": name,
+                        "role": role,
+                        "responsibilities": None,
+                        "certifications": list(set(certifications)) if certifications else [],
+                        "confidence": 0.95
+                    })
+                    processed_personnel.add(name_key)
+
+    # Enhanced role keywords and patterns
+    role_keywords = {
+        "Chief Engineer": ["chief engineer", "lead engineer", "senior engineer"],
+        "Engineer": ["engineer", "engineering"],
+        "Supervisor": ["supervisor", "lead", "manager"],
+        "Technician": ["technician", "tech"],
+        "Operator": ["operator", "specialist"],
+        "Maintenance": ["maintenance", "mechanic"],
+        "Safety Officer": ["safety officer", "safety coordinator"]
+    }
+    
     certification_patterns = [
-        r"\b(OSHA\s*\d+)\b",
-        r"\b(ISO\s*\d+)\b",
-        r"\b(certified|licensed)\b[\s\S]{0,50}?(?:\b(welder|electrician|mechanic)\b)"
+        r"\b(PE\s+certified)\b",
+        r"\b(OSHA\s*\d+\s+certified)\b",
+        r"\b(ISO\s*\d+\s+certified)\b",
+        r"\b([A-Z]{2,}\s+certified)\b",
+        r"\b(certified\s+[A-Za-z\s]+)\b",
+        r"\b(licensed\s+[A-Za-z\s]+)\b"
     ]
 
+    # Look for NER entities and structured patterns
     for entity in entities:
         if entity['entity_group'] == 'PER':
             name = entity['word']
+            name_key = name.lower()
+            
+            if name_key in processed_personnel:
+                continue
+            
             role = "Unknown"
             certifications = []
-            confidence = entity['score'] # Start with NER confidence
+            confidence = entity['score']
 
-            # Search for role and certifications in a window around the person's name
-            context_start = max(0, entity['start'] - 100)
-            context_end = min(len(text), entity['end'] + 100)
+            # Search for role and certifications in a larger window
+            context_start = max(0, entity['start'] - 200)
+            context_end = min(len(text), entity['end'] + 200)
             context_text = text[context_start:context_end]
 
-            for r_kw in role_keywords:
-                if re.search(r'\b' + re.escape(r_kw) + r'\b', context_text, re.IGNORECASE):
-                    role = r_kw.capitalize()
-                    confidence = max(confidence, 0.85) # Boost confidence if role found
+            # Find role
+            for role_name, keywords in role_keywords.items():
+                for keyword in keywords:
+                    if re.search(r'\b' + re.escape(keyword) + r'\b', context_text, re.IGNORECASE):
+                        role = role_name
+                        confidence = max(confidence, 0.85)
+                        break
+                if role != "Unknown":
                     break
             
+            # Find certifications
             for cert_pattern in certification_patterns:
-                for cert_match in re.finditer(cert_pattern, context_text, re.IGNORECASE):
-                    certifications.append(cert_match.group(0).strip())
-                    confidence = max(confidence, 0.9) # Boost confidence if certification found
+                cert_matches = re.findall(cert_pattern, context_text, re.IGNORECASE)
+                for cert_match in cert_matches:
+                    certifications.append(cert_match.strip())
+                    confidence = max(confidence, 0.9)
             
-            personnel_list.append({"name": name, "role": role, "responsibilities": None, "certifications": list(set(certifications)), "confidence": confidence})
+            personnel_list.append({
+                "name": name,
+                "role": role,
+                "responsibilities": None,
+                "certifications": list(set(certifications)),
+                "confidence": confidence
+            })
+            processed_personnel.add(name_key)
+    
     return personnel_list
 
 # --- Main Processing Functions ---

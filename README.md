@@ -10,11 +10,13 @@ EXPLAINIUM is an AI-powered system that extracts, analyzes, and structures knowl
 ## ✨ Key Features
 
 - 🚀 **Fast Processing**: Documents processed in ~3 seconds
-- 📄 **Multi-format Support**: PDF, DOCX, TXT, and more
-- 🔍 **Knowledge Extraction**: Equipment, procedures, safety info, technical specs
-- 📊 **Real-time Interface**: Drag-and-drop upload with live progress
-- 🛡️ **Robust Architecture**: Graceful fallbacks and error handling
-- 🐳 **Docker Ready**: One-command deployment
+- 📄 **Multi-format Support**: PDF, DOCX, TXT, videos (MP4, AVI, MOV), images with OCR
+- 🎥 **Video Processing**: Audio extraction with FFmpeg + AI transcription using OpenAI Whisper
+- 🔍 **Advanced Knowledge Extraction**: Equipment specs, procedures, safety info, technical data, personnel details
+- 🧠 **AI-Powered Analysis**: Named Entity Recognition, document classification, keyphrase extraction
+- 📊 **Real-time Interface**: Drag-and-drop upload with live progress tracking
+- 🛡️ **Robust Architecture**: Graceful fallbacks, error handling, and failsafe processing
+- 🐳 **Docker Ready**: One-command deployment with full containerization
 
 ## 🚀 Quick Start
 
@@ -42,6 +44,43 @@ docker-compose exec app alembic upgrade head
 - **API Documentation**: http://localhost:8000/docs
 - **Health Check**: http://localhost:8000/health
 
+## ⚡ Quick Commands (Make)
+
+For convenience, use these Makefile commands to manage the application:
+
+```bash
+# Quick start/stop
+make start    # Start all services quickly
+make stop     # Stop all services
+make dev      # Start development environment
+
+# Individual services
+make backend  # Start backend services only
+make frontend # Start frontend only  
+make services # Start supporting services only (DB, Redis, etc.)
+
+# Utilities
+make logs     # View all service logs
+make clean    # Clean up containers and volumes
+make install  # Install frontend dependencies
+make help     # Show all available commands
+```
+
+### Alternative Manual Commands
+
+You can also use Docker Compose directly:
+
+```bash
+# Start all services
+docker-compose up --build -d
+
+# Stop all services  
+docker-compose down
+
+# View logs
+docker-compose logs -f
+```
+
 ## 📋 Usage
 
 1. **Upload Documents**: Drag and drop files or click to select
@@ -50,11 +89,10 @@ docker-compose exec app alembic upgrade head
 4. **Explore Data**: Browse equipment, procedures, safety information, and more
 
 ### Supported File Types
-- PDF documents
-- Microsoft Word (.docx)
-- Text files (.txt)
-- PowerPoint (.pptx)
-- Excel (.xlsx)
+- **Documents**: PDF, Microsoft Word (.docx), Text files (.txt), PowerPoint (.pptx), Excel (.xlsx)
+- **Videos**: MP4, AVI, MOV, MKV (with audio transcription using Whisper AI)
+- **Images**: JPG, PNG, GIF, BMP, TIFF (with OCR text extraction)
+- **Audio**: Extracted from videos and transcribed to text
 
 ## 🏗️ Architecture
 
@@ -68,10 +106,15 @@ docker-compose exec app alembic upgrade head
                        │  Celery Worker  │    │   Apache Tika   │
                        │  (Processing)   │◄──►│  (Text Extract) │
                        └─────────────────┘    └─────────────────┘
-                                │
+                                │                        │
                        ┌─────────────────┐    ┌─────────────────┐
-                       │     Redis       │    │ Elasticsearch   │
-                       │   (Queue)       │    │   (Search)      │
+                       │     Redis       │    │   FFmpeg +      │
+                       │   (Queue)       │    │   Whisper AI    │
+                       └─────────────────┘    │ (Video/Audio)   │
+                                │              └─────────────────┘
+                       ┌─────────────────┐    ┌─────────────────┐
+                       │ Elasticsearch   │    │   AI Models     │
+                       │   (Search)      │    │  (NER, Classify)│
                        └─────────────────┘    └─────────────────┘
 ```
 
@@ -82,24 +125,32 @@ docker-compose exec app alembic upgrade head
 - Pump details (flow rate, pressure)
 - Sensor data and calibration
 - Maintenance schedules
+- Enhanced pattern recognition with confidence scoring
 
 ### Safety Documentation
-- Hazard identification
-- PPE requirements
+- Hazard identification with severity levels
+- PPE requirements and compliance
 - Emergency procedures
-- Compliance standards (OSHA, ISO)
+- Safety standards (OSHA, ISO)
+- Risk assessment data
 
 ### Technical Specifications
-- Operating parameters
-- Tolerance ranges
-- Performance metrics
-- Quality standards
+- Operating parameters with tolerances
+- Performance metrics and measurements
+- Quality standards and compliance
+- Calibration requirements
 
 ### Personnel Information
 - Roles and responsibilities
-- Certifications
-- Training requirements
+- Certifications and training records
 - Contact information
+- Skill assessments
+
+### Video Content Analysis
+- Training video transcription
+- Safety demonstration procedures  
+- Equipment operation instructions
+- Audio-extracted knowledge from multimedia content
 
 ## 🔧 Configuration
 
@@ -165,7 +216,34 @@ pytest --cov=src --cov-report=html
 pytest tests/test_document_processor.py -v
 ```
 
-## 📈 Performance
+## � Enhanced Processing Pipeline
+
+### Multi-Modal Content Extraction
+- **Documents**: Apache Tika with fallback to PyPDF2 for reliability
+- **Videos**: FFmpeg audio extraction + OpenAI Whisper transcription
+- **Images**: OCR text extraction for visual content
+- **Fallback Systems**: Graceful degradation when services are unavailable
+
+### AI-Powered Analysis
+- **Named Entity Recognition**: Person, organization, and equipment identification
+- **Document Classification**: Automatic categorization (Operational, Safety, Training, etc.)
+- **Keyphrase Extraction**: Important terms and concepts identification
+- **Confidence Scoring**: Multi-factor reliability assessment
+
+### Structured Knowledge Extraction
+- **Equipment Data**: Specifications, types, and technical parameters
+- **Procedure Data**: Step-by-step processes with categorization
+- **Safety Information**: Hazard levels, PPE requirements, emergency procedures
+- **Technical Specifications**: Measurements, tolerances, and standards
+- **Personnel Data**: Roles, certifications, and contact details
+
+### Error Handling & Reliability
+- Graceful fallback mechanisms for all processing stages
+- Comprehensive logging and error reporting
+- Service availability detection and adaptation
+- Automatic cleanup of temporary files
+
+## �📈 Performance
 
 - **Processing Speed**: ~3 seconds per document
 - **Throughput**: 20+ documents/minute
@@ -219,6 +297,27 @@ docker-compose restart celery_worker
 
 # Check worker logs
 docker-compose logs celery_worker --tail=50
+```
+
+**Video processing issues:**
+```bash
+# Check FFmpeg availability
+docker-compose exec app ffmpeg -version
+
+# Check Whisper model loading
+docker-compose logs celery_worker | grep "whisper"
+
+# Verify video file format support
+docker-compose exec app ffprobe <video_file>
+```
+
+**AI model failures:**
+```bash
+# Check model loading and availability
+docker-compose logs celery_worker | grep -i "model\|ai\|ner"
+
+# Restart with fallback processing
+docker-compose restart celery_worker
 ```
 
 ### Performance Optimization
