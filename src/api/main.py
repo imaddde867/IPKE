@@ -1,5 +1,7 @@
 from fastapi import FastAPI, UploadFile, File, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from src.api.celery_worker import process_document_task, get_task_status, retry_failed_task
 from src.database.database import get_db, init_db, get_connection_pool_status
 from src.database.migrations import run_migrations, get_migration_status
@@ -25,6 +27,9 @@ app = FastAPI(
     description="AI-powered system for extracting structured knowledge from industrial documentation",
     version="1.0.0"
 )
+
+# Mount static files for the frontend
+app.mount("/static", StaticFiles(directory="src/frontend/public"), name="static")
 
 # Add middleware (order matters - error handling should be first)
 app.add_middleware(ErrorHandlingMiddleware)
@@ -69,9 +74,14 @@ def on_startup():
 
 @app.get("/")
 def read_root():
-    logger.info("Root endpoint accessed")
+    """Serve the main frontend application."""
+    return FileResponse("src/frontend/public/simple.html")
+
+@app.get("/api")
+def api_root():
+    logger.info("API root endpoint accessed")
     return {
-        "message": "Welcome to the Industrial Knowledge Extraction System!",
+        "message": "Welcome to the Industrial Knowledge Extraction System API!",
         "correlation_id": set_correlation_id()
     }
 

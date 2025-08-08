@@ -222,447 +222,177 @@ def setup_database(sender, **kwargs):
         logger.error(f"Celery worker startup failed: {str(e)}", exc_info=True)
         raise
 
-@celery_app.task(bind=True, autoretry_for=(ProcessingError, DatabaseError, SearchError), 
-                 retry_backoff=True, retry_jitter=True, max_retries=3)
+@celery_app.task(bind=True, max_retries=2)
 def process_document_task(self, file_path: str, correlation_id: str = None):
-    # Set correlation ID for tracking
+    """Simplified document processing task with better error handling."""
     if correlation_id:
         set_correlation_id(correlation_id)
     else:
         correlation_id = set_correlation_id()
     
-    # Initialize progress tracker
-    progress_tracker = TaskProgressTracker(self.request.id, correlation_id)
-    
     start_time = time.time()
     retry_count = self.request.retries
     
-    logger.info(
-        f"Document processing task started: {file_path}",
-        extra={
-            'file_path': file_path, 
-            'task_correlation_id': correlation_id,
-            'task_id': self.request.id,
-            'retry_count': retry_count
-        }
-    )
+    logger.info(f"Processing document: {file_path} (attempt {retry_count + 1})")
     
-    # Update task status to STARTED
+    # Update task status
     self.update_state(
         state=TaskStatus.STARTED,
-        meta={
-            'file_path': file_path,
-            'correlation_id': correlation_id,
-            'started_at': start_time,
-            'retry_count': retry_count
-        }
+        meta={'file_path': file_path, 'correlation_id': correlation_id, 'started_at': start_time}
     )
-    
-    try:
-        progress_tracker.update_progress("file_type_detection", "started")
-        file_type = get_file_type(file_path)
-        progress_tracker.update_progress("file_type_detection", "completed", {'file_type': file_type})
-        log_processing_step(logger, "file_type_detection", "completed", extra_data={'file_type': file_type})
-    except Exception as e:
-        progress_tracker.update_progress("file_type_detection", "failed", {'error': str(e)})
-        
-        # Check if we should retry
-        if retry_count < self.max_retries:
-            retry_delay = calculate_retry_delay(retry_count)
-            logger.warning(f"File type detection failed, retrying in {retry_delay}s", extra={
-                'file_path': file_path,
-                'retry_count': retry_count,
-                'retry_delay': retry_delay,
-                'error': str(e)
-            })
-            raise self.retry(countdown=retry_delay, exc=e)
-        else:
-            # Max retries exceeded, send to dead letter queue
-            handle_dead_letter_task(
-                self.request.id, 
-                'process_document_task', 
-                (file_path,), 
-                {'correlation_id': correlation_id},
-                str(e)
-            )
-            raise ProcessingError(
-                f"Failed to determine file type for {file_path} after {retry_count} retries",
-                file_path=file_path,
-                processing_stage="file_type_detection"
-            ) from e
     
     db = SessionLocal()
     try:
-        # Process document based on type
-        progress_tracker.update_progress("document_processing", "started", {'file_type': file_type})
-        log_processing_step(logger, "document_processing", "started", extra_data={'file_type': file_type})
-        processing_start = time.time()
+        # Get file type
+        file_type = get_file_type(file_path)
         
-        try:
-            if file_type == "video":
-                result = process_video(file_path)
-            else:
-                result = process_document(file_path)
-        except Exception as e:
-            progress_tracker.update_progress("document_processing", "failed", {'error': str(e)})
-            
-            # Check if we should retry
-            if retry_count < self.max_retries:
-                retry_delay = calculate_retry_delay(retry_count)
-                logger.warning(f"Document processing failed, retrying in {retry_delay}s", extra={
-                    'file_path': file_path,
-                    'file_type': file_type,
-                    'retry_count': retry_count,
-                    'retry_delay': retry_delay,
-                    'error': str(e)
-                })
-                raise self.retry(countdown=retry_delay, exc=e)
-            else:
-                # Max retries exceeded, send to dead letter queue
-                handle_dead_letter_task(
-                    self.request.id, 
-                    'process_document_task', 
-                    (file_path,), 
-                    {'correlation_id': correlation_id},
-                    str(e)
-                )
-                raise ProcessingError(
-                    f"Document processing failed for {file_path} after {retry_count} retries",
-                    file_path=file_path,
-                    processing_stage="document_processing"
-                ) from e
+        # Process document
+        if file_type == "video":
+            result = process_video(file_path)
+        else:
+            result = process_document(file_path)
         
-        processing_duration = time.time() - processing_start
-        progress_tracker.update_progress("document_processing", "completed", {
-            'file_type': file_type, 
-            'status': result.get('status'),
-            'processing_duration': processing_duration
-        })
-        log_processing_step(
-            logger, 
-            "document_processing", 
-            "completed", 
-            duration=processing_duration,
-            extra_data={'file_type': file_type, 'status': result.get('status')}
+        # Save to database
+        db_document = crud.create_document(
+            db=db,
+            filename=result["filename"],
+            file_type=file_type,
+            extracted_text=result["extracted_text"],
+            metadata_json=result["metadata"],
+            classification_category=result["classification"]["category"],
+            classification_score=result["classification"]["score"],
+            status=result["status"],
+            document_sections=result["document_sections"]
         )
-
-        # Save processed data to database
-        progress_tracker.update_progress("database_save", "started")
-        log_processing_step(logger, "database_save", "started")
-        db_save_start = time.time()
         
-        try:
-            db_document = crud.create_document(
-                db=db,
-                filename=result["filename"],
-                file_type=file_type,
-                extracted_text=result["extracted_text"],
-                metadata_json=result["metadata"],
-                classification_category=result["classification"]["category"],
-                classification_score=result["classification"]["score"],
-                status=result["status"],
-                document_sections=result["document_sections"]
-            )
-            
-            db_save_duration = time.time() - db_save_start
-            progress_tracker.update_progress("database_save", "completed", {
-                'document_id': db_document.id,
-                'save_duration': db_save_duration
-            })
-            log_processing_step(
-                logger, 
-                "database_save", 
-                "completed", 
-                duration=db_save_duration,
-                extra_data={'document_id': db_document.id}
-            )
-            
-        except Exception as e:
-            progress_tracker.update_progress("database_save", "failed", {'error': str(e)})
-            
-            # Database errors are critical - retry with exponential backoff
-            if retry_count < self.max_retries:
-                retry_delay = calculate_retry_delay(retry_count, base_delay=30)  # Shorter delay for DB issues
-                logger.warning(f"Database save failed, retrying in {retry_delay}s", extra={
-                    'file_path': file_path,
-                    'retry_count': retry_count,
-                    'retry_delay': retry_delay,
-                    'error': str(e)
-                })
-                raise self.retry(countdown=retry_delay, exc=e)
-            else:
-                handle_dead_letter_task(
-                    self.request.id, 
-                    'process_document_task', 
-                    (file_path,), 
-                    {'correlation_id': correlation_id},
-                    str(e)
-                )
-                raise DatabaseError(
-                    f"Failed to save document to database: {file_path} after {retry_count} retries",
-                    operation="create_document",
-                    table="documents",
-                    details={'file_path': file_path, 'uploaded_filename': result.get("filename")}
-                ) from e
-
-        # Save extracted entities
-        progress_tracker.update_progress("entity_extraction_save", "started")
-        es_entities = []
+        # Save entities and key phrases
         for entity in result["extracted_entities"]:
             crud.create_extracted_entity(
                 db=db,
                 document_id=db_document.id,
-                text=entity["word"],
-                entity_type=entity["entity_group"],
-                score=entity["score"],
-                start_char=entity["start"],
-                end_char=entity["end"]
+                text=entity.get("word", entity.get("text", "")),
+                entity_type=entity.get("entity_group", entity.get("label", "UNKNOWN")),
+                score=entity.get("score", 0.0),
+                start_char=entity.get("start", 0),
+                end_char=entity.get("end", 0)
             )
-            es_entities.append({"text": entity["word"], "entity_type": entity["entity_group"]})
         
-        # Save key phrases
-        es_key_phrases = []
         for phrase in result["key_phrases"]:
-            crud.create_key_phrase(
-                db=db,
-                document_id=db_document.id,
-                phrase=phrase
-            )
-            es_key_phrases.append(phrase)
+            crud.create_key_phrase(db=db, document_id=db_document.id, phrase=phrase)
         
-        progress_tracker.update_progress("entity_extraction_save", "completed", {
-            'entities_count': len(es_entities),
-            'key_phrases_count': len(es_key_phrases)
-        })
-
         # Save structured data
-        progress_tracker.update_progress("structured_data_save", "started")
+        _save_structured_data(db, db_document.id, result)
         
-        structured_data_counts = {
-            'equipment': len(result["equipment_data"]),
-            'procedures': len(result["procedure_data"]),
-            'safety_info': len(result["safety_info_data"]),
-            'technical_specs': len(result["technical_spec_data"]),
-            'personnel': len(result["personnel_data"])
-        }
-        
-        for equipment in result["equipment_data"]:
-            crud.create_equipment(
-                db=db,
-                document_id=db_document.id,
-                name=equipment["name"],
-                type=equipment["type"],
-                specifications=equipment["specifications"],
-                location=equipment["location"],
-                confidence=equipment["confidence"]
-            )
-        
-        for procedure in result["procedure_data"]:
-            crud.create_procedure(
-                db=db,
-                document_id=db_document.id,
-                title=procedure["title"],
-                steps=procedure["steps"],
-                category=procedure["category"],
-                confidence=procedure["confidence"]
-            )
-
-        for safety_info in result["safety_info_data"]:
-            crud.create_safety_information(
-                db=db,
-                document_id=db_document.id,
-                hazard=safety_info["hazard"],
-                precaution=safety_info["precaution"],
-                ppe_required=safety_info["ppe_required"],
-                severity=safety_info["severity"],
-                confidence=safety_info["confidence"]
-            )
-
-        for tech_spec in result["technical_spec_data"]:
-            crud.create_technical_specification(
-                db=db,
-                document_id=db_document.id,
-                parameter=tech_spec["parameter"],
-                value=tech_spec["value"],
-                unit=tech_spec["unit"],
-                tolerance=tech_spec["tolerance"],
-                confidence=tech_spec["confidence"]
-            )
-
-        for personnel in result["personnel_data"]:
-            crud.create_personnel(
-                db=db,
-                document_id=db_document.id,
-                name=personnel["name"],
-                role=personnel["role"],
-                responsibilities=personnel["responsibilities"],
-                certifications=personnel["certifications"],
-                confidence=personnel["confidence"]
-            )
-        
-        progress_tracker.update_progress("structured_data_save", "completed", structured_data_counts)
-
-        # Index document in Elasticsearch
-        progress_tracker.update_progress("elasticsearch_indexing", "started")
-        log_processing_step(logger, "elasticsearch_indexing", "started")
-        es_index_start = time.time()
-        
+        # Try to index in Elasticsearch (non-critical)
         try:
-            es_document_data = {
-                "document_id": db_document.id,
-                "filename": db_document.filename,
-                "file_type": db_document.file_type,
-                "extracted_text": db_document.extracted_text,
-                "classification_category": db_document.classification_category,
-                "classification_score": db_document.classification_score,
-                "extracted_entities": es_entities,
-                "key_phrases": es_key_phrases,
-                "processing_timestamp": db_document.processing_timestamp.isoformat(),
-                "document_sections": db_document.document_sections
-            }
-            es_client.index_document(es_document_data)
-            
-            es_index_duration = time.time() - es_index_start
-            progress_tracker.update_progress("elasticsearch_indexing", "completed", {
-                'document_id': db_document.id,
-                'index_duration': es_index_duration
-            })
-            log_processing_step(
-                logger, 
-                "elasticsearch_indexing", 
-                "completed", 
-                duration=es_index_duration,
-                extra_data={'document_id': db_document.id}
-            )
-            
+            _index_in_elasticsearch(db_document, result)
         except Exception as e:
-            progress_tracker.update_progress("elasticsearch_indexing", "failed", {
-                'error': str(e),
-                'document_id': db_document.id
-            })
-            # Log error but don't fail the entire task - Elasticsearch is not critical
-            log_error(
-                logger,
-                SearchError(
-                    f"Failed to index document in Elasticsearch: {db_document.id}",
-                    operation="index_document",
-                    details={'document_id': db_document.id, 'uploaded_filename': db_document.filename}
-                ),
-                "Elasticsearch indexing failed - document saved to database but not searchable"
-            )
-
+            logger.warning(f"Elasticsearch indexing failed: {str(e)}")
+        
+        db.commit()
+        
         total_duration = time.time() - start_time
-        
-        # Final progress update
-        progress_tracker.update_progress("task_completion", "completed", {
-            'document_id': db_document.id,
-            'total_duration': total_duration,
-            'final_status': 'success'
-        })
-        
-        # Update task state to SUCCESS
         success_result = {
-            "status": "success", 
+            "status": "success",
             "document_id": db_document.id,
             "correlation_id": correlation_id,
-            "processing_duration": total_duration,
-            "structured_data_counts": structured_data_counts,
-            "entities_count": len(es_entities),
-            "key_phrases_count": len(es_key_phrases)
+            "processing_duration": total_duration
         }
         
-        self.update_state(
-            state=TaskStatus.SUCCESS,
-            meta=success_result
-        )
+        self.update_state(state=TaskStatus.SUCCESS, meta=success_result)
+        logger.info(f"Document processed successfully: {file_path} (ID: {db_document.id})")
         
-        logger.info(
-            f"Document processing completed successfully: {file_path}",
-            extra={
-                'file_path': file_path,
-                'document_id': db_document.id,
-                'total_duration_seconds': total_duration,
-                'status': 'success',
-                'task_id': self.request.id
-            }
-        )
-
         return success_result
-
+        
     except Exception as e:
         db.rollback()
         total_duration = time.time() - start_time
         
-        # Update progress tracker with failure
-        if 'progress_tracker' in locals():
-            progress_tracker.update_progress("task_completion", "failed", {
-                'error': str(e),
-                'error_type': e.__class__.__name__,
-                'total_duration': total_duration
-            })
+        error_msg = f"Processing failed for {file_path}: {str(e)}"
+        logger.error(error_msg)
         
-        # Check if this is a retry exception (already handled above)
-        if isinstance(e, Retry):
-            raise e
-        
-        # Check if we've exceeded max retries
-        if retry_count >= self.max_retries:
-            # Send to dead letter queue
-            handle_dead_letter_task(
-                self.request.id, 
-                'process_document_task', 
-                (file_path,), 
-                {'correlation_id': correlation_id},
-                str(e)
-            )
-        
-        # Create structured error response
-        error_result = {
-            "status": "failed", 
-            "error": str(e),
-            "error_type": e.__class__.__name__,
-            "correlation_id": correlation_id,
-            "processing_duration": total_duration,
-            "retry_count": retry_count,
-            "max_retries_exceeded": retry_count >= self.max_retries
-        }
-        
-        # Update task state to FAILURE
-        self.update_state(
-            state=TaskStatus.FAILURE,
-            meta=error_result
-        )
-        
-        # Log the error with full context
-        log_error(
-            logger,
-            e,
-            f"Document processing failed: {file_path}",
-            extra_data={
-                'file_path': file_path,
-                'file_type': file_type if 'file_type' in locals() else 'unknown',
-                'total_duration_seconds': total_duration,
-                'status': 'failed',
-                'task_id': self.request.id,
-                'retry_count': retry_count
-            }
-        )
-        
-        # For non-retry exceptions, check if we should retry
-        if retry_count < self.max_retries and not isinstance(e, MaxRetriesExceededError):
-            retry_delay = calculate_retry_delay(retry_count)
-            logger.warning(f"Task failed, retrying in {retry_delay}s", extra={
-                'file_path': file_path,
-                'retry_count': retry_count,
-                'retry_delay': retry_delay,
-                'error': str(e)
-            })
+        # Retry logic
+        if retry_count < self.max_retries:
+            retry_delay = min(60 * (2 ** retry_count), 300)  # Exponential backoff, max 5 minutes
+            logger.info(f"Retrying in {retry_delay}s (attempt {retry_count + 2})")
             raise self.retry(countdown=retry_delay, exc=e)
         
-        # Return error response for max retries exceeded
+        # Max retries exceeded
+        error_result = {
+            "status": "failed",
+            "error": str(e),
+            "correlation_id": correlation_id,
+            "processing_duration": total_duration,
+            "retry_count": retry_count
+        }
+        
+        self.update_state(state=TaskStatus.FAILURE, meta=error_result)
         return error_result
+        
     finally:
         db.close()
+
+def _save_structured_data(db, document_id: int, result: dict):
+    """Save structured data to database."""
+    try:
+        for equipment in result.get("equipment_data", []):
+            crud.create_equipment(
+                db=db, document_id=document_id,
+                name=equipment["name"], type=equipment["type"],
+                specifications=equipment["specifications"],
+                location=equipment["location"], confidence=equipment["confidence"]
+            )
+        
+        for procedure in result.get("procedure_data", []):
+            crud.create_procedure(
+                db=db, document_id=document_id,
+                title=procedure["title"], steps=procedure["steps"],
+                category=procedure["category"], confidence=procedure["confidence"]
+            )
+        
+        for safety_info in result.get("safety_info_data", []):
+            crud.create_safety_information(
+                db=db, document_id=document_id,
+                hazard=safety_info["hazard"], precaution=safety_info["precaution"],
+                ppe_required=safety_info["ppe_required"], severity=safety_info["severity"],
+                confidence=safety_info["confidence"]
+            )
+        
+        for tech_spec in result.get("technical_spec_data", []):
+            crud.create_technical_specification(
+                db=db, document_id=document_id,
+                parameter=tech_spec["parameter"], value=tech_spec["value"],
+                unit=tech_spec["unit"], tolerance=tech_spec["tolerance"],
+                confidence=tech_spec["confidence"]
+            )
+        
+        for personnel in result.get("personnel_data", []):
+            crud.create_personnel(
+                db=db, document_id=document_id,
+                name=personnel["name"], role=personnel["role"],
+                responsibilities=personnel["responsibilities"],
+                certifications=personnel["certifications"], confidence=personnel["confidence"]
+            )
+    except Exception as e:
+        logger.warning(f"Failed to save some structured data: {str(e)}")
+
+def _index_in_elasticsearch(db_document, result: dict):
+    """Index document in Elasticsearch."""
+    from src.search.elasticsearch_client import es_client
+    
+    es_document_data = {
+        "document_id": db_document.id,
+        "filename": db_document.filename,
+        "file_type": db_document.file_type,
+        "extracted_text": db_document.extracted_text,
+        "classification_category": db_document.classification_category,
+        "classification_score": db_document.classification_score,
+        "extracted_entities": [{"text": e.get("word", e.get("text", "")), "entity_type": e.get("entity_group", e.get("label", "UNKNOWN"))} for e in result.get("extracted_entities", [])],
+        "key_phrases": result.get("key_phrases", []),
+        "processing_timestamp": db_document.processing_timestamp.isoformat(),
+        "document_sections": db_document.document_sections
+    }
+    es_client.index_document(es_document_data)
 
 @celery_app.task(bind=True, max_retries=1)
 def retry_failed_task(self, original_task_name: str, args: tuple, kwargs: dict, original_error: str):
