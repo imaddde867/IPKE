@@ -1,0 +1,20 @@
+INDUSTRIAL EQUIPMENT MANUAL
+
+SAFETY PROCEDURES
+Always wear safety goggles and protective gloves when operating equipment.
+Emergency shutdown procedures must be followed in case of malfunction.
+
+EQUIPMENT SPECIFICATIONS
+Primary Motor: 10 HP electric motor, 480V, 3-phase
+Cooling Pump: Centrifugal pump, 200 GPM flow rate
+Operating Pressure: 200 PSI maximum
+Temperature Range: 32°F to 180°F
+
+MAINTENANCE SCHEDULE
+Daily: Check fluid levels and pressure readings
+Weekly: Inspect electrical connections and belts
+Monthly: Replace air filters and lubricate bearings
+
+PERSONNEL
+Sarah Johnson - Chief Engineer, PE certified
+Mike Davis - Maintenance Supervisor, OSHA 30 certified
