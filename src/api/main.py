@@ -189,7 +189,7 @@ async def create_upload_file(file: UploadFile = File(...)):
     logger.info(
         f"File upload started: {file.filename}",
         extra={
-            'filename': file.filename,
+            'uploaded_filename': file.filename,
             'file_size': len(file_content),
             'content_type': file.content_type
         }
@@ -207,7 +207,7 @@ async def create_upload_file(file: UploadFile = File(...)):
         logger.info(
             f"File uploaded and queued for processing: {file.filename}",
             extra={
-                'filename': file.filename,
+                'uploaded_filename': file.filename,
                 'file_location': file_location,
                 'task_id': task.id
             }

@@ -234,7 +234,7 @@ def create_document(db: Session, filename: str, file_type: str, extracted_text: 
             
             logger.info(
                 f"Document created successfully: {filename}",
-                extra={'document_id': db_document.id, 'filename': filename, 'file_type': file_type}
+                extra={'document_id': db_document.id, 'uploaded_filename': filename, 'file_type': file_type}
             )
             
             return db_document
@@ -244,14 +244,14 @@ def create_document(db: Session, filename: str, file_type: str, extracted_text: 
             f"Database integrity error creating document: {filename}",
             operation="create_document",
             table="documents",
-            details={'filename': filename, 'integrity_error': str(e)}
+            details={'uploaded_filename': filename, 'integrity_error': str(e)}
         ) from e
     except SQLAlchemyError as e:
         raise DatabaseError(
             f"Database error creating document: {filename}",
             operation="create_document",
             table="documents",
-            details={'filename': filename}
+            details={'uploaded_filename': filename}
         ) from e
 
 def create_document_with_entities(
@@ -302,7 +302,7 @@ def create_document_with_entities(
                 f"Document with entities created successfully: {filename}",
                 extra={
                     'document_id': db_document.id, 
-                    'filename': filename, 
+                    'uploaded_filename': filename, 
                     'entity_count': len(entities) if entities else 0,
                     'keyphrase_count': len(keyphrases) if keyphrases else 0,
                     'equipment_count': len(equipment_list) if equipment_list else 0

@@ -269,7 +269,7 @@ def process_document(file_path: str):
         )
 
     try:
-        log_processing_step(logger, "tika_extraction", "started", extra_data={'filename': filename})
+        log_processing_step(logger, "tika_extraction", "started", extra_data={'uploaded_filename': filename})
         
         with open(file_path, 'rb') as file:
             headers = {
@@ -351,7 +351,7 @@ def process_document(file_path: str):
             f"Error communicating with Tika server: {str(e)}",
             service_name="Apache Tika",
             service_url=TIKA_SERVER_URL,
-            details={'filename': filename}
+            details={'uploaded_filename': filename}
         ) from e
     except json.JSONDecodeError as e:
         raise ProcessingError(

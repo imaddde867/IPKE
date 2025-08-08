@@ -402,7 +402,7 @@ def process_document_task(self, file_path: str, correlation_id: str = None):
                     f"Failed to save document to database: {file_path} after {retry_count} retries",
                     operation="create_document",
                     table="documents",
-                    details={'file_path': file_path, 'filename': result.get("filename")}
+                    details={'file_path': file_path, 'uploaded_filename': result.get("filename")}
                 ) from e
 
         # Save extracted entities
@@ -546,7 +546,7 @@ def process_document_task(self, file_path: str, correlation_id: str = None):
                 SearchError(
                     f"Failed to index document in Elasticsearch: {db_document.id}",
                     operation="index_document",
-                    details={'document_id': db_document.id, 'filename': db_document.filename}
+                    details={'document_id': db_document.id, 'uploaded_filename': db_document.filename}
                 ),
                 "Elasticsearch indexing failed - document saved to database but not searchable"
             )

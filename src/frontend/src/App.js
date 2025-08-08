@@ -9,6 +9,8 @@ function App() {
   const [searchResults, setSearchResults] = useState([]);
   const [selectedDocumentId, setSelectedDocumentId] = useState(null);
   const [documentDetails, setDocumentDetails] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // Fetch all documents on component mount
   useEffect(() => {
@@ -24,14 +26,22 @@ function App() {
 
   const fetchDocuments = async () => {
     try {
+      setLoading(true);
+      setError(null);
       const response = await fetch('http://localhost:8000/documents/');
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      setDocuments(data);
+      // Handle paginated response - extract items array
+      const documentsArray = data.items || data || [];
+      setDocuments(Array.isArray(documentsArray) ? documentsArray : []);
     } catch (error) {
       console.error("Error fetching documents:", error);
+      setError(`Failed to fetch documents: ${error.message}`);
+      setDocuments([]); // Ensure documents is always an array
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -171,13 +181,23 @@ function App() {
 
         <section className="document-list-section">
           <h2>All Documents</h2>
-          <ul>
-            {documents.map((doc) => (
-              <li key={doc.id} onClick={() => handleDocumentClick(doc.id)}>
-                {doc.filename} (ID: {doc.id}) - {doc.classification_category}
-              </li>
-            ))}
-          </ul>
+          {loading ? (
+            <p>Loading documents...</p>
+          ) : error ? (
+            <p style={{color: 'red'}}>{error}</p>
+          ) : (
+            <ul>
+              {Array.isArray(documents) && documents.length > 0 ? (
+                documents.map((doc) => (
+                  <li key={doc.id} onClick={() => handleDocumentClick(doc.id)}>
+                    {doc.filename} (ID: {doc.id}) - {doc.classification_category}
+                  </li>
+                ))
+              ) : (
+                <p>No documents found.</p>
+              )}
+            </ul>
+          )}
         </section>
 
         {selectedDocumentId && documentDetails && (
