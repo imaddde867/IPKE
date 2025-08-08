@@ -21,3 +21,41 @@ httpx
 spacy
 networkx
 alembic
+
+# Enhanced processing dependencies
+easyocr
+pytesseract
+pandas
+openpyxl
+PyPDF2
+torch
+torchvision
+torchaudio
+numpy
+scikit-learn
+matplotlib
+seaborn
+
+# Additional NLP and AI models
+sentence-transformers
+nltk
+textstat
+langdetect
+
+# Image processing
+scikit-image
+imageio
+
+# Audio processing
+librosa
+soundfile
+
+# Enhanced data processing
+xlrd
+xlsxwriter
+python-magic
+chardet
+
+# Advanced OCR and document analysis
+pdf2image
+pdfplumber

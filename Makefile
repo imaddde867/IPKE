@@ -5,8 +5,8 @@ help:
 	@echo "🧠 EXPLAINIUM - Quick Commands"
 	@echo ""
 	@echo "Development:"
-	@echo "  make dev      - Start development environment (backend + frontend)"
-	@echo "  make start    - Quick start all services"
+	@echo "  make dev      - Start development environment (quick start)"
+	@echo "  make start    - Deploy enhanced system (full)"
 	@echo "  make stop     - Stop all services"
 	@echo ""
 	@echo "Individual Services:"
@@ -19,20 +19,20 @@ help:
 	@echo "  make clean    - Clean up containers and volumes"
 	@echo "  make install  - Install frontend dependencies"
 
-# Development mode - backend services + frontend
+# Development mode - quick start via enhanced deploy script
 dev:
-	@echo "🚀 Starting development environment..."
-	@./start-dev.sh
+	@echo "🚀 Starting development (quick)..."
+	@./deploy-enhanced.sh --quick
 
-# Quick start everything
+# Full deploy
 start:
-	@echo "⚡ Quick starting EXPLAINIUM..."
-	@./start-quick.sh
+	@echo "⚡ Deploying enhanced EXPLAINIUM..."
+	@./deploy-enhanced.sh
 
 # Stop all services
 stop:
 	@echo "🛑 Stopping all services..."
-	@./stop.sh
+	@docker-compose down --remove-orphans
 
 # Backend only
 backend:

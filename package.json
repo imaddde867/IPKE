@@ -3,9 +3,9 @@
   "version": "2.0.0",
   "description": "Enterprise Knowledge Extraction System",
   "scripts": {
-    "dev": "./start-dev.sh",
-    "start": "./start-quick.sh",
-    "stop": "./stop.sh",
+    "dev": "./deploy-enhanced.sh --quick",
+    "start": "./deploy-enhanced.sh",
+    "stop": "docker-compose down --remove-orphans",
     "backend": "docker-compose up app celery_worker celery_beat",
     "frontend": "cd src/frontend && npm start",
     "services": "docker-compose up -d db redis elasticsearch tika",

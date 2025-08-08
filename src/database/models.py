@@ -1,9 +1,71 @@
-from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, Float, ForeignKey, JSON, Boolean
+from sqlalchemy import create_engine, Column, Integer, String, Text, DateTime, Float, ForeignKey, JSON, Boolean, Enum as SQLEnum, Table
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
 from datetime import datetime
+from enum import Enum
+import uuid
 
 Base = declarative_base()
+
+# Enums for standardized classifications
+class KnowledgeDomain(Enum):
+    OPERATIONAL = "operational"
+    SAFETY_COMPLIANCE = "safety_compliance"
+    EQUIPMENT_TECHNOLOGY = "equipment_technology"
+    HUMAN_RESOURCES = "human_resources"
+    QUALITY_ASSURANCE = "quality_assurance"
+    ENVIRONMENTAL = "environmental"
+    FINANCIAL = "financial"
+    REGULATORY = "regulatory"
+    MAINTENANCE = "maintenance"
+    TRAINING = "training"
+
+class HierarchyLevel(Enum):
+    CORE_BUSINESS_FUNCTION = 1
+    DEPARTMENT_OPERATION = 2
+    INDIVIDUAL_PROCEDURE = 3
+    SPECIFIC_STEP = 4
+
+class CriticalityLevel(Enum):
+    CRITICAL = "critical"
+    HIGH = "high"
+    MEDIUM = "medium"
+    LOW = "low"
+
+class ComplianceStatus(Enum):
+    COMPLIANT = "compliant"
+    NON_COMPLIANT = "non_compliant"
+    UNDER_REVIEW = "under_review"
+    NOT_APPLICABLE = "not_applicable"
+
+class RiskLevel(Enum):
+    VERY_HIGH = "very_high"
+    HIGH = "high"
+    MEDIUM = "medium"
+    LOW = "low"
+    VERY_LOW = "very_low"
+
+# Association tables for many-to-many relationships
+process_equipment_table = Table(
+    'process_equipment_association',
+    Base.metadata,
+    Column('process_id', Integer, ForeignKey('processes.id')),
+    Column('equipment_id', Integer, ForeignKey('equipment.id'))
+)
+
+process_personnel_table = Table(
+    'process_personnel_association',
+    Base.metadata,
+    Column('process_id', Integer, ForeignKey('processes.id')),
+    Column('personnel_id', Integer, ForeignKey('personnel.id'))
+)
+
+process_safety_table = Table(
+    'process_safety_association',
+    Base.metadata,
+    Column('process_id', Integer, ForeignKey('processes.id')),
+    Column('safety_info_id', Integer, ForeignKey('safety_information.id'))
+)
 
 class Document(Base):
     __tablename__ = "documents"
@@ -12,12 +74,12 @@ class Document(Base):
     filename = Column(String, index=True)
     file_type = Column(String)
     extracted_text = Column(Text)
-    metadata_json = Column(JSON)  # Store Tika metadata as JSON
+    metadata_json = Column(JSON)
     classification_category = Column(String)
     classification_score = Column(Float)
     status = Column(String, index=True)
     processing_timestamp = Column(DateTime, default=datetime.utcnow)
-    document_sections = Column(JSON) # New column for extracted sections
+    document_sections = Column(JSON)
     
     # Enhanced processing tracking fields
     processing_duration_seconds = Column(Float)
@@ -25,14 +87,25 @@ class Document(Base):
     last_error = Column(Text)
     processing_started_at = Column(DateTime)
     processing_completed_at = Column(DateTime)
+    
+    # New fields for enhanced knowledge capture
+    source_quality_score = Column(Float)
+    content_completeness_score = Column(Float)
+    knowledge_domains = Column(JSON)  # List of applicable domains
+    regulatory_references = Column(JSON)  # List of regulatory standards mentioned
+    version_info = Column(JSON)  # Document version tracking
 
-    entities = relationship("ExtractedEntity", back_populates="document")
-    key_phrases = relationship("KeyPhrase", back_populates="document")
-    equipment = relationship("Equipment", back_populates="document")
-    procedures = relationship("Procedure", back_populates="document")
-    safety_info = relationship("SafetyInformation", back_populates="document")
-    technical_specs = relationship("TechnicalSpecification", back_populates="document")
-    personnel = relationship("Personnel", back_populates="document")
+    # Relationships
+    entities = relationship("ExtractedEntity", back_populates="document", cascade="all, delete-orphan")
+    key_phrases = relationship("KeyPhrase", back_populates="document", cascade="all, delete-orphan")
+    equipment = relationship("Equipment", back_populates="document", cascade="all, delete-orphan")
+    procedures = relationship("Procedure", back_populates="document", cascade="all, delete-orphan")
+    safety_info = relationship("SafetyInformation", back_populates="document", cascade="all, delete-orphan")
+    technical_specs = relationship("TechnicalSpecification", back_populates="document", cascade="all, delete-orphan")
+    personnel = relationship("Personnel", back_populates="document", cascade="all, delete-orphan")
+    processes = relationship("Process", back_populates="document", cascade="all, delete-orphan")
+    compliance_items = relationship("ComplianceItem", back_populates="document", cascade="all, delete-orphan")
+    risk_assessments = relationship("RiskAssessment", back_populates="document", cascade="all, delete-orphan")
 
 class ExtractedEntity(Base):
     __tablename__ = "extracted_entities"
@@ -61,16 +134,28 @@ class Equipment(Base):
     id = Column(Integer, primary_key=True, index=True)
     document_id = Column(Integer, ForeignKey("documents.id"))
     name = Column(String, index=True)
-    type = Column(String) #  for example = Pump, Motor, Valve, Sensor
-    specifications = Column(JSON) # for example = {"power": "10HP", "voltage": "480V"}
+    type = Column(String)  # Pump, Motor, Valve, Sensor
+    specifications = Column(JSON)  # {"power": "10HP", "voltage": "480V"}
     location = Column(String, nullable=True)
-    confidence = Column(Float, nullable=True) # New column for confidence
+    confidence = Column(Float, nullable=True)
+    
+    # Enhanced equipment fields
+    manufacturer = Column(String, nullable=True)
+    model_number = Column(String, nullable=True)
+    serial_number = Column(String, nullable=True)
+    installation_date = Column(DateTime, nullable=True)
+    maintenance_schedule = Column(JSON, nullable=True)  # Maintenance requirements
+    operational_parameters = Column(JSON, nullable=True)  # Operating ranges
+    safety_requirements = Column(JSON, nullable=True)  # Safety protocols
+    criticality_level = Column(SQLEnum(CriticalityLevel), default=CriticalityLevel.MEDIUM)
 
     document = relationship("Document", back_populates="equipment")
     # List of EquipmentPersonnel associations for this equipment
     equipment_personnels = relationship("EquipmentPersonnel", back_populates="equipment", cascade="all, delete-orphan")
     # List of ProcedureEquipment associations for this equipment
     procedure_equipments = relationship("ProcedureEquipment", back_populates="equipment", cascade="all, delete-orphan")
+    # Many-to-many relationship with processes
+    processes = relationship("Process", secondary=process_equipment_table, back_populates="equipment_used")
 
 
 
@@ -106,11 +191,22 @@ class SafetyInformation(Base):
     document_id = Column(Integer, ForeignKey("documents.id"))
     hazard = Column(String)
     precaution = Column(String)
-    ppe_required = Column(String) # e.g., "Gloves, Hard Hat"
-    severity = Column(String, nullable=True) # e.g., High, Medium, Low
-    confidence = Column(Float, nullable=True) # New column for confidence
+    ppe_required = Column(String)  # "Gloves, Hard Hat"
+    severity = Column(SQLEnum(RiskLevel), default=RiskLevel.MEDIUM)
+    confidence = Column(Float, nullable=True)
+    
+    # Enhanced safety fields
+    hazard_category = Column(String, nullable=True)  # chemical, physical, biological, etc.
+    affected_areas = Column(JSON, nullable=True)  # Areas where hazard applies
+    emergency_procedures = Column(Text, nullable=True)
+    regulatory_references = Column(JSON, nullable=True)  # OSHA, ISO standards
+    training_requirements = Column(JSON, nullable=True)
+    inspection_frequency = Column(String, nullable=True)
+    responsible_party = Column(String, nullable=True)
 
     document = relationship("Document", back_populates="safety_info")
+    # Many-to-many relationship with processes
+    processes = relationship("Process", secondary=process_safety_table, back_populates="safety_requirements")
 
 class TechnicalSpecification(Base):
     __tablename__ = "technical_specifications"
@@ -131,14 +227,26 @@ class Personnel(Base):
     name = Column(String, index=True)
     role = Column(String)
     responsibilities = Column(Text, nullable=True)
-    certifications = Column(JSON) # e.g., ["OSHA 30", "First Aid"]
-    confidence = Column(Float, nullable=True) # New column for confidence
+    certifications = Column(JSON)  # ["OSHA 30", "First Aid"]
+    confidence = Column(Float, nullable=True)
+    
+    # Enhanced personnel fields
+    department = Column(String, nullable=True)
+    supervisor = Column(String, nullable=True)
+    contact_information = Column(JSON, nullable=True)
+    skill_level = Column(String, nullable=True)  # novice, intermediate, expert
+    training_records = Column(JSON, nullable=True)
+    authorization_levels = Column(JSON, nullable=True)  # What they're authorized to do
+    shift_schedule = Column(JSON, nullable=True)
+    emergency_contact = Column(JSON, nullable=True)
 
     document = relationship("Document", back_populates="personnel")
     # List of EquipmentPersonnel associations for this personnel
     equipment_personnels = relationship("EquipmentPersonnel", back_populates="personnel", cascade="all, delete-orphan")
     # List of ProcedurePersonnel associations for this personnel
     procedure_personnels = relationship("ProcedurePersonnel", back_populates="personnel", cascade="all, delete-orphan")
+    # Many-to-many relationship with processes
+    processes = relationship("Process", secondary=process_personnel_table, back_populates="personnel_involved")
 
 class ProcedureEquipment(Base):
     __tablename__ = "procedure_equipment"
@@ -380,3 +488,129 @@ class KnowledgeGapEvidence(Base):
     # Relationships
     knowledge_gap = relationship("KnowledgeGap", back_populates="gap_evidence")
     source_document = relationship("Document")
+
+class Process(Base):
+    """Enhanced process model representing organizational workflows and procedures"""
+    __tablename__ = "processes"
+
+    id = Column(Integer, primary_key=True, index=True)
+    document_id = Column(Integer, ForeignKey("documents.id"))
+    process_id = Column(String, unique=True, index=True)  # Unique identifier for the process
+    name = Column(String, index=True)
+    description = Column(Text)
+    knowledge_domain = Column(SQLEnum(KnowledgeDomain))
+    hierarchy_level = Column(SQLEnum(HierarchyLevel))
+    parent_process_id = Column(String, ForeignKey("processes.process_id"))
+    
+    # Operational details
+    estimated_duration = Column(String)  # e.g., "2 hours", "30 minutes"
+    frequency = Column(String)  # e.g., "daily", "weekly", "as needed"
+    timing_constraints = Column(JSON)  # Start/end times, dependencies
+    prerequisites = Column(JSON)  # Required conditions before starting
+    success_criteria = Column(JSON)  # How to measure success
+    
+    # Resource requirements
+    required_skills = Column(JSON)  # Skills needed to perform
+    required_certifications = Column(JSON)  # Certifications needed
+    required_tools = Column(JSON)  # Tools and equipment needed
+    
+    # Quality and compliance
+    quality_standards = Column(JSON)  # Quality requirements
+    compliance_requirements = Column(JSON)  # Regulatory requirements
+    criticality_level = Column(SQLEnum(CriticalityLevel))
+    
+    # Knowledge capture metadata
+    confidence_score = Column(Float)
+    source_quality = Column(Float)
+    completeness_index = Column(Float)
+    last_updated = Column(DateTime, default=datetime.utcnow)
+    version = Column(Integer, default=1)
+    
+    # Relationships
+    document = relationship("Document", back_populates="processes")
+    parent_process = relationship("Process", remote_side="Process.process_id", backref="child_processes")
+    steps = relationship("ProcessStep", back_populates="process", cascade="all, delete-orphan")
+    decision_points = relationship("DecisionPoint", back_populates="process", cascade="all, delete-orphan")
+    
+    # Many-to-many relationships
+    equipment_used = relationship("Equipment", secondary=process_equipment_table, back_populates="processes")
+    personnel_involved = relationship("Personnel", secondary=process_personnel_table, back_populates="processes")
+    safety_requirements = relationship("SafetyInformation", secondary=process_safety_table, back_populates="processes")
+
+class ProcessStep(Base):
+    """Individual steps within a process"""
+    __tablename__ = "process_steps"
+
+    id = Column(Integer, primary_key=True, index=True)
+    process_id = Column(Integer, ForeignKey("processes.id"))
+    step_number = Column(Integer)
+    name = Column(String)
+    description = Column(Text)
+    expected_duration = Column(String)
+    expected_result = Column(Text)
+    verification_method = Column(String)  # How to verify completion
+    safety_notes = Column(Text)
+    quality_checkpoints = Column(JSON)
+    confidence = Column(Float)
+    
+    # Dependencies and conditions
+    depends_on_steps = Column(JSON)  # List of step IDs this depends on
+    conditions = Column(JSON)  # Conditions that must be met
+    
+    process = relationship("Process", back_populates="steps")
+
+class DecisionPoint(Base):
+    """Decision points within processes"""
+    __tablename__ = "decision_points"
+
+    id = Column(Integer, primary_key=True, index=True)
+    process_id = Column(Integer, ForeignKey("processes.id"))
+    name = Column(String)
+    description = Column(Text)
+    decision_type = Column(String)  # binary, multiple_choice, conditional, threshold
+    decision_criteria = Column(JSON)  # Criteria for making the decision
+    possible_outcomes = Column(JSON)  # Possible outcomes and their consequences
+    authority_level = Column(String)  # Who can make this decision
+    escalation_path = Column(JSON)  # Escalation if decision can't be made
+    confidence = Column(Float)
+    
+    process = relationship("Process", back_populates="decision_points")
+
+class ComplianceItem(Base):
+    """Compliance requirements and tracking"""
+    __tablename__ = "compliance_items"
+
+    id = Column(Integer, primary_key=True, index=True)
+    document_id = Column(Integer, ForeignKey("documents.id"))
+    regulation_name = Column(String)
+    regulation_section = Column(String)
+    requirement_description = Column(Text)
+    compliance_status = Column(SQLEnum(ComplianceStatus))
+    last_review_date = Column(DateTime)
+    next_review_date = Column(DateTime)
+    responsible_party = Column(String)
+    evidence_location = Column(String)  # Where compliance evidence is stored
+    notes = Column(Text)
+    confidence = Column(Float)
+    
+    document = relationship("Document", back_populates="compliance_items")
+
+class RiskAssessment(Base):
+    """Risk assessments and mitigation strategies"""
+    __tablename__ = "risk_assessments"
+
+    id = Column(Integer, primary_key=True, index=True)
+    document_id = Column(Integer, ForeignKey("documents.id"))
+    risk_category = Column(String)  # safety, operational, financial, regulatory
+    risk_description = Column(Text)
+    likelihood = Column(SQLEnum(RiskLevel))
+    impact = Column(SQLEnum(RiskLevel))
+    overall_risk_level = Column(SQLEnum(RiskLevel))
+    mitigation_strategies = Column(JSON)
+    monitoring_requirements = Column(JSON)
+    responsible_party = Column(String)
+    review_frequency = Column(String)
+    last_assessment_date = Column(DateTime)
+    confidence = Column(Float)
+    
+    document = relationship("Document", back_populates="risk_assessments")
