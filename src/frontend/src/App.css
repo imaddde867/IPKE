@@ -318,6 +318,12 @@
   color: #4a5568;
 }
 
+.specs-content {
+  white-space: pre-line;
+  line-height: 1.4;
+  font-size: 0.9rem;
+}
+
 .confidence-cell {
   text-align: center;
 }

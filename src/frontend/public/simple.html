@@ -28,7 +28,7 @@
         .knowledge-item { background: #f8f9fa; padding: 10px; border-radius: 4px; border-left: 4px solid #007bff; }
         .knowledge-type { font-weight: bold; color: #007bff; font-size: 0.8em; text-transform: uppercase; }
         .knowledge-name { font-weight: 500; margin: 5px 0; }
-        .knowledge-details { color: #666; font-size: 0.9em; }
+        .knowledge-details { color: #666; font-size: 0.9em; white-space: pre-line; line-height: 1.4; }
         .loading { text-align: center; padding: 20px; color: #666; }
         .hidden { display: none; }
         .progress-bar { width: 100%; height: 4px; background: #e9ecef; border-radius: 2px; overflow: hidden; margin: 10px 0; }
@@ -278,7 +278,14 @@
             switch (type) {
                 case 'Equipment':
                     const specs = item.specifications || {};
-                    return Object.entries(specs).map(([key, value]) => `${key}: ${value}`).join(', ') || 'No specifications';
+                    const formatKey = (key) => {
+                        return key
+                            .replace(/_/g, ' ')
+                            .replace(/([A-Z])/g, ' $1')
+                            .replace(/\b\w/g, l => l.toUpperCase())
+                            .trim();
+                    };
+                    return Object.entries(specs).map(([key, value]) => `• ${formatKey(key)}: ${value}`).join('\n') || 'No specifications';
                 case 'Procedures':
                     return `${item.steps?.length || 0} steps • ${item.category || 'General'}`;
                 case 'Safety Info':

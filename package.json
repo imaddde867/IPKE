@@ -1,0 +1,21 @@
+{
+  "name": "explainium",
+  "version": "2.0.0",
+  "description": "Enterprise Knowledge Extraction System",
+  "scripts": {
+    "dev": "./start-dev.sh",
+    "start": "./start-quick.sh",
+    "stop": "./stop.sh",
+    "backend": "docker-compose up app celery_worker celery_beat",
+    "frontend": "cd src/frontend && npm start",
+    "services": "docker-compose up -d db redis elasticsearch tika",
+    "logs": "docker-compose logs -f",
+    "clean": "docker-compose down -v && docker system prune -f"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/imaddde867/explainium-2.0"
+  },
+  "author": "Imad Eddine",
+  "license": "MIT"
+}

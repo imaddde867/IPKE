@@ -1,5 +1,36 @@
 import React, { useState, useMemo } from 'react';
 
+// Utility function to format specifications as bullet points
+const formatSpecifications = (specs) => {
+  if (!specs) return 'N/A';
+  
+  if (typeof specs === 'string') {
+    try {
+      specs = JSON.parse(specs);
+    } catch {
+      return specs; // Return as-is if not JSON
+    }
+  }
+  
+  if (typeof specs === 'object' && specs !== null) {
+    const entries = Object.entries(specs);
+    if (entries.length === 0) return 'N/A';
+    
+    // Format keys to be more readable
+    const formatKey = (key) => {
+      return key
+        .replace(/_/g, ' ')
+        .replace(/([A-Z])/g, ' $1')
+        .replace(/\b\w/g, l => l.toUpperCase())
+        .trim();
+    };
+    
+    return entries.map(([key, value]) => `• ${formatKey(key)}: ${value}`).join('\n');
+  }
+  
+  return specs;
+};
+
 const KnowledgeTable = ({ data, onRefresh, isProcessing }) => {
   const [filter, setFilter] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -19,7 +50,7 @@ const KnowledgeTable = ({ data, onRefresh, isProcessing }) => {
           type: 'Equipment',
           name: item.name,
           details: item.type,
-          specifications: JSON.stringify(item.specifications),
+          specifications: item.specifications,
           location: item.location,
           confidence: item.confidence,
           timestamp: doc.processing_timestamp
@@ -215,7 +246,11 @@ const KnowledgeTable = ({ data, onRefresh, isProcessing }) => {
                 </td>
                 <td className="name-cell">{item.name}</td>
                 <td className="details-cell">{item.details || 'N/A'}</td>
-                <td className="specs-cell">{item.specifications || 'N/A'}</td>
+                <td className="specs-cell">
+                  <div className="specs-content">
+                    {formatSpecifications(item.specifications)}
+                  </div>
+                </td>
                 <td>{item.location || 'N/A'}</td>
                 <td className="confidence-cell">
                   {item.confidence ? 
