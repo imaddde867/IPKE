@@ -1,41 +1,40 @@
-# 🧠 EXPLAINIUM - Clean & Professional Knowledge Extraction System
+# EXPLAINIUM - Clean & Professional Knowledge Extraction System
 
-[![Status](https://img.shields.io/badge/Status-Production%20Ready-green.svg)](https://github.com/imaddde867/explainium-2.0)
 [![Docker](https://img.shields.io/badge/Docker-Supported-blue.svg)](https://www.docker.com/)
 [![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-Latest-green.svg)](https://fastapi.tiangolo.com/)
 
 A **clean, professional, and efficient** AI-powered system for extracting structured knowledge from documents. This is the refactored version of EXPLAINIUM with consolidated architecture, eliminated redundancy, and improved maintainability.
 
-## ✨ What's New in the Clean Version
+## What's New in the Clean Version
 
-### 🎯 **Consolidated Architecture**
+### **Consolidated Architecture**
 - **Single API Implementation**: Merged `main.py` and `enhanced_main.py` into one clean `app.py`
 - **Unified Document Processor**: Combined all processing logic into one efficient `processor.py`
 - **Consolidated AI Engine**: Merged multiple extractors into one `knowledge_extractor.py`
 - **Centralized Configuration**: All settings managed through one `config.py` system
 - **Unified Database System**: Single database management with proper models and CRUD operations
 
-### 📦 **Optimized Dependencies**
+### **Optimized Dependencies**
 - **Reduced from 44+ to 20 core packages**: Eliminated redundant and unused dependencies
 - **Version Pinning**: All dependencies pinned for reproducible builds
 - **Optional Packages**: Clearly marked optional dependencies for specific features
 - **Clean Requirements**: Organized and commented dependency list
 
-### 🏗️ **Professional Code Quality**
+### **Professional Code Quality**
 - **Consistent Code Style**: Uniform coding standards throughout the codebase
 - **Proper Error Handling**: Comprehensive error handling with custom exceptions
 - **Type Hints**: Full type annotations for better code clarity
 - **Documentation**: Comprehensive docstrings and inline comments
 - **Logging**: Structured logging with proper levels and formatting
 
-### 🚀 **Improved Performance**
+### **Improved Performance**
 - **Optimized Database Queries**: Efficient queries with proper indexing
 - **Streamlined Processing**: Removed duplicate processing paths
 - **Better Resource Management**: Proper connection pooling and resource cleanup
 - **Caching**: Intelligent caching for frequently accessed data
 
-## 🏗️ Clean Architecture
+## Clean Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -74,7 +73,7 @@ A **clean, professional, and efficient** AI-powered system for extracting struct
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-## 📁 Current Project Structure
+## Current Project Structure
 
 ```
 src/
@@ -98,7 +97,7 @@ src/
 └── middleware.py                 # FastAPI middleware
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Prerequisites
 - Docker and Docker Compose
@@ -135,7 +134,7 @@ make quick
 - **API Documentation**: http://localhost:8000/docs
 - **Health Check**: http://localhost:8000/health
 
-## 📋 Usage Examples
+## Usage Examples
 
 ### 1. **Upload and Process Documents**
 
@@ -174,7 +173,7 @@ curl -X GET "http://localhost:8000/processes?domain=safety_compliance&confidence
 curl -X GET "http://localhost:8000/tasks/{task_id}"
 ```
 
-## 📊 Supported Document Types
+## Supported Document Types
 
 ### **Text Documents**
 - **PDF**: Advanced extraction with PyMuPDF and PyPDF2 fallback
@@ -198,7 +197,7 @@ curl -X GET "http://localhost:8000/tasks/{task_id}"
 - **Audio**: MP3, WAV, FLAC, AAC with Whisper transcription
 - **Video**: MP4, AVI, MOV with audio extraction and transcription
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Variables
 
@@ -242,7 +241,7 @@ cp .env.example .env
 nano .env
 ```
 
-## 🛠️ Development
+## Development
 
 ### Local Development Setup
 
@@ -288,7 +287,7 @@ make security-scan
 make perf-test
 ```
 
-## 📈 Performance Metrics
+## Performance Metrics
 
 ### **Processing Speed**
 - **Text Documents**: ~1-3 seconds per document
@@ -308,7 +307,7 @@ make perf-test
 - **Knowledge Extraction**: 80%+ confidence threshold default
 - **Audio Transcription**: 90%+ accuracy for clear audio
 
-## 🔍 API Endpoints
+## API Endpoints
 
 ### **Core Endpoints**
 - `POST /upload` - Upload and process documents
@@ -324,7 +323,7 @@ make perf-test
 - `POST /cleanup` - Clean old data
 - `GET /stats` - Processing statistics
 
-## 🐳 Docker Deployment
+## Docker Deployment
 
 ### **Production Deployment**
 
@@ -353,7 +352,7 @@ docker run -d \
   explainium:latest
 ```
 
-## 🔐 Security Features
+## Security Features
 
 ### **Built-in Security**
 - **Input Validation**: All inputs validated and sanitized
@@ -368,7 +367,7 @@ docker run -d \
 - **Rate Limiting**: Configurable request rate limits
 - **Security Headers**: Standard security headers included
 
-## 🧪 Testing
+## Testing
 
 ### **Run Tests**
 
@@ -391,7 +390,7 @@ pytest --cov=src --cov-report=html
 - **Performance Tests**: Load and stress testing
 - **Security Tests**: Vulnerability scanning
 
-## 📊 Monitoring & Analytics
+## Monitoring & Analytics
 
 ### **Health Monitoring**
 
@@ -419,7 +418,7 @@ curl http://localhost:8000/stats
 curl http://localhost:8000/metrics
 ```
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 ### **Common Issues**
 
@@ -472,7 +471,7 @@ export LOG_LEVEL=DEBUG
 curl http://localhost:8000/health/detailed
 ```
 
-## 📄 Migration from Original System
+## Migration from Original System
 
 ### **Automatic Migration**
 
@@ -487,19 +486,6 @@ The clean system is designed to be a drop-in replacement:
 
 Old environment variables are automatically mapped to the new configuration system. No manual changes required.
 
-## 🤝 Contributing
-
-### **Development Workflow**
-
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/amazing-feature`
-3. Make your changes
-4. Run tests: `make test`
-5. Format code: `make format`
-6. Commit changes: `git commit -m 'Add amazing feature'`
-7. Push to branch: `git push origin feature/amazing-feature`
-8. Open a Pull Request
-
 ### **Code Standards**
 
 - **Python**: Follow PEP 8 with 120 character line limit
@@ -507,22 +493,3 @@ Old environment variables are automatically mapped to the new configuration syst
 - **Documentation**: Docstrings for all public methods
 - **Testing**: Minimum 80% test coverage
 - **Logging**: Structured logging with appropriate levels
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **FastAPI**: For the excellent web framework
-- **spaCy**: For natural language processing capabilities
-- **Whisper**: For state-of-the-art audio transcription
-- **PostgreSQL**: For reliable data storage
-- **Docker**: For containerization and deployment
-- **Celery**: For distributed task processing
-
----
-
-**EXPLAINIUM Clean** - Professional knowledge extraction made simple and efficient.
-
-For support, please open an issue on GitHub or contact the development team.
