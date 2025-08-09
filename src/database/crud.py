@@ -1,615 +1,944 @@
+"""
+EXPLAINIUM - Consolidated CRUD Operations
+
+Clean, professional database operations that provide a comprehensive
+interface for all database interactions with proper error handling.
+"""
+
+import logging
+from typing import List, Optional, Dict, Any, Union
+from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import SQLAlchemyError, IntegrityError
-from sqlalchemy import and_, or_, func, text
-from contextlib import contextmanager
-from typing import List, Dict, Any, Optional, Union, Tuple
-from src.database.models import Document, ExtractedEntity, KeyPhrase, Equipment, Procedure, SafetyInformation, TechnicalSpecification, Personnel
-from src.database.database import get_db_session
-from src.exceptions import DatabaseError, ValidationError
-from src.logging_config import get_logger, log_error
-from datetime import datetime
-import time
+from sqlalchemy import and_, or_, func, desc, asc, text
+from sqlalchemy.exc import SQLAlchemyError
 
-logger = get_logger(__name__)
+from src.database.models import (
+    Document, Process, DecisionPoint, ComplianceItem, RiskAssessment,
+    KnowledgeEntity, ProcessingTask, SystemMetrics,
+    KnowledgeDomain, HierarchyLevel, CriticalityLevel,
+    ComplianceStatus, RiskLevel, ProcessingStatus
+)
 
-class TransactionManager:
-    """Context manager for database transactions with proper error handling."""
-    
-    def __init__(self, db: Session):
-        self.db = db
-        self.start_time = None
-    
-    def __enter__(self):
-        self.start_time = time.time()
-        logger.debug("Starting database transaction")
-        return self.db
-    
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        duration = time.time() - self.start_time
-        
-        if exc_type is not None:
-            logger.error(f"Transaction failed after {duration:.3f}s, rolling back: {exc_val}")
-            try:
-                self.db.rollback()
-            except Exception as rollback_error:
-                logger.error(f"Rollback failed: {rollback_error}")
-            return False
-        else:
-            try:
-                self.db.commit()
-                logger.debug(f"Transaction committed successfully in {duration:.3f}s")
-            except Exception as commit_error:
-                logger.error(f"Commit failed after {duration:.3f}s: {commit_error}")
-                try:
-                    self.db.rollback()
-                except Exception as rollback_error:
-                    logger.error(f"Rollback after commit failure failed: {rollback_error}")
-                raise DatabaseError(
-                    "Transaction commit failed",
-                    operation="commit_transaction",
-                    details={"commit_error": str(commit_error)}
-                )
-        return True
+logger = logging.getLogger(__name__)
 
-@contextmanager
-def transaction_scope(db: Session):
-    """Context manager for database transactions."""
-    with TransactionManager(db):
-        yield db
 
-class BulkOperations:
-    """Utility class for bulk database operations."""
-    
-    @staticmethod
-    def bulk_insert_entities(db: Session, document_id: int, entities: List[Dict[str, Any]]) -> List[ExtractedEntity]:
-        """Bulk insert extracted entities for a document."""
-        if not entities:
-            return []
-        
-        try:
-            with transaction_scope(db):
-                db_entities = []
-                for entity_data in entities:
-                    # Validate entity data
-                    if not entity_data.get('text') or not entity_data.get('entity_type'):
-                        logger.warning(f"Skipping invalid entity data: {entity_data}")
-                        continue
-                    
-                    db_entity = ExtractedEntity(
-                        document_id=document_id,
-                        text=entity_data['text'].strip(),
-                        entity_type=entity_data['entity_type'].strip(),
-                        score=entity_data.get('score', 0.0),
-                        start_char=entity_data.get('start_char', 0),
-                        end_char=entity_data.get('end_char', 0)
-                    )
-                    db_entities.append(db_entity)
-                
-                if db_entities:
-                    db.add_all(db_entities)
-                    db.flush()  # Flush to get IDs without committing
-                    
-                    logger.info(f"Bulk inserted {len(db_entities)} entities for document {document_id}")
-                
-                return db_entities
-                
-        except SQLAlchemyError as e:
-            raise DatabaseError(
-                f"Bulk insert entities failed for document {document_id}",
-                operation="bulk_insert_entities",
-                table="extracted_entities",
-                details={'document_id': document_id, 'entity_count': len(entities)}
-            ) from e
-    
-    @staticmethod
-    def bulk_insert_keyphrases(db: Session, document_id: int, phrases: List[str]) -> List[KeyPhrase]:
-        """Bulk insert keyphrases for a document."""
-        if not phrases:
-            return []
-        
-        try:
-            with transaction_scope(db):
-                db_phrases = []
-                for phrase in phrases:
-                    if phrase and phrase.strip():
-                        db_phrase = KeyPhrase(
-                            document_id=document_id,
-                            phrase=phrase.strip()
-                        )
-                        db_phrases.append(db_phrase)
-                
-                if db_phrases:
-                    db.add_all(db_phrases)
-                    db.flush()
-                    
-                    logger.info(f"Bulk inserted {len(db_phrases)} keyphrases for document {document_id}")
-                
-                return db_phrases
-                
-        except SQLAlchemyError as e:
-            raise DatabaseError(
-                f"Bulk insert keyphrases failed for document {document_id}",
-                operation="bulk_insert_keyphrases",
-                table="key_phrases",
-                details={'document_id': document_id, 'phrase_count': len(phrases)}
-            ) from e
-    
-    @staticmethod
-    def bulk_insert_equipment(db: Session, document_id: int, equipment_list: List[Dict[str, Any]]) -> List[Equipment]:
-        """Bulk insert equipment for a document."""
-        if not equipment_list:
-            return []
-        
-        try:
-            with transaction_scope(db):
-                db_equipment = []
-                for equipment_data in equipment_list:
-                    if not equipment_data.get('name') or not equipment_data.get('type'):
-                        logger.warning(f"Skipping invalid equipment data: {equipment_data}")
-                        continue
-                    
-                    db_equip = Equipment(
-                        document_id=document_id,
-                        name=equipment_data['name'],
-                        type=equipment_data['type'],
-                        specifications=equipment_data.get('specifications', {}),
-                        location=equipment_data.get('location'),
-                        confidence=equipment_data.get('confidence')
-                    )
-                    db_equipment.append(db_equip)
-                
-                if db_equipment:
-                    db.add_all(db_equipment)
-                    db.flush()
-                    
-                    logger.info(f"Bulk inserted {len(db_equipment)} equipment items for document {document_id}")
-                
-                return db_equipment
-                
-        except SQLAlchemyError as e:
-            raise DatabaseError(
-                f"Bulk insert equipment failed for document {document_id}",
-                operation="bulk_insert_equipment",
-                table="equipment",
-                details={'document_id': document_id, 'equipment_count': len(equipment_list)}
-            ) from e
+class CRUDError(Exception):
+    """Custom exception for CRUD operations"""
+    pass
 
-class PaginatedQuery:
-    """Utility class for paginated database queries."""
-    
-    @staticmethod
-    def paginate(query, page: int = 1, per_page: int = 20) -> Dict[str, Any]:
-        """Apply pagination to a query and return results with metadata."""
-        if page < 1:
-            page = 1
-        if per_page < 1 or per_page > 100:
-            per_page = 20
-        
-        total = query.count()
-        items = query.offset((page - 1) * per_page).limit(per_page).all()
-        
-        return {
-            'items': items,
-            'total': total,
-            'page': page,
-            'per_page': per_page,
-            'pages': (total + per_page - 1) // per_page,
-            'has_prev': page > 1,
-            'has_next': page * per_page < total
-        }
 
-def create_document(db: Session, filename: str, file_type: str, extracted_text: str, metadata_json: dict, classification_category: str, classification_score: float, status: str, document_sections: dict):
-    """Create a new document with proper transaction management."""
-    # Validate inputs
-    if not filename or not filename.strip():
-        raise ValidationError("Filename cannot be empty", field="filename")
-    
-    if not file_type or not file_type.strip():
-        raise ValidationError("File type cannot be empty", field="file_type")
-    
-    if classification_score < 0 or classification_score > 1:
-        raise ValidationError(
-            "Classification score must be between 0 and 1",
-            field="classification_score",
-            value=classification_score
-        )
-    
-    try:
-        with transaction_scope(db):
-            db_document = Document(
-                filename=filename,
-                file_type=file_type,
-                extracted_text=extracted_text or "",
-                metadata_json=metadata_json or {},
-                classification_category=classification_category or "unclassified",
-                classification_score=classification_score,
-                status=status,
-                processing_timestamp=datetime.utcnow(),
-                document_sections=document_sections or {},
-                processing_started_at=datetime.utcnow() if status == "processing" else None
-            )
-            
-            db.add(db_document)
-            db.flush()  # Get the ID without committing
-            
-            logger.info(
-                f"Document created successfully: {filename}",
-                extra={'document_id': db_document.id, 'uploaded_filename': filename, 'file_type': file_type}
-            )
-            
-            return db_document
-        
-    except IntegrityError as e:
-        raise DatabaseError(
-            f"Database integrity error creating document: {filename}",
-            operation="create_document",
-            table="documents",
-            details={'uploaded_filename': filename, 'integrity_error': str(e)}
-        ) from e
-    except SQLAlchemyError as e:
-        raise DatabaseError(
-            f"Database error creating document: {filename}",
-            operation="create_document",
-            table="documents",
-            details={'uploaded_filename': filename}
-        ) from e
-
-def create_document_with_entities(
-    db: Session, 
-    filename: str, 
-    file_type: str, 
-    extracted_text: str, 
-    metadata_json: dict, 
-    classification_category: str, 
-    classification_score: float, 
-    status: str, 
-    document_sections: dict,
-    entities: List[Dict[str, Any]] = None,
-    keyphrases: List[str] = None,
-    equipment_list: List[Dict[str, Any]] = None
+# Document CRUD Operations
+def create_document(
+    db: Session,
+    filename: str,
+    file_path: str,
+    file_size: int,
+    content_type: str,
+    file_hash: Optional[str] = None,
+    uploaded_by: Optional[str] = None
 ) -> Document:
-    """Create a document with all related entities in a single transaction."""
+    """Create a new document record"""
     try:
-        with transaction_scope(db):
-            # Create the document
-            db_document = Document(
-                filename=filename,
-                file_type=file_type,
-                extracted_text=extracted_text or "",
-                metadata_json=metadata_json or {},
-                classification_category=classification_category or "unclassified",
-                classification_score=classification_score,
-                status=status,
-                processing_timestamp=datetime.utcnow(),
-                document_sections=document_sections or {},
-                processing_started_at=datetime.utcnow() if status == "processing" else None
-            )
-            
-            db.add(db_document)
-            db.flush()  # Get the document ID
-            
-            # Bulk insert related entities
-            if entities:
-                BulkOperations.bulk_insert_entities(db, db_document.id, entities)
-            
-            if keyphrases:
-                BulkOperations.bulk_insert_keyphrases(db, db_document.id, keyphrases)
-            
-            if equipment_list:
-                BulkOperations.bulk_insert_equipment(db, db_document.id, equipment_list)
-            
-            logger.info(
-                f"Document with entities created successfully: {filename}",
-                extra={
-                    'document_id': db_document.id, 
-                    'uploaded_filename': filename, 
-                    'entity_count': len(entities) if entities else 0,
-                    'keyphrase_count': len(keyphrases) if keyphrases else 0,
-                    'equipment_count': len(equipment_list) if equipment_list else 0
-                }
-            )
-            
-            return db_document
-            
-    except Exception as e:
-        logger.error(f"Failed to create document with entities: {filename}, error: {e}")
-        raise
+        document = Document(
+            filename=filename,
+            original_filename=filename,
+            file_path=file_path,
+            file_size=file_size,
+            content_type=content_type,
+            file_hash=file_hash,
+            uploaded_by=uploaded_by,
+            processing_status=ProcessingStatus.PENDING
+        )
+        db.add(document)
+        db.commit()
+        db.refresh(document)
+        logger.info(f"Created document: {filename} (ID: {document.id})")
+        return document
+    except SQLAlchemyError as e:
+        db.rollback()
+        logger.error(f"Failed to create document: {e}")
+        raise CRUDError(f"Failed to create document: {str(e)}")
 
-def create_extracted_entity(db: Session, document_id: int, text: str, entity_type: str, score: float, start_char: int, end_char: int):
-    """Create a single extracted entity with proper transaction management."""
-    # Validate inputs
-    if not text or not text.strip():
-        raise ValidationError("Entity text cannot be empty", field="text")
-    
-    if not entity_type or not entity_type.strip():
-        raise ValidationError("Entity type cannot be empty", field="entity_type")
-    
-    if score < 0 or score > 1:
-        raise ValidationError(
-            "Entity score must be between 0 and 1",
-            field="score",
-            value=score
-        )
-    
-    if start_char < 0 or end_char < 0 or start_char >= end_char:
-        raise ValidationError(
-            "Invalid character positions",
-            field="character_positions",
-            details={'start_char': start_char, 'end_char': end_char}
-        )
-    
+
+def get_document(db: Session, document_id: int) -> Optional[Document]:
+    """Get document by ID"""
     try:
-        with transaction_scope(db):
-            db_entity = ExtractedEntity(
-                document_id=document_id,
-                text=text.strip(),
-                entity_type=entity_type.strip(),
-                score=score,
-                start_char=start_char,
-                end_char=end_char
-            )
-            
-            db.add(db_entity)
-            db.flush()
-            return db_entity
+        return db.query(Document).filter(Document.id == document_id).first()
+    except SQLAlchemyError as e:
+        logger.error(f"Failed to get document {document_id}: {e}")
+        raise CRUDError(f"Failed to get document: {str(e)}")
+
+
+def get_documents(
+    db: Session,
+    skip: int = 0,
+    limit: int = 100,
+    status: Optional[ProcessingStatus] = None,
+    uploaded_by: Optional[str] = None
+) -> List[Document]:
+    """Get documents with optional filtering"""
+    try:
+        query = db.query(Document)
         
-    except IntegrityError as e:
-        raise DatabaseError(
-            f"Database integrity error creating entity for document {document_id}",
-            operation="create_extracted_entity",
-            table="extracted_entities",
-            details={'document_id': document_id, 'text': text, 'integrity_error': str(e)}
-        ) from e
+        if status:
+            query = query.filter(Document.processing_status == status)
+        if uploaded_by:
+            query = query.filter(Document.uploaded_by == uploaded_by)
+        
+        return query.order_by(desc(Document.uploaded_at)).offset(skip).limit(limit).all()
     except SQLAlchemyError as e:
-        raise DatabaseError(
-            f"Database error creating entity for document {document_id}",
-            operation="create_extracted_entity",
-            table="extracted_entities",
-            details={'document_id': document_id, 'text': text}
-        ) from e
+        logger.error(f"Failed to get documents: {e}")
+        raise CRUDError(f"Failed to get documents: {str(e)}")
 
-def create_key_phrase(db: Session, document_id: int, phrase: str):
-    """Create a single keyphrase with transaction management."""
+
+def update_document_status(
+    db: Session,
+    document_id: int,
+    status: ProcessingStatus,
+    error_message: Optional[str] = None
+) -> Optional[Document]:
+    """Update document processing status"""
     try:
-        with transaction_scope(db):
-            db_key_phrase = KeyPhrase(
-                document_id=document_id,
-                phrase=phrase
-            )
-            db.add(db_key_phrase)
-            db.flush()
-            return db_key_phrase
+        document = db.query(Document).filter(Document.id == document_id).first()
+        if not document:
+            return None
+        
+        document.processing_status = status
+        if status == ProcessingStatus.PROCESSING:
+            document.processing_started_at = datetime.now()
+        elif status in [ProcessingStatus.COMPLETED, ProcessingStatus.FAILED]:
+            document.processing_completed_at = datetime.now()
+        
+        if error_message:
+            document.processing_error = error_message
+        
+        db.commit()
+        db.refresh(document)
+        return document
     except SQLAlchemyError as e:
-        raise DatabaseError(
-            f"Database error creating keyphrase for document {document_id}",
-            operation="create_key_phrase",
-            table="key_phrases"
-        ) from e
-
-def create_equipment(db: Session, document_id: int, name: str, type: str, specifications: dict, location: str = None, confidence: float = None):
-    """Create equipment with transaction management."""
-    try:
-        with transaction_scope(db):
-            db_equipment = Equipment(
-                document_id=document_id,
-                name=name,
-                type=type,
-                specifications=specifications,
-                location=location,
-                confidence=confidence
-            )
-            db.add(db_equipment)
-            db.flush()
-            return db_equipment
-    except SQLAlchemyError as e:
-        raise DatabaseError(
-            f"Database error creating equipment for document {document_id}",
-            operation="create_equipment",
-            table="equipment"
-        ) from e
-
-def create_procedure(db: Session, document_id: int, title: str, steps: list, category: str = None, confidence: float = None):
-    """Create procedure with transaction management."""
-    try:
-        with transaction_scope(db):
-            db_procedure = Procedure(
-                document_id=document_id,
-                title=title,
-                steps=steps,
-                category=category,
-                confidence=confidence
-            )
-            db.add(db_procedure)
-            db.flush()
-            return db_procedure
-    except SQLAlchemyError as e:
-        raise DatabaseError(
-            f"Database error creating procedure for document {document_id}",
-            operation="create_procedure",
-            table="procedures"
-        ) from e
-
-def create_safety_information(db: Session, document_id: int, hazard: str, precaution: str, ppe_required: str, severity: str = None, confidence: float = None):
-    """Create safety information with transaction management."""
-    try:
-        with transaction_scope(db):
-            db_safety_info = SafetyInformation(
-                document_id=document_id,
-                hazard=hazard,
-                precaution=precaution,
-                ppe_required=ppe_required,
-                severity=severity,
-                confidence=confidence
-            )
-            db.add(db_safety_info)
-            db.flush()
-            return db_safety_info
-    except SQLAlchemyError as e:
-        raise DatabaseError(
-            f"Database error creating safety information for document {document_id}",
-            operation="create_safety_information",
-            table="safety_information"
-        ) from e
-
-def create_technical_specification(db: Session, document_id: int, parameter: str, value: str, unit: str = None, tolerance: str = None, confidence: float = None):
-    """Create technical specification with transaction management."""
-    try:
-        with transaction_scope(db):
-            db_tech_spec = TechnicalSpecification(
-                document_id=document_id,
-                parameter=parameter,
-                value=value,
-                unit=unit,
-                tolerance=tolerance,
-                confidence=confidence
-            )
-            db.add(db_tech_spec)
-            db.flush()
-            return db_tech_spec
-    except SQLAlchemyError as e:
-        raise DatabaseError(
-            f"Database error creating technical specification for document {document_id}",
-            operation="create_technical_specification",
-            table="technical_specifications"
-        ) from e
-
-def create_personnel(db: Session, document_id: int, name: str, role: str, responsibilities: str = None, certifications: list = None, confidence: float = None):
-    """Create personnel with transaction management."""
-    try:
-        with transaction_scope(db):
-            db_personnel = Personnel(
-                document_id=document_id,
-                name=name,
-                role=role,
-                responsibilities=responsibilities,
-                certifications=certifications,
-                confidence=confidence
-            )
-            db.add(db_personnel)
-            db.flush()
-            return db_personnel
-    except SQLAlchemyError as e:
-        raise DatabaseError(
-            f"Database error creating personnel for document {document_id}",
-            operation="create_personnel",
-            table="personnel"
-        ) from e
-
-# Enhanced query functions with pagination and filtering
-
-def get_documents(db: Session, page: int = 1, per_page: int = 20, status: str = None, file_type: str = None) -> Dict[str, Any]:
-    """Get documents with pagination and optional filtering."""
-    query = db.query(Document)
-    
-    if status:
-        query = query.filter(Document.status == status)
-    if file_type:
-        query = query.filter(Document.file_type == file_type)
-    
-    query = query.order_by(Document.processing_timestamp.desc())
-    
-    return PaginatedQuery.paginate(query, page, per_page)
-
-def get_document_by_id(db: Session, document_id: int) -> Optional[Document]:
-    """Get a document by ID with all related entities."""
-    return db.query(Document).filter(Document.id == document_id).first()
-
-def update_document_status(db: Session, document_id: int, status: str, error_message: str = None) -> bool:
-    """Update document status with transaction management."""
-    try:
-        with transaction_scope(db):
-            document = db.query(Document).filter(Document.id == document_id).first()
-            if not document:
-                return False
-            
-            document.status = status
-            if error_message:
-                document.last_error = error_message
-            
-            if status == "processing":
-                document.processing_started_at = datetime.utcnow()
-            elif status in ["processed", "failed"]:
-                document.processing_completed_at = datetime.utcnow()
-                if document.processing_started_at:
-                    duration = (document.processing_completed_at - document.processing_started_at).total_seconds()
-                    document.processing_duration_seconds = duration
-            
-            db.flush()
-            return True
-            
-    except SQLAlchemyError as e:
+        db.rollback()
         logger.error(f"Failed to update document status: {e}")
-        return False
+        raise CRUDError(f"Failed to update document status: {str(e)}")
 
-def increment_document_retry_count(db: Session, document_id: int) -> bool:
-    """Increment document retry count."""
-    try:
-        with transaction_scope(db):
-            document = db.query(Document).filter(Document.id == document_id).first()
-            if not document:
-                return False
-            
-            document.retry_count = (document.retry_count or 0) + 1
-            db.flush()
-            return True
-            
-    except SQLAlchemyError as e:
-        logger.error(f"Failed to increment retry count: {e}")
-        return False
 
-def get_processing_statistics(db: Session) -> Dict[str, Any]:
-    """Get processing statistics across all documents."""
+def delete_document(db: Session, document_id: int) -> bool:
+    """Delete document and all related records"""
     try:
-        stats = {}
+        document = db.query(Document).filter(Document.id == document_id).first()
+        if not document:
+            return False
         
-        # Document counts by status
-        status_counts = db.query(
-            Document.status, 
-            func.count(Document.id)
-        ).group_by(Document.status).all()
-        
-        stats['status_counts'] = {status: count for status, count in status_counts}
-        
-        # Average processing time
-        avg_duration = db.query(
-            func.avg(Document.processing_duration_seconds)
-        ).filter(Document.processing_duration_seconds.isnot(None)).scalar()
-        
-        stats['average_processing_time_seconds'] = float(avg_duration) if avg_duration else 0
-        
-        # Documents with retries
-        retry_count = db.query(func.count(Document.id)).filter(Document.retry_count > 0).scalar()
-        stats['documents_with_retries'] = retry_count
-        
-        # Total entities extracted
-        entity_count = db.query(func.count(ExtractedEntity.id)).scalar()
-        stats['total_entities_extracted'] = entity_count
-        
-        return stats
-        
+        db.delete(document)
+        db.commit()
+        logger.info(f"Deleted document: {document_id}")
+        return True
     except SQLAlchemyError as e:
-        logger.error(f"Failed to get processing statistics: {e}")
-        return {"error": str(e)}
-
-def delete_document_cascade(db: Session, document_id: int) -> bool:
-    """Delete a document and all related entities in a single transaction."""
-    try:
-        with transaction_scope(db):
-            document = db.query(Document).filter(Document.id == document_id).first()
-            if not document:
-                return False
-            
-            # Delete related entities (handled by cascade in model relationships)
-            db.delete(document)
-            db.flush()
-            
-            logger.info(f"Document {document_id} and all related entities deleted successfully")
-            return True
-            
-    except SQLAlchemyError as e:
+        db.rollback()
         logger.error(f"Failed to delete document {document_id}: {e}")
-        raise DatabaseError(
-            f"Failed to delete document {document_id}",
-            operation="delete_document_cascade",
-            table="documents"
-        ) from e
+        raise CRUDError(f"Failed to delete document: {str(e)}")
+
+
+# Process CRUD Operations
+def create_process(
+    db: Session,
+    document_id: int,
+    name: str,
+    description: str,
+    domain: KnowledgeDomain,
+    hierarchy_level: HierarchyLevel,
+    criticality: CriticalityLevel,
+    confidence: float,
+    steps: Optional[List[str]] = None,
+    prerequisites: Optional[List[str]] = None,
+    success_criteria: Optional[List[str]] = None,
+    responsible_parties: Optional[List[str]] = None,
+    estimated_duration: Optional[str] = None,
+    frequency: Optional[str] = None,
+    source_text: Optional[str] = None,
+    source_page: Optional[int] = None
+) -> Process:
+    """Create a new process record"""
+    try:
+        process = Process(
+            document_id=document_id,
+            name=name,
+            description=description,
+            domain=domain,
+            hierarchy_level=hierarchy_level,
+            criticality=criticality,
+            confidence=confidence,
+            steps=steps or [],
+            prerequisites=prerequisites or [],
+            success_criteria=success_criteria or [],
+            responsible_parties=responsible_parties or [],
+            estimated_duration=estimated_duration,
+            frequency=frequency,
+            source_text=source_text,
+            source_page=source_page
+        )
+        db.add(process)
+        db.commit()
+        db.refresh(process)
+        logger.info(f"Created process: {name} (ID: {process.id})")
+        return process
+    except SQLAlchemyError as e:
+        db.rollback()
+        logger.error(f"Failed to create process: {e}")
+        raise CRUDError(f"Failed to create process: {str(e)}")
+
+
+def get_processes(
+    db: Session,
+    skip: int = 0,
+    limit: int = 100,
+    domain: Optional[str] = None,
+    hierarchy_level: Optional[str] = None,
+    confidence_threshold: float = 0.0,
+    document_id: Optional[int] = None
+) -> List[Process]:
+    """Get processes with optional filtering"""
+    try:
+        query = db.query(Process)
+        
+        if document_id:
+            query = query.filter(Process.document_id == document_id)
+        if domain:
+            query = query.filter(Process.domain == KnowledgeDomain(domain))
+        if hierarchy_level:
+            query = query.filter(Process.hierarchy_level == HierarchyLevel(hierarchy_level))
+        if confidence_threshold > 0:
+            query = query.filter(Process.confidence >= confidence_threshold)
+        
+        return query.order_by(desc(Process.confidence)).offset(skip).limit(limit).all()
+    except SQLAlchemyError as e:
+        logger.error(f"Failed to get processes: {e}")
+        raise CRUDError(f"Failed to get processes: {str(e)}")
+
+
+def get_process(db: Session, process_id: int) -> Optional[Process]:
+    """Get process by ID"""
+    try:
+        return db.query(Process).filter(Process.id == process_id).first()
+    except SQLAlchemyError as e:
+        logger.error(f"Failed to get process {process_id}: {e}")
+        raise CRUDError(f"Failed to get process: {str(e)}")
+
+
+def update_process(
+    db: Session,
+    process_id: int,
+    **kwargs
+) -> Optional[Process]:
+    """Update process fields"""
+    try:
+        process = db.query(Process).filter(Process.id == process_id).first()
+        if not process:
+            return None
+        
+        for key, value in kwargs.items():
+            if hasattr(process, key):
+                setattr(process, key, value)
+        
+        process.last_updated = datetime.now()
+        db.commit()
+        db.refresh(process)
+        return process
+    except SQLAlchemyError as e:
+        db.rollback()
+        logger.error(f"Failed to update process {process_id}: {e}")
+        raise CRUDError(f"Failed to update process: {str(e)}")
+
+
+def delete_process(db: Session, process_id: int) -> bool:
+    """Delete process"""
+    try:
+        process = db.query(Process).filter(Process.id == process_id).first()
+        if not process:
+            return False
+        
+        db.delete(process)
+        db.commit()
+        logger.info(f"Deleted process: {process_id}")
+        return True
+    except SQLAlchemyError as e:
+        db.rollback()
+        logger.error(f"Failed to delete process {process_id}: {e}")
+        raise CRUDError(f"Failed to delete process: {str(e)}")
+
+
+# Decision Point CRUD Operations
+def create_decision_point(
+    db: Session,
+    document_id: int,
+    name: str,
+    description: str,
+    decision_type: str,
+    criteria: Dict[str, Any],
+    outcomes: List[Dict[str, Any]],
+    authority_level: str,
+    confidence: float,
+    escalation_path: Optional[str] = None,
+    source_text: Optional[str] = None,
+    source_page: Optional[int] = None
+) -> DecisionPoint:
+    """Create a new decision point record"""
+    try:
+        decision_point = DecisionPoint(
+            document_id=document_id,
+            name=name,
+            description=description,
+            decision_type=decision_type,
+            criteria=criteria,
+            outcomes=outcomes,
+            authority_level=authority_level,
+            escalation_path=escalation_path,
+            confidence=confidence,
+            source_text=source_text,
+            source_page=source_page
+        )
+        db.add(decision_point)
+        db.commit()
+        db.refresh(decision_point)
+        logger.info(f"Created decision point: {name} (ID: {decision_point.id})")
+        return decision_point
+    except SQLAlchemyError as e:
+        db.rollback()
+        logger.error(f"Failed to create decision point: {e}")
+        raise CRUDError(f"Failed to create decision point: {str(e)}")
+
+
+def get_decision_points(
+    db: Session,
+    skip: int = 0,
+    limit: int = 100,
+    document_id: Optional[int] = None,
+    decision_type: Optional[str] = None,
+    confidence_threshold: float = 0.0
+) -> List[DecisionPoint]:
+    """Get decision points with optional filtering"""
+    try:
+        query = db.query(DecisionPoint)
+        
+        if document_id:
+            query = query.filter(DecisionPoint.document_id == document_id)
+        if decision_type:
+            query = query.filter(DecisionPoint.decision_type == decision_type)
+        if confidence_threshold > 0:
+            query = query.filter(DecisionPoint.confidence >= confidence_threshold)
+        
+        return query.order_by(desc(DecisionPoint.confidence)).offset(skip).limit(limit).all()
+    except SQLAlchemyError as e:
+        logger.error(f"Failed to get decision points: {e}")
+        raise CRUDError(f"Failed to get decision points: {str(e)}")
+
+
+# Compliance Item CRUD Operations
+def create_compliance_item(
+    db: Session,
+    document_id: int,
+    regulation_name: str,
+    requirement: str,
+    status: ComplianceStatus,
+    confidence: float,
+    regulation_section: Optional[str] = None,
+    regulation_authority: Optional[str] = None,
+    requirement_type: Optional[str] = None,
+    responsible_party: Optional[str] = None,
+    review_frequency: Optional[str] = None,
+    next_review_date: Optional[datetime] = None,
+    source_text: Optional[str] = None,
+    source_page: Optional[int] = None
+) -> ComplianceItem:
+    """Create a new compliance item record"""
+    try:
+        compliance_item = ComplianceItem(
+            document_id=document_id,
+            regulation_name=regulation_name,
+            regulation_section=regulation_section,
+            regulation_authority=regulation_authority,
+            requirement=requirement,
+            requirement_type=requirement_type,
+            status=status,
+            responsible_party=responsible_party,
+            review_frequency=review_frequency,
+            next_review_date=next_review_date,
+            confidence=confidence,
+            source_text=source_text,
+            source_page=source_page
+        )
+        db.add(compliance_item)
+        db.commit()
+        db.refresh(compliance_item)
+        logger.info(f"Created compliance item: {regulation_name} (ID: {compliance_item.id})")
+        return compliance_item
+    except SQLAlchemyError as e:
+        db.rollback()
+        logger.error(f"Failed to create compliance item: {e}")
+        raise CRUDError(f"Failed to create compliance item: {str(e)}")
+
+
+def get_compliance_items(
+    db: Session,
+    skip: int = 0,
+    limit: int = 100,
+    document_id: Optional[int] = None,
+    status: Optional[ComplianceStatus] = None,
+    regulation_authority: Optional[str] = None,
+    review_due_days: Optional[int] = None
+) -> List[ComplianceItem]:
+    """Get compliance items with optional filtering"""
+    try:
+        query = db.query(ComplianceItem)
+        
+        if document_id:
+            query = query.filter(ComplianceItem.document_id == document_id)
+        if status:
+            query = query.filter(ComplianceItem.status == status)
+        if regulation_authority:
+            query = query.filter(ComplianceItem.regulation_authority == regulation_authority)
+        if review_due_days is not None:
+            due_date = datetime.now() + timedelta(days=review_due_days)
+            query = query.filter(ComplianceItem.next_review_date <= due_date)
+        
+        return query.order_by(asc(ComplianceItem.next_review_date)).offset(skip).limit(limit).all()
+    except SQLAlchemyError as e:
+        logger.error(f"Failed to get compliance items: {e}")
+        raise CRUDError(f"Failed to get compliance items: {str(e)}")
+
+
+def update_compliance_status(
+    db: Session,
+    compliance_id: int,
+    status: ComplianceStatus,
+    next_review_date: Optional[datetime] = None
+) -> Optional[ComplianceItem]:
+    """Update compliance item status"""
+    try:
+        compliance_item = db.query(ComplianceItem).filter(ComplianceItem.id == compliance_id).first()
+        if not compliance_item:
+            return None
+        
+        compliance_item.status = status
+        compliance_item.last_review_date = datetime.now()
+        if next_review_date:
+            compliance_item.next_review_date = next_review_date
+        compliance_item.last_updated = datetime.now()
+        
+        db.commit()
+        db.refresh(compliance_item)
+        return compliance_item
+    except SQLAlchemyError as e:
+        db.rollback()
+        logger.error(f"Failed to update compliance status: {e}")
+        raise CRUDError(f"Failed to update compliance status: {str(e)}")
+
+
+# Risk Assessment CRUD Operations
+def create_risk_assessment(
+    db: Session,
+    document_id: int,
+    hazard: str,
+    risk_description: str,
+    likelihood: str,
+    impact: str,
+    overall_risk_level: RiskLevel,
+    confidence: float,
+    hazard_category: Optional[str] = None,
+    mitigation_strategies: Optional[List[str]] = None,
+    control_measures: Optional[List[str]] = None,
+    monitoring_requirements: Optional[str] = None,
+    risk_owner: Optional[str] = None,
+    assessor: Optional[str] = None,
+    assessment_date: Optional[datetime] = None,
+    next_assessment_date: Optional[datetime] = None,
+    source_text: Optional[str] = None,
+    source_page: Optional[int] = None
+) -> RiskAssessment:
+    """Create a new risk assessment record"""
+    try:
+        risk_assessment = RiskAssessment(
+            document_id=document_id,
+            hazard=hazard,
+            hazard_category=hazard_category,
+            risk_description=risk_description,
+            likelihood=likelihood,
+            impact=impact,
+            overall_risk_level=overall_risk_level,
+            mitigation_strategies=mitigation_strategies or [],
+            control_measures=control_measures or [],
+            monitoring_requirements=monitoring_requirements,
+            risk_owner=risk_owner,
+            assessor=assessor,
+            confidence=confidence,
+            assessment_date=assessment_date or datetime.now(),
+            next_assessment_date=next_assessment_date,
+            source_text=source_text,
+            source_page=source_page
+        )
+        db.add(risk_assessment)
+        db.commit()
+        db.refresh(risk_assessment)
+        logger.info(f"Created risk assessment: {hazard} (ID: {risk_assessment.id})")
+        return risk_assessment
+    except SQLAlchemyError as e:
+        db.rollback()
+        logger.error(f"Failed to create risk assessment: {e}")
+        raise CRUDError(f"Failed to create risk assessment: {str(e)}")
+
+
+def get_risk_assessments(
+    db: Session,
+    skip: int = 0,
+    limit: int = 100,
+    document_id: Optional[int] = None,
+    overall_risk_level: Optional[RiskLevel] = None,
+    hazard_category: Optional[str] = None,
+    assessment_due_days: Optional[int] = None
+) -> List[RiskAssessment]:
+    """Get risk assessments with optional filtering"""
+    try:
+        query = db.query(RiskAssessment)
+        
+        if document_id:
+            query = query.filter(RiskAssessment.document_id == document_id)
+        if overall_risk_level:
+            query = query.filter(RiskAssessment.overall_risk_level == overall_risk_level)
+        if hazard_category:
+            query = query.filter(RiskAssessment.hazard_category == hazard_category)
+        if assessment_due_days is not None:
+            due_date = datetime.now() + timedelta(days=assessment_due_days)
+            query = query.filter(RiskAssessment.next_assessment_date <= due_date)
+        
+        return query.order_by(desc(RiskAssessment.overall_risk_level)).offset(skip).limit(limit).all()
+    except SQLAlchemyError as e:
+        logger.error(f"Failed to get risk assessments: {e}")
+        raise CRUDError(f"Failed to get risk assessments: {str(e)}")
+
+
+# Knowledge Entity CRUD Operations
+def create_knowledge_entity(
+    db: Session,
+    document_id: int,
+    text: str,
+    label: str,
+    confidence: float,
+    start_position: Optional[int] = None,
+    end_position: Optional[int] = None,
+    context: Optional[str] = None,
+    extraction_method: Optional[str] = None
+) -> KnowledgeEntity:
+    """Create a new knowledge entity record"""
+    try:
+        entity = KnowledgeEntity(
+            document_id=document_id,
+            text=text,
+            label=label,
+            confidence=confidence,
+            start_position=start_position,
+            end_position=end_position,
+            context=context,
+            extraction_method=extraction_method
+        )
+        db.add(entity)
+        db.commit()
+        db.refresh(entity)
+        return entity
+    except SQLAlchemyError as e:
+        db.rollback()
+        logger.error(f"Failed to create knowledge entity: {e}")
+        raise CRUDError(f"Failed to create knowledge entity: {str(e)}")
+
+
+def get_knowledge_entities(
+    db: Session,
+    skip: int = 0,
+    limit: int = 100,
+    document_id: Optional[int] = None,
+    label: Optional[str] = None,
+    confidence_threshold: float = 0.0
+) -> List[KnowledgeEntity]:
+    """Get knowledge entities with optional filtering"""
+    try:
+        query = db.query(KnowledgeEntity)
+        
+        if document_id:
+            query = query.filter(KnowledgeEntity.document_id == document_id)
+        if label:
+            query = query.filter(KnowledgeEntity.label == label)
+        if confidence_threshold > 0:
+            query = query.filter(KnowledgeEntity.confidence >= confidence_threshold)
+        
+        return query.order_by(desc(KnowledgeEntity.confidence)).offset(skip).limit(limit).all()
+    except SQLAlchemyError as e:
+        logger.error(f"Failed to get knowledge entities: {e}")
+        raise CRUDError(f"Failed to get knowledge entities: {str(e)}")
+
+
+# Processing Task CRUD Operations
+def create_processing_task(
+    db: Session,
+    task_id: str,
+    task_type: str,
+    document_id: Optional[int] = None,
+    total_steps: Optional[int] = None
+) -> ProcessingTask:
+    """Create a new processing task record"""
+    try:
+        task = ProcessingTask(
+            task_id=task_id,
+            document_id=document_id,
+            task_type=task_type,
+            status="pending",
+            total_steps=total_steps
+        )
+        db.add(task)
+        db.commit()
+        db.refresh(task)
+        return task
+    except SQLAlchemyError as e:
+        db.rollback()
+        logger.error(f"Failed to create processing task: {e}")
+        raise CRUDError(f"Failed to create processing task: {str(e)}")
+
+
+def update_task_progress(
+    db: Session,
+    task_id: str,
+    status: str,
+    progress_percentage: Optional[int] = None,
+    current_step: Optional[str] = None,
+    error_message: Optional[str] = None,
+    result: Optional[Dict[str, Any]] = None
+) -> Optional[ProcessingTask]:
+    """Update processing task progress"""
+    try:
+        task = db.query(ProcessingTask).filter(ProcessingTask.task_id == task_id).first()
+        if not task:
+            return None
+        
+        task.status = status
+        if progress_percentage is not None:
+            task.progress_percentage = progress_percentage
+        if current_step:
+            task.current_step = current_step
+        if error_message:
+            task.error_message = error_message
+        if result:
+            task.result = result
+        
+        if status == "running" and not task.started_at:
+            task.started_at = datetime.now()
+        elif status in ["completed", "failed"]:
+            task.completed_at = datetime.now()
+        
+        db.commit()
+        db.refresh(task)
+        return task
+    except SQLAlchemyError as e:
+        db.rollback()
+        logger.error(f"Failed to update task progress: {e}")
+        raise CRUDError(f"Failed to update task progress: {str(e)}")
+
+
+def get_processing_task(db: Session, task_id: str) -> Optional[ProcessingTask]:
+    """Get processing task by task ID"""
+    try:
+        return db.query(ProcessingTask).filter(ProcessingTask.task_id == task_id).first()
+    except SQLAlchemyError as e:
+        logger.error(f"Failed to get processing task {task_id}: {e}")
+        raise CRUDError(f"Failed to get processing task: {str(e)}")
+
+
+# Search and Analytics Operations
+def search_knowledge(
+    db: Session,
+    query: str,
+    domain: Optional[str] = None,
+    hierarchy_level: Optional[str] = None,
+    confidence_threshold: float = 0.7,
+    max_results: int = 50
+) -> List[Dict[str, Any]]:
+    """Search across all knowledge types"""
+    try:
+        results = []
+        
+        # Search processes
+        process_query = db.query(Process)
+        if domain:
+            process_query = process_query.filter(Process.domain == KnowledgeDomain(domain))
+        if hierarchy_level:
+            process_query = process_query.filter(Process.hierarchy_level == HierarchyLevel(hierarchy_level))
+        
+        process_query = process_query.filter(
+            and_(
+                Process.confidence >= confidence_threshold,
+                or_(
+                    Process.name.ilike(f"%{query}%"),
+                    Process.description.ilike(f"%{query}%")
+                )
+            )
+        )
+        
+        processes = process_query.limit(max_results // 4).all()
+        for process in processes:
+            results.append({
+                'type': 'process',
+                'id': process.id,
+                'name': process.name,
+                'description': process.description,
+                'domain': process.domain.value,
+                'hierarchy_level': process.hierarchy_level.value,
+                'confidence': process.confidence,
+                'document_id': process.document_id
+            })
+        
+        # Search decision points
+        decision_query = db.query(DecisionPoint).filter(
+            and_(
+                DecisionPoint.confidence >= confidence_threshold,
+                or_(
+                    DecisionPoint.name.ilike(f"%{query}%"),
+                    DecisionPoint.description.ilike(f"%{query}%")
+                )
+            )
+        )
+        
+        decisions = decision_query.limit(max_results // 4).all()
+        for decision in decisions:
+            results.append({
+                'type': 'decision_point',
+                'id': decision.id,
+                'name': decision.name,
+                'description': decision.description,
+                'decision_type': decision.decision_type,
+                'authority_level': decision.authority_level,
+                'confidence': decision.confidence,
+                'document_id': decision.document_id
+            })
+        
+        # Search compliance items
+        compliance_query = db.query(ComplianceItem).filter(
+            and_(
+                ComplianceItem.confidence >= confidence_threshold,
+                or_(
+                    ComplianceItem.regulation_name.ilike(f"%{query}%"),
+                    ComplianceItem.requirement.ilike(f"%{query}%")
+                )
+            )
+        )
+        
+        compliance_items = compliance_query.limit(max_results // 4).all()
+        for item in compliance_items:
+            results.append({
+                'type': 'compliance_item',
+                'id': item.id,
+                'regulation_name': item.regulation_name,
+                'requirement': item.requirement,
+                'status': item.status.value,
+                'confidence': item.confidence,
+                'document_id': item.document_id
+            })
+        
+        # Search risk assessments
+        risk_query = db.query(RiskAssessment).filter(
+            and_(
+                RiskAssessment.confidence >= confidence_threshold,
+                or_(
+                    RiskAssessment.hazard.ilike(f"%{query}%"),
+                    RiskAssessment.risk_description.ilike(f"%{query}%")
+                )
+            )
+        )
+        
+        risks = risk_query.limit(max_results // 4).all()
+        for risk in risks:
+            results.append({
+                'type': 'risk_assessment',
+                'id': risk.id,
+                'hazard': risk.hazard,
+                'risk_description': risk.risk_description,
+                'overall_risk_level': risk.overall_risk_level.value,
+                'confidence': risk.confidence,
+                'document_id': risk.document_id
+            })
+        
+        # Sort by confidence and limit results
+        results.sort(key=lambda x: x['confidence'], reverse=True)
+        return results[:max_results]
+        
+    except SQLAlchemyError as e:
+        logger.error(f"Failed to search knowledge: {e}")
+        raise CRUDError(f"Failed to search knowledge: {str(e)}")
+
+
+def get_knowledge_analytics(db: Session) -> Dict[str, Any]:
+    """Get knowledge analytics and statistics"""
+    try:
+        analytics = {}
+        
+        # Document statistics
+        total_documents = db.query(func.count(Document.id)).scalar()
+        completed_documents = db.query(func.count(Document.id)).filter(
+            Document.processing_status == ProcessingStatus.COMPLETED
+        ).scalar()
+        
+        analytics['documents'] = {
+            'total': total_documents,
+            'completed': completed_documents,
+            'completion_rate': (completed_documents / total_documents * 100) if total_documents > 0 else 0
+        }
+        
+        # Process statistics
+        process_stats = db.query(
+            Process.domain,
+            func.count(Process.id).label('count'),
+            func.avg(Process.confidence).label('avg_confidence')
+        ).group_by(Process.domain).all()
+        
+        analytics['processes'] = {
+            'total': db.query(func.count(Process.id)).scalar(),
+            'by_domain': {stat.domain.value: {'count': stat.count, 'avg_confidence': float(stat.avg_confidence)} 
+                         for stat in process_stats}
+        }
+        
+        # Compliance statistics
+        compliance_stats = db.query(
+            ComplianceItem.status,
+            func.count(ComplianceItem.id).label('count')
+        ).group_by(ComplianceItem.status).all()
+        
+        analytics['compliance'] = {
+            'total': db.query(func.count(ComplianceItem.id)).scalar(),
+            'by_status': {stat.status.value: stat.count for stat in compliance_stats}
+        }
+        
+        # Risk statistics
+        risk_stats = db.query(
+            RiskAssessment.overall_risk_level,
+            func.count(RiskAssessment.id).label('count')
+        ).group_by(RiskAssessment.overall_risk_level).all()
+        
+        analytics['risks'] = {
+            'total': db.query(func.count(RiskAssessment.id)).scalar(),
+            'by_level': {stat.overall_risk_level.value: stat.count for stat in risk_stats}
+        }
+        
+        return analytics
+        
+    except SQLAlchemyError as e:
+        logger.error(f"Failed to get knowledge analytics: {e}")
+        raise CRUDError(f"Failed to get knowledge analytics: {str(e)}")
+
+
+# Bulk operations
+def bulk_create_processes(db: Session, processes: List[Dict[str, Any]]) -> List[Process]:
+    """Bulk create processes"""
+    try:
+        process_objects = []
+        for process_data in processes:
+            process = Process(**process_data)
+            process_objects.append(process)
+        
+        db.add_all(process_objects)
+        db.commit()
+        
+        for process in process_objects:
+            db.refresh(process)
+        
+        logger.info(f"Bulk created {len(process_objects)} processes")
+        return process_objects
+        
+    except SQLAlchemyError as e:
+        db.rollback()
+        logger.error(f"Failed to bulk create processes: {e}")
+        raise CRUDError(f"Failed to bulk create processes: {str(e)}")
+
+
+def bulk_create_knowledge_entities(db: Session, entities: List[Dict[str, Any]]) -> List[KnowledgeEntity]:
+    """Bulk create knowledge entities"""
+    try:
+        entity_objects = []
+        for entity_data in entities:
+            entity = KnowledgeEntity(**entity_data)
+            entity_objects.append(entity)
+        
+        db.add_all(entity_objects)
+        db.commit()
+        
+        for entity in entity_objects:
+            db.refresh(entity)
+        
+        logger.info(f"Bulk created {len(entity_objects)} knowledge entities")
+        return entity_objects
+        
+    except SQLAlchemyError as e:
+        db.rollback()
+        logger.error(f"Failed to bulk create knowledge entities: {e}")
+        raise CRUDError(f"Failed to bulk create knowledge entities: {str(e)}")
+
+
+# Cleanup operations
+def cleanup_old_tasks(db: Session, days_old: int = 7) -> int:
+    """Clean up old completed processing tasks"""
+    try:
+        cutoff_date = datetime.now() - timedelta(days=days_old)
+        deleted_count = db.query(ProcessingTask).filter(
+            and_(
+                ProcessingTask.status.in_(["completed", "failed"]),
+                ProcessingTask.completed_at < cutoff_date
+            )
+        ).delete()
+        
+        db.commit()
+        logger.info(f"Cleaned up {deleted_count} old processing tasks")
+        return deleted_count
+        
+    except SQLAlchemyError as e:
+        db.rollback()
+        logger.error(f"Failed to cleanup old tasks: {e}")
+        raise CRUDError(f"Failed to cleanup old tasks: {str(e)}")
+
+
+def cleanup_orphaned_records(db: Session) -> Dict[str, int]:
+    """Clean up orphaned records (records without valid document references)"""
+    try:
+        cleanup_counts = {}
+        
+        # Find orphaned processes
+        orphaned_processes = db.query(Process).filter(
+            ~Process.document_id.in_(db.query(Document.id))
+        ).delete(synchronize_session=False)
+        cleanup_counts['processes'] = orphaned_processes
+        
+        # Find orphaned decision points
+        orphaned_decisions = db.query(DecisionPoint).filter(
+            ~DecisionPoint.document_id.in_(db.query(Document.id))
+        ).delete(synchronize_session=False)
+        cleanup_counts['decision_points'] = orphaned_decisions
+        
+        # Find orphaned compliance items
+        orphaned_compliance = db.query(ComplianceItem).filter(
+            ~ComplianceItem.document_id.in_(db.query(Document.id))
+        ).delete(synchronize_session=False)
+        cleanup_counts['compliance_items'] = orphaned_compliance
+        
+        # Find orphaned risk assessments
+        orphaned_risks = db.query(RiskAssessment).filter(
+            ~RiskAssessment.document_id.in_(db.query(Document.id))
+        ).delete(synchronize_session=False)
+        cleanup_counts['risk_assessments'] = orphaned_risks
+        
+        # Find orphaned knowledge entities
+        orphaned_entities = db.query(KnowledgeEntity).filter(
+            ~KnowledgeEntity.document_id.in_(db.query(Document.id))
+        ).delete(synchronize_session=False)
+        cleanup_counts['knowledge_entities'] = orphaned_entities
+        
+        db.commit()
+        logger.info(f"Cleaned up orphaned records: {cleanup_counts}")
+        return cleanup_counts
+        
+    except SQLAlchemyError as e:
+        db.rollback()
+        logger.error(f"Failed to cleanup orphaned records: {e}")
+        raise CRUDError(f"Failed to cleanup orphaned records: {str(e)}")

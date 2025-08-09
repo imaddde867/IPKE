@@ -1,61 +1,59 @@
-fastapi
-uvicorn
-celery
-redis
-python-multipart
-Pillow
-opencv-python
-PyMuPDF
-python-docx
-python-pptx
-ffmpeg-python
-openai-whisper
-requests
-transformers
-keybert
-psycopg2-binary
-SQLAlchemy
-elasticsearch
-pytest
-httpx
-spacy
-networkx
-alembic
+# EXPLAINIUM - Clean Dependencies
+# Consolidated and optimized dependency list with version pinning
 
-# Enhanced processing dependencies
-easyocr
-pytesseract
-pandas
-openpyxl
-PyPDF2
-torch
-torchvision
-torchaudio
-numpy
-scikit-learn
-matplotlib
-seaborn
+# Core Web Framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
 
-# Additional NLP and AI models
-sentence-transformers
-nltk
-textstat
-langdetect
+# Database
+sqlalchemy==2.0.23
+psycopg2-binary==2.9.9
+alembic==1.12.1
 
-# Image processing
-scikit-image
-imageio
+# Task Queue
+celery==5.3.4
+redis==5.0.1
 
-# Audio processing
-librosa
-soundfile
+# Document Processing
+python-multipart==0.0.6
+PyMuPDF==1.23.8
+python-docx==1.1.0
+python-pptx==0.6.23
+openpyxl==3.1.2
+pandas==2.1.3
 
-# Enhanced data processing
-xlrd
-xlsxwriter
-python-magic
-chardet
+# Image Processing & OCR
+Pillow==10.1.0
+opencv-python==4.8.1.78
+pytesseract==0.3.10
 
-# Advanced OCR and document analysis
-pdf2image
-pdfplumber
+# Audio/Video Processing
+whisper==1.1.10
+ffmpeg-python==0.2.0
+
+# AI & NLP
+torch==2.1.1
+transformers==4.35.2
+spacy==3.7.2
+sentence-transformers==2.2.2
+
+# Utilities
+requests==2.31.0
+python-magic==0.4.27
+chardet==5.2.0
+
+# Development & Testing
+pytest==7.4.3
+httpx==0.25.2
+
+# Optional: Enhanced OCR (uncomment if needed)
+# easyocr==1.7.0
+
+# Optional: Additional NLP (uncomment if needed)
+# nltk==3.8.1
+# textstat==0.7.3
+# langdetect==1.0.9
+
+# Optional: Scientific Computing (uncomment if needed)
+# numpy==1.25.2
+# scikit-learn==1.3.2
