@@ -55,7 +55,7 @@ const FileUpload = ({ onUploadSuccess }) => {
 
   return (
     <div className="upload-section">
-      <h2>Upload Documents</h2>
+      <h2>Upload Documents & Media</h2>
       <div 
         className="upload-area"
         onDrop={handleDrop}
@@ -66,11 +66,11 @@ const FileUpload = ({ onUploadSuccess }) => {
           multiple 
           onChange={handleFileChange}
           disabled={uploading}
-          accept=".pdf,.doc,.docx,.txt,.md"
+          accept=".pdf,.doc,.docx,.txt,.md,.mp4,.avi,.mov,.mkv,.jpg,.jpeg,.png"
         />
         <div className="upload-info">
           <p>Drop files here or click to select</p>
-          <p className="file-types">Supports: PDF, DOC, DOCX, TXT, MD</p>
+          <p className="file-types">Supports: PDF, DOC, DOCX, TXT, MD, MP4, AVI, MOV, MKV, JPG, PNG</p>
         </div>
       </div>
       

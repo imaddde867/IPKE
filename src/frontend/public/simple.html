@@ -46,7 +46,8 @@
             <h2>Upload Documents</h2>
             <div class="upload-area" id="uploadArea">
                 <p>📄 Drag and drop files here or click to select</p>
-                <input type="file" id="fileInput" multiple accept=".pdf,.txt,.docx,.pptx" style="display: none;">
+                <p class="file-types">Supports: PDF, DOCX, PPTX, TXT, MP4, AVI, MOV, MKV, JPG, PNG</p>
+                <input type="file" id="fileInput" multiple accept=".pdf,.txt,.docx,.pptx,.mp4,.avi,.mov,.mkv,.jpg,.jpeg,.png" style="display: none;">
                 <button class="btn" onclick="document.getElementById('fileInput').click()">Select Files</button>
             </div>
             <div id="uploadStatus"></div>

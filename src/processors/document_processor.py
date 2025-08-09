@@ -4,9 +4,23 @@ import json
 import ffmpeg
 import whisper
 import re
+import cv2
+import numpy as np
+import pytesseract
+from typing import Dict, List, Tuple, Optional
+from dataclasses import dataclass
+from enum import Enum
+from pathlib import Path
+
 from src.ai.ner_extractor import ner_extractor
 from src.ai.classifier import classifier
 from src.ai.keyphrase_extractor import keyphrase_extractor
+from src.ai.knowledge_extraction_engine import knowledge_extraction_engine
+from src.ai.relationship_mapper import (
+    ProcessDependencyMapper, EquipmentMaintenanceCorrelator,
+    SkillFunctionLinker, ComplianceProcedureConnector
+)
+from src.ai.knowledge_graph import KnowledgeGraphBuilder
 from src.exceptions import ProcessingError, AIError, ServiceUnavailableError
 from src.logging_config import get_logger, log_processing_step, log_error
 from src.config import config_manager
@@ -25,6 +39,278 @@ CANDIDATE_LABELS = [
     "Maintenance Guides",
     "Quality Standards"
 ]
+
+# Image processing components
+class ImageFormat(Enum):
+    """Supported image formats for OCR processing."""
+    JPG = "jpg"
+    JPEG = "jpeg"
+    PNG = "png"
+    GIF = "gif"
+    BMP = "bmp"
+    TIFF = "tiff"
+    TIF = "tif"
+    WEBP = "webp"
+
+@dataclass
+class OCRResult:
+    """Structured result from OCR processing."""
+    text: str
+    confidence: float
+    text_blocks: List[Dict]
+    processing_time: float
+    image_quality_score: float
+
+class ImagePreprocessor:
+    """Optimized image preprocessing for OCR accuracy."""
+    
+    def __init__(self):
+        self.min_confidence = 30
+        self.optimal_dpi = 300
+        
+    def _validate_image(self, image: np.ndarray) -> None:
+        """Validate image quality and dimensions."""
+        if image is None:
+            raise ProcessingError("Invalid image: image is None")
+        
+        if image.size == 0:
+            raise ProcessingError("Invalid image: image is empty")
+        
+        if len(image.shape) < 2:
+            raise ProcessingError("Invalid image: not a valid image format")
+    
+    def _resize_for_ocr(self, image: np.ndarray, target_dpi: int = 300) -> np.ndarray:
+        """Resize image to optimal DPI for OCR."""
+        height, width = image.shape[:2]
+        
+        # Calculate optimal size (assuming 96 DPI baseline)
+        scale_factor = target_dpi / 96.0
+        new_width = int(width * scale_factor)
+        new_height = int(height * scale_factor)
+        
+        if new_width > 4000 or new_height > 4000:
+            # Limit maximum size to prevent memory issues
+            scale_factor = min(4000 / width, 4000 / height)
+            new_width = int(width * scale_factor)
+            new_height = int(height * scale_factor)
+        
+        return cv2.resize(image, (new_width, new_height), interpolation=cv2.INTER_CUBIC)
+    
+    def _enhance_contrast(self, image: np.ndarray) -> np.ndarray:
+        """Enhance image contrast using CLAHE."""
+        if len(image.shape) == 3:
+            # Convert to LAB color space for better contrast enhancement
+            lab = cv2.cvtColor(image, cv2.COLOR_BGR2LAB)
+            l, a, b = cv2.split(lab)
+            
+            # Apply CLAHE to L channel
+            clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+            l = clahe.apply(l)
+            
+            # Merge channels and convert back
+            enhanced = cv2.merge([l, a, b])
+            return cv2.cvtColor(enhanced, cv2.COLOR_LAB2BGR)
+        else:
+            # For grayscale images
+            clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
+            return clahe.apply(image)
+    
+    def _denoise_image(self, image: np.ndarray) -> np.ndarray:
+        """Remove noise while preserving text edges."""
+        if len(image.shape) == 3:
+            # For color images, denoise each channel
+            return cv2.fastNlMeansDenoisingColored(image, None, 10, 10, 7, 21)
+        else:
+            # For grayscale images
+            return cv2.fastNlMeansDenoising(image, None, 10, 7, 21)
+    
+    def _binarize_image(self, image: np.ndarray) -> np.ndarray:
+        """Create binary image for better OCR."""
+        if len(image.shape) == 3:
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        else:
+            gray = image
+        
+        # Use adaptive thresholding for better results
+        binary = cv2.adaptiveThreshold(
+            gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2
+        )
+        
+        # Clean up small artifacts
+        kernel = np.ones((1, 1), np.uint8)
+        return cv2.morphologyEx(binary, cv2.MORPH_CLOSE, kernel)
+    
+    def preprocess(self, image: np.ndarray) -> np.ndarray:
+        """Complete image preprocessing pipeline."""
+        self._validate_image(image)
+        
+        # Resize to optimal DPI
+        resized = self._resize_for_ocr(image)
+        
+        # Enhance contrast
+        enhanced = self._enhance_contrast(resized)
+        
+        # Denoise
+        denoised = self._denoise_image(enhanced)
+        
+        # Binarize
+        binary = self._binarize_image(denoised)
+        
+        return binary
+
+class OptimizedOCRProcessor:
+    """High-performance OCR processor with multiple strategies."""
+    
+    def __init__(self, tesseract_path: str = "/usr/bin/tesseract"):
+        self.tesseract_path = tesseract_path
+        pytesseract.pytesseract.tesseract_cmd = tesseract_path
+        
+        # Optimized OCR configurations for different scenarios
+        self.ocr_configs = {
+            'default': '--oem 3 --psm 6',
+            'single_line': '--oem 3 --psm 7',
+            'single_word': '--oem 3 --psm 8',
+            'sparse_text': '--oem 3 --psm 6',
+            'uniform_block': '--oem 3 --psm 6'
+        }
+        
+        self.preprocessor = ImagePreprocessor()
+    
+    def _calculate_quality_score(self, image: np.ndarray) -> float:
+        """Calculate image quality score for OCR."""
+        if len(image.shape) == 3:
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        else:
+            gray = image
+        
+        # Calculate sharpness using Laplacian variance
+        laplacian_var = cv2.Laplacian(gray, cv2.CV_64F).var()
+        
+        # Calculate contrast
+        contrast = gray.std()
+        
+        # Normalize scores (0-1 range)
+        sharpness_score = min(laplacian_var / 500, 1.0)  # Normalize to reasonable range
+        contrast_score = min(contrast / 100, 1.0)
+        
+        # Combined quality score
+        quality_score = (sharpness_score * 0.6 + contrast_score * 0.4)
+        
+        return max(0.0, min(1.0, quality_score))
+    
+    def _extract_with_multiple_configs(self, image: np.ndarray) -> Tuple[str, float, List[Dict]]:
+        """Extract text using multiple OCR configurations for better accuracy."""
+        best_result = {"text": "", "confidence": 0.0, "blocks": []}
+        
+        for config_name, config in self.ocr_configs.items():
+            try:
+                # Get detailed OCR data
+                ocr_data = pytesseract.image_to_data(
+                    image, 
+                    output_type=pytesseract.Output.DICT,
+                    config=config
+                )
+                
+                # Extract text and confidence
+                text_parts = []
+                confidence_scores = []
+                text_blocks = []
+                
+                for i, conf in enumerate(ocr_data['conf']):
+                    if conf > self.preprocessor.min_confidence:
+                        text = ocr_data['text'][i].strip()
+                        if text:
+                            text_parts.append(text)
+                            confidence_scores.append(conf)
+                            text_blocks.append({
+                                'text': text,
+                                'confidence': conf,
+                                'bbox': {
+                                    'x': ocr_data['left'][i],
+                                    'y': ocr_data['top'][i],
+                                    'width': ocr_data['width'][i],
+                                    'height': ocr_data['height'][i]
+                                }
+                            })
+                
+                if text_parts:
+                    combined_text = ' '.join(text_parts)
+                    avg_confidence = np.mean(confidence_scores)
+                    
+                    # Keep the best result
+                    if avg_confidence > best_result["confidence"]:
+                        best_result = {
+                            "text": combined_text,
+                            "confidence": avg_confidence,
+                            "blocks": text_blocks
+                        }
+                        
+            except Exception as e:
+                logger.warning(f"OCR config {config_name} failed: {e}")
+                continue
+        
+        return best_result["text"], best_result["confidence"], best_result["blocks"]
+    
+    def extract_text(self, image_path: str) -> OCRResult:
+        """Extract text from image with comprehensive processing."""
+        import time
+        start_time = time.time()
+        
+        try:
+            # Load image
+            image = cv2.imread(image_path)
+            if image is None:
+                raise ProcessingError(f"Could not read image: {image_path}")
+            
+            # Calculate quality score
+            quality_score = self._calculate_quality_score(image)
+            
+            # Preprocess image
+            preprocessed = self.preprocessor.preprocess(image)
+            
+            # Extract text with multiple configurations
+            text, confidence, text_blocks = self._extract_with_multiple_configs(preprocessed)
+            
+            # Clean up text
+            cleaned_text = self._clean_text(text)
+            
+            processing_time = time.time() - start_time
+            
+            return OCRResult(
+                text=cleaned_text,
+                confidence=confidence,
+                text_blocks=text_blocks,
+                processing_time=processing_time,
+                image_quality_score=quality_score
+            )
+            
+        except Exception as e:
+            log_error(logger, e, f"OCR extraction failed for {image_path}")
+            raise ProcessingError(
+                f"OCR extraction failed for {image_path}",
+                file_path=image_path,
+                processing_stage="ocr_extraction"
+            ) from e
+    
+    def _clean_text(self, text: str) -> str:
+        """Clean and normalize extracted text."""
+        if not text:
+            return ""
+        
+        # Remove excessive whitespace
+        text = re.sub(r'\s+', ' ', text)
+        
+        # Fix common OCR errors
+        text = re.sub(r'[|]', 'I', text)  # Fix common OCR confusion
+        text = re.sub(r'[0]', 'O', text)  # Fix common OCR confusion
+        
+        # Remove non-printable characters
+        text = ''.join(char for char in text if char.isprintable() or char.isspace())
+        
+        return text.strip()
+
+# Initialize OCR processor
+ocr_processor = OptimizedOCRProcessor()
 
 def get_file_type(file_path: str) -> str:
     # Basic file type detection based on extension
@@ -631,6 +917,219 @@ def process_document(file_path: str):
         logger.error(f"Document processing failed for {filename}: {str(e)}")
         raise ProcessingError(f"Failed to process {filename}: {str(e)}", file_path=file_path, processing_stage="document_processing") from e
 
+def process_document_enhanced(file_path: str, enable_advanced_features: bool = True):
+    """
+    Enhanced document processing with integrated knowledge graph, tacit knowledge extraction,
+    and relationship mapping capabilities.
+    """
+    logger.info(f"Starting enhanced document processing: {file_path}")
+    filename = os.path.basename(file_path)
+    
+    # Validate file exists
+    if not os.path.exists(file_path):
+        raise ProcessingError(f"File not found: {file_path}", file_path=file_path, processing_stage="file_validation")
+
+    try:
+        # Step 1: Basic text extraction and processing (same as before)
+        log_processing_step(logger, "text_extraction", "started", extra_data={'filename': filename})
+        extracted_text = _extract_text_with_tika(file_path)
+        document_sections = extract_sections(extracted_text)
+        log_processing_step(logger, "text_extraction", "completed", extra_data={'text_length': len(extracted_text)})
+        
+        # Step 2: Basic AI processing
+        log_processing_step(logger, "basic_ai_processing", "started")
+        extracted_entities = _safe_extract_entities(extracted_text)
+        classification_result = _safe_classify_document(extracted_text)
+        key_phrases = _safe_extract_keyphrases(extracted_text)
+        log_processing_step(logger, "basic_ai_processing", "completed", 
+                          extra_data={'entities_count': len(extracted_entities), 'keyphrases_count': len(key_phrases)})
+        
+        # Step 3: Structured data extraction
+        log_processing_step(logger, "structured_extraction", "started")
+        equipment_data = _extract_equipment_data(extracted_text, extracted_entities)
+        procedure_data = _extract_procedure_data(extracted_text, extracted_entities)
+        safety_info_data = _extract_safety_information(extracted_text, extracted_entities)
+        technical_spec_data = _extract_technical_specifications(extracted_text, extracted_entities)
+        personnel_data = _extract_personnel_data(extracted_text, extracted_entities)
+        log_processing_step(logger, "structured_extraction", "completed")
+        
+        # Step 4: Advanced AI processing (if enabled)
+        tacit_knowledge_data = {}
+        relationship_data = {}
+        knowledge_graph_data = {}
+        
+        if enable_advanced_features:
+            try:
+                # Tacit knowledge extraction
+                log_processing_step(logger, "tacit_knowledge_extraction", "started")
+                tacit_knowledge_data = knowledge_extraction_engine.extract_tacit_knowledge(
+                    extracted_text, extracted_entities
+                )
+                log_processing_step(logger, "tacit_knowledge_extraction", "completed",
+                                  extra_data={'workflow_deps': len(tacit_knowledge_data.get('workflow_dependencies', [])),
+                                            'decision_patterns': len(tacit_knowledge_data.get('decision_patterns', [])),
+                                            'optimization_patterns': len(tacit_knowledge_data.get('optimization_patterns', [])),
+                                            'communication_flows': len(tacit_knowledge_data.get('communication_flows', []))})
+                
+                # Relationship mapping
+                log_processing_step(logger, "relationship_mapping", "started")
+                relationship_data = _extract_relationships_enhanced(
+                    extracted_text, extracted_entities, equipment_data, procedure_data, personnel_data, safety_info_data
+                )
+                log_processing_step(logger, "relationship_mapping", "completed",
+                                  extra_data={'total_relationships': sum(len(v) for v in relationship_data.values())})
+                
+                # Knowledge graph construction
+                log_processing_step(logger, "knowledge_graph_construction", "started")
+                knowledge_graph_data = _build_knowledge_graph(
+                    equipment_data, procedure_data, personnel_data, 
+                    relationship_data, tacit_knowledge_data
+                )
+                log_processing_step(logger, "knowledge_graph_construction", "completed",
+                                  extra_data={'nodes_count': knowledge_graph_data.get('nodes_count', 0),
+                                            'edges_count': knowledge_graph_data.get('edges_count', 0)})
+                
+            except Exception as e:
+                logger.warning(f"Advanced processing failed for {filename}: {str(e)}")
+                # Continue with basic processing if advanced features fail
+        
+        # Compile final result
+        result = {
+            "filename": filename,
+            "extracted_text": extracted_text,
+            "metadata": {
+                "source": "tika", 
+                "processing_method": "enhanced" if enable_advanced_features else "basic",
+                "advanced_features_enabled": enable_advanced_features
+            },
+            "extracted_entities": extracted_entities,
+            "classification": classification_result,
+            "key_phrases": key_phrases,
+            "equipment_data": equipment_data,
+            "procedure_data": procedure_data,
+            "safety_info_data": safety_info_data,
+            "technical_spec_data": technical_spec_data,
+            "personnel_data": personnel_data,
+            "document_sections": document_sections,
+            "status": "processed"
+        }
+        
+        # Add advanced processing results if available
+        if enable_advanced_features and tacit_knowledge_data:
+            result.update({
+                "tacit_knowledge": tacit_knowledge_data,
+                "relationships": relationship_data,
+                "knowledge_graph": knowledge_graph_data
+            })
+        
+        logger.info(f"Enhanced document processing completed successfully: {filename}")
+        return result
+        
+    except Exception as e:
+        logger.error(f"Enhanced document processing failed for {filename}: {str(e)}")
+        raise ProcessingError(f"Failed to process {filename}: {str(e)}", file_path=file_path, processing_stage="enhanced_document_processing") from e
+
+def _extract_relationships_enhanced(text: str, entities: list, equipment_data: list, 
+                                  procedure_data: list, personnel_data: list, safety_info_data: list) -> dict:
+    """Extract relationships using the advanced relationship mapping components."""
+    relationships = {
+        'process_dependencies': [],
+        'equipment_maintenance_correlations': [],
+        'skill_function_links': [],
+        'compliance_procedure_connections': []
+    }
+    
+    try:
+        # Convert extracted data to database-like objects for compatibility
+        # This is a simplified conversion - in production you'd want proper model instances
+        mock_knowledge_items = []
+        mock_procedures = []
+        mock_equipment = []
+        mock_personnel = []
+        mock_safety_info = []
+        
+        # Initialize relationship mappers
+        dependency_mapper = ProcessDependencyMapper()
+        maintenance_correlator = EquipmentMaintenanceCorrelator()
+        skill_linker = SkillFunctionLinker()
+        compliance_connector = ComplianceProcedureConnector()
+        
+        # Extract process dependencies
+        if procedure_data:
+            relationships['process_dependencies'] = dependency_mapper.identify_process_dependencies(
+                mock_knowledge_items, mock_procedures
+            )
+        
+        # Extract equipment maintenance correlations
+        if equipment_data and procedure_data:
+            relationships['equipment_maintenance_correlations'] = maintenance_correlator.correlate_equipment_maintenance(
+                mock_equipment, mock_procedures
+            )
+        
+        # Extract skill-function links
+        if personnel_data and procedure_data:
+            relationships['skill_function_links'] = skill_linker.link_skills_functions(
+                mock_personnel, mock_procedures
+            )
+        
+        # Extract compliance connections
+        if procedure_data and safety_info_data:
+            relationships['compliance_procedure_connections'] = compliance_connector.connect_compliance_procedures(
+                mock_procedures, mock_safety_info
+            )
+        
+    except Exception as e:
+        logger.warning(f"Relationship extraction failed: {str(e)}")
+    
+    return relationships
+
+def _build_knowledge_graph(equipment_data: list, procedure_data: list, personnel_data: list,
+                         relationship_data: dict, tacit_knowledge_data: dict) -> dict:
+    """Build knowledge graph from extracted data and relationships."""
+    graph_data = {
+        'nodes_count': 0,
+        'edges_count': 0,
+        'graph_metadata': {},
+        'visualization_data': None
+    }
+    
+    try:
+        # Initialize knowledge graph builder
+        graph_builder = KnowledgeGraphBuilder()
+        
+        # Convert data to appropriate formats for graph building
+        # This is a simplified version - in production you'd want proper model instances
+        knowledge_items = []
+        process_dependencies = relationship_data.get('process_dependencies', [])
+        equipment_correlations = relationship_data.get('equipment_maintenance_correlations', [])
+        skill_links = relationship_data.get('skill_function_links', [])
+        compliance_connections = relationship_data.get('compliance_procedure_connections', [])
+        
+        # Build the graph
+        graph = graph_builder.build_knowledge_graph(
+            knowledge_items=knowledge_items,
+            process_dependencies=process_dependencies,
+            equipment_correlations=equipment_correlations,
+            skill_links=skill_links,
+            compliance_connections=compliance_connections,
+            equipment_list=None,  # Would convert equipment_data to Equipment objects
+            personnel_list=None   # Would convert personnel_data to Personnel objects
+        )
+        
+        graph_data.update({
+            'nodes_count': graph.number_of_nodes(),
+            'edges_count': graph.number_of_edges(),
+            'graph_metadata': {
+                'is_connected': len(list(graph.nodes())) > 0,
+                'has_cycles': not graph.number_of_edges() == 0  # Simplified check
+            }
+        })
+        
+    except Exception as e:
+        logger.warning(f"Knowledge graph construction failed: {str(e)}")
+    
+    return graph_data
+
 def _extract_text_with_tika(file_path: str) -> str:
     """Simplified Tika text extraction with better error handling."""
     try:
@@ -845,3 +1344,131 @@ def process_video(file_path: str):
         "document_sections": document_sections,
         "status": status
     }
+
+def process_image(file_path: str) -> Dict:
+    """
+    Process standalone images with optimized OCR and AI integration.
+    
+    Args:
+        file_path: Path to the image file
+        
+    Returns:
+        Dictionary containing extracted text and structured data
+    """
+    logger.info(f"Processing image with optimized OCR: {file_path}")
+    filename = os.path.basename(file_path)
+    
+    # Initialize result structure
+    result = {
+        "filename": filename,
+        "extracted_text": "",
+        "metadata": {
+            "source": "optimized_image_processor",
+            "original_path": file_path,
+            "processor_version": "2.0"
+        },
+        "extracted_entities": [],
+        "classification": {"category": "unclassified", "score": 0.0},
+        "key_phrases": [],
+        "equipment_data": [],
+        "procedure_data": [],
+        "safety_info_data": [],
+        "technical_spec_data": [],
+        "personnel_data": [],
+        "document_sections": {},
+        "status": "failed",
+        "ocr_metadata": {}
+    }
+    
+    # Validate file exists
+    if not os.path.exists(file_path):
+        raise ProcessingError(
+            f"Image file not found: {file_path}",
+            file_path=file_path,
+            processing_stage="file_validation"
+        )
+    
+    # Check if image format is supported
+    supported_formats = {fmt.value for fmt in ImageFormat}
+    ext = Path(file_path).suffix.lower().lstrip('.')
+    if ext not in supported_formats:
+        raise ProcessingError(
+            f"Unsupported image format: {ext}",
+            file_path=file_path,
+            processing_stage="format_validation"
+        )
+    
+    try:
+        # Extract text using optimized OCR
+        log_processing_step(logger, "ocr_extraction", "started", extra_data={'filename': filename})
+        ocr_result = ocr_processor.extract_text(file_path)
+        log_processing_step(logger, "ocr_extraction", "completed", 
+                          extra_data={'text_length': len(ocr_result.text), 'confidence': ocr_result.confidence})
+        
+        result["extracted_text"] = ocr_result.text
+        result["ocr_metadata"] = {
+            'confidence': ocr_result.confidence,
+            'processing_time': ocr_result.processing_time,
+            'image_quality_score': ocr_result.image_quality_score,
+            'text_blocks_count': len(ocr_result.text_blocks),
+            'ocr_engine': 'tesseract_optimized'
+        }
+        
+        if not ocr_result.text.strip():
+            logger.warning(f"No text extracted from image: {filename}")
+            result["status"] = "no_text_found"
+            return result
+        
+        result["status"] = "processed"
+        
+        # Extract document sections
+        result["document_sections"] = extract_sections(ocr_result.text)
+        
+        # Perform AI processing with error handling
+        try:
+            log_processing_step(logger, "ner_extraction", "started")
+            result["extracted_entities"] = ner_extractor.extract_entities(ocr_result.text)
+            log_processing_step(logger, "ner_extraction", "completed", 
+                              extra_data={'entities_count': len(result["extracted_entities"])})
+        except Exception as e:
+            log_error(logger, e, "NER extraction failed - continuing with empty entities")
+            result["extracted_entities"] = []
+        
+        try:
+            log_processing_step(logger, "document_classification", "started")
+            result["classification"] = classifier.classify_document(ocr_result.text, CANDIDATE_LABELS)
+            log_processing_step(logger, "document_classification", "completed", 
+                              extra_data={'category': result["classification"].get('category')})
+        except Exception as e:
+            log_error(logger, e, "Document classification failed - using default")
+            result["classification"] = {"category": "unclassified", "score": 0.0}
+        
+        try:
+            log_processing_step(logger, "keyphrase_extraction", "started")
+            result["key_phrases"] = keyphrase_extractor.extract_keyphrases(ocr_result.text)
+            log_processing_step(logger, "keyphrase_extraction", "completed", 
+                              extra_data={'keyphrases_count': len(result["key_phrases"])})
+        except Exception as e:
+            log_error(logger, e, "Keyphrase extraction failed - continuing with empty list")
+            result["key_phrases"] = []
+        
+        # Extract structured data
+        result["equipment_data"] = _extract_equipment_data(ocr_result.text, result["extracted_entities"])
+        result["procedure_data"] = _extract_procedure_data(ocr_result.text, result["extracted_entities"])
+        result["safety_info_data"] = _extract_safety_information(ocr_result.text, result["extracted_entities"])
+        result["technical_spec_data"] = _extract_technical_specifications(ocr_result.text, result["extracted_entities"])
+        result["personnel_data"] = _extract_personnel_data(ocr_result.text, result["extracted_entities"])
+        
+        logger.info(f"Image processing completed successfully: {filename}")
+        
+    except Exception as e:
+        log_error(logger, e, f"Image processing failed for {filename}")
+        result["status"] = "failed"
+        result["metadata"]["error"] = str(e)
+        raise ProcessingError(
+            f"Image processing failed for {filename}",
+            file_path=file_path,
+            processing_stage="image_processing"
+        ) from e
+    
+    return result

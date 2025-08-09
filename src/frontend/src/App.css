@@ -175,9 +175,8 @@
   gap: 0.5rem;
 }
 
-.processing-indicator {
-  font-size: 1.2rem;
-  animation: pulse 2s infinite;
+.processing-indicator-text {
+  font-weight: 600;
 }
 
 @keyframes pulse {

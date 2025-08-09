@@ -25,7 +25,7 @@ const formatSpecifications = (specs) => {
         .trim();
     };
     
-    return entries.map(([key, value]) => `• ${formatKey(key)}: ${value}`).join('\n');
+  return entries.map(([key, value]) => `- ${formatKey(key)}: ${value}`).join('\n');
   }
   
   return specs;
@@ -214,22 +214,22 @@ const KnowledgeTable = ({ data, onRefresh, isProcessing }) => {
           <thead>
             <tr>
               <th onClick={() => handleSort('type')} className="sortable">
-                Type {sortBy === 'type' && (sortOrder === 'asc' ? '↑' : '↓')}
+                Type {sortBy === 'type' && (sortOrder === 'asc' ? '(asc)' : '(desc)')}
               </th>
               <th onClick={() => handleSort('name')} className="sortable">
-                Name {sortBy === 'name' && (sortOrder === 'asc' ? '↑' : '↓')}
+                Name {sortBy === 'name' && (sortOrder === 'asc' ? '(asc)' : '(desc)')}
               </th>
               <th>Details</th>
               <th>Specifications</th>
               <th>Location/Severity</th>
               <th onClick={() => handleSort('confidence')} className="sortable">
-                Confidence {sortBy === 'confidence' && (sortOrder === 'asc' ? '↑' : '↓')}
+                Confidence {sortBy === 'confidence' && (sortOrder === 'asc' ? '(asc)' : '(desc)')}
               </th>
               <th onClick={() => handleSort('document')} className="sortable">
-                Source Document {sortBy === 'document' && (sortOrder === 'asc' ? '↑' : '↓')}
+                Source Document {sortBy === 'document' && (sortOrder === 'asc' ? '(asc)' : '(desc)')}
               </th>
               <th onClick={() => handleSort('timestamp')} className="sortable">
-                Extracted {sortBy === 'timestamp' && (sortOrder === 'asc' ? '↑' : '↓')}
+                Extracted {sortBy === 'timestamp' && (sortOrder === 'asc' ? '(asc)' : '(desc)')}
               </th>
             </tr>
           </thead>

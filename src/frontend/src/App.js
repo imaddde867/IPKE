@@ -73,7 +73,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <h1>Enterprise Knowledge Extraction System</h1>
-        <p>Upload documents • Extract knowledge • Query insights</p>
+        <p>Upload documents | Extract knowledge | Query insights</p>
       </header>
       
       <main className="main-content">
@@ -83,8 +83,7 @@ function App() {
           <h2>Extracted Knowledge Database</h2>
           {processingStatus && (
             <div className="processing-status">
-              <span className="processing-indicator">⏳</span>
-              {processingStatus}
+              <span className="processing-indicator-text">Processing:</span> {processingStatus}
             </div>
           )}
           {loading ? (
