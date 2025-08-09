@@ -74,6 +74,30 @@ A **clean, professional, and efficient** AI-powered system for extracting struct
 └─────────────────────────────────────────────────────────────────┘
 ```
 
+## 📁 Current Project Structure
+
+```
+src/
+├── __init__.py
+├── ai/
+│   └── knowledge_extractor.py    # Consolidated AI engine
+├── api/
+│   ├── app.py                    # Main FastAPI application
+│   └── celery_worker.py          # Task queue worker
+├── core/
+│   └── config.py                 # Centralized configuration
+├── database/
+│   ├── crud.py                   # Database operations
+│   ├── database.py               # Database management
+│   └── models.py                 # Database models
+├── processors/
+│   └── processor.py              # Document processing engine
+├── frontend/                     # React frontend (optional)
+├── exceptions.py                 # Custom exceptions
+├── logging_config.py             # Logging configuration
+└── middleware.py                 # FastAPI middleware
+```
+
 ## 🚀 Quick Start
 
 ### Prerequisites
@@ -88,8 +112,8 @@ A **clean, professional, and efficient** AI-powered system for extracting struct
 git clone https://github.com/imaddde867/explainium-2.0
 cd explainium-2.0
 
-# Deploy with the clean system
-./deploy-clean.sh
+# Deploy the system
+./deploy.sh
 ```
 
 ### Alternative: Using Make
@@ -224,7 +248,7 @@ nano .env
 
 ```bash
 # Install dependencies
-pip install -r requirements-clean.txt
+pip install -r requirements.txt
 
 # Download AI models
 python -m spacy download en_core_web_sm
@@ -305,28 +329,28 @@ make perf-test
 ### **Production Deployment**
 
 ```bash
-# Using clean docker-compose
-docker-compose -f docker-compose-clean.yml up -d
+# Using docker-compose
+docker-compose up -d
 
 # Check status
-docker-compose -f docker-compose-clean.yml ps
+docker-compose ps
 
 # View logs
-docker-compose -f docker-compose-clean.yml logs -f
+docker-compose logs -f
 ```
 
 ### **Custom Docker Build**
 
 ```bash
 # Build custom image
-docker build -f docker/Dockerfile-clean -t explainium:clean .
+docker build -f docker/Dockerfile -t explainium:latest .
 
 # Run with custom settings
 docker run -d \
   -p 8000:8000 \
   -e DB_HOST=your-db-host \
   -e REDIS_HOST=your-redis-host \
-  explainium:clean
+  explainium:latest
 ```
 
 ## 🔐 Security Features
@@ -414,10 +438,10 @@ make clean
 **Processing Failures**
 ```bash
 # Check worker logs
-docker-compose -f docker-compose-clean.yml logs celery_worker
+docker-compose logs celery_worker
 
 # Restart workers
-docker-compose -f docker-compose-clean.yml restart celery_worker
+docker-compose restart celery_worker
 
 # Check task status
 curl http://localhost:8000/tasks/{task_id}
@@ -456,7 +480,7 @@ The clean system is designed to be a drop-in replacement:
 
 1. **Backup your data**: `make backup`
 2. **Stop old system**: `docker-compose down`
-3. **Deploy clean system**: `./deploy-clean.sh`
+3. **Deploy clean system**: `./deploy.sh`
 4. **Restore data if needed**: `make restore BACKUP_FILE=backup.sql`
 
 ### **Configuration Migration**

@@ -1,22 +1,37 @@
-# 🚀 EXPLAINIUM Deployment Guide
+# 🚀 EXPLAINIUM Deployment Guide - Clean Version
 
 ## Quick Start (Recommended)
 
 ### 1. Prerequisites
 - Docker and Docker Compose installed
-- 4GB+ RAM available
+- 4GB+ RAM available (8GB+ recommended)
 - 10GB+ disk space
 
-### 2. Clone and Start
+### 2. One-Command Deployment
 ```bash
 git clone https://github.com/imaddde867/explainium-2.0
 cd explainium-2.0
-docker-compose up --build -d
+
+# Production deployment
+./deploy.sh
+
+# Or development deployment
+./deploy.sh --dev
+
+# Or quick deployment (skip health checks)
+./deploy.sh --quick
 ```
 
-### 3. Initialize Database
+### 3. Alternative: Using Make
 ```bash
-docker-compose exec app alembic upgrade head
+# Production
+make prod
+
+# Development
+make dev
+
+# Quick start
+make quick
 ```
 
 ### 4. Access Application
@@ -27,27 +42,37 @@ docker-compose exec app alembic upgrade head
 ## Production Deployment
 
 ### 1. Environment Configuration
-```bash
-# Copy and customize environment file
-cp .env.example .env
+The deployment script automatically creates a `.env` file with production settings. You can customize it:
 
-# Edit .env file with production values
+```bash
+# Edit environment configuration
 nano .env
 ```
 
-**Key production changes:**
+**Key production settings:**
 ```bash
 ENVIRONMENT=production
-DEBUG=false
+API_DEBUG=false
 DB_PASSWORD=your_secure_password
 CORS_ORIGINS=https://yourdomain.com
-LOG_LEVEL=WARNING
+LOG_LEVEL=INFO
+SECRET_KEY=your-32-character-secret-key
+ENABLE_HTTPS=true
 ```
 
 ### 2. Security Considerations
-- Change default database password
-- Configure proper CORS origins
-- Use HTTPS in production
+- The deployment script generates a secure SECRET_KEY automatically
+- Change default database password in production
+- Configure proper CORS origins for your domain
+- Enable HTTPS for production deployments
+- Use strong passwords for all services
+
+### 3. Clean Architecture Benefits
+- **Single API**: Consolidated FastAPI application in `src/api/app.py`
+- **Unified Processing**: All document processing in `src/processors/processor.py`
+- **Centralized Config**: All configuration in `src/core/config.py`
+- **Clean Database**: Optimized models and CRUD operations
+- **Professional Deployment**: Automated deployment with health checks
 - Set up proper firewall rules
 - Regular security updates
 
