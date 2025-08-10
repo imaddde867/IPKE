@@ -108,13 +108,23 @@ class HealthResponse(BaseModel):
 
 
 # API Endpoints
-@app.get("/", response_class=FileResponse)
-async def serve_frontend():
-    """Serve the frontend application"""
-    frontend_path = Path("src/frontend/public/index.html")
-    if frontend_path.exists():
-        return FileResponse(frontend_path)
-    return JSONResponse({"message": "EXPLAINIUM API is running"})
+@app.get("/")
+async def root():
+    """API root endpoint"""
+    return {
+        "message": "🧠 EXPLAINIUM - Advanced AI-Powered Knowledge Extraction System",
+        "version": "2.0.0",
+        "status": "running",
+        "docs": "/docs",
+        "health": "/health",
+        "features": [
+            "Deep Knowledge Extraction",
+            "AI-Powered Analysis", 
+            "Knowledge Graph Building",
+            "Multi-format Export",
+            "Real-time Processing"
+        ]
+    }
 
 
 @app.get("/health", response_model=HealthResponse)

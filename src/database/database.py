@@ -37,14 +37,21 @@ if db_url.startswith("postgresql") and not _can_connect(config.database.host, co
     logging.getLogger(__name__).warning(
         f"Postgres not reachable at {config.database.host}:{config.database.port}; using SQLite fallback {fallback_path}" )
 
-engine = create_engine(
-    db_url,
-    pool_size=config.database.pool_size if db_url.startswith("postgresql") else None,
-    max_overflow=config.database.max_overflow if db_url.startswith("postgresql") else None,
-    echo=config.database.echo,
-    poolclass=StaticPool if (config.database.name.endswith("_test") or db_url.startswith("sqlite")) else None,
-    connect_args={"check_same_thread": False} if "sqlite" in db_url else {}
-)
+# Create engine with appropriate parameters based on database type
+if db_url.startswith("sqlite"):
+    engine = create_engine(
+        db_url,
+        echo=config.database.echo,
+        poolclass=StaticPool,
+        connect_args={"check_same_thread": False}
+    )
+else:
+    engine = create_engine(
+        db_url,
+        pool_size=config.database.pool_size,
+        max_overflow=config.database.max_overflow,
+        echo=config.database.echo
+    )
 
 # Create session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
