@@ -43,12 +43,10 @@ chmod +x setup.sh && ./setup.sh
 ### **Multi-Modal AI Processing**
 - **📄 Documents**: PDF, TXT, DOCX with deep text analysis
 - **🖼️ Images**: JPG, PNG, GIF with OCR and visual analysis
-- **🎥 Videos**: MP4, AVI, MOV with scene detection
+- **🎥 Videos**: MP4, AVI, MOV with audio transcription + frame OCR fallback
 - **🎵 Audio**: MP3, WAV, FLAC with speech-to-text transcription
 
-### **Advanced AI Models**
-- **🧠 Primary LLM**: Mistral-7B-Instruct-v0.2 (4-bit quantized)
-- **🔍 Embeddings**: BAAI/bge-small-en-v1.5 for semantic search
+### **Core Capabilities**
 - **👁️ Computer Vision**: OCR and image analysis
 - **🎤 Speech Processing**: Whisper AI for audio transcription
 
@@ -229,21 +227,8 @@ tacit_knowledge = await processor.extract_tacit_knowledge(documents)
 # - Communication networks
 ```
 
-### **Knowledge Graph Queries**
-```python
-from src.ai.advanced_knowledge_engine import AdvancedKnowledgeEngine
-
-engine = AdvancedKnowledgeEngine()
-
-# Find related concepts
-related = engine.knowledge_graph.find_related_nodes("customer_onboarding")
-
-# Search by type
-processes = engine.knowledge_graph.find_nodes_by_type("process")
-
-# Get workflow paths
-workflow = engine.knowledge_graph.find_workflow_path("start", "end")
-```
+### **Video Processing Pipeline**
+The system processes videos by extracting audio with ffmpeg for Whisper transcription and sampling frames for OCR; results are combined.
 
 ## 📊 Frontend Features
 

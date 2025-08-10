@@ -14,7 +14,6 @@ from pathlib import Path
 from fastapi import FastAPI, File, UploadFile, HTTPException, Depends, Query, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, FileResponse
-from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
@@ -71,10 +70,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount static files
-if False:
-    # Static mounting removed; Streamlit is the only frontend
-    app.mount("/static", StaticFiles(directory="src/frontend/public"), name="static")
+# Static mounting intentionally disabled; Streamlit is the only frontend
 
 # Configuration
 UPLOAD_DIRECTORY = config_manager.get_upload_directory()

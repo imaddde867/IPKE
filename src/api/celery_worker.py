@@ -314,10 +314,11 @@ def process_document_task(self, file_path: str, document_id: int) -> Dict[str, A
             
             # Update document metadata
             if document:
-                document.total_pages = processing_result.get('content', {}).get('page_count')
-                document.total_words = len(processing_result.get('content', {}).get('text', '').split())
-                document.total_characters = len(processing_result.get('content', {}).get('text', ''))
-                document.language = processing_result.get('content', {}).get('language', 'en')
+                text_content = (processing_result.get('content', {}) or {}).get('text', '') or ''
+                document.total_pages = (processing_result.get('content', {}) or {}).get('page_count')
+                document.total_words = len(text_content.split()) if text_content else 0
+                document.total_characters = len(text_content)
+                document.language = (processing_result.get('content', {}) or {}).get('language', 'en')
                 db.commit()
         
         # Prepare result summary

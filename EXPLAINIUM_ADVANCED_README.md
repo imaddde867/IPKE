@@ -13,10 +13,10 @@ EXPLAINIUM has been completely transformed from a basic entity extraction system
 - ❌ Surface-level text processing without context understanding
 
 ### What's New
-- ✅ **Advanced LLM Engine**: Quantized Mistral-7B or Phi-2 models optimized for M4 Mac
+- ✅ **Consolidated Processor**: Single robust `DocumentProcessor` for all formats
 - ✅ **Multi-Modal Processing**: PDF, DOCX, images, audio, video, spreadsheets, presentations
-- ✅ **Deep Knowledge Extraction**: Entities, processes, relationships, and tacit knowledge
-- ✅ **Knowledge Graphs**: Interconnected knowledge representation with ChromaDB
+- ✅ **Video Robustness**: Whisper transcription + frame OCR fallback
+- ✅ **Cleaner Dependencies**: Removed unused heavy components
 - ✅ **Apple Silicon Optimization**: Metal acceleration, memory management, and M4-specific optimizations
 - ✅ **Interactive Dashboard**: Clean table-based frontend with filtering and visualization
 - ✅ **Advanced Export**: Multiple formats including interactive visualizations
@@ -265,10 +265,9 @@ class AIConfig:
 - **Video**: MP4, AVI, MOV, MKV, WEBM (audio extraction)
 
 ### Processing Capabilities
-- **OCR**: Multiple engines (EasyOCR, Tesseract) with confidence scoring
-- **Audio Processing**: Whisper transcription + speaker diarization
-- **Layout Understanding**: Microsoft LayoutLMv3 for structured documents
-- **Vision**: BLIP image captioning for visual content understanding
+- **OCR**: Tesseract OCR with preprocessing
+- **Audio Processing**: Whisper transcription
+- **Vision**: Frame sampling OCR for videos
 
 ## 🎯 Knowledge Extraction Features
 
