@@ -404,6 +404,14 @@ class Config:
         print(f"Log Level: {self.logging.level}")
         print("=" * 60)
 
+    # Convenience accessors expected by other modules
+    def get_cors_origins(self) -> List[str]:  # maintains backward compatibility with previous API
+        return self.api.cors_origins
+    def get_upload_directory(self) -> str:
+        return self.processing.upload_directory
+    def get_max_file_size(self) -> int:
+        return self.processing.max_file_size_mb * 1024 * 1024
+
 
 # Global configuration instance
 def get_environment() -> Environment:

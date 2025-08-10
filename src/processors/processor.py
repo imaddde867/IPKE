@@ -100,15 +100,16 @@ class DocumentProcessor:
     def _init_knowledge_engine(self):
         """Initialize the advanced knowledge engine"""
         try:
-            # Initialize the knowledge engine asynchronously
             import asyncio
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-            loop.run_until_complete(self.advanced_engine.initialize())
-            loop.close()
-            
-            self.knowledge_engine_available = True
-            logger.info("Advanced knowledge engine initialized successfully")
+            # If we're already inside an event loop (e.g., FastAPI with uvicorn reload), schedule task
+            try:
+                loop = asyncio.get_running_loop()
+                loop.create_task(self.advanced_engine.initialize())
+                logger.info("Scheduled async initialization of advanced knowledge engine")
+            except RuntimeError:
+                # No running loop; safe to run synchronously
+                asyncio.run(self.advanced_engine.initialize())
+            self.knowledge_engine_available = True  # will be true once initialize completes
         except Exception as e:
             logger.warning(f"Advanced knowledge engine initialization failed: {e}")
             self.knowledge_engine_available = False

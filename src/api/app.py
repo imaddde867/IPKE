@@ -43,9 +43,10 @@ app = FastAPI(
 # Configure middleware
 app.add_middleware(ErrorHandlingMiddleware)
 app.add_middleware(RequestLoggingMiddleware, log_request_body=False, log_response_body=False)
+origins = getattr(config_manager, 'get_cors_origins', lambda: ['*'])()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=config_manager.get_cors_origins(),
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
