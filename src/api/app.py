@@ -72,7 +72,8 @@ app.add_middleware(
 )
 
 # Mount static files
-if Path("src/frontend/public").exists():
+if False:
+    # Static mounting removed; Streamlit is the only frontend
     app.mount("/static", StaticFiles(directory="src/frontend/public"), name="static")
 
 # Configuration
