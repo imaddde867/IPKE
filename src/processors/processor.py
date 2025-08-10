@@ -52,9 +52,10 @@ class DocumentProcessor:
     - Video: MP4, AVI (with audio extraction)
     """
     
-    def __init__(self):
+    def __init__(self, db_session=None):
         self.tika_url = config_manager.get_tika_url()
-        self.advanced_engine = AdvancedKnowledgeEngine(config_manager.ai)
+        self.advanced_engine = AdvancedKnowledgeEngine(config_manager.ai, db_session)
+        self.db_session = db_session
         self.supported_formats = {
             'text': ['.pdf', '.doc', '.docx', '.txt', '.rtf'],
             'image': ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff'],
@@ -72,6 +73,9 @@ class DocumentProcessor:
         
         # Initialize advanced knowledge engine
         self._init_knowledge_engine()
+        
+        # Set knowledge engine availability
+        self.knowledge_engine_available = True
     
     def _init_ocr(self):
         """Initialize OCR capabilities"""
@@ -266,7 +270,7 @@ class DocumentProcessor:
             else:
                 raise ProcessingError(f"Unsupported file type: {file_extension}")
             
-            # Extract knowledge from content using advanced AI engine
+            # Extract knowledge from content using intelligent AI framework
             knowledge = {}
             if self.knowledge_engine_available:
                 try:
@@ -277,21 +281,47 @@ class DocumentProcessor:
                     document_data = {
                         'id': document_id,
                         'content': content.get('text', ''),
+                        'filename': file_path.name,
                         'metadata': {
                             'filename': file_path.name,
                             'file_type': file_type,
-                            'document_id': document_id
+                            'document_id': document_id,
+                            'sections': content.get('sections', [])
                         }
                     }
                     
+                    # Use the new intelligent knowledge extraction framework
                     knowledge = loop.run_until_complete(
-                        self.advanced_engine.extract_deep_knowledge(document_data)
+                        self.advanced_engine.extract_intelligent_knowledge(document_data)
                     )
                     loop.close()
                     
                 except Exception as e:
-                    logger.error(f"Advanced knowledge extraction failed: {e}")
-                    knowledge = {'error': str(e)}
+                    logger.error(f"Intelligent knowledge extraction failed, falling back to legacy: {e}")
+                    # Fallback to legacy extraction if intelligent framework fails
+                    try:
+                        loop = asyncio.new_event_loop()
+                        asyncio.set_event_loop(loop)
+                        
+                        document_data = {
+                            'id': document_id,
+                            'content': content.get('text', ''),
+                            'metadata': {
+                                'filename': file_path.name,
+                                'file_type': file_type,
+                                'document_id': document_id
+                            }
+                        }
+                        
+                        knowledge = loop.run_until_complete(
+                            self.advanced_engine.extract_deep_knowledge(document_data)
+                        )
+                        knowledge['processing_note'] = 'Used legacy extraction due to intelligent framework failure'
+                        loop.close()
+                        
+                    except Exception as legacy_e:
+                        logger.error(f"Legacy knowledge extraction also failed: {legacy_e}")
+                        knowledge = {'error': f'Both intelligent and legacy extraction failed: {str(e)}, {str(legacy_e)}'}
             else:
                 knowledge = {'error': 'Knowledge engine not available'}
             
@@ -363,10 +393,14 @@ class DocumentProcessor:
                 logger.error(f"Both PDF extraction methods failed: {e2}")
                 raise ProcessingError(f"Failed to extract PDF content: {e2}")
         
+        # Extract sections for intelligent processing
+        sections = self._extract_document_sections(text_content)
+        
         return {
             'text': text_content.strip(),
             'metadata': metadata,
-            'page_count': len(text_content.split('\f')) if '\f' in text_content else 1
+            'page_count': len(text_content.split('\f')) if '\f' in text_content else 1,
+            'sections': sections
         }
     
     def _extract_word_content(self, file_path: Path) -> Dict[str, Any]:
@@ -1093,4 +1127,82 @@ class DocumentProcessor:
         # Placeholder implementation
         return {}
         
-    # Note: The OCR confidence helper and its heuristic are defined above
+            # Note: The OCR confidence helper and its heuristic are defined above
+    
+    def _extract_document_sections(self, text: str) -> List[Dict[str, Any]]:
+        """Extract document sections for intelligent processing"""
+        sections = []
+        
+        # Split text into logical sections
+        section_patterns = [
+            r'\n#+\s*(.*?)\n',  # Markdown headers
+            r'\n(\d+\.?\s+.*?)\n',  # Numbered sections
+            r'\n([A-Z][A-Z\s]{3,})\n',  # ALL CAPS headers
+            r'\n(SECTION.*?)\n',  # Section headers
+            r'\n(CHAPTER.*?)\n',  # Chapter headers
+        ]
+        
+        current_section = ""
+        current_title = "Introduction"
+        section_id = 0
+        
+        for line in text.split('\n'):
+            line_stripped = line.strip()
+            
+            # Check if this line is a section header
+            is_header = False
+            for pattern in section_patterns:
+                if re.match(pattern, f'\n{line}\n'):
+                    is_header = True
+                    # Save previous section
+                    if current_section.strip():
+                        sections.append({
+                            'id': section_id,
+                            'title': current_title,
+                            'content': current_section.strip(),
+                            'word_count': len(current_section.split()),
+                            'type': self._classify_section_type(current_title, current_section)
+                        })
+                        section_id += 1
+                    
+                    # Start new section
+                    current_title = line_stripped
+                    current_section = ""
+                    break
+            
+            if not is_header:
+                current_section += line + '\n'
+        
+        # Add final section
+        if current_section.strip():
+            sections.append({
+                'id': section_id,
+                'title': current_title,
+                'content': current_section.strip(),
+                'word_count': len(current_section.split()),
+                'type': self._classify_section_type(current_title, current_section)
+            })
+        
+        return sections
+    
+    def _classify_section_type(self, title: str, content: str) -> str:
+        """Classify section type for intelligent processing"""
+        title_lower = title.lower()
+        content_lower = content.lower()
+        
+        if any(keyword in title_lower for keyword in ["process", "procedure", "step"]):
+            return "process"
+        elif any(keyword in title_lower for keyword in ["requirement", "compliance", "standard"]):
+            return "compliance"
+        elif any(keyword in title_lower for keyword in ["risk", "safety", "hazard"]):
+            return "risk"
+        elif any(keyword in title_lower for keyword in ["role", "responsibility", "organization"]):
+            return "organizational"
+        elif any(keyword in title_lower for keyword in ["definition", "glossary", "term"]):
+            return "definition"
+        elif any(keyword in content_lower for keyword in ["must", "shall", "mandatory", "required"]):
+            return "requirement"
+        elif any(keyword in content_lower for keyword in ["step", "procedure", "process"]):
+            return "process"
+        else:
+            return "general"

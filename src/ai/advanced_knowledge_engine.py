@@ -249,15 +249,25 @@ class ModelManager:
 
 
 class AdvancedKnowledgeEngine:
-    """Advanced knowledge extraction engine using local AI models"""
+    """Advanced knowledge extraction engine using local AI models with intelligent document processing"""
     
-    def __init__(self, config: AIConfig):
+    def __init__(self, config: AIConfig, db_session=None):
         self.config = config
         self.model_manager = ModelManager(config)
         self.knowledge_graph = Neo4jLiteGraph()
         self.llm = None
         self.embedder = None
         self.initialized = False
+        self.db_session = db_session
+        
+        # Initialize the three-phase processing system
+        from src.ai.document_intelligence_analyzer import DocumentIntelligenceAnalyzer
+        from src.ai.knowledge_categorization_engine import KnowledgeCategorizationEngine
+        from src.ai.database_output_generator import DatabaseOutputGenerator
+        
+        self.document_analyzer = DocumentIntelligenceAnalyzer(config)
+        self.categorization_engine = KnowledgeCategorizationEngine(config)
+        self.output_generator = DatabaseOutputGenerator(config, db_session) if db_session else None
         
     async def initialize(self):
         """Initialize the knowledge engine with models"""
@@ -270,15 +280,121 @@ class AdvancedKnowledgeEngine:
             self.embedder = await self.model_manager.load_embedding_model(
                 self.config.embedding_model
             )
+            
+            # Initialize the three-phase processing components
+            await self.document_analyzer.initialize()
+            await self.categorization_engine.initialize()
+            
             self.initialized = True
-            logger.info("Advanced Knowledge Engine initialized successfully")
+            logger.info("Advanced Knowledge Engine with intelligent processing initialized successfully")
             
         except Exception as e:
             logger.error(f"Failed to initialize knowledge engine: {e}")
             raise
     
+    async def extract_intelligent_knowledge(self, document: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Intelligent three-phase knowledge extraction strategy
+        
+        Transforms unstructured documents into structured, actionable knowledge database
+        using the new intelligence framework.
+        """
+        if not self.initialized:
+            await self.initialize()
+        
+        content = document.get('content', '')
+        filename = document.get('filename', '')
+        metadata = document.get('metadata', {})
+        document_id = document.get('id')
+        
+        logger.info(f"Starting intelligent knowledge extraction for document: {filename}")
+        
+        # Phase 1: Document Intelligence Assessment
+        logger.info("Phase 1: Document Intelligence Assessment")
+        document_intelligence = await self.document_analyzer.analyze_document_intelligence(
+            content, filename, metadata
+        )
+        
+        # Phase 2: Intelligent Knowledge Categorization
+        logger.info("Phase 2: Intelligent Knowledge Categorization")
+        knowledge_entities = await self.categorization_engine.categorize_knowledge(
+            content, document_intelligence, metadata.get('sections', [])
+        )
+        
+        # Phase 3: Database-Optimized Output Generation
+        processed_units = []
+        if self.output_generator and document_id:
+            logger.info("Phase 3: Database-Optimized Output Generation")
+            processed_units = await self.output_generator.generate_database_entries(
+                knowledge_entities, document_intelligence, document_id
+            )
+        
+        # Compile comprehensive results
+        results = {
+            'extraction_timestamp': datetime.now().isoformat(),
+            'document_id': document_id,
+            'filename': filename,
+            'intelligence_framework': {
+                'document_intelligence': {
+                    'document_type': document_intelligence.document_type.value,
+                    'confidence_score': document_intelligence.confidence_score,
+                    'target_audience': [aud.value for aud in document_intelligence.target_audience],
+                    'information_architecture': document_intelligence.information_architecture.value,
+                    'priority_contexts': [ctx.value for ctx in document_intelligence.priority_contexts],
+                    'complexity_level': document_intelligence.complexity_level,
+                    'content_density': document_intelligence.content_density,
+                    'technical_depth': document_intelligence.technical_depth,
+                    'regulatory_focus': document_intelligence.regulatory_focus,
+                    'process_oriented': document_intelligence.process_oriented,
+                    'structure_analysis': {
+                        'section_count': document_intelligence.section_count,
+                        'has_tables': document_intelligence.has_tables,
+                        'has_diagrams': document_intelligence.has_diagrams,
+                        'has_checklists': document_intelligence.has_checklists,
+                        'has_forms': document_intelligence.has_forms
+                    },
+                    'extraction_strategy': {
+                        'approach': document_intelligence.recommended_extraction_approach,
+                        'patterns': document_intelligence.key_extraction_patterns,
+                        'context_requirements': document_intelligence.context_preservation_requirements
+                    }
+                },
+                'knowledge_categorization': {
+                    'total_entities': len(knowledge_entities),
+                    'entities_by_category': self._categorize_entities_summary(knowledge_entities),
+                    'entities_by_type': self._type_entities_summary(knowledge_entities),
+                    'priority_distribution': self._priority_distribution_summary(knowledge_entities),
+                    'average_confidence': sum(e.confidence_score for e in knowledge_entities) / max(len(knowledge_entities), 1),
+                    'average_completeness': sum(e.completeness_score for e in knowledge_entities) / max(len(knowledge_entities), 1),
+                    'average_actionability': sum(e.actionability_score for e in knowledge_entities) / max(len(knowledge_entities), 1)
+                },
+                'database_optimization': {
+                    'processed_units': len(processed_units),
+                    'quality_filtered': sum(1 for unit in processed_units if unit.primary_entry.quality_score > 0.7),
+                    'high_relevance': sum(1 for unit in processed_units if unit.primary_entry.business_relevance > 0.8),
+                    'by_table': self._database_entries_summary(processed_units),
+                    'synthesis_performed': sum(1 for unit in processed_units if 'synthesis' in unit.primary_entry.synthesis_notes)
+                }
+            },
+            'extracted_entities': [self._serialize_entity(entity) for entity in knowledge_entities],
+            'database_ready_units': [self._serialize_processed_unit(unit) for unit in processed_units] if processed_units else [],
+            'quality_metrics': {
+                'extraction_quality': self._calculate_extraction_quality(knowledge_entities),
+                'database_readiness': self._calculate_database_readiness(processed_units),
+                'business_value': self._calculate_business_value(processed_units),
+                'completeness': self._calculate_completeness(knowledge_entities, document_intelligence)
+            }
+        }
+        
+        # Build knowledge graph
+        await self._build_knowledge_graph_from_entities(knowledge_entities, metadata)
+        
+        logger.info(f"Intelligent knowledge extraction completed: {len(knowledge_entities)} entities, {len(processed_units)} database units")
+        
+        return results
+
     async def extract_deep_knowledge(self, document: Dict[str, Any]) -> Dict[str, Any]:
-        """Multi-pass knowledge extraction strategy"""
+        """Legacy multi-pass knowledge extraction strategy - maintained for backward compatibility"""
         if not self.initialized:
             await self.initialize()
         
@@ -316,6 +432,173 @@ class AdvancedKnowledgeEngine:
         await self._build_knowledge_graph(results['passes'], metadata)
         
         return results
+    
+    # Helper methods for intelligent processing framework
+    
+    def _categorize_entities_summary(self, entities):
+        """Generate summary of entities by category"""
+        from src.ai.knowledge_categorization_engine import KnowledgeCategory
+        summary = {}
+        for category in KnowledgeCategory:
+            count = sum(1 for e in entities if e.category == category)
+            if count > 0:
+                summary[category.value] = count
+        return summary
+    
+    def _type_entities_summary(self, entities):
+        """Generate summary of entities by type"""
+        from src.ai.knowledge_categorization_engine import EntityType
+        summary = {}
+        for entity_type in EntityType:
+            count = sum(1 for e in entities if e.entity_type == entity_type)
+            if count > 0:
+                summary[entity_type.value] = count
+        return summary
+    
+    def _priority_distribution_summary(self, entities):
+        """Generate summary of priority distribution"""
+        from src.ai.knowledge_categorization_engine import PriorityLevel
+        summary = {}
+        for priority in PriorityLevel:
+            count = sum(1 for e in entities if e.priority_level == priority)
+            if count > 0:
+                summary[priority.value] = count
+        return summary
+    
+    def _database_entries_summary(self, processed_units):
+        """Generate summary of database entries by table"""
+        summary = {}
+        for unit in processed_units:
+            table_name = unit.primary_entry.table_name
+            summary[table_name] = summary.get(table_name, 0) + 1
+        return summary
+    
+    def _serialize_entity(self, entity):
+        """Serialize knowledge entity for JSON output"""
+        return {
+            'key_identifier': entity.key_identifier,
+            'entity_type': entity.entity_type.value,
+            'category': entity.category.value,
+            'priority_level': entity.priority_level.value,
+            'core_content': entity.core_content,
+            'context_tags': entity.context_tags,
+            'confidence_score': entity.confidence_score,
+            'completeness_score': entity.completeness_score,
+            'clarity_score': entity.clarity_score,
+            'actionability_score': entity.actionability_score,
+            'source_section': entity.source_section,
+            'extraction_method': entity.extraction_method,
+            'relationships': entity.relationships,
+            'structured_data_keys': list(entity.structured_data.keys())
+        }
+    
+    def _serialize_processed_unit(self, unit):
+        """Serialize processed knowledge unit for JSON output"""
+        return {
+            'table_name': unit.primary_entry.table_name,
+            'quality_score': unit.primary_entry.quality_score,
+            'business_relevance': unit.primary_entry.business_relevance,
+            'confidence_score': unit.confidence_score,
+            'completeness_score': unit.completeness_score,
+            'actionability_score': unit.actionability_score,
+            'summary': unit.summary,
+            'synthesis_notes': unit.primary_entry.synthesis_notes,
+            'related_entries_count': len(unit.related_entries),
+            'extraction_metadata': unit.extraction_metadata
+        }
+    
+    def _calculate_extraction_quality(self, entities):
+        """Calculate overall extraction quality score"""
+        if not entities:
+            return 0.0
+        
+        confidence_avg = sum(e.confidence_score for e in entities) / len(entities)
+        completeness_avg = sum(e.completeness_score for e in entities) / len(entities)
+        clarity_avg = sum(e.clarity_score for e in entities) / len(entities)
+        
+        return (confidence_avg + completeness_avg + clarity_avg) / 3
+    
+    def _calculate_database_readiness(self, processed_units):
+        """Calculate database readiness score"""
+        if not processed_units:
+            return 0.0
+        
+        quality_avg = sum(unit.primary_entry.quality_score for unit in processed_units) / len(processed_units)
+        relevance_avg = sum(unit.primary_entry.business_relevance for unit in processed_units) / len(processed_units)
+        
+        return (quality_avg + relevance_avg) / 2
+    
+    def _calculate_business_value(self, processed_units):
+        """Calculate business value score"""
+        if not processed_units:
+            return 0.0
+        
+        # Weight by business relevance and actionability
+        total_value = 0
+        for unit in processed_units:
+            value = unit.primary_entry.business_relevance * unit.actionability_score
+            total_value += value
+        
+        return total_value / len(processed_units)
+    
+    def _calculate_completeness(self, entities, document_intelligence):
+        """Calculate completeness based on document analysis"""
+        if not entities:
+            return 0.0
+        
+        # Base completeness from entities
+        entity_completeness = sum(e.completeness_score for e in entities) / len(entities)
+        
+        # Adjust based on document intelligence
+        complexity_factor = {
+            'basic': 1.0,
+            'intermediate': 0.9,
+            'advanced': 0.8,
+            'expert': 0.7
+        }.get(document_intelligence.complexity_level, 0.8)
+        
+        return entity_completeness * complexity_factor
+    
+    async def _build_knowledge_graph_from_entities(self, entities, metadata):
+        """Build knowledge graph from extracted entities"""
+        try:
+            for entity in entities:
+                # Create knowledge node
+                node = KnowledgeNode(
+                    id=entity.key_identifier,
+                    type=entity.entity_type.value,
+                    name=entity.key_identifier,
+                    description=entity.core_content,
+                    content=entity.core_content,
+                    metadata={
+                        'category': entity.category.value,
+                        'priority': entity.priority_level.value,
+                        'confidence': entity.confidence_score,
+                        'context_tags': entity.context_tags
+                    },
+                    confidence=entity.confidence_score,
+                    created_at=datetime.now(),
+                    updated_at=datetime.now()
+                )
+                
+                self.knowledge_graph.add_node(node)
+                
+                # Add relationships
+                for related_id in entity.relationships:
+                    edge = KnowledgeEdge(
+                        source_id=entity.key_identifier,
+                        target_id=related_id,
+                        relationship_type="related_to",
+                        strength=0.8,
+                        metadata={'extraction_method': entity.extraction_method},
+                        created_at=datetime.now()
+                    )
+                    self.knowledge_graph.add_edge(edge)
+            
+            logger.info(f"Knowledge graph built with {len(entities)} nodes")
+            
+        except Exception as e:
+            logger.warning(f"Failed to build knowledge graph: {e}")
     
     async def _extract_concepts(self, content: str, metadata: Dict[str, Any]) -> Dict[str, Any]:
         """Extract key concepts and entities from content"""

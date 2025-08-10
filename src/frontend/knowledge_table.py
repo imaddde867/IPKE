@@ -89,7 +89,7 @@ def process_document(uploaded_file, use_ai=True):
         if use_ai and AI_AVAILABLE:
             # Try to use AI engine for enhanced processing
             try:
-                knowledge_items = process_with_ai_engine(uploaded_file, file_name, file_type)
+                knowledge_items = process_with_intelligent_ai_engine(uploaded_file, file_name, file_type)
                 if knowledge_items:
                     return knowledge_items
             except Exception as e:
@@ -135,8 +135,73 @@ def process_document(uploaded_file, use_ai=True):
         st.error(f"Error processing file: {e}")
         return []
 
+def process_with_intelligent_ai_engine(uploaded_file, file_name, file_type):
+    """Process document using the intelligent AI framework"""
+    try:
+        # Extract content based on file type
+        content = ""
+        if file_type == "application/pdf":
+            content = extract_pdf_content(uploaded_file)
+        elif file_type.startswith("image/"):
+            # Use OCR for images
+            try:
+                import pytesseract
+                from PIL import Image
+                image = Image.open(uploaded_file)
+                content = pytesseract.image_to_string(image)
+            except:
+                content = f"Image file: {file_name}"
+        elif file_type == "text/plain":
+            content = str(uploaded_file.read(), "utf-8")
+        else:
+            content = f"File: {file_name}"
+        
+        # Try to use intelligent AI framework
+        try:
+            from ai.advanced_knowledge_engine import AdvancedKnowledgeEngine
+            from core.config import AIConfig
+            
+            config = AIConfig()
+            engine = AdvancedKnowledgeEngine(config)
+            
+            document_data = {
+                'id': 1,  # Placeholder ID for frontend processing
+                'content': content,
+                'filename': file_name,
+                'metadata': {
+                    'filename': file_name,
+                    'file_type': file_type,
+                    'sections': []  # Could be enhanced with section extraction
+                }
+            }
+            
+            # Run async intelligent extraction
+            import asyncio
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            
+            knowledge_results = loop.run_until_complete(
+                engine.extract_intelligent_knowledge(document_data)
+            )
+            loop.close()
+            
+            # Convert intelligent AI results to display format
+            return convert_intelligent_ai_results_to_display(knowledge_results, file_name)
+            
+        except Exception as e:
+            print(f"Intelligent AI framework failed, using standard extraction: {e}")
+            # Fallback to intelligent text analysis
+            if content and len(content.strip()) > 50:
+                return extract_intelligent_knowledge(content, file_name)
+            else:
+                return None
+            
+    except Exception as e:
+        print(f"AI engine processing failed: {e}")
+        return None
+
 def process_with_ai_engine(uploaded_file, file_name, file_type):
-    """Process file with AI engine if available"""
+    """Process file with legacy AI engine (maintained for compatibility)"""
     try:
         # Extract content based on file type
         content = ""
@@ -984,6 +1049,99 @@ def main():
             st.metric("Avg Confidence", f"{df['Confidence'].mean():.2f}")
         if not df.empty and 'Type' in df.columns:
             st.metric("Types", df['Type'].nunique())
+
+def convert_intelligent_ai_results_to_display(ai_results, file_name):
+    """Convert intelligent AI framework results to display format"""
+    try:
+        display_items = []
+        
+        # Extract summary information
+        intelligence_framework = ai_results.get('intelligence_framework', {})
+        document_intelligence = intelligence_framework.get('document_intelligence', {})
+        knowledge_categorization = intelligence_framework.get('knowledge_categorization', {})
+        database_optimization = intelligence_framework.get('database_optimization', {})
+        
+        # Add document intelligence summary
+        display_items.append({
+            "Knowledge": f"Document Analysis Summary",
+            "Type": "document_intelligence",
+            "Confidence": document_intelligence.get('confidence_score', 0.8),
+            "Category": "Document Intelligence",
+            "Description": f"Document Type: {document_intelligence.get('document_type', 'Unknown')}\n"
+                          f"Complexity: {document_intelligence.get('complexity_level', 'Unknown')}\n"
+                          f"Target Audience: {', '.join(document_intelligence.get('target_audience', []))}\n"
+                          f"Sections Found: {document_intelligence.get('structure_analysis', {}).get('section_count', 0)}",
+            "Source": file_name,
+            "Extracted_At": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "Priority": "High"
+        })
+        
+        # Process extracted entities
+        extracted_entities = ai_results.get('extracted_entities', [])
+        for entity in extracted_entities:
+            display_items.append({
+                "Knowledge": entity.get('key_identifier', 'Unknown'),
+                "Type": entity.get('entity_type', 'unknown'),
+                "Confidence": entity.get('confidence_score', 0.5),
+                "Category": entity.get('category', 'Unknown').replace('_', ' ').title(),
+                "Description": entity.get('core_content', 'No description available'),
+                "Source": entity.get('source_section', file_name),
+                "Extracted_At": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "Priority": entity.get('priority_level', 'medium').title(),
+                "Context_Tags": ', '.join(entity.get('context_tags', [])),
+                "Completeness": entity.get('completeness_score', 0.5),
+                "Clarity": entity.get('clarity_score', 0.5),
+                "Actionability": entity.get('actionability_score', 0.5)
+            })
+        
+        # Process database-ready units
+        database_units = ai_results.get('database_ready_units', [])
+        for unit in database_units:
+            display_items.append({
+                "Knowledge": f"Database Unit: {unit.get('table_name', 'Unknown')}",
+                "Type": "database_unit",
+                "Confidence": unit.get('confidence_score', 0.5),
+                "Category": "Database Ready",
+                "Description": unit.get('summary', 'Database-optimized knowledge unit'),
+                "Source": file_name,
+                "Extracted_At": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "Priority": "High",
+                "Quality_Score": unit.get('quality_score', 0.5),
+                "Business_Relevance": unit.get('business_relevance', 0.5),
+                "Synthesis_Notes": unit.get('synthesis_notes', '')
+            })
+        
+        # Add quality metrics summary
+        quality_metrics = ai_results.get('quality_metrics', {})
+        display_items.append({
+            "Knowledge": "Processing Quality Metrics",
+            "Type": "quality_metrics",
+            "Confidence": quality_metrics.get('extraction_quality', 0.5),
+            "Category": "Quality Assessment",
+            "Description": f"Extraction Quality: {quality_metrics.get('extraction_quality', 0.0):.2f}\n"
+                          f"Database Readiness: {quality_metrics.get('database_readiness', 0.0):.2f}\n"
+                          f"Business Value: {quality_metrics.get('business_value', 0.0):.2f}\n"
+                          f"Completeness: {quality_metrics.get('completeness', 0.0):.2f}",
+            "Source": file_name,
+            "Extracted_At": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "Priority": "Medium"
+        })
+        
+        return display_items
+        
+    except Exception as e:
+        print(f"Error converting intelligent AI results: {e}")
+        return [{
+            "Knowledge": "AI Processing Error",
+            "Type": "error",
+            "Confidence": 0.0,
+            "Category": "System Error",
+            "Description": f"Failed to process intelligent AI results: {str(e)}",
+            "Source": file_name,
+            "Extracted_At": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "Priority": "Low"
+        }]
+
 
 if __name__ == "__main__":
     main()

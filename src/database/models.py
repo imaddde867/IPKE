@@ -314,7 +314,7 @@ class RiskAssessment(Base):
 
 
 class KnowledgeEntity(Base):
-    """Named entities extracted from documents"""
+    """Named entities extracted from documents with intelligent categorization"""
     __tablename__ = "knowledge_entities"
     
     id = Column(Integer, primary_key=True, index=True)
@@ -322,17 +322,36 @@ class KnowledgeEntity(Base):
     
     # Entity information
     text = Column(String(500), nullable=False, index=True)
-    label = Column(String(50), nullable=False, index=True)  # e.g., "PERSON", "ORG", "EQUIPMENT"
+    label = Column(String(50), nullable=False, index=True)  # e.g., "PERSON", "ORG", "EQUIPMENT", "DEFINITION", "METRIC", "ROLE"
     confidence = Column(Float, nullable=False)
+    
+    # Intelligent categorization fields
+    entity_type = Column(String(50), index=True)  # process, policy, metric, role, requirement, risk, definition, etc.
+    category = Column(String(50), index=True)  # process_intelligence, compliance_governance, etc.
+    priority_level = Column(String(20), index=True)  # high, medium, low
+    business_relevance = Column(Float, default=0.5)  # 0.0 to 1.0
+    
+    # Quality scores
+    completeness_score = Column(Float, default=0.5)
+    clarity_score = Column(Float, default=0.5)
+    actionability_score = Column(Float, default=0.5)
     
     # Position in document
     start_position = Column(Integer)
     end_position = Column(Integer)
     context = Column(Text)  # Surrounding text for context
     
+    # Enhanced context and relationships
+    context_tags = Column(JSON)  # List of context tags
+    relationships = Column(JSON)  # List of related entity identifiers
+    structured_data = Column(JSON)  # Category-specific structured data
+    
+    # Source information
+    source_section = Column(String(200))  # Section where entity was found
+    
     # Metadata
     extracted_at = Column(DateTime, default=func.now(), nullable=False)
-    extraction_method = Column(String(50))  # NER model used
+    extraction_method = Column(String(50))  # extraction method used
     
     # Indexes
     __table_args__ = (
@@ -385,6 +404,49 @@ class ProcessingTask(Base):
     
     def __repr__(self):
         return f"<ProcessingTask(id={self.id}, task_id='{self.task_id}', status='{self.status}')>"
+
+
+class ProcessedKnowledgeUnit(Base):
+    """Processed knowledge units ready for database ingestion"""
+    __tablename__ = "processed_knowledge_units"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    document_id = Column(Integer, ForeignKey("documents.id"), nullable=False, index=True)
+    
+    # Unit identification
+    unit_identifier = Column(String(100), nullable=False, index=True)
+    unit_type = Column(String(50), nullable=False, index=True)  # process, compliance, risk, etc.
+    category = Column(String(50), nullable=False, index=True)
+    
+    # Quality metrics
+    quality_score = Column(Float, nullable=False, index=True)
+    business_relevance = Column(Float, nullable=False, index=True)
+    confidence_score = Column(Float, nullable=False)
+    completeness_score = Column(Float, nullable=False)
+    actionability_score = Column(Float, nullable=False)
+    
+    # Processing information
+    primary_table = Column(String(50))  # Target database table
+    related_entries_count = Column(Integer, default=0)
+    synthesis_performed = Column(Boolean, default=False)
+    
+    # Content summary
+    summary = Column(Text)
+    synthesis_notes = Column(Text)
+    
+    # Metadata
+    processed_at = Column(DateTime, default=func.now(), nullable=False)
+    extraction_metadata = Column(JSON)
+    
+    # Indexes
+    __table_args__ = (
+        Index('idx_knowledge_units_quality', 'quality_score', 'business_relevance'),
+        Index('idx_knowledge_units_type_category', 'unit_type', 'category'),
+        Index('idx_knowledge_units_document', 'document_id', 'unit_type'),
+    )
+    
+    def __repr__(self):
+        return f"<ProcessedKnowledgeUnit(id={self.id}, identifier='{self.unit_identifier}', type='{self.unit_type}')>"
 
 
 class SystemMetrics(Base):
@@ -450,6 +512,7 @@ def get_all_models():
         ComplianceItem,
         RiskAssessment,
         KnowledgeEntity,
+        ProcessedKnowledgeUnit,
         ProcessingTask,
         SystemMetrics
     ]
@@ -464,6 +527,7 @@ def get_model_by_name(model_name: str):
         'ComplianceItem': ComplianceItem,
         'RiskAssessment': RiskAssessment,
         'KnowledgeEntity': KnowledgeEntity,
+        'ProcessedKnowledgeUnit': ProcessedKnowledgeUnit,
         'ProcessingTask': ProcessingTask,
         'SystemMetrics': SystemMetrics
     }
