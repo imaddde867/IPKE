@@ -14,7 +14,7 @@ from pathlib import Path
 
 def run_backend():
     """Run the FastAPI backend"""
-    print("🚀 Starting EXPLAINIUM Backend API...")
+    print("Starting EXPLAINIUM Backend API...")
     return subprocess.Popen([
         sys.executable, "-m", "uvicorn", 
         "src.api.app:app", 
@@ -25,7 +25,7 @@ def run_backend():
 
 def run_frontend():
     """Run the Streamlit frontend"""
-    print("🎨 Starting EXPLAINIUM Frontend Dashboard...")
+    print("Starting EXPLAINIUM Frontend Dashboard...")
     return subprocess.Popen([
         sys.executable, "-m", "streamlit", "run", 
         "src/frontend/knowledge_table.py",
@@ -36,7 +36,7 @@ def run_frontend():
 def main():
     """Main application runner"""
     print("=" * 60)
-    print("🧠 EXPLAINIUM - Knowledge Extraction System")
+    print("EXPLAINIUM - Knowledge Extraction System")
     print("=" * 60)
     print("Starting full application stack...")
     print()
@@ -54,12 +54,12 @@ def main():
         time.sleep(2)  # Give frontend time to start
         
         print()
-        print("✅ EXPLAINIUM is now running!")
+        print("EXPLAINIUM is now running.")
         print("=" * 60)
-        print("🌐 Frontend Dashboard: http://localhost:8501")
-        print("🔧 Backend API:        http://localhost:8000")
-        print("📚 API Documentation:  http://localhost:8000/docs")
-        print("🏥 Health Check:       http://localhost:8000/health")
+        print("Frontend Dashboard: http://localhost:8501")
+        print("Backend API:        http://localhost:8000")
+        print("API Documentation:  http://localhost:8000/docs")
+        print("Health Check:       http://localhost:8000/health")
         print("=" * 60)
         print("Press Ctrl+C to stop all services")
         print()
@@ -70,15 +70,15 @@ def main():
             
             # Check if processes are still running
             if backend_process.poll() is not None:
-                print("❌ Backend process stopped unexpectedly")
+                print("Backend process stopped unexpectedly")
                 break
                 
             if frontend_process.poll() is not None:
-                print("❌ Frontend process stopped unexpectedly")
+                print("Frontend process stopped unexpectedly")
                 break
                 
     except KeyboardInterrupt:
-        print("\n🛑 Shutting down EXPLAINIUM...")
+        print("\nShutting down EXPLAINIUM...")
         
     finally:
         # Clean shutdown
@@ -96,7 +96,7 @@ def main():
             except subprocess.TimeoutExpired:
                 frontend_process.kill()
                 
-        print("✅ All services stopped")
+        print("All services stopped")
 
 if __name__ == "__main__":
     main()

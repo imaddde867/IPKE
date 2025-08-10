@@ -37,7 +37,7 @@ log_header() {
 # Banner
 clear
 echo "=================================================================="
-log_header "🧠 EXPLAINIUM - Automated Setup"
+log_header "EXPLAINIUM - Automated Setup"
 echo "=================================================================="
 echo "Setting up your AI-powered knowledge extraction system..."
 echo "This will take 5-10 minutes depending on your internet connection."
@@ -113,9 +113,9 @@ sys.path.append('src')
 try:
     from core.config import AIConfig
     from ai.advanced_knowledge_engine import AdvancedKnowledgeEngine
-    print('✅ AI components verified')
+    print('AI components verified')
 except ImportError as e:
-    print(f'⚠️  AI components will be loaded on first use: {e}')
+    print(f'AI components will be loaded on first use: {e}')
 " || log_warning "AI models will be downloaded on first use"
 
 # Step 5: Test basic functionality
@@ -128,22 +128,22 @@ sys.path.append('src')
 try:
     from database.database import init_db
     init_db()
-    print('✅ Database initialized')
+    print('Database initialized')
 except Exception as e:
-    print(f'⚠️  Database will initialize on first run: {e}')
+    print(f'Database will initialize on first run: {e}')
 " || log_warning "Database will initialize on first run"
 
 # Test frontend
 python -c "
 import streamlit
-print('✅ Streamlit frontend ready')
+print('Streamlit frontend ready')
 " || log_error "Streamlit installation failed"
 
 # Test backend
 python -c "
 import fastapi
 import uvicorn
-print('✅ FastAPI backend ready')
+print('FastAPI backend ready')
 " || log_error "FastAPI installation failed"
 
 # Step 6: Create startup scripts
@@ -161,7 +161,7 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 echo "=================================================================="
-echo -e "${BLUE}🧠 EXPLAINIUM - Starting Application${NC}"
+echo -e "${BLUE}EXPLAINIUM - Starting Application${NC}"
 echo "=================================================================="
 
 # Activate virtual environment
@@ -169,7 +169,7 @@ source venv/bin/activate
 
 # Function to start backend
 start_backend() {
-    echo -e "${GREEN}🔧 Starting Backend API...${NC}"
+    echo -e "${GREEN}Starting Backend API...${NC}"
     uvicorn src.api.app:app --host 0.0.0.0 --port 8000 --reload &
     BACKEND_PID=$!
     echo "Backend PID: $BACKEND_PID"
@@ -177,7 +177,7 @@ start_backend() {
 
 # Function to start frontend
 start_frontend() {
-    echo -e "${GREEN}🎨 Starting Frontend Dashboard...${NC}"
+    echo -e "${GREEN}Starting Frontend Dashboard...${NC}"
     streamlit run src/frontend/knowledge_table.py --server.port 8501 --server.address localhost &
     FRONTEND_PID=$!
     echo "Frontend PID: $FRONTEND_PID"
@@ -190,17 +190,17 @@ start_frontend
 
 echo ""
 echo "=================================================================="
-echo -e "${GREEN}✅ EXPLAINIUM is now running!${NC}"
+echo -e "${GREEN}EXPLAINIUM is now running.${NC}"
 echo "=================================================================="
-echo "🎨 Frontend Dashboard: http://localhost:8501"
-echo "🔧 Backend API:        http://localhost:8000"
-echo "📚 API Documentation:  http://localhost:8000/docs"
+echo "Frontend Dashboard: http://localhost:8501"
+echo "Backend API:        http://localhost:8000"
+echo "API Documentation:  http://localhost:8000/docs"
 echo "=================================================================="
 echo "Press Ctrl+C to stop all services"
 echo ""
 
 # Wait for interrupt
-trap 'echo -e "\n${BLUE}🛑 Shutting down...${NC}"; kill $BACKEND_PID $FRONTEND_PID 2>/dev/null; exit' INT
+trap 'echo -e "\n${BLUE}Shutting down...${NC}"; kill $BACKEND_PID $FRONTEND_PID 2>/dev/null; exit' INT
 wait
 EOF
 
@@ -244,20 +244,20 @@ try:
     import fastapi
     import pandas
     import plotly
-    print('✅ Core dependencies verified')
+    print('Core dependencies verified')
 except ImportError as e:
-    print(f'❌ Missing dependency: {e}')
+    print(f'Missing dependency: {e}')
     exit(1)
 
 # Test AI imports (optional)
 try:
     from ai.advanced_knowledge_engine import AdvancedKnowledgeEngine
     from core.config import AIConfig
-    print('✅ AI components available')
+    print('AI components available')
 except ImportError:
-    print('⚠️  AI components will load on first use')
+    print('AI components will load on first use')
 
-print('✅ System verification complete')
+print('System verification complete')
 "
 
 if [ $? -eq 0 ]; then
@@ -270,17 +270,17 @@ fi
 # Success message
 echo ""
 echo "=================================================================="
-log_header "🎉 EXPLAINIUM Setup Complete!"
+log_header "EXPLAINIUM Setup Complete"
 echo "=================================================================="
 log_success "Your AI-powered knowledge extraction system is ready!"
 echo ""
-echo "🚀 To start the application:"
+echo "To start the application:"
 echo "   ./start.sh"
 echo ""
-echo "🛑 To stop the application:"
+echo "To stop the application:"
 echo "   ./stop.sh"
 echo ""
-echo "📖 Quick Start Guide:"
+echo "Quick Start Guide:"
 echo "   1. Run: ./start.sh"
 echo "   2. Open: http://localhost:8501"
 echo "   3. Upload any document, image, video, or audio file"
@@ -292,5 +292,5 @@ echo "   - Ensure 16GB+ RAM available"
 echo "   - Restart with: ./stop.sh && ./start.sh"
 echo ""
 echo "=================================================================="
-log_success "Setup completed successfully! 🎉"
+log_success "Setup completed successfully."
 echo "=================================================================="

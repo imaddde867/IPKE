@@ -112,7 +112,7 @@ class HealthResponse(BaseModel):
 async def root():
     """API root endpoint"""
     return {
-        "message": "🧠 EXPLAINIUM - Advanced AI-Powered Knowledge Extraction System",
+        "message": "EXPLAINIUM - Advanced AI-Powered Knowledge Extraction System",
         "version": "2.0.0",
         "status": "running",
         "docs": "/docs",

@@ -64,20 +64,20 @@ try:
             from ai.advanced_knowledge_engine import AdvancedKnowledgeEngine
             from core.config import AIConfig
             AI_AVAILABLE = True
-            print("✅ AI Engine components loaded successfully")
+            print("AI Engine components loaded successfully")
         except Exception as e:
             # Fallback: just mark as available if files exist
             AI_AVAILABLE = True
-            print(f"✅ AI Engine files found (will load on demand): {e}")
+            print(f"AI Engine files found (will load on demand): {e}")
     else:
         AI_AVAILABLE = False
         import_error_msg = "AI engine files not found"
-        print(f"❌ AI Engine files not found")
+        print(f"AI Engine files not found")
         
 except Exception as e:
     AI_AVAILABLE = False
     import_error_msg = str(e)
-    print(f"❌ AI Engine check failed: {e}")
+    print(f"AI Engine check failed: {e}")
 
 def process_document(uploaded_file, use_ai=True):
     """Process uploaded document/media and extract knowledge"""
@@ -216,7 +216,7 @@ def _extract_detailed_concepts(text, source_name):
                 definition = re.sub(r'\s+', ' ', definition)
                 
                 concepts.append({
-                    "Knowledge": f"💡 {term}",
+                    "Knowledge": f"{term}",
                     "Type": "concepts",
                     "Confidence": 0.92,
                     "Category": "Concept",
@@ -226,21 +226,21 @@ def _extract_detailed_concepts(text, source_name):
                 })
     
     # Extract section headers with bullet points
-    section_pattern = r'([A-Z][A-Za-z\s]+):\s*\n((?:\s*•[^\n]+\n?)+)'
+    section_pattern = r'([A-Z][A-Za-z\s]+):\s*\n((?:\s*[-\u2022][^\n]+\n?)+)'
     section_matches = re.findall(section_pattern, text, re.MULTILINE)
     
     for section_title, bullet_content in section_matches:
         # Extract individual bullets
-        bullets = re.findall(r'•\s*([^•\n]+)', bullet_content)
+        bullets = re.findall(r'[\-\u2022]\s*([^\-\u2022\n]+)', bullet_content)
         if len(bullets) > 1:
-            formatted_bullets = " <br> • ".join([bullet.strip() for bullet in bullets])
+            formatted_bullets = " <br> - ".join([bullet.strip() for bullet in bullets])
             
             concepts.append({
-                "Knowledge": f"💡 {section_title.strip()}",
+                "Knowledge": f"{section_title.strip()}",
                 "Type": "concepts",
                 "Confidence": 0.90,
                 "Category": "Structured Content",
-                "Description": f"• {formatted_bullets}",
+                "Description": f"- {formatted_bullets}",
                 "Source": source_name,
                 "Extracted_At": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             })
@@ -268,7 +268,7 @@ def _extract_detailed_processes(text, source_name):
                 clean_match = re.sub(r'\s+', ' ', match.strip())
                 
                 processes.append({
-                    "Knowledge": "⚙️ Process Framework",
+                    "Knowledge": "Process Framework",
                     "Type": "processes",
                     "Confidence": 0.85,
                     "Category": "Process",
@@ -299,7 +299,7 @@ def _extract_detailed_systems(text, source_name):
                 clean_match = re.sub(r'\s+', ' ', match.strip())
                 
                 systems.append({
-                    "Knowledge": "🖥️ Pest Management Tools",
+                    "Knowledge": "Pest Management Tools",
                     "Type": "systems", 
                     "Confidence": 0.85,
                     "Category": "Equipment",
@@ -331,7 +331,7 @@ def _extract_detailed_requirements(text, source_name):
                 clean_match = re.sub(r'\s+', ' ', match.strip())
                 
                 requirements.append({
-                    "Knowledge": "📋 Regulatory Compliance",
+                    "Knowledge": "Regulatory Compliance",
                     "Type": "requirements",
                     "Confidence": 0.88,
                     "Category": "Compliance",
@@ -369,7 +369,7 @@ def _extract_detailed_risks(text, source_name):
                            "General"
                 
                 risks.append({
-                    "Knowledge": f"⚠️ {risk_type} Risk",
+                    "Knowledge": f"{risk_type} Risk",
                     "Type": "risks",
                     "Confidence": 0.82,
                     "Category": "Risk",
@@ -400,7 +400,7 @@ def _extract_people_and_roles(text, source_name):
                 clean_match = re.sub(r'\s+', ' ', match.strip())
                 
                 people.append({
-                    "Knowledge": "👥 Personnel",
+                    "Knowledge": "Personnel",
                     "Type": "people",
                     "Confidence": 0.82,
                     "Category": "Personnel",
@@ -450,7 +450,7 @@ def extract_knowledge_from_image(uploaded_file, file_name):
                 
                 # Add OCR success indicator
                 knowledge_items.append({
-                    "Knowledge": "🔍 Text Recognition Success",
+                    "Knowledge": "Text Recognition Success",
                     "Type": "systems",
                     "Confidence": 0.85,
                     "Category": "OCR Processing",
@@ -461,7 +461,7 @@ def extract_knowledge_from_image(uploaded_file, file_name):
             else:
                 # No meaningful text found
                 knowledge_items.append({
-                    "Knowledge": "🖼️ Visual Content",
+                    "Knowledge": "Visual Content",
                     "Type": "concepts",
                     "Confidence": 0.75,
                     "Category": "Visual Content",
@@ -473,7 +473,7 @@ def extract_knowledge_from_image(uploaded_file, file_name):
         except Exception as ocr_error:
             # OCR failed, provide basic image analysis
             knowledge_items.append({
-                "Knowledge": "🖼️ Image Analysis",
+                "Knowledge": "Image Analysis",
                 "Type": "systems",
                 "Confidence": 0.70,
                 "Category": "Image Processing",
@@ -485,7 +485,7 @@ def extract_knowledge_from_image(uploaded_file, file_name):
         # Image type classification based on filename and content
         if any(keyword in file_name.lower() for keyword in ['diagram', 'chart', 'graph', 'flowchart', 'schematic']):
             knowledge_items.append({
-                "Knowledge": "📊 Technical Diagram",
+                "Knowledge": "Technical Diagram",
                 "Type": "concepts",
                 "Confidence": 0.85,
                 "Category": "Technical Documentation",
@@ -496,7 +496,7 @@ def extract_knowledge_from_image(uploaded_file, file_name):
         
         if any(keyword in file_name.lower() for keyword in ['manual', 'guide', 'instruction', 'procedure']):
             knowledge_items.append({
-                "Knowledge": "📖 Instructional Content",
+                "Knowledge": "Instructional Content",
                 "Type": "processes",
                 "Confidence": 0.80,
                 "Category": "Documentation",
@@ -509,7 +509,7 @@ def extract_knowledge_from_image(uploaded_file, file_name):
         
     except Exception as e:
         return [{
-            "Knowledge": f"🚫 Image Processing Error",
+            "Knowledge": f"Image Processing Error",
             "Type": "systems",
             "Confidence": 0.3,
             "Category": "Processing Error",
@@ -529,14 +529,14 @@ def extract_knowledge_from_video(uploaded_file, file_name):
         
         # Intelligent video content analysis based on filename
         content_indicators = {
-            'training': ('🎓 Training Content', 'Educational video content for skill development or knowledge transfer'),
-            'tutorial': ('🎓 Tutorial Content', 'Step-by-step instructional video content'),
-            'demo': ('🎬 Demonstration', 'Product or process demonstration video'),
-            'meeting': ('💼 Business Meeting', 'Recorded business meeting or conference content'),
-            'presentation': ('📊 Presentation', 'Business presentation or briefing content'),
-            'safety': ('⚠️ Safety Training', 'Safety procedures and compliance training content'),
-            'procedure': ('⚙️ Procedural Content', 'Standard operating procedures or process documentation'),
-            'inspection': ('🔍 Inspection Process', 'Quality control or inspection procedure documentation')
+            'training': ('Training Content', 'Educational video content for skill development or knowledge transfer'),
+            'tutorial': ('Tutorial Content', 'Step-by-step instructional video content'),
+            'demo': ('Demonstration', 'Product or process demonstration video'),
+            'meeting': ('Business Meeting', 'Recorded business meeting or conference content'),
+            'presentation': ('Presentation', 'Business presentation or briefing content'),
+            'safety': ('Safety Training', 'Safety procedures and compliance training content'),
+            'procedure': ('Procedural Content', 'Standard operating procedures or process documentation'),
+            'inspection': ('Inspection Process', 'Quality control or inspection procedure documentation')
         }
         
         # Check filename for content type indicators
@@ -560,7 +560,7 @@ def extract_knowledge_from_video(uploaded_file, file_name):
         # If no specific content detected, provide general analysis
         if not detected_content:
             knowledge_items.append({
-                "Knowledge": "🎬 Video Content",
+                "Knowledge": "Video Content",
                 "Type": "concepts",
                 "Confidence": 0.75,
                 "Category": "Media Content",
@@ -571,7 +571,7 @@ def extract_knowledge_from_video(uploaded_file, file_name):
         
         # Note about advanced processing capabilities
         knowledge_items.append({
-            "Knowledge": "🔧 Advanced Video Processing",
+            "Knowledge": "Advanced Video Processing",
             "Type": "systems",
             "Confidence": 0.95,
             "Category": "Processing Capability",
@@ -584,7 +584,7 @@ def extract_knowledge_from_video(uploaded_file, file_name):
         
     except Exception as e:
         return [{
-            "Knowledge": f"🚫 Video Processing Error",
+            "Knowledge": f"Video Processing Error",
             "Type": "systems",
             "Confidence": 0.3,
             "Category": "Processing Error",
@@ -604,14 +604,14 @@ def extract_knowledge_from_audio(uploaded_file, file_name):
         
         # Intelligent audio content analysis
         content_indicators = {
-            'meeting': ('💼 Business Meeting Audio', 'Recorded business meeting, conference call, or discussion'),
-            'interview': ('🎤 Interview Recording', 'Interview or Q&A session recording'),
-            'call': ('📞 Phone Call Recording', 'Business phone call or teleconference recording'),
-            'training': ('🎓 Training Audio', 'Educational or training content in audio format'),
-            'lecture': ('📚 Lecture Content', 'Educational lecture or presentation audio'),
-            'presentation': ('📊 Audio Presentation', 'Business presentation or briefing audio'),
-            'briefing': ('📋 Briefing Audio', 'Operational briefing or status update'),
-            'instruction': ('⚙️ Instructional Audio', 'Procedural instructions or guidance')
+            'meeting': ('Business Meeting Audio', 'Recorded business meeting, conference call, or discussion'),
+            'interview': ('Interview Recording', 'Interview or Q&A session recording'),
+            'call': ('Phone Call Recording', 'Business phone call or teleconference recording'),
+            'training': ('Training Audio', 'Educational or training content in audio format'),
+            'lecture': ('Lecture Content', 'Educational lecture or presentation audio'),
+            'presentation': ('Audio Presentation', 'Business presentation or briefing audio'),
+            'briefing': ('Briefing Audio', 'Operational briefing or status update'),
+            'instruction': ('Instructional Audio', 'Procedural instructions or guidance')
         }
         
         # Detect content type from filename
@@ -635,7 +635,7 @@ def extract_knowledge_from_audio(uploaded_file, file_name):
         # If no specific content detected, provide general analysis
         if not detected_content:
             knowledge_items.append({
-                "Knowledge": "🎵 Audio Content",
+                "Knowledge": "Audio Content",
                 "Type": "concepts",
                 "Confidence": 0.75,
                 "Category": "Media Content", 
@@ -646,7 +646,7 @@ def extract_knowledge_from_audio(uploaded_file, file_name):
         
         # Note about transcription capabilities
         knowledge_items.append({
-            "Knowledge": "🔧 Advanced Audio Processing",
+            "Knowledge": "Advanced Audio Processing",
             "Type": "systems",
             "Confidence": 0.95,
             "Category": "Processing Capability",
@@ -659,7 +659,7 @@ def extract_knowledge_from_audio(uploaded_file, file_name):
         
     except Exception as e:
         return [{
-            "Knowledge": f"🚫 Audio Processing Error",
+            "Knowledge": f"Audio Processing Error",
             "Type": "systems",
             "Confidence": 0.3,
             "Category": "Processing Error",
@@ -679,7 +679,7 @@ def get_demo_data():
     """Get demo knowledge data"""
     return [
         {
-            "Knowledge": "💡 Integrated Pest Management (IPM)",
+            "Knowledge": "Integrated Pest Management (IPM)",
             "Type": "concepts",
             "Confidence": 0.95,
             "Category": "Concept",
@@ -688,16 +688,16 @@ def get_demo_data():
             "Extracted_At": "2024-01-15 10:30:00"
         },
         {
-            "Knowledge": "💡 Pesticide Application Types",
+            "Knowledge": "Pesticide Application Types",
             "Type": "concepts",
             "Confidence": 0.92,
             "Category": "Structured Content",
-            "Description": "• General: Application to broad surfaces like walls and floors, permitted only in nonfood areas. <br> • Spot: Application to limited areas (not exceeding 2 sq. ft.) where insects are likely to occur but won't contact food or workers. <br> • Crack and Crevice: Application of small amounts of insecticide directly into cracks, crevices, and voids where pests hide or enter.",
+            "Description": "- General: Application to broad surfaces like walls and floors, permitted only in nonfood areas. <br> - Spot: Application to limited areas (not exceeding 2 sq. ft.) where insects are likely to occur but won't contact food or workers. <br> - Crack and Crevice: Application of small amounts of insecticide directly into cracks, crevices, and voids where pests hide or enter.",
             "Source": "Demo Data",
             "Extracted_At": "2024-01-15 10:32:00"
         },
         {
-            "Knowledge": "⚙️ Pest Management Framework",
+            "Knowledge": "Pest Management Framework",
             "Type": "processes",
             "Confidence": 0.90,
             "Category": "Process Framework",
@@ -706,16 +706,16 @@ def get_demo_data():
             "Extracted_At": "2024-01-15 10:33:00"
         },
         {
-            "Knowledge": "🖥️ Pest Monitoring Tools",
+            "Knowledge": "Pest Monitoring Tools",
             "Type": "systems",
             "Confidence": 0.88,
             "Category": "Equipment",
-            "Description": "• Pheromone Traps: Used to attract and capture specific insects, like the Indianmeal moth, for monitoring purposes. <br> • Bait Stations: Used to safely deploy rodenticides, protecting them from weather and non-target species. <br> • Glue Boards: Sticky surfaces that entangle rodents, used where toxicants are not suitable.",
+            "Description": "- Pheromone Traps: Used to attract and capture specific insects, like the Indianmeal moth, for monitoring purposes. <br> - Bait Stations: Used to safely deploy rodenticides, protecting them from weather and non-target species. <br> - Glue Boards: Sticky surfaces that entangle rodents, used where toxicants are not suitable.",
             "Source": "Demo Data",
             "Extracted_At": "2024-01-15 10:34:00"
         },
         {
-            "Knowledge": "📋 Regulatory Compliance",
+            "Knowledge": "Regulatory Compliance",
             "Type": "requirements",
             "Confidence": 0.85,
             "Category": "Compliance",
@@ -724,7 +724,7 @@ def get_demo_data():
             "Extracted_At": "2024-01-15 10:35:00"
         },
         {
-            "Knowledge": "⚠️ Chemical Contamination Risk",
+            "Knowledge": "Chemical Contamination Risk",
             "Type": "risks",
             "Confidence": 0.82,
             "Category": "Risk",
@@ -733,7 +733,7 @@ def get_demo_data():
             "Extracted_At": "2024-01-15 10:36:00"
         },
         {
-            "Knowledge": "👥 Pest Management Professional (PMP)",
+            "Knowledge": "Pest Management Professional (PMP)",
             "Type": "people",
             "Confidence": 0.80,
             "Category": "Personnel",
@@ -747,20 +747,19 @@ def main():
     """Main application"""
     st.set_page_config(
         page_title="EXPLAINIUM Knowledge Table",
-        page_icon="🧠",
         layout="wide",
         initial_sidebar_state="expanded"
     )
     
-    st.title("🧠 EXPLAINIUM Knowledge Table")
-    st.markdown("**Deep Knowledge Extraction & Analysis Dashboard**")
+    st.title("EXPLAINIUM Knowledge Table")
+    st.markdown("Deep Knowledge Extraction and Analysis Dashboard")
     
     # Show AI engine status prominently
     if AI_AVAILABLE:
-        st.success("🤖 **AI Engine Active** - Advanced knowledge extraction ready!")
+        st.success("AI Engine Active - Advanced knowledge extraction ready.")
     else:
-        st.warning("⚠️ **AI Engine Unavailable** - Using text analysis fallback")
-        if st.button("🔄 Retry AI Engine Loading"):
+        st.warning("AI Engine Unavailable - Using text analysis fallback")
+        if st.button("Retry AI Engine Loading"):
             st.rerun()
     
     # Initialize session state
@@ -769,29 +768,29 @@ def main():
     
     # Sidebar controls
     with st.sidebar:
-        st.header("📊 Controls")
+        st.header("Controls")
         
         # AI Status
         if AI_AVAILABLE:
-            st.success("✅ AI Engine Available")
-            st.info("🧠 Advanced AI models ready for processing")
+            st.success("AI Engine Available")
+            st.info("Advanced AI models ready for processing")
         else:
-            st.warning("⚠️ AI Engine Unavailable")
-            st.info("💡 Using text analysis fallback")
-            with st.expander("🔍 Debug Info"):
+            st.warning("AI Engine Unavailable")
+            st.info("Using text analysis fallback")
+            with st.expander("Debug Info"):
                 st.code(f"Error: {import_error_msg}")
                 st.info("The system will still work with text-based analysis")
         
         # File upload
-        st.subheader("📄 Upload Media")
+        st.subheader("Upload Media")
         
         # Show supported formats
-        with st.expander("📋 Supported Formats"):
+        with st.expander("Supported Formats"):
             st.markdown("""
-            **📄 Documents:** PDF, TXT, DOCX
-            **🖼️ Images:** JPG, PNG, GIF, BMP, TIFF
-            **🎥 Videos:** MP4, AVI, MOV, MKV
-            **🎵 Audio:** MP3, WAV, FLAC
+            Documents: PDF, TXT, DOCX
+            Images: JPG, PNG, GIF, BMP, TIFF
+            Videos: MP4, AVI, MOV, MKV
+            Audio: MP3, WAV, FLAC
             """)
         
         uploaded_file = st.file_uploader(
@@ -804,20 +803,20 @@ def main():
             # Show file info
             file_type = uploaded_file.type
             if file_type.startswith("image/"):
-                st.info(f"🖼️ Image: {uploaded_file.name}")
-                button_text = "🔍 Analyze Image"
+                st.info(f"Image: {uploaded_file.name}")
+                button_text = "Analyze Image"
                 spinner_text = "Analyzing image with computer vision..."
             elif file_type.startswith("video/"):
-                st.info(f"🎥 Video: {uploaded_file.name}")
-                button_text = "🎬 Process Video"
+                st.info(f"Video: {uploaded_file.name}")
+                button_text = "Process Video"
                 spinner_text = "Processing video with scene analysis..."
             elif file_type.startswith("audio/"):
-                st.info(f"🎵 Audio: {uploaded_file.name}")
-                button_text = "🎤 Transcribe Audio"
+                st.info(f"Audio: {uploaded_file.name}")
+                button_text = "Transcribe Audio"
                 spinner_text = "Transcribing audio with Whisper AI..."
             else:
-                st.info(f"📄 Document: {uploaded_file.name}")
-                button_text = "🚀 Process Document"
+                st.info(f"Document: {uploaded_file.name}")
+                button_text = "Process Document"
                 spinner_text = "Processing document with AI..."
             
             if st.button(button_text, type="primary"):
@@ -826,11 +825,11 @@ def main():
                     if new_knowledge:
                         # Add new knowledge to existing data
                         st.session_state.knowledge_data.extend(new_knowledge)
-                        st.success(f"✅ Extracted {len(new_knowledge)} knowledge items!")
+                        st.success(f"Extracted {len(new_knowledge)} knowledge items.")
                         st.rerun()
         
         # Filters
-        st.subheader("🔍 Filters")
+        st.subheader("Filters")
         
         knowledge_types = st.multiselect(
             "Knowledge Types",
@@ -846,27 +845,27 @@ def main():
             step=0.1
         )
         
-        search_term = st.text_input("🔍 Search", placeholder="Search knowledge...")
+        search_term = st.text_input("Search", placeholder="Search knowledge...")
         
         # Data management
         col_a, col_b = st.columns(2)
         with col_a:
-            if st.button("🗑️ Clear All"):
+            if st.button("Clear All"):
                 st.session_state.knowledge_data = []
-                st.success("✅ All data cleared!")
+                st.success("All data cleared.")
                 st.rerun()
         
         with col_b:
-            if st.button("📋 Load Demo"):
+            if st.button("Load Demo"):
                 st.session_state.knowledge_data = get_demo_data()
-                st.success("✅ Demo data loaded!")
+                st.success("Demo data loaded.")
                 st.rerun()
     
     # Main content
     col1, col2 = st.columns([3, 1])
     
     with col1:
-        st.header("📊 Knowledge Table")
+        st.header("Knowledge Table")
         
         # Get and filter data
         df = pd.DataFrame(st.session_state.knowledge_data)
@@ -891,10 +890,10 @@ def main():
         # Display data
         if df.empty:
             if len(st.session_state.knowledge_data) == 0:
-                st.info("🚀 **Get Started:** Upload a document, image, video, or audio file to extract knowledge!")
+                st.info("Get Started: Upload a document, image, video, or audio file to extract knowledge.")
                 st.markdown("""
                 **Or try:**
-                - Click "📋 Load Demo" to see example data
+                - Click "Load Demo" to see example data
                 - Upload any supported file type for AI analysis
                 """)
             else:
@@ -917,14 +916,14 @@ def main():
             # Export
             csv = df.to_csv(index=False)
             st.download_button(
-                "📥 Download CSV",
+                "Download CSV",
                 csv,
                 f"knowledge_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
                 "text/csv"
             )
     
     with col2:
-        st.header("📈 Analytics")
+        st.header("Analytics")
         
         if not df.empty and 'Type' in df.columns and 'Confidence' in df.columns:
             # Type distribution
@@ -945,10 +944,10 @@ def main():
             )
             st.plotly_chart(fig2, use_container_width=True)
         else:
-            st.info("📊 Charts will appear after processing files")
+            st.info("Charts will appear after processing files")
         
         # Stats
-        st.subheader("📊 Statistics")
+        st.subheader("Statistics")
         st.metric("Total Items", len(df))
         if not df.empty and 'Confidence' in df.columns:
             st.metric("Avg Confidence", f"{df['Confidence'].mean():.2f}")
