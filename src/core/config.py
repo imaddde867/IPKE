@@ -209,7 +209,7 @@ class Config:
         self.ai.enable_clip = os.getenv("ENABLE_CLIP", str(self.ai.enable_clip).lower()).lower() == "true"
         self.ai.clip_model = os.getenv("CLIP_MODEL", self.ai.clip_model)
         self.ai.enable_layout_detection = os.getenv("ENABLE_LAYOUT_DETECTION", str(self.ai.enable_layout_detection).lower()).lower() == "true"
-        self.ai.enable_speaker_diarization = os.getenv("ENABLE_SPEAKER_DIARIZATION", str(self.ai.enable_speaker_diarization).lower()).lower() == "true"
+    self.ai.enable_speaker_diarization = os.getenv("ENABLE_SPEAKER_DIARIZATION", str(self.ai.enable_speaker_diarization).lower()).lower() == "true"
     # Local LLM extras
     self.ai.quantization = os.getenv("LLM_QUANTIZATION", self.ai.quantization)
     self.ai.embedding_model = os.getenv("EMBEDDING_MODEL", self.ai.embedding_model)
