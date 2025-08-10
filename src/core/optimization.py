@@ -1,527 +1,454 @@
 """
-EXPLAINIUM - Apple M4 Mac Optimization Module
+EXPLAINIUM - Model Optimization and Caching System
 
-Performance and memory optimization specifically designed for Apple M4 Mac
-with 16GB RAM. Includes model management, memory monitoring, and caching.
+Optimized for Apple M4 Mac with memory management, caching, and Apple Metal acceleration.
 """
 
 import os
-import gc
-import psutil
-import threading
-import time
-from typing import Dict, Any, Optional, List
-from dataclasses import dataclass
-from pathlib import Path
 import logging
-from contextlib import contextmanager
+import asyncio
+from typing import Dict, Any, Optional, List
+from pathlib import Path
+import json
+import hashlib
+import time
+from datetime import datetime, timedelta
+import psutil
 
-import torch
-import numpy as np
-from diskcache import Cache
-
-# Apple Silicon optimization
+# Apple-specific optimizations
 try:
     import mlx.core as mx
-    import mlx.nn as nn
     MLX_AVAILABLE = True
 except ImportError:
     MLX_AVAILABLE = False
+
+try:
+    import torch
+    TORCH_AVAILABLE = True
+except ImportError:
+    TORCH_AVAILABLE = False
 
 from src.logging_config import get_logger
 
 logger = get_logger(__name__)
 
 
-@dataclass
-class MemoryStats:
-    """Memory usage statistics"""
-    total_ram: float
-    available_ram: float
-    used_ram: float
-    ram_percent: float
-    gpu_memory: Optional[float] = None
-    cache_size: float = 0.0
-
-
-@dataclass
-class ModelConfig:
-    """Configuration for AI model optimization"""
-    model_name: str
-    quantization: str = "4bit"
-    max_memory_mb: int = 2048
-    use_cache: bool = True
-    use_metal: bool = True
-    batch_size: int = 4
-    context_length: int = 4096
-
-
-class MemoryMonitor:
-    """Real-time memory monitoring and management"""
+class DiskCache:
+    """Disk-based caching system for models and embeddings"""
     
-    def __init__(self, warning_threshold: float = 0.8, critical_threshold: float = 0.9):
-        self.warning_threshold = warning_threshold
-        self.critical_threshold = critical_threshold
-        self.monitoring = False
-        self.monitor_thread = None
-        self.callbacks = []
-        
-    def start_monitoring(self, interval: int = 5):
-        """Start memory monitoring in background thread"""
-        if self.monitoring:
-            return
-            
-        self.monitoring = True
-        self.monitor_thread = threading.Thread(target=self._monitor_loop, args=(interval,))
-        self.monitor_thread.daemon = True
-        self.monitor_thread.start()
-        logger.info("Memory monitoring started")
-    
-    def stop_monitoring(self):
-        """Stop memory monitoring"""
-        self.monitoring = False
-        if self.monitor_thread:
-            self.monitor_thread.join()
-        logger.info("Memory monitoring stopped")
-    
-    def _monitor_loop(self, interval: int):
-        """Memory monitoring loop"""
-        while self.monitoring:
-            try:
-                stats = self.get_memory_stats()
-                
-                if stats.ram_percent > self.critical_threshold:
-                    logger.critical(f"Critical memory usage: {stats.ram_percent:.1%}")
-                    self._trigger_memory_cleanup()
-                elif stats.ram_percent > self.warning_threshold:
-                    logger.warning(f"High memory usage: {stats.ram_percent:.1%}")
-                
-                # Trigger callbacks
-                for callback in self.callbacks:
-                    callback(stats)
-                    
-            except Exception as e:
-                logger.error(f"Error in memory monitoring: {e}")
-            
-            time.sleep(interval)
-    
-    def get_memory_stats(self) -> MemoryStats:
-        """Get current memory statistics"""
-        memory = psutil.virtual_memory()
-        
-        stats = MemoryStats(
-            total_ram=memory.total / (1024**3),  # GB
-            available_ram=memory.available / (1024**3),  # GB
-            used_ram=memory.used / (1024**3),  # GB
-            ram_percent=memory.percent / 100  # Fraction
-        )
-        
-        # Get GPU memory if available
-        if torch.backends.mps.is_available():
-            try:
-                # MPS doesn't have direct memory query, estimate based on allocated tensors
-                stats.gpu_memory = torch.mps.current_allocated_memory() / (1024**3)
-            except:
-                stats.gpu_memory = 0.0
-        
-        return stats
-    
-    def add_callback(self, callback):
-        """Add callback for memory events"""
-        self.callbacks.append(callback)
-    
-    def _trigger_memory_cleanup(self):
-        """Trigger emergency memory cleanup"""
-        logger.info("Triggering emergency memory cleanup")
-        gc.collect()
-        
-        if torch.backends.mps.is_available():
-            try:
-                torch.mps.empty_cache()
-            except:
-                pass
-
-
-class ModelManager:
-    """Advanced model management with Apple M4 optimization"""
-    
-    def __init__(self, cache_dir: str = "./model_cache", max_cache_size: int = 4):
+    def __init__(self, cache_dir: str, size_limit: str = "4GB"):
         self.cache_dir = Path(cache_dir)
-        self.cache_dir.mkdir(exist_ok=True)
+        self.cache_dir.mkdir(parents=True, exist_ok=True)
         
-        # Initialize disk cache (4GB limit)
-        self.cache = Cache(
-            directory=str(self.cache_dir),
-            size_limit=max_cache_size * 1024**3  # Convert GB to bytes
-        )
+        # Parse size limit
+        self.size_limit = self._parse_size_limit(size_limit)
+        self.cache_index_file = self.cache_dir / "cache_index.json"
+        self.cache_index = self._load_cache_index()
         
-        self.loaded_models = {}
-        self.model_configs = {}
-        self.memory_monitor = MemoryMonitor()
-        
-        # Start memory monitoring
-        self.memory_monitor.start_monitoring()
-        self.memory_monitor.add_callback(self._on_memory_event)
-        
-        logger.info("ModelManager initialized with M4 optimization")
+        # Clean up old cache entries
+        self._cleanup_cache()
     
-    def _on_memory_event(self, stats: MemoryStats):
-        """Handle memory events"""
-        if stats.ram_percent > 0.85:
-            # Unload least recently used models
-            self._unload_lru_models()
-    
-    def register_model_config(self, model_name: str, config: ModelConfig):
-        """Register model configuration"""
-        self.model_configs[model_name] = config
-        logger.info(f"Registered config for model: {model_name}")
-    
-    @contextmanager
-    def load_model(self, model_name: str, force_reload: bool = False):
-        """Context manager for loading and managing models"""
-        model = None
-        try:
-            model = self._load_model_internal(model_name, force_reload)
-            yield model
-        finally:
-            # Optionally unload model after use to free memory
-            if model and model_name in self.loaded_models:
-                # Keep in memory but mark as used
-                self.loaded_models[model_name]['last_used'] = time.time()
-    
-    def _load_model_internal(self, model_name: str, force_reload: bool = False):
-        """Internal model loading with caching"""
-        if not force_reload and model_name in self.loaded_models:
-            self.loaded_models[model_name]['last_used'] = time.time()
-            return self.loaded_models[model_name]['model']
-        
-        config = self.model_configs.get(model_name)
-        if not config:
-            raise ValueError(f"No configuration found for model: {model_name}")
-        
-        # Check memory before loading
-        stats = self.memory_monitor.get_memory_stats()
-        if stats.ram_percent > 0.8:
-            logger.warning("High memory usage, cleaning up before loading model")
-            self._cleanup_memory()
-        
-        # Load model with M4 optimization
-        model = self._load_with_optimization(model_name, config)
-        
-        # Store in cache
-        self.loaded_models[model_name] = {
-            'model': model,
-            'config': config,
-            'loaded_at': time.time(),
-            'last_used': time.time()
-        }
-        
-        logger.info(f"Model {model_name} loaded successfully")
-        return model
-    
-    def _load_with_optimization(self, model_name: str, config: ModelConfig):
-        """Load model with Apple M4 specific optimizations"""
-        try:
-            if config.model_name.endswith('.gguf'):
-                # Load quantized GGUF model with llama-cpp-python
-                return self._load_gguf_model(config)
-            else:
-                # Load Hugging Face model with optimizations
-                return self._load_hf_model(config)
-                
-        except Exception as e:
-            logger.error(f"Error loading model {model_name}: {e}")
-            raise
-    
-    def _load_gguf_model(self, config: ModelConfig):
-        """Load GGUF model optimized for M4"""
-        try:
-            from llama_cpp import Llama
-            
-            model_path = Path("./models") / config.model_name
-            
-            if not model_path.exists():
-                logger.warning(f"Model file not found: {model_path}")
-                return None
-            
-            model = Llama(
-                model_path=str(model_path),
-                n_gpu_layers=-1 if config.use_metal else 0,  # Use all layers on Metal
-                n_ctx=config.context_length,
-                n_batch=config.batch_size * 128,  # Optimize batch for M4
-                verbose=False,
-                use_mmap=True,  # Memory mapping for efficiency
-                use_mlock=True,  # Lock memory pages
-                n_threads=8,  # M4 has 8 performance cores
-                rope_scaling_type=1  # Optimized rope scaling
-            )
-            
-            return model
-            
-        except ImportError:
-            logger.error("llama-cpp-python not available")
-            return None
-        except Exception as e:
-            logger.error(f"Error loading GGUF model: {e}")
-            return None
-    
-    def _load_hf_model(self, config: ModelConfig):
-        """Load Hugging Face model with optimizations"""
-        try:
-            from transformers import AutoModel, AutoTokenizer
-            
-            device = "mps" if torch.backends.mps.is_available() and config.use_metal else "cpu"
-            
-            # Load with optimizations
-            model = AutoModel.from_pretrained(
-                config.model_name,
-                torch_dtype=torch.float16 if device == "mps" else torch.float32,
-                device_map="auto" if device == "mps" else None,
-                trust_remote_code=True,
-                low_cpu_mem_usage=True
-            )
-            
-            if device == "mps":
-                model = model.to(device)
-            
-            return model
-            
-        except Exception as e:
-            logger.error(f"Error loading HF model: {e}")
-            return None
-    
-    def _unload_lru_models(self, keep_count: int = 2):
-        """Unload least recently used models"""
-        if len(self.loaded_models) <= keep_count:
-            return
-        
-        # Sort by last used time
-        sorted_models = sorted(
-            self.loaded_models.items(),
-            key=lambda x: x[1]['last_used']
-        )
-        
-        # Unload oldest models
-        unload_count = len(self.loaded_models) - keep_count
-        for model_name, _ in sorted_models[:unload_count]:
-            self.unload_model(model_name)
-    
-    def unload_model(self, model_name: str):
-        """Unload specific model from memory"""
-        if model_name in self.loaded_models:
-            del self.loaded_models[model_name]
-            gc.collect()
-            
-            if torch.backends.mps.is_available():
-                torch.mps.empty_cache()
-            
-            logger.info(f"Model {model_name} unloaded")
-    
-    def _cleanup_memory(self):
-        """Perform aggressive memory cleanup"""
-        # Unload all but the most recent model
-        if self.loaded_models:
-            self._unload_lru_models(keep_count=1)
-        
-        # Clear caches
-        gc.collect()
-        
-        if torch.backends.mps.is_available():
-            torch.mps.empty_cache()
-        
-        # Clear disk cache if needed
-        if self.cache.volume() > 3 * 1024**3:  # > 3GB
-            self.cache.clear()
-            logger.info("Disk cache cleared")
-    
-    def get_model_stats(self) -> Dict[str, Any]:
-        """Get statistics about loaded models"""
-        stats = {
-            'loaded_models': len(self.loaded_models),
-            'cache_size_gb': self.cache.volume() / (1024**3),
-            'memory_stats': self.memory_monitor.get_memory_stats(),
-            'models': {}
-        }
-        
-        for name, info in self.loaded_models.items():
-            stats['models'][name] = {
-                'loaded_at': info['loaded_at'],
-                'last_used': info['last_used'],
-                'config': info['config'].__dict__
-            }
-        
-        return stats
-    
-    def optimize_for_inference(self):
-        """Apply inference-specific optimizations"""
-        try:
-            # Set optimal settings for M4
-            torch.set_num_threads(8)  # M4 has 8 performance cores
-            
-            if torch.backends.mps.is_available():
-                # Enable MPS optimizations
-                torch.backends.mps.enable_fallback()
-            
-            # Set memory allocation strategy
-            os.environ['PYTORCH_MPS_HIGH_WATERMARK_RATIO'] = '0.0'
-            
-            logger.info("M4 inference optimizations applied")
-            
-        except Exception as e:
-            logger.error(f"Error applying optimizations: {e}")
-    
-    def shutdown(self):
-        """Clean shutdown of model manager"""
-        self.memory_monitor.stop_monitoring()
-        
-        # Unload all models
-        for model_name in list(self.loaded_models.keys()):
-            self.unload_model(model_name)
-        
-        # Close cache
-        self.cache.close()
-        
-        logger.info("ModelManager shutdown complete")
-
-
-class BatchProcessor:
-    """Optimized batch processing for M4 Mac"""
-    
-    def __init__(self, batch_size: int = 4, max_memory_mb: int = 2048):
-        self.batch_size = batch_size
-        self.max_memory_mb = max_memory_mb
-        self.memory_monitor = MemoryMonitor()
-    
-    async def process_batch(self, items: List[Any], processor_func, **kwargs) -> List[Any]:
-        """Process items in optimized batches"""
-        results = []
-        
-        for i in range(0, len(items), self.batch_size):
-            batch = items[i:i + self.batch_size]
-            
-            # Check memory before processing
-            stats = self.memory_monitor.get_memory_stats()
-            if stats.ram_percent > 0.85:
-                # Reduce batch size temporarily
-                batch = batch[:max(1, len(batch) // 2)]
-                logger.warning(f"Reduced batch size due to memory pressure: {len(batch)}")
-            
-            try:
-                batch_results = await processor_func(batch, **kwargs)
-                results.extend(batch_results)
-                
-            except Exception as e:
-                logger.error(f"Error processing batch {i//self.batch_size}: {e}")
-                # Process items individually as fallback
-                for item in batch:
-                    try:
-                        result = await processor_func([item], **kwargs)
-                        results.extend(result)
-                    except Exception as item_error:
-                        logger.error(f"Error processing individual item: {item_error}")
-                        results.append(None)
-        
-        return results
-    
-    def adaptive_batch_size(self, base_size: int = 4) -> int:
-        """Calculate adaptive batch size based on memory"""
-        stats = self.memory_monitor.get_memory_stats()
-        
-        if stats.ram_percent > 0.8:
-            return max(1, base_size // 2)
-        elif stats.ram_percent < 0.6:
-            return min(8, base_size * 2)
+    def _parse_size_limit(self, size_limit: str) -> int:
+        """Parse human-readable size limit to bytes"""
+        size_limit = size_limit.upper()
+        if size_limit.endswith('GB'):
+            return int(float(size_limit[:-2]) * 1024 * 1024 * 1024)
+        elif size_limit.endswith('MB'):
+            return int(float(size_limit[:-2]) * 1024 * 1024)
+        elif size_limit.endswith('KB'):
+            return int(float(size_limit[:-2]) * 1024)
         else:
-            return base_size
+            return int(size_limit)
+    
+    def _load_cache_index(self) -> Dict[str, Any]:
+        """Load cache index from disk"""
+        if self.cache_index_file.exists():
+            try:
+                with open(self.cache_index_file, 'r') as f:
+                    return json.load(f)
+            except Exception as e:
+                logger.warning(f"Failed to load cache index: {e}")
+        
+        return {}
+    
+    def _save_cache_index(self):
+        """Save cache index to disk"""
+        try:
+            with open(self.cache_index_file, 'w') as f:
+                json.dump(self.cache_index, f, indent=2)
+        except Exception as e:
+            logger.error(f"Failed to save cache index: {e}")
+    
+    def _cleanup_cache(self):
+        """Clean up old cache entries and enforce size limit"""
+        current_size = 0
+        current_time = time.time()
+        
+        # Calculate current cache size and remove expired entries
+        valid_entries = {}
+        for key, entry in self.cache_index.items():
+            cache_file = self.cache_dir / entry['filename']
+            
+            # Remove expired entries
+            if current_time - entry['created_at'] > entry['ttl']:
+                if cache_file.exists():
+                    cache_file.unlink()
+                continue
+            
+            # Calculate size for valid entries
+            if cache_file.exists():
+                size = cache_file.stat().st_size
+                current_size += size
+                entry['size'] = size
+                valid_entries[key] = entry
+        
+        self.cache_index = valid_entries
+        
+        # If still over limit, remove oldest entries
+        if current_size > self.size_limit:
+            sorted_entries = sorted(
+                self.cache_index.items(),
+                key=lambda x: x[1]['created_at']
+            )
+            
+            for key, entry in sorted_entries:
+                cache_file = self.cache_dir / entry['filename']
+                if cache_file.exists():
+                    cache_file.unlink()
+                    current_size -= entry['size']
+                    del self.cache_index[key]
+                    
+                    if current_size <= self.size_limit:
+                        break
+        
+        self._save_cache_index()
+    
+    def get(self, key: str) -> Optional[Any]:
+        """Get item from cache"""
+        if key not in self.cache_index:
+            return None
+        
+        entry = self.cache_index[key]
+        cache_file = self.cache_dir / entry['filename']
+        
+        if not cache_file.exists():
+            del self.cache_index[key]
+            return None
+        
+        # Check if expired
+        if time.time() - entry['created_at'] > entry['ttl']:
+            cache_file.unlink()
+            del self.cache_index[key]
+            return None
+        
+        try:
+            with open(cache_file, 'rb') as f:
+                return f.read()
+        except Exception as e:
+            logger.error(f"Failed to read cache file: {e}")
+            return None
+    
+    def set(self, key: str, value: bytes, ttl: int = 3600):
+        """Set item in cache with TTL in seconds"""
+        # Generate filename from key
+        filename = hashlib.md5(key.encode()).hexdigest()
+        
+        # Save to disk
+        cache_file = self.cache_dir / filename
+        try:
+            with open(cache_file, 'wb') as f:
+                f.write(value)
+        except Exception as e:
+            logger.error(f"Failed to write cache file: {e}")
+            return False
+        
+        # Update index
+        self.cache_index[key] = {
+            'filename': filename,
+            'created_at': time.time(),
+            'ttl': ttl,
+            'size': len(value)
+        }
+        
+        self._save_cache_index()
+        return True
+    
+    def delete(self, key: str):
+        """Delete item from cache"""
+        if key in self.cache_index:
+            entry = self.cache_index[key]
+            cache_file = self.cache_dir / entry['filename']
+            
+            if cache_file.exists():
+                cache_file.unlink()
+            
+            del self.cache_index[key]
+            self._save_cache_index()
+    
+    def clear(self):
+        """Clear all cache entries"""
+        for entry in self.cache_index.values():
+            cache_file = self.cache_dir / entry['filename']
+            if cache_file.exists():
+                cache_file.unlink()
+        
+        self.cache_index = {}
+        self._save_cache_index()
+
+
+class ModelOptimizer:
+    """M4-specific model optimization and management"""
+    
+    def __init__(self, cache_dir: str = "./model_cache"):
+        self.cache = DiskCache(cache_dir, size_limit="4GB")
+        self.loaded_models = {}
+        self.model_usage = {}
+        self.max_memory = 14 * 1024 * 1024 * 1024  # 14GB
+        
+    async def optimize_for_m4(self):
+        """Apply M4-specific optimizations"""
+        optimizations = []
+        
+        # Check if we can use Apple Metal
+        if TORCH_AVAILABLE:
+            try:
+        if torch.backends.mps.is_available():
+                    torch.backends.mps.enable()
+                    optimizations.append("Apple Metal enabled")
+                else:
+                    optimizations.append("Apple Metal not available")
+            except Exception as e:
+                logger.warning(f"Failed to enable Apple Metal: {e}")
+        
+        # Check MLX availability
+        if MLX_AVAILABLE:
+            optimizations.append("MLX framework available")
+        
+        # Set optimal thread count for M4
+        optimal_threads = min(8, os.cpu_count())
+        os.environ['OMP_NUM_THREADS'] = str(optimal_threads)
+        optimizations.append(f"Thread count optimized: {optimal_threads}")
+        
+        # Memory optimization
+        self._optimize_memory_settings()
+        optimizations.append("Memory settings optimized")
+        
+        logger.info(f"M4 optimizations applied: {', '.join(optimizations)}")
+        return optimizations
+    
+    def _optimize_memory_settings(self):
+        """Optimize memory settings for M4 Mac"""
+        # Set environment variables for optimal performance
+        os.environ['PYTORCH_ENABLE_MPS_FALLBACK'] = '1'
+        os.environ['PYTORCH_MPS_HIGH_WATERMARK_RATIO'] = '0.8'
+        
+        # Optimize NumPy if available
+        try:
+            import numpy as np
+            np.set_printoptions(precision=4, suppress=True)
+        except ImportError:
+            pass
+    
+    def get_memory_usage(self) -> Dict[str, Any]:
+        """Get current memory usage statistics"""
+        process = psutil.Process()
+        memory_info = process.memory_info()
+        
+        return {
+            'rss': memory_info.rss,  # Resident Set Size
+            'vms': memory_info.vms,  # Virtual Memory Size
+            'percent': process.memory_percent(),
+            'available': psutil.virtual_memory().available,
+            'total': psutil.virtual_memory().total
+        }
+    
+    def should_swap_model(self, model_name: str) -> bool:
+        """Determine if a model should be swapped out due to memory pressure"""
+        memory_usage = self.get_memory_usage()
+        
+        # If using more than 80% of available memory, consider swapping
+        if memory_usage['rss'] > self.max_memory * 0.8:
+            return True
+        
+        return False
+    
+    async def load_model_with_fallback(self, model_name: str, model_loader_func) -> Any:
+        """Load model with automatic fallback to lighter versions"""
+        try:
+            # Try to load the requested model
+            model = await model_loader_func(model_name)
+            self.loaded_models[model_name] = {
+                'model': model,
+                'loaded_at': time.time(),
+                'usage_count': 0
+            }
+            return model
+            
+        except Exception as e:
+            logger.warning(f"Failed to load model {model_name}: {e}")
+            
+            # Try fallback models
+            fallback_models = [
+                "microsoft/phi-2",
+                "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+            ]
+            
+            for fallback in fallback_models:
+                try:
+                    logger.info(f"Trying fallback model: {fallback}")
+                    model = await model_loader_func(fallback)
+                    self.loaded_models[fallback] = {
+                        'model': model,
+                        'loaded_at': time.time(),
+                        'usage_count': 0,
+                        'is_fallback': True
+                    }
+                    return model
+                    
+                except Exception as fallback_error:
+                    logger.warning(f"Fallback model {fallback} also failed: {fallback_error}")
+                    continue
+            
+            raise Exception("All model loading attempts failed")
+    
+    def track_model_usage(self, model_name: str):
+        """Track model usage for optimization decisions"""
+        if model_name in self.loaded_models:
+            self.loaded_models[model_name]['usage_count'] += 1
+            self.loaded_models[model_name]['last_used'] = time.time()
+    
+    def get_least_used_model(self) -> Optional[str]:
+        """Get the least recently used model for potential swapping"""
+        if not self.loaded_models:
+            return None
+        
+        return min(
+            self.loaded_models.keys(),
+            key=lambda k: self.loaded_models[k].get('last_used', 0)
+        )
+    
+    async def cleanup_unused_models(self):
+        """Clean up unused models to free memory"""
+        current_time = time.time()
+        models_to_remove = []
+        
+        for model_name, model_info in self.loaded_models.items():
+            # Remove models not used in the last hour
+            if current_time - model_info.get('last_used', 0) > 3600:
+                models_to_remove.append(model_name)
+        
+        for model_name in models_to_remove:
+            try:
+                del self.loaded_models[model_name]
+                logger.info(f"Removed unused model: {model_name}")
+            except Exception as e:
+                logger.error(f"Failed to remove model {model_name}: {e}")
+    
+    def get_optimization_stats(self) -> Dict[str, Any]:
+        """Get optimization statistics"""
+        return {
+            'loaded_models': len(self.loaded_models),
+            'cache_size': len(self.cache.cache_index),
+            'memory_usage': self.get_memory_usage(),
+            'model_usage': {
+                name: info['usage_count'] 
+                for name, info in self.loaded_models.items()
+            }
+        }
 
 
 class StreamingProcessor:
-    """Memory-efficient streaming processor for large documents"""
+    """Streaming document processing for large files"""
     
-    def __init__(self, chunk_size: int = 2000, overlap: int = 200):
+    def __init__(self, chunk_size: int = 512, chunk_overlap: int = 50):
         self.chunk_size = chunk_size
-        self.overlap = overlap
-        self.memory_monitor = MemoryMonitor()
+        self.chunk_overlap = chunk_overlap
     
-    def stream_process(self, content: str, processor_func):
-        """Stream process content in chunks"""
-        chunks = self._create_chunks(content)
-        
-        for i, chunk in enumerate(chunks):
-            # Check memory
-            stats = self.memory_monitor.get_memory_stats()
-            if stats.ram_percent > 0.85:
-                logger.warning("High memory usage during streaming")
-                gc.collect()
-            
-            try:
-                yield processor_func(chunk, chunk_id=i)
-            except Exception as e:
-                logger.error(f"Error processing chunk {i}: {e}")
-                yield None
-    
-    def _create_chunks(self, content: str) -> List[str]:
-        """Create overlapping chunks from content"""
+    def chunk_text(self, text: str) -> List[str]:
+        """Split text into overlapping chunks"""
         chunks = []
         start = 0
         
-        while start < len(content):
+        while start < len(text):
             end = start + self.chunk_size
-            chunk = content[start:end]
+            chunk = text[start:end]
+            chunks.append(chunk)
             
-            # Find good breaking point
-            if end < len(content):
-                last_period = chunk.rfind('.')
-                last_newline = chunk.rfind('\n')
-                break_point = max(last_period, last_newline)
-                
-                if break_point > start + self.chunk_size // 2:
-                    chunk = content[start:break_point + 1]
-                    end = break_point + 1
+            # Move start position with overlap
+            start = end - self.chunk_overlap
             
-            chunks.append(chunk.strip())
-            start = end - self.overlap
-            
-            if start >= len(content):
+            # Ensure we don't get stuck
+            if start >= len(text):
                 break
         
         return chunks
 
-
-def setup_m4_optimization():
-    """Setup system-wide M4 optimizations"""
-    try:
-        # Set environment variables for optimal performance
-        os.environ['OMP_NUM_THREADS'] = '8'  # M4 performance cores
-        os.environ['MKL_NUM_THREADS'] = '8'
-        os.environ['PYTORCH_MPS_HIGH_WATERMARK_RATIO'] = '0.0'
+    async def process_streaming(self, text: str, processor_func) -> List[Any]:
+        """Process text in streaming fashion"""
+        chunks = self.chunk_text(text)
+        results = []
         
-        # PyTorch optimizations
-        torch.set_num_threads(8)
+        for i, chunk in enumerate(chunks):
+            try:
+                result = await processor_func(chunk, i, len(chunks))
+                results.append(result)
+                
+                # Yield progress
+                if hasattr(processor_func, 'progress_callback'):
+                    progress = (i + 1) / len(chunks) * 100
+                    processor_func.progress_callback(progress)
+                    
+            except Exception as e:
+                logger.error(f"Error processing chunk {i}: {e}")
+                results.append({'error': str(e), 'chunk_index': i})
         
-        if torch.backends.mps.is_available():
-            torch.backends.mps.enable_fallback()
-            logger.info("MPS acceleration enabled")
-        
-        # Memory optimizations
-        gc.set_threshold(700, 10, 10)  # Aggressive garbage collection
-        
-        logger.info("M4 Mac optimizations configured successfully")
-        return True
-        
-    except Exception as e:
-        logger.error(f"Error setting up M4 optimizations: {e}")
-        return False
+        return results
 
 
-def get_system_info() -> Dict[str, Any]:
-    """Get system information for optimization"""
-    info = {
-        'cpu_count': psutil.cpu_count(),
-        'memory_gb': psutil.virtual_memory().total / (1024**3),
-        'mps_available': torch.backends.mps.is_available() if torch.is_available() else False,
-        'mlx_available': MLX_AVAILABLE,
-        'platform': os.uname().machine if hasattr(os, 'uname') else 'unknown'
-    }
+class PerformanceMonitor:
+    """Monitor and optimize performance metrics"""
     
-    return info
+    def __init__(self):
+        self.metrics = {}
+        self.start_time = time.time()
+    
+    def start_timer(self, operation: str):
+        """Start timing an operation"""
+        self.metrics[operation] = {
+            'start_time': time.time(),
+            'status': 'running'
+        }
+    
+    def end_timer(self, operation: str):
+        """End timing an operation"""
+        if operation in self.metrics:
+            self.metrics[operation]['end_time'] = time.time()
+            self.metrics[operation]['duration'] = (
+                self.metrics[operation]['end_time'] - 
+                self.metrics[operation]['start_time']
+            )
+            self.metrics[operation]['status'] = 'completed'
+    
+    def get_performance_report(self) -> Dict[str, Any]:
+        """Get performance report"""
+        total_time = time.time() - self.start_time
+        
+        return {
+            'total_runtime': total_time,
+            'operations': self.metrics,
+            'summary': {
+                'total_operations': len(self.metrics),
+                'completed_operations': len([
+                    op for op in self.metrics.values() 
+                    if op.get('status') == 'completed'
+                ]),
+                'average_duration': sum(
+                    op.get('duration', 0) 
+                    for op in self.metrics.values() 
+                    if op.get('status') == 'completed'
+                ) / max(len([
+                    op for op in self.metrics.values() 
+                    if op.get('status') == 'completed'
+                ]), 1)
+            }
+        }

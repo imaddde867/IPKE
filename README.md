@@ -1,495 +1,405 @@
-# EXPLAINIUM - Clean & Professional Knowledge Extraction System
+# 🧠 EXPLAINIUM - Advanced AI-Powered Knowledge Extraction System
 
-[![Docker](https://img.shields.io/badge/Docker-Supported-blue.svg)](https://www.docker.com/)
-[![Python](https://img.shields.io/badge/Python-3.11+-blue.svg)](https://www.python.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-Latest-green.svg)](https://fastapi.tiangolo.com/)
+EXPLAINIUM has been transformed from a basic entity extraction system into a sophisticated, AI-powered knowledge processing platform that extracts deep, meaningful insights from company documents and tacit knowledge.
 
-A **clean, professional, and efficient** AI-powered system for extracting structured knowledge from documents. This is the refactored version of EXPLAINIUM with consolidated architecture, eliminated redundancy, and improved maintainability.
+## 🚀 Key Features
 
-## What's New in the Clean Version
+### **Deep Knowledge Extraction**
+- **Multi-pass AI Analysis**: Uses local LLMs (Mistral-7B, Phi-2, TinyLlama) for comprehensive understanding
+- **Contextual Processing**: Understands document purpose, business context, and domain-specific patterns
+- **Tacit Knowledge Discovery**: Identifies implicit workflows, organizational structures, and unstated operational patterns
+- **Operational Intelligence**: Extracts SOPs, decision criteria, compliance requirements, and risk factors
 
-### **Consolidated Architecture**
-- **Single API Implementation**: Merged `main.py` and `enhanced_main.py` into one clean `app.py`
-- **Unified Document Processor**: Combined all processing logic into one efficient `processor.py`
-- **Consolidated AI Engine**: Merged multiple extractors into one `knowledge_extractor.py`
-- **Centralized Configuration**: All settings managed through one `config.py` system
-- **Unified Database System**: Single database management with proper models and CRUD operations
+### **Advanced AI Models**
+- **Primary LLM**: Mistral-7B-Instruct-v0.2 (4-bit quantized for 16GB RAM)
+- **Embeddings**: BAAI/bge-small-en-v1.5 for semantic search
+- **Document Understanding**: Microsoft LayoutLMv3 for structured documents
+- **Vision**: Salesforce BLIP for image understanding
+- **Audio**: Whisper + Pyannote for transcription and speaker diarization
 
-### **Optimized Dependencies**
-- **Reduced from 44+ to 20 core packages**: Eliminated redundant and unused dependencies
-- **Version Pinning**: All dependencies pinned for reproducible builds
-- **Optional Packages**: Clearly marked optional dependencies for specific features
-- **Clean Requirements**: Organized and commented dependency list
+### **Knowledge Graph Architecture**
+- **In-Memory Graph**: Neo4jLiteGraph for interconnected knowledge representation
+- **Node Types**: Concepts, People, Processes, Systems, Requirements, Risks
+- **Relationship Types**: Dependencies, Workflows, Hierarchies, Associations
+- **Real-time Updates**: Dynamic graph building as new knowledge is extracted
 
-### **Professional Code Quality**
-- **Consistent Code Style**: Uniform coding standards throughout the codebase
-- **Proper Error Handling**: Comprehensive error handling with custom exceptions
-- **Type Hints**: Full type annotations for better code clarity
-- **Documentation**: Comprehensive docstrings and inline comments
-- **Logging**: Structured logging with proper levels and formatting
+### **Apple M4 Optimization**
+- **Metal Acceleration**: Leverages Apple Silicon neural engine
+- **Memory Management**: 4-bit quantization, dynamic batching, lazy loading
+- **Performance Monitoring**: Real-time RAM usage and processing speed tracking
+- **Hardware Profiles**: Automatic detection and optimization for 16GB/32GB configurations
 
-### **Improved Performance**
-- **Optimized Database Queries**: Efficient queries with proper indexing
-- **Streamlined Processing**: Removed duplicate processing paths
-- **Better Resource Management**: Proper connection pooling and resource cleanup
-- **Caching**: Intelligent caching for frequently accessed data
-
-## Clean Architecture
+## 🏗️ System Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    EXPLAINIUM Clean Architecture                │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────┐  │
-│  │   FastAPI       │    │   PostgreSQL    │    │   Redis     │  │
-│  │   Application   │◄──►│   Database      │    │   Cache     │  │
-│  │   (app.py)      │    │                 │    │             │  │
-│  └─────────────────┘    └─────────────────┘    └─────────────┘  │
-│           │                                                     │
-│  ┌─────────────────────────────────────────────────────────────┐  │
-│  │              Document Processor (processor.py)             │  │
-│  │  ┌─────────────┐ ┌─────────────┐ ┌─────────────────────────┐│  │
-│  │  │   Multi-    │ │   OCR &     │ │    Audio/Video          ││  │
-│  │  │   Format    │ │   Image     │ │    Processing           ││  │
-│  │  │   Support   │ │   Analysis  │ │                         ││  │
-│  │  └─────────────┘ └─────────────┘ └─────────────────────────┘│  │
-│  └─────────────────────────────────────────────────────────────┘  │
-│           │                                                     │
-│  ┌─────────────────────────────────────────────────────────────┐  │
-│  │         Knowledge Extractor (knowledge_extractor.py)       │  │
-│  │  ┌─────────────┐ ┌─────────────┐ ┌─────────────────────────┐│  │
-│  │  │   Process   │ │  Decision   │ │   Compliance &          ││  │
-│  │  │ Extraction  │ │   Points    │ │ Risk Assessment         ││  │
-│  │  └─────────────┘ └─────────────┘ └─────────────────────────┘│  │
-│  └─────────────────────────────────────────────────────────────┘  │
-│           │                                                     │
-│  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────┐  │
-│  │   Celery        │    │   Database      │    │   Apache    │  │
-│  │   Workers       │    │   Models &      │    │   Tika      │  │
-│  │                 │    │   CRUD          │    │             │  │
-│  └─────────────────┘    └─────────────────┘    └─────────────┘  │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────┐
+│                    EXPLAINIUM System                       │
+├─────────────────────────────────────────────────────────────┤
+│  Frontend Layer                                            │
+│  ├── Knowledge Table (Streamlit)                          │
+│  ├── Interactive Visualizations                           │
+│  └── Export & Documentation                               │
+├─────────────────────────────────────────────────────────────┤
+│  Processing Layer                                          │
+│  ├── Advanced Knowledge Engine                            │
+│  ├── Intelligent Document Processor                       │
+│  └── Multi-modal Content Handler                          │
+├─────────────────────────────────────────────────────────────┤
+│  AI Model Layer                                            │
+│  ├── Local LLMs (Mistral-7B, Phi-2, TinyLlama)           │
+│  ├── Embedding Models (BGE-small)                         │
+│  ├── Vision Models (BLIP)                                 │
+│  └── Audio Models (Whisper + Pyannote)                    │
+├─────────────────────────────────────────────────────────────┤
+│  Knowledge Layer                                           │
+│  ├── Neo4jLiteGraph                                       │
+│  ├── Semantic Search                                       │
+│  └── Relationship Mapping                                  │
+├─────────────────────────────────────────────────────────────┤
+│  Optimization Layer                                        │
+│  ├── Model Caching (DiskCache)                            │
+│  ├── M4-specific Optimizations                            │
+│  ├── Streaming Processing                                 │
+│  └── Performance Monitoring                                │
+└─────────────────────────────────────────────────────────────┘
 ```
 
-## Current Project Structure
+## 📋 Requirements
 
-```
-src/
-├── __init__.py
-├── ai/
-│   └── knowledge_extractor.py    # Consolidated AI engine
-├── api/
-│   ├── app.py                    # Main FastAPI application
-│   └── celery_worker.py          # Task queue worker
-├── core/
-│   └── config.py                 # Centralized configuration
-├── database/
-│   ├── crud.py                   # Database operations
-│   ├── database.py               # Database management
-│   └── models.py                 # Database models
-├── processors/
-│   └── processor.py              # Document processing engine
-├── frontend/                     # React frontend (optional)
-├── exceptions.py                 # Custom exceptions
-├── logging_config.py             # Logging configuration
-└── middleware.py                 # FastAPI middleware
-```
+### **Hardware Requirements**
+- **Minimum**: Apple M4 Mac with 16GB RAM
+- **Recommended**: Apple M4 Mac with 32GB RAM
+- **Storage**: 10GB+ for models and cache
+- **Network**: Internet connection for initial model download
 
-## Quick Start
+### **Software Requirements**
+- **OS**: macOS 14.0+ (optimized for Apple Silicon)
+- **Python**: 3.9+
+- **RAM**: 16GB+ available for processing
+- **GPU**: Apple Metal support (automatic)
 
-### Prerequisites
-- Docker and Docker Compose
-- 4GB+ RAM (8GB+ recommended)
-- Python 3.11+ (for local development)
+## 🛠️ Installation
 
-### One-Command Deployment
-
+### **1. Clone the Repository**
 ```bash
-# Clone the repository
-git clone https://github.com/imaddde867/explainium-2.0
-cd explainium-2.0
-
-# Deploy the system
-./deploy.sh
+git clone <repository-url>
+cd explainium
 ```
 
-### Alternative: Using Make
-
+### **2. Create Virtual Environment**
 ```bash
-# Production deployment
-make prod
-
-# Development deployment
-make dev
-
-# Quick start (skip health checks)
-make quick
+python -m venv venv
+source venv/bin/activate  # On macOS/Linux
+# or
+venv\Scripts\activate  # On Windows
 ```
 
-### Access the Application
-
-- **Web Interface**: http://localhost:8000
-- **API Documentation**: http://localhost:8000/docs
-- **Health Check**: http://localhost:8000/health
-
-## Usage Examples
-
-### 1. **Upload and Process Documents**
-
+### **3. Install Dependencies**
 ```bash
-# Upload any supported document
-curl -X POST "http://localhost:8000/upload" \
-     -H "accept: application/json" \
-     -H "Content-Type: multipart/form-data" \
-     -F "file=@your_document.pdf"
-```
-
-### 2. **Search Knowledge**
-
-```bash
-# Search across all extracted knowledge
-curl -X POST "http://localhost:8000/knowledge/search" \
-     -H "Content-Type: application/json" \
-     -d '{
-       "query": "safety procedures",
-       "confidence_threshold": 0.8,
-       "max_results": 20
-     }'
-```
-
-### 3. **Get Processes**
-
-```bash
-# Get processes with filtering
-curl -X GET "http://localhost:8000/processes?domain=safety_compliance&confidence_threshold=0.7"
-```
-
-### 4. **Check Processing Status**
-
-```bash
-# Check task status
-curl -X GET "http://localhost:8000/tasks/{task_id}"
-```
-
-## Supported Document Types
-
-### **Text Documents**
-- **PDF**: Advanced extraction with PyMuPDF and PyPDF2 fallback
-- **Word**: DOC, DOCX with table extraction
-- **Text**: TXT, RTF with encoding detection
-
-### **Images**
-- **Formats**: JPG, PNG, GIF, BMP, TIFF
-- **OCR**: Tesseract with preprocessing for better accuracy
-- **Processing**: Noise reduction and image enhancement
-
-### **Spreadsheets**
-- **Formats**: XLS, XLSX, CSV
-- **Processing**: Multi-sheet support with intelligent data interpretation
-
-### **Presentations**
-- **Formats**: PPT, PPTX
-- **Processing**: Slide-by-slide text extraction with structure preservation
-
-### **Audio/Video**
-- **Audio**: MP3, WAV, FLAC, AAC with Whisper transcription
-- **Video**: MP4, AVI, MOV with audio extraction and transcription
-
-## Configuration
-
-### Environment Variables
-
-```bash
-# Database
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=explainium
-DB_USER=postgres
-DB_PASSWORD=password
-
-# Processing
-MAX_FILE_SIZE_MB=100
-ENABLE_OCR=true
-ENABLE_AUDIO_PROCESSING=true
-CONFIDENCE_THRESHOLD=0.7
-
-# AI Models
-SPACY_MODEL=en_core_web_sm
-WHISPER_MODEL=base
-CLASSIFICATION_MODEL=facebook/bart-large-mnli
-
-# API
-API_PORT=8000
-API_DEBUG=false
-CORS_ORIGINS=*
-
-# Logging
-LOG_LEVEL=INFO
-```
-
-### Custom Configuration
-
-Create a `.env` file in the project root:
-
-```bash
-# Copy example configuration
-cp .env.example .env
-
-# Edit configuration
-nano .env
-```
-
-## Development
-
-### Local Development Setup
-
-```bash
-# Install dependencies
 pip install -r requirements.txt
-
-# Download AI models
-python -m spacy download en_core_web_sm
-
-# Start services
-make dev
-
-# Run tests
-make test
-
-# Code formatting
-make format
-
-# Linting
-make lint
 ```
 
-### Development Commands
-
+### **4. Download AI Models**
 ```bash
-# Start development environment
-make dev
-
-# View logs
-make logs
-
-# Run tests with coverage
-make test
-
-# Format code
-make format
-
-# Security scan
-make security-scan
-
-# Performance test
-make perf-test
+python scripts/model_manager.py --action setup
 ```
 
-## Performance Metrics
-
-### **Processing Speed**
-- **Text Documents**: ~1-3 seconds per document
-- **Images with OCR**: ~5-10 seconds per image
-- **Audio/Video**: ~0.1x real-time (10min audio = 1min processing)
-- **Large PDFs**: ~2-5 seconds per 10 pages
-
-### **Throughput**
-- **Concurrent Processing**: Up to 4 documents simultaneously
-- **Queue Capacity**: Unlimited with Redis backing
-- **Memory Usage**: ~2-4GB for full stack
-- **Storage**: ~10MB per 100 processed documents
-
-### **Accuracy**
-- **Text Extraction**: 95%+ accuracy for clean documents
-- **OCR**: 85%+ accuracy for clear images
-- **Knowledge Extraction**: 80%+ confidence threshold default
-- **Audio Transcription**: 90%+ accuracy for clear audio
-
-## API Endpoints
-
-### **Core Endpoints**
-- `POST /upload` - Upload and process documents
-- `GET /documents` - List all documents
-- `GET /documents/{id}` - Get document details
-- `GET /processes` - List extracted processes
-- `POST /knowledge/search` - Search knowledge base
-- `GET /tasks/{task_id}` - Get processing task status
-- `GET /health` - System health check
-
-### **Management Endpoints**
-- `GET /analytics` - System analytics
-- `POST /cleanup` - Clean old data
-- `GET /stats` - Processing statistics
-
-## Docker Deployment
-
-### **Production Deployment**
-
+### **5. Run the System**
 ```bash
-# Using docker-compose
-docker-compose up -d
+# Start the knowledge table frontend
+streamlit run src/frontend/knowledge_table.py
 
-# Check status
-docker-compose ps
-
-# View logs
-docker-compose logs -f
+# Or run the main processor
+python -m src.processors.processor
 ```
 
-### **Custom Docker Build**
+## 🔧 Configuration
 
+### **AI Model Configuration**
+The system automatically detects your hardware profile and configures models accordingly:
+
+```python
+# M4 16GB Profile
+llm_model: "TheBloke/Mistral-7B-Instruct-v0.2-GGUF"
+quantization: "Q4_K_M"
+max_ram: "4GB"
+
+# M4 32GB Profile  
+llm_model: "TheBloke/Mistral-7B-Instruct-v0.2-GGUF"
+quantization: "Q5_K_M"
+max_ram: "8GB"
+```
+
+### **Performance Tuning**
+```python
+# src/core/config.py
+@dataclass
+class AIConfig:
+    batch_size: int = 4  # Optimized for 16GB RAM
+    chunk_size: int = 512
+    chunk_overlap: int = 50
+    use_gpu: bool = True  # Apple Metal acceleration
+    quantization: str = "4bit"
+```
+
+## 📚 Usage Examples
+
+### **Basic Document Processing**
+```python
+from src.processors.processor import DocumentProcessor
+
+# Initialize processor
+processor = DocumentProcessor()
+
+# Process a document
+document = {
+    "content": "Customer onboarding process documentation...",
+    "type": "pdf",
+    "metadata": {"department": "operations"}
+}
+
+# Extract deep knowledge
+knowledge = await processor.process_document(document)
+```
+
+### **Contextual Processing**
+```python
+# Process with company context
+company_context = {
+    "industry": "healthcare",
+    "size": "enterprise",
+    "compliance": ["HIPAA", "SOC2"]
+}
+
+enhanced_knowledge = await processor.process_document_with_context(
+    document, company_context
+)
+```
+
+### **Tacit Knowledge Extraction**
+```python
+# Extract patterns across multiple documents
+documents = [doc1, doc2, doc3, ...]
+tacit_knowledge = await processor.extract_tacit_knowledge(documents)
+
+# Results include:
+# - Implicit workflows
+# - Organizational structures  
+# - Policy changes over time
+# - Communication networks
+```
+
+### **Knowledge Graph Queries**
+```python
+from src.ai.advanced_knowledge_engine import AdvancedKnowledgeEngine
+
+engine = AdvancedKnowledgeEngine()
+
+# Find related concepts
+related = engine.knowledge_graph.find_related_nodes("customer_onboarding")
+
+# Search by type
+processes = engine.knowledge_graph.find_nodes_by_type("process")
+
+# Get workflow paths
+workflow = engine.knowledge_graph.find_workflow_path("start", "end")
+```
+
+## 📊 Frontend Features
+
+### **Knowledge Table Dashboard**
+- **Large Data Table**: Display all extracted knowledge with search and filtering
+- **Advanced Filters**: By type, confidence, date range, and search terms
+- **Visual Analytics**: Charts showing knowledge distribution and trends
+- **Interactive Graph**: Network visualization of knowledge relationships
+- **Export Options**: CSV, JSON, Markdown, Cytoscape formats
+
+### **Real-time Updates**
+- Live updates as new knowledge is extracted
+- Confidence scoring and validation
+- Performance metrics and monitoring
+- Memory usage tracking
+
+## 🔍 Model Management
+
+### **Automatic Setup**
 ```bash
-# Build custom image
-docker build -f docker/Dockerfile -t explainium:latest .
+# Detect hardware and setup optimal models
+python scripts/model_manager.py --action setup
 
-# Run with custom settings
-docker run -d \
-  -p 8000:8000 \
-  -e DB_HOST=your-db-host \
-  -e REDIS_HOST=your-redis-host \
-  explainium:latest
+# List installed models
+python scripts/model_manager.py --action list
+
+# Validate model integrity
+python scripts/model_manager.py --action validate
+
+# Clean up models
+python scripts/model_manager.py --action cleanup
 ```
 
-## Security Features
-
-### **Built-in Security**
-- **Input Validation**: All inputs validated and sanitized
-- **File Type Checking**: Magic number validation for uploaded files
-- **Size Limits**: Configurable file size limits
-- **Error Handling**: No sensitive information in error messages
-- **CORS Configuration**: Configurable CORS policies
-
-### **Production Security**
-- **HTTPS Support**: SSL/TLS termination ready
-- **Authentication**: JWT token support (optional)
-- **Rate Limiting**: Configurable request rate limits
-- **Security Headers**: Standard security headers included
-
-## Testing
-
-### **Run Tests**
-
+### **Manual Model Management**
 ```bash
-# All tests
-make test
+# Setup for specific hardware profile
+python scripts/model_manager.py --action setup --hardware-profile m4_32gb
 
-# Specific test modules
-pytest tests/test_processor.py -v
-pytest tests/test_knowledge_extractor.py -v
-pytest tests/test_api.py -v
-
-# With coverage
-pytest --cov=src --cov-report=html
+# Clean specific model type
+python scripts/model_manager.py --action cleanup --model-type llm
 ```
 
-### **Test Categories**
+## 🧪 Testing
+
+### **Run Test Suite**
+```bash
+# Install test dependencies
+pip install pytest pytest-asyncio
+
+# Run all tests
+pytest tests/ -v
+
+# Run specific test file
+pytest tests/test_advanced_knowledge_engine.py -v
+
+# Run with coverage
+pytest tests/ --cov=src --cov-report=html
+```
+
+### **Test Coverage**
 - **Unit Tests**: Individual component testing
 - **Integration Tests**: End-to-end workflow testing
-- **Performance Tests**: Load and stress testing
-- **Security Tests**: Vulnerability scanning
+- **Performance Tests**: Memory usage and speed validation
+- **Model Tests**: AI model functionality validation
 
-## Monitoring & Analytics
+## 📈 Performance Metrics
 
-### **Health Monitoring**
+### **Memory Usage**
+- **Model Loading**: <4GB for primary LLM
+- **Processing**: <8GB peak during extraction
+- **Cache**: <2GB for disk-based caching
+- **Total**: <16GB for 16GB Mac, <32GB for 32GB Mac
 
+### **Processing Speed**
+- **Document Processing**: 100-500 words/second
+- **Knowledge Extraction**: 2-5 seconds per document
+- **Graph Building**: Real-time updates
+- **Search Queries**: <100ms response time
+
+### **Scalability**
+- **Document Size**: Up to 100MB per document
+- **Batch Processing**: Configurable batch sizes
+- **Concurrent Processing**: Async processing support
+- **Memory Optimization**: Automatic model swapping
+
+## 🚀 Deployment
+
+### **Local Development**
 ```bash
-# System health
-curl http://localhost:8000/health
+# Development mode with hot reload
+streamlit run src/frontend/knowledge_table.py --server.runOnSave true
 
-# Detailed health check
-curl http://localhost:8000/health/detailed
-
-# Worker status
-curl http://localhost:8000/workers/status
+# Run with debug logging
+LOG_LEVEL=DEBUG python -m src.processors.processor
 ```
 
-### **Analytics Dashboard**
-
+### **Production Deployment**
 ```bash
-# Knowledge analytics
-curl http://localhost:8000/analytics
+# Build optimized models
+python scripts/model_manager.py --action setup --hardware-profile m4_32gb
 
-# Processing statistics
-curl http://localhost:8000/stats
-
-# Performance metrics
-curl http://localhost:8000/metrics
+# Run with production settings
+export ENVIRONMENT=production
+streamlit run src/frontend/knowledge_table.py --server.port 8501
 ```
 
-## Troubleshooting
+### **Docker Support**
+```dockerfile
+# Dockerfile example
+FROM python:3.9-slim
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+EXPOSE 8501
+CMD ["streamlit", "run", "src/frontend/knowledge_table.py"]
+```
+
+## 🔧 Troubleshooting
 
 ### **Common Issues**
 
-**Service Won't Start**
+#### **Memory Errors**
 ```bash
-# Check logs
-make logs
+# Check available RAM
+python -c "import psutil; print(psutil.virtual_memory())"
 
-# Restart services
-make stop && make prod
-
-# Clean restart
-make clean
+# Reduce batch size in config
+batch_size: 2  # Instead of 4
 ```
 
-**Processing Failures**
+#### **Model Loading Failures**
 ```bash
-# Check worker logs
-docker-compose logs celery_worker
+# Validate models
+python scripts/model_manager.py --action validate
 
-# Restart workers
-docker-compose restart celery_worker
-
-# Check task status
-curl http://localhost:8000/tasks/{task_id}
+# Re-download corrupted models
+python scripts/model_manager.py --action cleanup --model-type llm
+python scripts/model_manager.py --action setup
 ```
 
-**Performance Issues**
+#### **Performance Issues**
 ```bash
-# Check system resources
-docker stats
+# Check Metal acceleration
+python -c "import torch; print(torch.backends.mps.is_available())"
 
-# Monitor processing queue
-curl http://localhost:8000/workers/status
-
-# Performance test
-make perf-test
+# Monitor performance
+python -m src.core.optimization --monitor
 ```
 
-### **Debug Mode**
-
-```bash
-# Start in development mode
-make dev
-
+### **Logging and Debugging**
+```python
 # Enable debug logging
-export LOG_LEVEL=DEBUG
+import logging
+logging.basicConfig(level=logging.DEBUG)
 
-# Check detailed health
-curl http://localhost:8000/health/detailed
+# Check system resources
+from src.core.optimization import PerformanceMonitor
+monitor = PerformanceMonitor()
+print(monitor.get_system_status())
 ```
 
-## Migration from Original System
+## 🤝 Contributing
 
-### **Automatic Migration**
-
-The clean system is designed to be a drop-in replacement:
-
-1. **Backup your data**: `make backup`
-2. **Stop old system**: `docker-compose down`
-3. **Deploy clean system**: `./deploy.sh`
-4. **Restore data if needed**: `make restore BACKUP_FILE=backup.sql`
-
-### **Configuration Migration**
-
-Old environment variables are automatically mapped to the new configuration system. No manual changes required.
+### **Development Setup**
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests for new functionality
+5. Submit a pull request
 
 ### **Code Standards**
+- Follow PEP 8 style guidelines
+- Add type hints for all functions
+- Include docstrings for all classes and methods
+- Write comprehensive tests
+- Update documentation for API changes
 
-- **Python**: Follow PEP 8 with 120 character line limit
-- **Type Hints**: Required for all functions
-- **Documentation**: Docstrings for all public methods
-- **Testing**: Minimum 80% test coverage
-- **Logging**: Structured logging with appropriate levels
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **Mistral AI** for the Mistral-7B model
+- **Microsoft** for Phi-2 and LayoutLMv3
+- **BAAI** for the BGE embedding models
+- **Salesforce** for BLIP vision models
+- **Apple** for Metal Performance Shaders
+
+## 📞 Support
+
+- **Issues**: [GitHub Issues](https://github.com/your-repo/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/your-repo/discussions)
+- **Documentation**: [Wiki](https://github.com/your-repo/wiki)
+
+---
+
+**EXPLAINIUM** - Transforming document understanding through advanced AI and deep knowledge extraction. 🧠✨

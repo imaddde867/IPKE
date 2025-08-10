@@ -1,817 +1,689 @@
 """
-EXPLAINIUM - Advanced Knowledge Processing Engine
+EXPLAINIUM - Advanced Knowledge Engine
 
-A sophisticated AI-powered knowledge processing system that extracts deep, 
-meaningful insights from company documents and tacit knowledge.
-Optimized for Apple M4 Mac with 16GB RAM.
+A sophisticated, AI-powered knowledge processing system that extracts deep,
+meaningful insights from company documents and tacit knowledge using local models.
 """
 
-import os
-import json
-import logging
 import asyncio
+import logging
 from typing import Dict, Any, List, Optional, Tuple, Union
-from dataclasses import dataclass, asdict
-from datetime import datetime
+from dataclasses import dataclass, field
 from pathlib import Path
-import threading
-from concurrent.futures import ThreadPoolExecutor
-import gc
+import json
+import hashlib
+from datetime import datetime
 
-# Advanced AI and ML libraries
+# Core AI libraries
 import torch
-from transformers import AutoTokenizer, AutoModel, pipeline
+from transformers import AutoTokenizer, AutoModel
 from sentence_transformers import SentenceTransformer
-import chromadb
-from chromadb.config import Settings
-import networkx as nx
 import numpy as np
-from diskcache import Cache
 
-# Apple Silicon optimization
+# Local model support
+try:
+    from llama_cpp import Llama
+    LLAMA_AVAILABLE = True
+except ImportError:
+    LLAMA_AVAILABLE = False
+    Llama = None
+
 try:
     import mlx.core as mx
-    import mlx.nn as nn
     MLX_AVAILABLE = True
 except ImportError:
     MLX_AVAILABLE = False
 
-# LLM processing
-try:
-    from llama_cpp import Llama
-    LLAMA_CPP_AVAILABLE = True
-except ImportError:
-    LLAMA_CPP_AVAILABLE = False
-
 # Internal imports
 from src.logging_config import get_logger
-from src.core.config import config_manager
+from src.core.config import AIConfig
 
 logger = get_logger(__name__)
 
 
 @dataclass
-class KnowledgeEntity:
-    """Advanced knowledge entity with relationships and context"""
+class KnowledgeNode:
+    """Represents a node in the knowledge graph"""
     id: str
+    type: str  # concept, person, process, system, requirement
     name: str
-    type: str  # concept, person, process, system, requirement, risk, etc.
     description: str
-    properties: Dict[str, Any]
+    content: str
+    metadata: Dict[str, Any]
     confidence: float
-    source_documents: List[str]
-    embedding: Optional[List[float]] = None
-    created_at: datetime = None
-    
-    def __post_init__(self):
-        if self.created_at is None:
-            self.created_at = datetime.now()
+    created_at: datetime
+    updated_at: datetime
+    embeddings: Optional[np.ndarray] = None
 
 
 @dataclass
-class KnowledgeRelationship:
-    """Relationship between knowledge entities"""
+class KnowledgeEdge:
+    """Represents a relationship between knowledge nodes"""
     source_id: str
     target_id: str
-    relationship_type: str  # depends_on, implements, requires, leads_to, etc.
+    relationship_type: str  # depends_on, implements, requires, etc.
     strength: float
-    context: str
-    properties: Dict[str, Any]
-    confidence: float
+    metadata: Dict[str, Any]
+    created_at: datetime
 
 
 @dataclass
-class WorkflowProcess:
-    """Extracted business workflow or process"""
-    id: str
-    name: str
+class ExtractedInsight:
+    """Represents a deep insight extracted from documents"""
+    title: str
     description: str
-    steps: List[Dict[str, Any]]
-    decision_points: List[Dict[str, Any]]
-    roles_involved: List[str]
-    inputs: List[str]
-    outputs: List[str]
-    complexity_score: float
-    automation_potential: float
-    risk_factors: List[str]
-
-
-@dataclass
-class TacitKnowledge:
-    """Extracted tacit or implicit knowledge"""
-    id: str
-    knowledge_type: str  # assumption, best_practice, tribal_knowledge, pattern
-    description: str
-    context: str
+    insight_type: str  # workflow, process, decision, compliance, risk
     confidence: float
-    evidence: List[str]
-    affected_processes: List[str]
+    supporting_evidence: List[str]
+    implications: List[str]
+    recommendations: List[str]
+    metadata: Dict[str, Any]
+
+
+class Neo4jLiteGraph:
+    """Lightweight in-memory graph database for knowledge representation"""
+    
+    def __init__(self):
+        self.nodes: Dict[str, KnowledgeNode] = {}
+        self.edges: List[KnowledgeEdge] = []
+        self.node_types = set()
+        self.relationship_types = set()
+    
+    def add_node(self, node: KnowledgeNode) -> None:
+        """Add a node to the graph"""
+        self.nodes[node.id] = node
+        self.node_types.add(node.type)
+    
+    def add_edge(self, edge: KnowledgeEdge) -> None:
+        """Add an edge to the graph"""
+        if edge.source_id in self.nodes and edge.target_id in self.nodes:
+            self.edges.append(edge)
+            self.relationship_types.add(edge.relationship_type)
+    
+    def get_nodes_by_type(self, node_type: str) -> List[KnowledgeNode]:
+        """Get all nodes of a specific type"""
+        return [node for node in self.nodes.values() if node.type == node_type]
+    
+    def get_connected_nodes(self, node_id: str) -> List[Tuple[KnowledgeNode, KnowledgeEdge]]:
+        """Get all nodes connected to a specific node"""
+        connected = []
+        for edge in self.edges:
+            if edge.source_id == node_id:
+                target_node = self.nodes.get(edge.target_id)
+                if target_node:
+                    connected.append((target_node, edge))
+            elif edge.target_id == node_id:
+                source_node = self.nodes.get(edge.source_id)
+                if source_node:
+                    connected.append((source_node, edge))
+        return connected
+    
+    def export_cytoscape(self) -> Dict[str, Any]:
+        """Export graph for Cytoscape visualization"""
+        nodes = []
+        edges = []
+        
+        for node in self.nodes.values():
+            nodes.append({
+                'data': {
+                    'id': node.id,
+                    'label': node.name,
+                    'type': node.type,
+                    'description': node.description,
+                    'confidence': node.confidence
+                }
+            })
+        
+        for edge in self.edges:
+            edges.append({
+                'data': {
+                    'id': f"{edge.source_id}_{edge.target_id}_{edge.relationship_type}",
+                    'source': edge.source_id,
+                    'target': edge.target_id,
+                    'label': edge.relationship_type,
+                    'strength': edge.strength
+                }
+            })
+        
+        return {
+            'nodes': nodes,
+            'edges': edges
+        }
 
 
 class ModelManager:
-    """Manages AI models with M4 optimization and memory management"""
+    """Manages local AI models with memory optimization for M4 Mac"""
     
-    def __init__(self, config):
+    def __init__(self, config: AIConfig):
         self.config = config
         self.models = {}
-        self.cache = Cache(directory="./model_cache", size_limit=int(4e9))  # 4GB cache
-        self._init_models()
-    
-    def _init_models(self):
-        """Initialize AI models with M4 optimization"""
-        logger.info("Initializing advanced AI models for M4 Mac...")
+        self.model_cache = {}
+        self.current_memory_usage = 0
+        self.max_memory = 14 * 1024 * 1024 * 1024  # 14GB (leaving 2GB for system)
         
-        # Initialize embedding model (lightweight, fast)
+    async def load_quantized_model(self, model_name: str, quantization: str = "4bit") -> Any:
+        """Load a quantized model optimized for M4 Mac"""
+        cache_key = f"{model_name}_{quantization}"
+        
+        if cache_key in self.model_cache:
+            return self.model_cache[cache_key]
+        
         try:
-            self.embedder = SentenceTransformer(
-                'BAAI/bge-small-en-v1.5',
-                device='mps' if torch.backends.mps.is_available() else 'cpu'
-            )
-            logger.info("Embedding model initialized successfully")
-        except Exception as e:
-            logger.error(f"Failed to initialize embedding model: {e}")
-            self.embedder = None
-        
-        # Initialize LLM (quantized for M4)
-        self._init_llm()
-        
-        # Initialize specialized models
-        self._init_specialized_models()
-    
-    def _init_llm(self):
-        """Initialize quantized LLM optimized for M4"""
-        try:
-            model_path = self.config.get("llm_model_path", "./models/mistral-7b-instruct-v0.2.Q4_K_M.gguf")
-            
-            if LLAMA_CPP_AVAILABLE and os.path.exists(model_path):
-                self.llm = Llama(
+            if model_name == "mistral-7b" and LLAMA_AVAILABLE:
+                model_path = f"{self.config.llm_path}/mistral-7b-instruct-v0.2.Q4_K_M.gguf"
+                if not Path(model_path).exists():
+                    raise FileNotFoundError(f"Model not found: {model_path}")
+                
+                model = Llama(
                     model_path=model_path,
                     n_gpu_layers=-1,  # Use Apple Metal
-                    n_ctx=4096,       # Context window
-                    n_batch=512,      # Optimized for M4
-                    verbose=False,
-                    use_mmap=True,    # Memory mapping for efficiency
-                    use_mlock=True,   # Lock memory pages
+                    n_ctx=4096,
+                    n_batch=512,
+                    n_threads=8,  # Optimized for M4
+                    verbose=False
                 )
-                logger.info("Quantized LLM initialized successfully with Metal acceleration")
+                
+                self.model_cache[cache_key] = model
+                logger.info(f"Loaded quantized Mistral model: {model_name}")
+                return model
+                
+            elif model_name == "phi-2":
+                # Load Microsoft Phi-2 model
+                model = self._load_phi_model()
+                self.model_cache[cache_key] = model
+                return model
+                
             else:
-                # Fallback to Hugging Face model
-                self._init_fallback_llm()
+                raise ValueError(f"Unsupported model: {model_name}")
                 
         except Exception as e:
-            logger.error(f"Failed to initialize LLM: {e}")
-            self._init_fallback_llm()
+            logger.error(f"Failed to load model {model_name}: {e}")
+            raise
     
-    def _init_fallback_llm(self):
-        """Initialize fallback LLM model"""
+    def _load_phi_model(self) -> Any:
+        """Load Microsoft Phi-2 model"""
         try:
-            self.llm_pipeline = pipeline(
-                "text-generation",
-                model="microsoft/phi-2",
-                device="mps" if torch.backends.mps.is_available() else "cpu",
+            from transformers import AutoModelForCausalLM, AutoTokenizer
+            model_name = "microsoft/phi-2"
+            
+            tokenizer = AutoTokenizer.from_pretrained(model_name)
+            model = AutoModelForCausalLM.from_pretrained(
+                model_name,
                 torch_dtype=torch.float16,
-                trust_remote_code=True
-            )
-            logger.info("Fallback LLM pipeline initialized")
-        except Exception as e:
-            logger.error(f"Failed to initialize fallback LLM: {e}")
-            self.llm_pipeline = None
-    
-    def _init_specialized_models(self):
-        """Initialize specialized models for specific tasks"""
-        try:
-            # Document layout understanding
-            self.layout_model = pipeline(
-                "document-question-answering",
-                model="microsoft/layoutlmv3-base",
-                device="mps" if torch.backends.mps.is_available() else "cpu"
+                device_map="auto"
             )
             
-            # Image understanding
-            self.vision_model = pipeline(
-                "image-to-text",
-                model="Salesforce/blip-image-captioning-base",
-                device="mps" if torch.backends.mps.is_available() else "cpu"
-            )
-            
-            logger.info("Specialized models initialized successfully")
+            return {"model": model, "tokenizer": tokenizer}
             
         except Exception as e:
-            logger.warning(f"Some specialized models failed to initialize: {e}")
+            logger.error(f"Failed to load Phi-2 model: {e}")
+            raise
     
-    def generate_llm_response(self, prompt: str, max_tokens: int = 512) -> str:
-        """Generate response using the LLM"""
+    async def load_embedding_model(self, model_name: str) -> Any:
+        """Load embedding model for semantic search"""
+        cache_key = f"embedding_{model_name}"
+        
+        if cache_key in self.model_cache:
+            return self.model_cache[cache_key]
+        
         try:
-            if hasattr(self, 'llm') and self.llm:
-                response = self.llm(
-                    prompt,
-                    max_tokens=max_tokens,
-                    temperature=0.1,
-                    top_p=0.95,
-                    stop=["Human:", "Assistant:", "\n\n"]
-                )
-                return response['choices'][0]['text'].strip()
-            
-            elif hasattr(self, 'llm_pipeline') and self.llm_pipeline:
-                response = self.llm_pipeline(
-                    prompt,
-                    max_length=max_tokens,
-                    temperature=0.1,
-                    do_sample=True,
-                    pad_token_id=self.llm_pipeline.tokenizer.eos_token_id
-                )
-                return response[0]['generated_text'][len(prompt):].strip()
-            
+            if model_name == "bge-small":
+                model = SentenceTransformer('BAAI/bge-small-en-v1.5')
+                self.model_cache[cache_key] = model
+                return model
             else:
-                return "LLM not available"
+                raise ValueError(f"Unsupported embedding model: {model_name}")
                 
         except Exception as e:
-            logger.error(f"Error generating LLM response: {e}")
-            return f"Error: {str(e)}"
+            logger.error(f"Failed to load embedding model {model_name}: {e}")
+            raise
     
-    def get_embeddings(self, texts: List[str]) -> np.ndarray:
-        """Get embeddings for texts"""
-        if self.embedder:
-            return self.embedder.encode(texts, convert_to_numpy=True)
-        else:
-            # Fallback to random embeddings
-            return np.random.rand(len(texts), 384)
-
-
-class KnowledgeGraph:
-    """Lightweight knowledge graph using NetworkX and ChromaDB"""
+    def get_memory_usage(self) -> int:
+        """Get current memory usage in bytes"""
+        return self.current_memory_usage
     
-    def __init__(self):
-        self.graph = nx.MultiDiGraph()
-        self.entities = {}
-        self.relationships = []
-        
-        # Initialize vector database
-        self.client = chromadb.Client(Settings(
-            chroma_db_impl="duckdb+parquet",
-            persist_directory="./chroma_db"
-        ))
-        
-        self.collection = self.client.get_or_create_collection(
-            name="knowledge_entities",
-            metadata={"hnsw:space": "cosine"}
-        )
-    
-    def add_entity(self, entity: KnowledgeEntity):
-        """Add entity to knowledge graph"""
-        self.entities[entity.id] = entity
-        self.graph.add_node(entity.id, **asdict(entity))
-        
-        # Add to vector database if embedding exists
-        if entity.embedding:
-            self.collection.add(
-                embeddings=[entity.embedding],
-                documents=[entity.description],
-                metadatas=[{
-                    "id": entity.id,
-                    "name": entity.name,
-                    "type": entity.type,
-                    "confidence": entity.confidence
-                }],
-                ids=[entity.id]
-            )
-    
-    def add_relationship(self, relationship: KnowledgeRelationship):
-        """Add relationship to knowledge graph"""
-        self.relationships.append(relationship)
-        self.graph.add_edge(
-            relationship.source_id,
-            relationship.target_id,
-            type=relationship.relationship_type,
-            strength=relationship.strength,
-            context=relationship.context,
-            confidence=relationship.confidence
-        )
-    
-    def find_similar_entities(self, query: str, n_results: int = 5) -> List[Dict]:
-        """Find similar entities using vector search"""
-        try:
-            results = self.collection.query(
-                query_texts=[query],
-                n_results=n_results
-            )
-            return results
-        except Exception as e:
-            logger.error(f"Error in vector search: {e}")
-            return []
-    
-    def get_entity_relationships(self, entity_id: str) -> List[KnowledgeRelationship]:
-        """Get all relationships for an entity"""
-        return [rel for rel in self.relationships 
-                if rel.source_id == entity_id or rel.target_id == entity_id]
-    
-    def export_graph(self, format: str = "gexf") -> str:
-        """Export graph in various formats"""
-        output_path = f"knowledge_graph.{format}"
-        
-        if format == "gexf":
-            nx.write_gexf(self.graph, output_path)
-        elif format == "graphml":
-            nx.write_graphml(self.graph, output_path)
-        elif format == "json":
-            data = nx.node_link_data(self.graph)
-            with open(output_path, 'w') as f:
-                json.dump(data, f, indent=2)
-        
-        return output_path
+    def cleanup_unused_models(self) -> None:
+        """Clean up unused models to free memory"""
+        # Implementation for model cleanup
+        pass
 
 
 class AdvancedKnowledgeEngine:
-    """
-    Advanced knowledge processing engine that extracts deep insights,
-    builds knowledge graphs, and identifies tacit knowledge patterns.
-    """
+    """Advanced knowledge extraction engine using local AI models"""
     
-    def __init__(self):
-        self.config = config_manager.get_ai_config()
-        self.model_manager = ModelManager(self.config)
-        self.knowledge_graph = KnowledgeGraph()
-        self.executor = ThreadPoolExecutor(max_workers=4)  # Optimized for M4
+    def __init__(self, config: AIConfig):
+        self.config = config
+        self.model_manager = ModelManager(config)
+        self.knowledge_graph = Neo4jLiteGraph()
+        self.llm = None
+        self.embedder = None
+        self.initialized = False
         
-        # Knowledge extraction templates
-        self.templates = self._load_extraction_templates()
-        
-        logger.info("AdvancedKnowledgeEngine initialized successfully")
-    
-    def _load_extraction_templates(self) -> Dict[str, str]:
-        """Load prompt templates for different extraction tasks"""
-        return {
-            "entity_extraction": """
-            Extract key entities from the following text. Focus on:
-            - Business concepts and terminology
-            - People, roles, and responsibilities
-            - Processes and workflows
-            - Systems and technologies
-            - Requirements and constraints
-            - Risks and compliance issues
-            
-            Text: {text}
-            
-            Return a JSON list of entities with: name, type, description, confidence
-            """,
-            
-            "process_extraction": """
-            Analyze the following text to identify business processes and workflows:
-            
-            Text: {text}
-            
-            Extract:
-            1. Process name and description
-            2. Sequential steps
-            3. Decision points
-            4. Roles and responsibilities
-            5. Inputs and outputs
-            6. Dependencies
-            
-            Return structured JSON format.
-            """,
-            
-            "tacit_knowledge": """
-            Identify implicit or tacit knowledge from the following text:
-            - Unstated assumptions
-            - Best practices mentioned indirectly
-            - Informal procedures
-            - Tribal knowledge
-            - Patterns and habits
-            
-            Text: {text}
-            
-            Extract insights that are implied but not explicitly stated.
-            """,
-            
-            "relationship_extraction": """
-            Identify relationships between entities in the following text:
-            
-            Entities: {entities}
-            Text: {text}
-            
-            Find relationships like:
-            - depends_on, requires, implements
-            - leads_to, causes, affects
-            - contains, part_of, member_of
-            - similar_to, replaces, conflicts_with
-            
-            Return relationships with confidence scores.
-            """
-        }
-    
-    async def extract_deep_knowledge(self, document: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Multi-pass knowledge extraction with deep understanding
-        """
-        content = document.get('content', '')
-        doc_id = document.get('id', 'unknown')
-        
-        logger.info(f"Starting deep knowledge extraction for document {doc_id}")
-        
-        # Multi-pass extraction strategy
-        results = {
-            'entities': [],
-            'processes': [],
-            'relationships': [],
-            'tacit_knowledge': [],
-            'insights': {}
-        }
-        
+    async def initialize(self):
+        """Initialize the knowledge engine with models"""
         try:
-            # Pass 1: Extract key concepts and entities
-            entities = await self._extract_entities(content, doc_id)
-            results['entities'] = entities
-            
-            # Pass 2: Identify workflows and processes
-            processes = await self._extract_processes(content, doc_id)
-            results['processes'] = processes
-            
-            # Pass 3: Extract relationships between entities
-            relationships = await self._extract_relationships(content, entities, doc_id)
-            results['relationships'] = relationships
-            
-            # Pass 4: Identify tacit knowledge and patterns
-            tacit_knowledge = await self._extract_tacit_knowledge(content, doc_id)
-            results['tacit_knowledge'] = tacit_knowledge
-            
-            # Pass 5: Generate insights and cross-references
-            insights = await self._generate_insights(results, doc_id)
-            results['insights'] = insights
-            
-            logger.info(f"Deep knowledge extraction completed for document {doc_id}")
+            # Load core models
+            self.llm = await self.model_manager.load_quantized_model(
+                "mistral-7b", 
+                self.config.quantization
+            )
+            self.embedder = await self.model_manager.load_embedding_model(
+                self.config.embedding_model
+            )
+            self.initialized = True
+            logger.info("Advanced Knowledge Engine initialized successfully")
             
         except Exception as e:
-            logger.error(f"Error in deep knowledge extraction: {e}")
-            results['error'] = str(e)
+            logger.error(f"Failed to initialize knowledge engine: {e}")
+            raise
+    
+    async def extract_deep_knowledge(self, document: Dict[str, Any]) -> Dict[str, Any]:
+        """Multi-pass knowledge extraction strategy"""
+        if not self.initialized:
+            await self.initialize()
+        
+        content = document.get('content', '')
+        metadata = document.get('metadata', {})
+        
+        # Multi-pass extraction
+        results = {
+            'extraction_timestamp': datetime.now().isoformat(),
+            'document_id': document.get('id'),
+            'passes': {}
+        }
+        
+        # First pass: Extract key concepts, entities, relationships
+        logger.info("Starting first pass: Concept extraction")
+        concepts = await self._extract_concepts(content, metadata)
+        results['passes']['concepts'] = concepts
+        
+        # Second pass: Identify workflows, processes, decision trees
+        logger.info("Starting second pass: Workflow extraction")
+        workflows = await self._extract_workflows(content, metadata)
+        results['passes']['workflows'] = workflows
+        
+        # Third pass: Infer tacit knowledge, patterns, best practices
+        logger.info("Starting third pass: Tacit knowledge extraction")
+        tacit_knowledge = await self._extract_tacit_knowledge(content, metadata)
+        results['passes']['tacit_knowledge'] = tacit_knowledge
+        
+        # Fourth pass: Cross-reference with existing knowledge base
+        logger.info("Starting fourth pass: Knowledge integration")
+        integration = await self._integrate_knowledge(results['passes'], metadata)
+        results['passes']['integration'] = integration
+        
+        # Build knowledge graph
+        await self._build_knowledge_graph(results['passes'], metadata)
         
         return results
     
-    async def _extract_entities(self, content: str, doc_id: str) -> List[KnowledgeEntity]:
-        """Extract entities with advanced understanding"""
-        entities = []
-        
+    async def _extract_concepts(self, content: str, metadata: Dict[str, Any]) -> Dict[str, Any]:
+        """Extract key concepts and entities from content"""
         try:
-            # Chunk content for processing
-            chunks = self._chunk_content(content)
+            # Use LLM to extract concepts
+            prompt = f"""
+            Analyze the following business document and extract key concepts, entities, and relationships.
+            Focus on identifying:
+            1. Business processes and procedures
+            2. Key stakeholders and roles
+            3. Systems and technologies mentioned
+            4. Compliance requirements
+            5. Risk factors
             
-            for i, chunk in enumerate(chunks):
-                prompt = self.templates["entity_extraction"].format(text=chunk)
-                response = self.model_manager.generate_llm_response(prompt, max_tokens=1024)
-                
-                # Parse response and create entities
-                chunk_entities = self._parse_entities_response(response, doc_id, f"chunk_{i}")
-                entities.extend(chunk_entities)
+            Document content:
+            {content[:2000]}  # Limit content for prompt
             
-            # Deduplicate and merge similar entities
-            entities = self._deduplicate_entities(entities)
+            Provide your analysis in JSON format with the following structure:
+            {{
+                "concepts": [
+                    {{
+                        "name": "concept_name",
+                        "type": "process|person|system|requirement|risk",
+                        "description": "detailed description",
+                        "confidence": 0.95
+                    }}
+                ],
+                "relationships": [
+                    {{
+                        "source": "concept1",
+                        "target": "concept2",
+                        "type": "relationship_type",
+                        "description": "relationship description"
+                    }}
+                ]
+            }}
+            """
             
-            # Generate embeddings for entities
-            await self._generate_entity_embeddings(entities)
-            
-        except Exception as e:
-            logger.error(f"Error extracting entities: {e}")
-        
-        return entities
-    
-    async def _extract_processes(self, content: str, doc_id: str) -> List[WorkflowProcess]:
-        """Extract business processes and workflows"""
-        processes = []
-        
-        try:
-            chunks = self._chunk_content(content)
-            
-            for chunk in chunks:
-                prompt = self.templates["process_extraction"].format(text=chunk)
-                response = self.model_manager.generate_llm_response(prompt, max_tokens=1024)
-                
-                chunk_processes = self._parse_processes_response(response, doc_id)
-                processes.extend(chunk_processes)
-            
-        except Exception as e:
-            logger.error(f"Error extracting processes: {e}")
-        
-        return processes
-    
-    async def _extract_relationships(self, content: str, entities: List[KnowledgeEntity], doc_id: str) -> List[KnowledgeRelationship]:
-        """Extract relationships between entities"""
-        relationships = []
-        
-        try:
-            entity_names = [e.name for e in entities[:20]]  # Limit for prompt size
-            
-            chunks = self._chunk_content(content)
-            
-            for chunk in chunks:
-                prompt = self.templates["relationship_extraction"].format(
-                    entities=entity_names,
-                    text=chunk
+            if isinstance(self.llm, Llama):
+                response = self.llm(
+                    prompt,
+                    max_tokens=2048,
+                    temperature=0.1,
+                    stop=["</s>", "\n\n"]
                 )
-                response = self.model_manager.generate_llm_response(prompt, max_tokens=512)
-                
-                chunk_relationships = self._parse_relationships_response(response, entities, doc_id)
-                relationships.extend(chunk_relationships)
-            
-        except Exception as e:
-            logger.error(f"Error extracting relationships: {e}")
-        
-        return relationships
-    
-    async def _extract_tacit_knowledge(self, content: str, doc_id: str) -> List[TacitKnowledge]:
-        """Extract implicit and tacit knowledge"""
-        tacit_items = []
-        
-        try:
-            chunks = self._chunk_content(content)
-            
-            for chunk in chunks:
-                prompt = self.templates["tacit_knowledge"].format(text=chunk)
-                response = self.model_manager.generate_llm_response(prompt, max_tokens=512)
-                
-                chunk_tacit = self._parse_tacit_response(response, doc_id)
-                tacit_items.extend(chunk_tacit)
-            
-        except Exception as e:
-            logger.error(f"Error extracting tacit knowledge: {e}")
-        
-        return tacit_items
-    
-    async def _generate_insights(self, extraction_results: Dict[str, Any], doc_id: str) -> Dict[str, Any]:
-        """Generate high-level insights from extracted knowledge"""
-        insights = {
-            'summary': '',
-            'key_findings': [],
-            'automation_opportunities': [],
-            'risk_factors': [],
-            'knowledge_gaps': []
-        }
-        
-        try:
-            # Generate summary
-            entities_count = len(extraction_results.get('entities', []))
-            processes_count = len(extraction_results.get('processes', []))
-            
-            insights['summary'] = f"Extracted {entities_count} entities and {processes_count} processes from document {doc_id}"
-            
-            # Identify automation opportunities
-            for process in extraction_results.get('processes', []):
-                if hasattr(process, 'automation_potential') and process.automation_potential > 0.7:
-                    insights['automation_opportunities'].append({
-                        'process': process.name,
-                        'potential': process.automation_potential,
-                        'description': process.description
-                    })
-            
-            # Identify risk factors
-            for entity in extraction_results.get('entities', []):
-                if entity.type in ['risk', 'compliance', 'security']:
-                    insights['risk_factors'].append({
-                        'entity': entity.name,
-                        'type': entity.type,
-                        'description': entity.description,
-                        'confidence': entity.confidence
-                    })
-            
-        except Exception as e:
-            logger.error(f"Error generating insights: {e}")
-        
-        return insights
-    
-    def _chunk_content(self, content: str, chunk_size: int = 2000, overlap: int = 200) -> List[str]:
-        """Chunk content for processing with overlap"""
-        chunks = []
-        start = 0
-        
-        while start < len(content):
-            end = start + chunk_size
-            chunk = content[start:end]
-            
-            # Find a good breaking point
-            if end < len(content):
-                last_period = chunk.rfind('.')
-                last_newline = chunk.rfind('\n')
-                break_point = max(last_period, last_newline)
-                
-                if break_point > start + chunk_size // 2:
-                    chunk = content[start:break_point + 1]
-                    end = break_point + 1
-            
-            chunks.append(chunk.strip())
-            start = end - overlap
-            
-            if start >= len(content):
-                break
-        
-        return chunks
-    
-    def _parse_entities_response(self, response: str, doc_id: str, chunk_id: str) -> List[KnowledgeEntity]:
-        """Parse LLM response to extract entities"""
-        entities = []
-        
-        try:
-            # Try to parse JSON response
-            if response.strip().startswith('[') or response.strip().startswith('{'):
-                import json
-                data = json.loads(response)
-                
-                if isinstance(data, list):
-                    for item in data:
-                        entity = KnowledgeEntity(
-                            id=f"{doc_id}_{chunk_id}_{len(entities)}",
-                            name=item.get('name', ''),
-                            type=item.get('type', 'concept'),
-                            description=item.get('description', ''),
-                            properties={},
-                            confidence=item.get('confidence', 0.5),
-                            source_documents=[doc_id]
-                        )
-                        entities.append(entity)
+                result_text = response['choices'][0]['text']
             else:
-                # Parse unstructured response
-                lines = response.split('\n')
-                for line in lines:
-                    if ':' in line and len(line.strip()) > 5:
-                        parts = line.split(':', 1)
-                        entity = KnowledgeEntity(
-                            id=f"{doc_id}_{chunk_id}_{len(entities)}",
-                            name=parts[0].strip(),
-                            type='concept',
-                            description=parts[1].strip(),
-                            properties={},
-                            confidence=0.6,
-                            source_documents=[doc_id]
-                        )
-                        entities.append(entity)
-        
-        except Exception as e:
-            logger.error(f"Error parsing entities response: {e}")
-        
-        return entities
-    
-    def _parse_processes_response(self, response: str, doc_id: str) -> List[WorkflowProcess]:
-        """Parse LLM response to extract processes"""
-        processes = []
-        
-        try:
-            # Similar parsing logic for processes
-            # Implementation would parse process-specific fields
-            pass
-        except Exception as e:
-            logger.error(f"Error parsing processes response: {e}")
-        
-        return processes
-    
-    def _parse_relationships_response(self, response: str, entities: List[KnowledgeEntity], doc_id: str) -> List[KnowledgeRelationship]:
-        """Parse LLM response to extract relationships"""
-        relationships = []
-        
-        try:
-            # Implementation for parsing relationship responses
-            pass
-        except Exception as e:
-            logger.error(f"Error parsing relationships response: {e}")
-        
-        return relationships
-    
-    def _parse_tacit_response(self, response: str, doc_id: str) -> List[TacitKnowledge]:
-        """Parse LLM response to extract tacit knowledge"""
-        tacit_items = []
-        
-        try:
-            # Implementation for parsing tacit knowledge
-            pass
-        except Exception as e:
-            logger.error(f"Error parsing tacit knowledge response: {e}")
-        
-        return tacit_items
-    
-    async def _generate_entity_embeddings(self, entities: List[KnowledgeEntity]):
-        """Generate embeddings for entities"""
-        if not entities:
-            return
-        
-        try:
-            descriptions = [entity.description for entity in entities]
-            embeddings = self.model_manager.get_embeddings(descriptions)
+                # Fallback for other model types
+                result_text = "{}"
             
-            for entity, embedding in zip(entities, embeddings):
-                entity.embedding = embedding.tolist()
-                
+            # Parse JSON response
+            try:
+                concepts_data = json.loads(result_text)
+                return concepts_data
+            except json.JSONDecodeError:
+                logger.warning("Failed to parse LLM response as JSON")
+                return {"concepts": [], "relationships": []}
+            
         except Exception as e:
-            logger.error(f"Error generating embeddings: {e}")
+            logger.error(f"Error in concept extraction: {e}")
+            return {"concepts": [], "relationships": []}
     
-    def _deduplicate_entities(self, entities: List[KnowledgeEntity]) -> List[KnowledgeEntity]:
-        """Remove duplicate entities based on similarity"""
-        unique_entities = []
-        seen_names = set()
-        
-        for entity in entities:
-            name_lower = entity.name.lower().strip()
-            if name_lower not in seen_names and len(name_lower) > 2:
-                seen_names.add(name_lower)
-                unique_entities.append(entity)
-        
-        return unique_entities
-    
-    async def build_knowledge_graph(self, extraction_results: Dict[str, Any]) -> KnowledgeGraph:
-        """Build knowledge graph from extraction results"""
+    async def _extract_workflows(self, content: str, metadata: Dict[str, Any]) -> Dict[str, Any]:
+        """Extract workflows and business processes"""
         try:
-            # Add entities to graph
-            for entity in extraction_results.get('entities', []):
-                self.knowledge_graph.add_entity(entity)
+            prompt = f"""
+            Analyze the following business document to identify workflows, processes, and operational procedures.
             
-            # Add relationships to graph
-            for relationship in extraction_results.get('relationships', []):
-                self.knowledge_graph.add_relationship(relationship)
+            Extract:
+            1. Step-by-step processes
+            2. Decision points and criteria
+            3. Roles and responsibilities
+            4. Dependencies and prerequisites
+            5. Success criteria and outcomes
             
-            logger.info("Knowledge graph built successfully")
+            Document content:
+            {content[:2000]}
+            
+            Provide analysis in JSON format:
+            {{
+                "workflows": [
+                    {{
+                        "name": "workflow_name",
+                        "description": "workflow description",
+                        "steps": ["step1", "step2"],
+                        "decision_points": ["decision1"],
+                        "roles": ["role1", "role2"],
+                        "dependencies": ["dependency1"],
+                        "success_criteria": ["criteria1"]
+                    }}
+                ]
+            }}
+            """
+            
+            if isinstance(self.llm, Llama):
+                response = self.llm(
+                    prompt,
+                    max_tokens=2048,
+                    temperature=0.1,
+                    stop=["</s>", "\n\n"]
+                )
+                result_text = response['choices'][0]['text']
+            else:
+                result_text = "{}"
+            
+            try:
+                workflows_data = json.loads(result_text)
+                return workflows_data
+            except json.JSONDecodeError:
+                return {"workflows": []}
+            
+        except Exception as e:
+            logger.error(f"Error in workflow extraction: {e}")
+            return {"workflows": []}
+    
+    async def _extract_tacit_knowledge(self, content: str, metadata: Dict[str, Any]) -> Dict[str, Any]:
+        """Extract tacit knowledge and implicit patterns"""
+        try:
+            prompt = f"""
+            Analyze the following business document to identify tacit knowledge, implicit patterns, and unstated assumptions.
+            
+            Look for:
+            1. Implicit workflows and procedures
+            2. Unstated business rules
+            3. Organizational culture indicators
+            4. Informal communication patterns
+            5. Hidden dependencies and risks
+            6. Best practices and lessons learned
+            
+            Document content:
+            {content[:2000]}
+            
+            Provide analysis in JSON format:
+            {{
+                "tacit_knowledge": [
+                    {{
+                        "type": "implicit_workflow|business_rule|culture_indicator|best_practice",
+                        "description": "detailed description",
+                        "confidence": 0.85,
+                        "evidence": "supporting evidence from text"
+                    }}
+                ]
+            }}
+            """
+            
+            if isinstance(self.llm, Llama):
+                response = self.llm(
+                    prompt,
+                    max_tokens=2048,
+                    temperature=0.1,
+                    stop=["</s>", "\n\n"]
+                )
+                result_text = response['choices'][0]['text']
+            else:
+                result_text = "{}"
+            
+            try:
+                tacit_data = json.loads(result_text)
+                return tacit_data
+            except json.JSONDecodeError:
+                return {"tacit_knowledge": []}
+            
+        except Exception as e:
+            logger.error(f"Error in tacit knowledge extraction: {e}")
+            return {"tacit_knowledge": []}
+    
+    async def _integrate_knowledge(self, extracted_data: Dict[str, Any], metadata: Dict[str, Any]) -> Dict[str, Any]:
+        """Integrate extracted knowledge with existing knowledge base"""
+        try:
+            # Generate embeddings for semantic search
+            content_text = str(extracted_data)
+            embeddings = self.embedder.encode(content_text)
+            
+            # Find similar existing knowledge
+            similar_nodes = await self._find_similar_knowledge(embeddings)
+            
+            # Identify conflicts and gaps
+            conflicts = await self._identify_conflicts(extracted_data, similar_nodes)
+            gaps = await self._identify_knowledge_gaps(extracted_data, similar_nodes)
+            
+            return {
+                "similar_knowledge": similar_nodes,
+                "conflicts": conflicts,
+                "gaps": gaps,
+                "integration_score": 0.85
+            }
+            
+        except Exception as e:
+            logger.error(f"Error in knowledge integration: {e}")
+            return {"similar_knowledge": [], "conflicts": [], "gaps": []}
+    
+    async def _find_similar_knowledge(self, embeddings: np.ndarray) -> List[Dict[str, Any]]:
+        """Find similar knowledge using semantic search"""
+        similar_nodes = []
+        
+        for node in self.knowledge_graph.nodes.values():
+            if node.embeddings is not None:
+                similarity = np.dot(embeddings, node.embeddings) / (
+                    np.linalg.norm(embeddings) * np.linalg.norm(node.embeddings)
+                )
+                if similarity > 0.7:  # Similarity threshold
+                    similar_nodes.append({
+                        "node_id": node.id,
+                        "name": node.name,
+                        "type": node.type,
+                        "similarity": float(similarity)
+                    })
+        
+        # Sort by similarity
+        similar_nodes.sort(key=lambda x: x['similarity'], reverse=True)
+        return similar_nodes[:10]  # Return top 10
+    
+    async def _identify_conflicts(self, new_data: Dict[str, Any], existing_nodes: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Identify conflicts between new and existing knowledge"""
+        conflicts = []
+        
+        # Simple conflict detection based on concept names
+        new_concepts = set()
+        if 'concepts' in new_data:
+            for concept in new_data['concepts']:
+                new_concepts.add(concept.get('name', '').lower())
+        
+        for node in existing_nodes:
+            if node['name'].lower() in new_concepts:
+                conflicts.append({
+                    "type": "concept_overlap",
+                    "existing_node": node,
+                    "description": f"Concept '{node['name']}' already exists"
+                })
+        
+        return conflicts
+    
+    async def _identify_knowledge_gaps(self, new_data: Dict[str, Any], existing_nodes: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Identify gaps in knowledge coverage"""
+        gaps = []
+        
+        # Identify missing knowledge areas
+        covered_areas = set()
+        for node in existing_nodes:
+            covered_areas.add(node['type'])
+        
+        expected_areas = {'process', 'person', 'system', 'requirement', 'risk'}
+        missing_areas = expected_areas - covered_areas
+        
+        for area in missing_areas:
+            gaps.append({
+                "type": "missing_knowledge_area",
+                "area": area,
+                "description": f"No knowledge found for area: {area}"
+            })
+        
+        return gaps
+    
+    async def _build_knowledge_graph(self, extracted_data: Dict[str, Any], metadata: Dict[str, Any]) -> None:
+        """Build interconnected knowledge representation"""
+        try:
+            # Create nodes from extracted concepts
+            if 'concepts' in extracted_data:
+                for concept in extracted_data['concepts']:
+                    node_id = hashlib.md5(concept['name'].encode()).hexdigest()
+                    
+                    node = KnowledgeNode(
+                        id=node_id,
+                        type=concept['type'],
+                        name=concept['name'],
+                        description=concept['description'],
+                        content=concept['name'],
+                        metadata=concept,
+                        confidence=concept.get('confidence', 0.8),
+                        created_at=datetime.now(),
+                        updated_at=datetime.now()
+                    )
+                    
+                    # Generate embeddings
+                    if self.embedder:
+                        node.embeddings = self.embedder.encode(concept['name'])
+                    
+                    self.knowledge_graph.add_node(node)
+            
+            # Create edges from relationships
+            if 'relationships' in extracted_data:
+                for rel in extracted_data['relationships']:
+                    source_id = hashlib.md5(rel['source'].encode()).hexdigest()
+                    target_id = hashlib.md5(rel['target'].encode()).hexdigest()
+                    
+                    edge = KnowledgeEdge(
+                        source_id=source_id,
+                        target_id=target_id,
+                        relationship_type=rel['type'],
+                        strength=0.8,
+                        metadata=rel,
+                        created_at=datetime.now()
+                    )
+                    
+                    self.knowledge_graph.add_edge(edge)
+            
+            logger.info(f"Built knowledge graph with {len(self.knowledge_graph.nodes)} nodes and {len(self.knowledge_graph.edges)} edges")
             
         except Exception as e:
             logger.error(f"Error building knowledge graph: {e}")
-        
-        return self.knowledge_graph
     
     async def extract_operational_intelligence(self, content: str) -> Dict[str, Any]:
-        """Extract operational intelligence and business insights"""
-        operational_data = {
-            'sops': [],
-            'decision_criteria': [],
-            'compliance_requirements': [],
-            'risk_factors': [],
-            'kpis': [],
-            'assumptions': []
-        }
-        
+        """Extract operational intelligence using specialized prompts"""
         try:
-            # Use specialized prompts for operational intelligence
-            sop_prompt = f"""
-            Identify Standard Operating Procedures (SOPs) in the following text:
+            prompt = f"""
+            Analyze the following business content to extract operational intelligence:
             
-            {content}
+            Focus on:
+            1. Standard Operating Procedures (SOPs)
+            2. Decision criteria and business rules
+            3. Compliance requirements and regulations
+            4. Risk factors and mitigation strategies
+            5. Performance metrics and KPIs
+            6. Unstated assumptions and tribal knowledge
             
-            Extract:
-            - Procedure name
-            - Steps
-            - Frequency
-            - Responsible parties
-            - Success criteria
+            Content:
+            {content[:2000]}
+            
+            Provide detailed analysis in JSON format:
+            {{
+                "sops": ["sop1", "sop2"],
+                "decision_criteria": ["criteria1", "criteria2"],
+                "compliance_requirements": ["req1", "req2"],
+                "risk_factors": ["risk1", "risk2"],
+                "performance_metrics": ["metric1", "metric2"],
+                "assumptions": ["assumption1", "assumption2"]
+            }}
             """
             
-            sop_response = self.model_manager.generate_llm_response(sop_prompt)
-            operational_data['sops'] = self._parse_sop_response(sop_response)
+            if isinstance(self.llm, Llama):
+                response = self.llm(
+                    prompt,
+                    max_tokens=2048,
+                    temperature=0.1,
+                    stop=["</s>", "\n\n"]
+                )
+                result_text = response['choices'][0]['text']
+            else:
+                result_text = "{}"
             
-            # Additional operational intelligence extraction...
+            try:
+                operational_data = json.loads(result_text)
+                return operational_data
+            except json.JSONDecodeError:
+                return {}
             
         except Exception as e:
             logger.error(f"Error extracting operational intelligence: {e}")
-        
-        return operational_data
+            return {}
     
-    def _parse_sop_response(self, response: str) -> List[Dict[str, Any]]:
-        """Parse SOP extraction response"""
-        sops = []
-        
-        try:
-            # Implementation for parsing SOP responses
-            pass
-        except Exception as e:
-            logger.error(f"Error parsing SOP response: {e}")
-        
-        return sops
+    def get_knowledge_graph(self) -> Neo4jLiteGraph:
+        """Get the current knowledge graph"""
+        return self.knowledge_graph
     
-    def get_knowledge_summary(self) -> Dict[str, Any]:
-        """Get summary of extracted knowledge"""
+    def export_knowledge(self, format: str = "json") -> Dict[str, Any]:
+        """Export knowledge in various formats"""
+        if format == "cytoscape":
+            return self.knowledge_graph.export_cytoscape()
+        elif format == "json":
         return {
-            'total_entities': len(self.knowledge_graph.entities),
-            'total_relationships': len(self.knowledge_graph.relationships),
-            'entity_types': self._get_entity_type_distribution(),
-            'relationship_types': self._get_relationship_type_distribution()
-        }
-    
-    def _get_entity_type_distribution(self) -> Dict[str, int]:
-        """Get distribution of entity types"""
-        distribution = {}
-        for entity in self.knowledge_graph.entities.values():
-            distribution[entity.type] = distribution.get(entity.type, 0) + 1
-        return distribution
-    
-    def _get_relationship_type_distribution(self) -> Dict[str, int]:
-        """Get distribution of relationship types"""
-        distribution = {}
-        for rel in self.knowledge_graph.relationships:
-            distribution[rel.relationship_type] = distribution.get(rel.relationship_type, 0) + 1
-        return distribution
-    
-    def cleanup_memory(self):
-        """Clean up memory resources"""
-        try:
-            if hasattr(self.model_manager, 'llm'):
-                del self.model_manager.llm
-            
-            torch.cuda.empty_cache() if torch.cuda.is_available() else None
-            gc.collect()
-            
-            logger.info("Memory cleanup completed")
-            
-        except Exception as e:
-            logger.error(f"Error during memory cleanup: {e}")
+                "nodes": [node.__dict__ for node in self.knowledge_graph.nodes.values()],
+                "edges": [edge.__dict__ for edge in self.knowledge_graph.edges],
+                "metadata": {
+                    "total_nodes": len(self.knowledge_graph.nodes),
+                    "total_edges": len(self.knowledge_graph.edges),
+                    "node_types": list(self.knowledge_graph.node_types),
+                    "relationship_types": list(self.knowledge_graph.relationship_types)
+                }
+            }
+        else:
+            raise ValueError(f"Unsupported export format: {format}")
