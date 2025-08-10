@@ -406,8 +406,8 @@ class SystemMetrics(Base):
     recorded_at = Column(DateTime, default=func.now(), nullable=False, index=True)
     session_id = Column(String(100))  # Processing session identifier
     
-    # Additional data
-    metadata = Column(JSON)  # Additional metric metadata
+    # Additional data (avoid reserved attribute name 'metadata')
+    extra_metadata = Column("metadata", JSON)  # DB column still named 'metadata'
     
     # Indexes
     __table_args__ = (
