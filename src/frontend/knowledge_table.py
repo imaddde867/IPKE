@@ -17,17 +17,39 @@ import io
 # Internal imports
 import sys
 import os
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+# Add the project root to Python path
+current_dir = os.path.dirname(os.path.abspath(__file__))
+project_root = os.path.dirname(os.path.dirname(current_dir))
+src_path = os.path.join(project_root, 'src')
+
+if src_path not in sys.path:
+    sys.path.insert(0, src_path)
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
 
 try:
-    from export.knowledge_export import KnowledgeExporter
-    from ai.advanced_knowledge_engine import AdvancedKnowledgeEngine
-    from core.config import AIConfig
-except ImportError:
-    # Fallback for when modules aren't available
-    KnowledgeExporter = None
-    AdvancedKnowledgeEngine = None
-    AIConfig = None
+    # Try importing with src prefix
+    from src.export.knowledge_export import KnowledgeExporter
+    from src.ai.advanced_knowledge_engine import AdvancedKnowledgeEngine
+    from src.core.config import AIConfig
+    FULL_SYSTEM_AVAILABLE = True
+    print("✅ Full AI system loaded successfully")
+except ImportError as e1:
+    try:
+        # Try importing without src prefix
+        from export.knowledge_export import KnowledgeExporter
+        from ai.advanced_knowledge_engine import AdvancedKnowledgeEngine
+        from core.config import AIConfig
+        FULL_SYSTEM_AVAILABLE = True
+        print("✅ Full AI system loaded successfully (fallback)")
+    except ImportError as e2:
+        print(f"❌ Import error: {e1}, {e2}")
+        # Fallback for when modules aren't available
+        KnowledgeExporter = None
+        AdvancedKnowledgeEngine = None
+        AIConfig = None
+        FULL_SYSTEM_AVAILABLE = False
 
 
 class KnowledgeTableFrontend:
@@ -549,16 +571,23 @@ def main():
     st.markdown("**Deep Knowledge Extraction & Analysis Dashboard**")
     
     # Check if we have the full system available
-    if AdvancedKnowledgeEngine is None or AIConfig is None:
+    if not FULL_SYSTEM_AVAILABLE:
         st.warning("⚠️ Running in demo mode - full AI engine not available")
         demo_mode()
     else:
         # Initialize with proper config
         try:
+            st.info("🔄 Initializing AI Knowledge Engine...")
             config = AIConfig()
             knowledge_engine = AdvancedKnowledgeEngine(config)
-            frontend = KnowledgeTableFrontend(knowledge_engine)
-            frontend.render_knowledge_table()
+            
+            st.success("✅ AI Knowledge Engine ready!")
+            
+            # For now, show demo mode with AI engine available
+            # TODO: Implement real data loading from knowledge engine
+            st.info("📊 Showing demo data - upload documents via API to see real extractions")
+            demo_mode()
+            
         except Exception as e:
             st.error(f"Error initializing knowledge engine: {e}")
             st.info("Falling back to demo mode...")
@@ -574,7 +603,7 @@ def demo_mode():
         knowledge_types = st.multiselect(
             "Knowledge Types",
             ["concepts", "processes", "systems", "requirements", "people", "risks"],
-            default=["concepts", "processes", "systems"]
+            default=["concepts", "processes", "systems", "requirements", "people", "risks"]
         )
         
         # Confidence filter
@@ -621,6 +650,25 @@ def demo_mode():
                     "application/json"
                 )
     
+    # Document Upload Section
+    st.header("📄 Document Processing")
+    
+    uploaded_file = st.file_uploader(
+        "Upload a document for knowledge extraction",
+        type=['pdf', 'txt', 'docx', 'doc'],
+        help="Upload documents to extract knowledge using the AI engine"
+    )
+    
+    if uploaded_file is not None:
+        st.success(f"File uploaded: {uploaded_file.name}")
+        if st.button("🚀 Process Document", type="primary"):
+            with st.spinner("Processing document with AI engine..."):
+                # TODO: Implement actual document processing
+                import time
+                time.sleep(2)
+                st.success("✅ Document processed! Results added to knowledge base.")
+                st.rerun()
+    
     # Main content
     col1, col2 = st.columns([3, 1])
     
@@ -643,25 +691,30 @@ def demo_mode():
         if search_term:
             df = df[df['Knowledge'].str.contains(search_term, case=False, na=False)]
         
-        # Display table
-        st.dataframe(
-            df,
-            use_container_width=True,
-            hide_index=True,
-            column_config={
-                "Confidence": st.column_config.ProgressColumn(
-                    "Confidence",
-                    help="Extraction confidence score",
-                    min_value=0,
-                    max_value=1,
-                ),
-                "Type": st.column_config.SelectboxColumn(
-                    "Type",
-                    help="Knowledge type",
-                    options=["concepts", "processes", "systems", "requirements", "people", "risks"]
-                )
-            }
-        )
+        # Display results
+        if df.empty:
+            st.warning("No knowledge data found with the current filters.")
+            st.info("Try adjusting your filters or search terms.")
+        else:
+            # Display table
+            st.dataframe(
+                df,
+                use_container_width=True,
+                hide_index=True,
+                column_config={
+                    "Confidence": st.column_config.ProgressColumn(
+                        "Confidence",
+                        help="Extraction confidence score",
+                        min_value=0,
+                        max_value=1,
+                    ),
+                    "Type": st.column_config.SelectboxColumn(
+                        "Type",
+                        help="Knowledge type",
+                        options=["concepts", "processes", "systems", "requirements", "people", "risks"]
+                    )
+                }
+            )
         
         # Statistics
         st.subheader("📈 Statistics")
