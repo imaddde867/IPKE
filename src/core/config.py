@@ -77,14 +77,46 @@ class ProcessingConfig:
 
 @dataclass
 class AIConfig:
-    """AI model configuration"""
-    spacy_model: str = "en_core_web_sm"
-    classification_model: str = "facebook/bart-large-mnli"
-    ner_model: str = "dslim/bert-base-NER"
-    whisper_model: str = "base"
-    confidence_threshold: float = 0.7
-    enable_gpu: bool = False
+    """Advanced AI model configuration for Apple M4 Mac"""
+    # Core LLM configuration
+    llm_model: str = "mistral-7b-instruct-v0.2.Q4_K_M.gguf"
+    llm_path: str = "./models"
+    fallback_model: str = "microsoft/phi-2"
+    
+    # Model optimization
+    max_tokens: int = 2048
+    temperature: float = 0.1  # Low for factual extraction
+    quantization: str = "4bit"
+    use_gpu: bool = True  # Metal acceleration on Mac
+    
+    # Embedding model
+    embedding_model: str = "BAAI/bge-small-en-v1.5"
+    
+    # Text processing
+    chunk_size: int = 2000
+    chunk_overlap: int = 200
+    
+    # Performance settings
+    batch_size: int = 4  # Optimized for 16GB RAM
+    max_memory_mb: int = 4096  # 4GB limit for models
+    
+    # Model cache
     model_cache_dir: str = "models"
+    disk_cache_size_gb: int = 4
+    
+    # Advanced features
+    enable_knowledge_graph: bool = True
+    enable_tacit_extraction: bool = True
+    enable_relationship_extraction: bool = True
+    
+    # Audio processing
+    whisper_model: str = "base"
+    enable_speaker_diarization: bool = True
+    
+    # Confidence thresholds
+    entity_confidence_threshold: float = 0.6
+    relationship_confidence_threshold: float = 0.7
+    process_confidence_threshold: float = 0.8
 
 
 @dataclass
