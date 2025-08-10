@@ -15,24 +15,47 @@ from sqlalchemy.pool import StaticPool
 from sqlalchemy.exc import SQLAlchemyError
 
 from src.core.config import config
+import os
+import socket
 
 logger = logging.getLogger(__name__)
 
-# Create database engine
+def _can_connect(host: str, port: int, timeout: float = 1.0) -> bool:
+    try:
+        with socket.create_connection((host, port), timeout=timeout):
+            return True
+    except Exception:
+        return False
+
+db_url = config.database.url
+using_sqlite_fallback = False
+if db_url.startswith("postgresql") and not _can_connect(config.database.host, config.database.port):
+    # Fallback to local sqlite for developer manual testing
+    fallback_path = os.getenv("SQLITE_FALLBACK_PATH", "dev_fallback.db")
+    db_url = f"sqlite:///{fallback_path}"
+    using_sqlite_fallback = True
+    logging.getLogger(__name__).warning(
+        f"Postgres not reachable at {config.database.host}:{config.database.port}; using SQLite fallback {fallback_path}" )
+
 engine = create_engine(
-    config.database.url,
-    pool_size=config.database.pool_size,
-    max_overflow=config.database.max_overflow,
+    db_url,
+    pool_size=config.database.pool_size if db_url.startswith("postgresql") else None,
+    max_overflow=config.database.max_overflow if db_url.startswith("postgresql") else None,
     echo=config.database.echo,
-    poolclass=StaticPool if config.database.name.endswith("_test") else None,
-    connect_args={"check_same_thread": False} if "sqlite" in config.database.url else {}
+    poolclass=StaticPool if (config.database.name.endswith("_test") or db_url.startswith("sqlite")) else None,
+    connect_args={"check_same_thread": False} if "sqlite" in db_url else {}
 )
 
 # Create session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# Create declarative base
-Base = declarative_base()
+# Reuse models' declarative base so metadata contains actual table definitions
+try:
+    from src.database.models import Base as ModelsBase  # type: ignore
+    Base = ModelsBase
+except Exception:
+    # Fallback (should not normally happen)
+    Base = declarative_base()
 
 
 class DatabaseManager:
