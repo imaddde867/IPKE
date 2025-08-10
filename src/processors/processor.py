@@ -89,7 +89,9 @@ class DocumentProcessor:
         try:
             # Check if whisper is available
             import whisper
-            self.whisper_model = whisper.load_model("base")
+            # Prefer configured model name when available
+            model_name = getattr(getattr(config_manager, 'ai', object()), 'whisper_model', 'base') or 'base'
+            self.whisper_model = whisper.load_model(model_name)
             self.audio_processing_available = True
             logger.info("Audio processing initialized successfully")
         except Exception as e:
@@ -543,45 +545,132 @@ class DocumentProcessor:
             raise ProcessingError(f"Failed to process audio: {e}")
     
     def _process_video_document(self, file_path: Path) -> Dict[str, Any]:
-        """Process video documents by extracting audio and transcribing"""
-        if not self.audio_processing_available:
-            raise ProcessingError("Audio processing not available for video")
-        
-        try:
-            import ffmpeg
-            
-            # Extract audio from video
-            with tempfile.NamedTemporaryFile(suffix='.wav', delete=False) as temp_audio:
-                temp_audio_path = temp_audio.name
-            
+        """Process video documents by extracting audio and/or on-screen text.
+
+        Strategy:
+        1) If audio transcription is available, extract audio with ffmpeg and transcribe via Whisper.
+        2) Independently (or as a fallback), sample frames and OCR on-screen text if OCR is available.
+        Returns combined text so videos without clear audio still yield useful content.
+        """
+        transcript_text = ""
+        language_detected = "unknown"
+        segments = []
+        sources: List[str] = []
+
+        # Attempt audio transcription first when available
+        if self.audio_processing_available and self.whisper_model is not None:
             try:
-                # Extract audio using ffmpeg
-                (
-                    ffmpeg
-                    .input(str(file_path))
-                    .output(temp_audio_path, acodec='pcm_s16le', ac=1, ar='16k')
-                    .overwrite_output()
-                    .run(quiet=True)
+                import ffmpeg  # ffmpeg-python wrapper; requires ffmpeg CLI installed
+
+                with tempfile.NamedTemporaryFile(suffix='.wav', delete=False) as temp_audio:
+                    temp_audio_path = temp_audio.name
+
+                try:
+                    (
+                        ffmpeg
+                        .input(str(file_path))
+                        .output(temp_audio_path, acodec='pcm_s16le', ac=1, ar='16000')
+                        .overwrite_output()
+                        .run(quiet=True)
+                    )
+
+                    result = self.whisper_model.transcribe(temp_audio_path)
+                    transcript_text = (result.get('text') or '').strip()
+                    language_detected = result.get('language', 'unknown')
+                    segments = result.get('segments', []) or []
+                    sources.append('video_audio_extraction')
+                finally:
+                    if os.path.exists(temp_audio_path):
+                        os.unlink(temp_audio_path)
+            except Exception as e:
+                # Do not fail video processing outright; fall back to frame OCR
+                logger.warning(f"Audio transcription from video failed, continuing with frame OCR: {e}")
+        else:
+            logger.info("Audio processing unavailable; attempting frame OCR for video")
+
+        # Frame OCR (supplemental or fallback)
+        ocr_text = ""
+        frames_analyzed = 0
+        if self.ocr_available:
+            try:
+                ocr_result = self._extract_text_from_video_frames(
+                    file_path=file_path,
+                    interval_seconds=getattr(getattr(config_manager, 'processing', object()), 'video_frame_interval_seconds', 5),
+                    max_frames=30
                 )
-                
-                # Transcribe extracted audio
-                result = self.whisper_model.transcribe(temp_audio_path)
-                
-                return {
-                    'text': result['text'],
-                    'language': result.get('language', 'unknown'),
-                    'segments': result.get('segments', []),
-                    'source': 'video_audio_extraction'
-                }
-                
-            finally:
-                # Clean up temporary audio file
-                if os.path.exists(temp_audio_path):
-                    os.unlink(temp_audio_path)
-                    
-        except Exception as e:
-            logger.error(f"Failed to process video: {e}")
-            raise ProcessingError(f"Failed to process video: {e}")
+                ocr_text = ocr_result.get('text', '').strip()
+                frames_analyzed = ocr_result.get('frames_analyzed', 0)
+                if ocr_text:
+                    sources.append('video_frame_ocr')
+            except Exception as e:
+                logger.warning(f"Frame OCR failed for video: {e}")
+
+        combined_text_parts = [part for part in [transcript_text, ocr_text] if part]
+        combined_text = "\n\n".join(combined_text_parts)
+
+        if not combined_text:
+            # Nothing extracted at all; return a graceful, informative result rather than throwing
+            return {
+                'text': '',
+                'language': language_detected,
+                'segments': segments,
+                'source': ",".join(sources) if sources else 'video_processing_attempted',
+                'frames_analyzed': frames_analyzed,
+                'warning': 'No extractable audio or on-screen text detected from video'
+            }
+
+        return {
+            'text': combined_text,
+            'language': language_detected,
+            'segments': segments,
+            'source': ",".join(sources) if sources else 'video_processing',
+            'frames_analyzed': frames_analyzed
+        }
+
+    def _extract_text_from_video_frames(self, file_path: Path, interval_seconds: int = 5, max_frames: int = 20) -> Dict[str, Any]:
+        """Extract visible text from sampled video frames using OCR.
+
+        Samples one frame approximately every `interval_seconds`, up to `max_frames` frames.
+        Applies simple preprocessing to improve OCR accuracy.
+        """
+        capture = cv2.VideoCapture(str(file_path))
+        if not capture.isOpened():
+            raise ProcessingError("Unable to open video file for frame OCR")
+
+        try:
+            fps = capture.get(cv2.CAP_PROP_FPS) or 0.0
+            total_frames = int(capture.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
+            frames_between_samples = max(1, int(round((fps or 1.0) * max(1, interval_seconds))))
+
+            collected_lines: List[str] = []
+            frames_analyzed = 0
+            frame_index = 0
+
+            while frame_index < total_frames and frames_analyzed < max_frames:
+                capture.set(cv2.CAP_PROP_POS_FRAMES, frame_index)
+                success, frame = capture.read()
+                if not success or frame is None:
+                    break
+
+                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                # Light denoising and thresholding to enhance text regions
+                denoised = cv2.fastNlMeansDenoising(gray)
+                _, thresh = cv2.threshold(denoised, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+                text = pytesseract.image_to_string(thresh) if self.ocr_available else ''
+                if text and text.strip():
+                    # Keep unique non-empty lines to reduce noise
+                    for line in [l.strip() for l in text.splitlines() if l.strip()]:
+                        if line not in collected_lines:
+                            collected_lines.append(line)
+
+                frames_analyzed += 1
+                frame_index += frames_between_samples
+
+            ocr_text = "\n".join(collected_lines)
+            return {'text': ocr_text, 'frames_analyzed': frames_analyzed}
+        finally:
+            capture.release()
     
     def _extract_with_tika(self, file_path: Path) -> Dict[str, Any]:
         """Extract content using Apache Tika server"""

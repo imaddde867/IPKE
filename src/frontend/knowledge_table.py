@@ -519,79 +519,110 @@ def extract_knowledge_from_image(uploaded_file, file_name):
         }]
 
 def extract_knowledge_from_video(uploaded_file, file_name):
-    """Extract knowledge from video files using intelligent analysis"""
+    """Extract knowledge from video by leveraging the backend video pipeline.
+
+    Saves the uploaded file to a temporary path, runs the consolidated
+    `DocumentProcessor` video extraction (audio transcription + frame OCR),
+    then converts the resulting text into structured knowledge items.
+    """
+    import tempfile
+    from pathlib import Path
+    
+    temp_path = None
     try:
-        # Get file size and basic info
-        file_size = len(uploaded_file.read())
-        uploaded_file.seek(0)  # Reset file pointer
-        
-        knowledge_items = []
-        
-        # Intelligent video content analysis based on filename
-        content_indicators = {
-            'training': ('Training Content', 'Educational video content for skill development or knowledge transfer'),
-            'tutorial': ('Tutorial Content', 'Step-by-step instructional video content'),
-            'demo': ('Demonstration', 'Product or process demonstration video'),
-            'meeting': ('Business Meeting', 'Recorded business meeting or conference content'),
-            'presentation': ('Presentation', 'Business presentation or briefing content'),
-            'safety': ('Safety Training', 'Safety procedures and compliance training content'),
-            'procedure': ('Procedural Content', 'Standard operating procedures or process documentation'),
-            'inspection': ('Inspection Process', 'Quality control or inspection procedure documentation')
-        }
-        
-        # Check filename for content type indicators
-        detected_content = []
-        for keyword, (title, description) in content_indicators.items():
-            if keyword in file_name.lower():
-                detected_content.append((title, description))
-        
-        # Add detected content types
-        for title, description in detected_content[:3]:  # Limit to 3 matches
-            knowledge_items.append({
-                "Knowledge": title,
-                "Type": "concepts" if 'Content' in title else "processes",
-                "Confidence": 0.82,
-                "Category": "Video Content",
-                "Description": f"{description}. File size: {file_size/1024/1024:.1f} MB",
-                "Source": file_name,
-                "Extracted_At": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            })
-        
-        # If no specific content detected, provide general analysis
-        if not detected_content:
-            knowledge_items.append({
-                "Knowledge": "Video Content",
-                "Type": "concepts",
-                "Confidence": 0.75,
-                "Category": "Media Content",
-                "Description": f"Video file ({file_size/1024/1024:.1f} MB) containing potential training, procedural, or documentation content",
-                "Source": file_name,
-                "Extracted_At": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            })
-        
-        # Note about advanced processing capabilities
+        # Persist uploaded bytes to a temporary file so ffmpeg/ocr can access it
+        raw_bytes = uploaded_file.read()
+        uploaded_file.seek(0)
+        suffix = Path(file_name).suffix or ".mp4"
+        with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
+            tmp.write(raw_bytes)
+            temp_path = tmp.name
+
+        # Lazy import to avoid heavy deps on app boot
+        from src.processors.processor import DocumentProcessor
+        dp = DocumentProcessor()
+
+        # Run improved video processing (audio + frame OCR fallback)
+        result = dp._process_video_document(Path(temp_path))
+        transcript_text = (result.get('text') or '').strip()
+        frames_analyzed = result.get('frames_analyzed')
+        source = result.get('source')
+        warning = result.get('warning')
+
+        knowledge_items: List[Dict[str, Any]] = []
+        if transcript_text:
+            # Convert transcript into structured knowledge
+            knowledge_items.extend(extract_intelligent_knowledge(transcript_text, file_name))
+
+        # Always append a processing summary item
+        details = []
+        try:
+            size_mb = len(raw_bytes) / 1024 / 1024
+            details.append(f"size={size_mb:.1f} MB")
+        except Exception:
+            pass
+        if frames_analyzed is not None:
+            details.append(f"frames_analyzed={frames_analyzed}")
+        if source:
+            details.append(f"sources={source}")
+        if warning:
+            details.append(f"warning={warning}")
+
         knowledge_items.append({
-            "Knowledge": "Advanced Video Processing",
+            "Knowledge": "Video Processing Summary",
             "Type": "systems",
-            "Confidence": 0.95,
-            "Category": "Processing Capability",
-            "Description": "Video analysis capabilities include: audio transcription with Whisper AI, scene detection, frame extraction, and speaker diarization for meeting content",
+            "Confidence": 0.9 if transcript_text else 0.6,
+            "Category": "Processing Summary",
+            "Description": "Video processed via audio transcription and/or frame OCR" + (" (" + ", ".join(details) + ")" if details else ""),
             "Source": file_name,
             "Extracted_At": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         })
-        
+
+        # If nothing else was extracted, provide a clear minimal item instead of being empty
+        if not transcript_text and len(knowledge_items) == 1:
+            knowledge_items.insert(0, {
+                "Knowledge": "Video Content",
+                "Type": "concepts",
+                "Confidence": 0.7,
+                "Category": "Media Content",
+                "Description": "No extractable audio or on-screen text detected",
+                "Source": file_name,
+                "Extracted_At": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            })
+
         return knowledge_items
-        
+
     except Exception as e:
+        # Fallback to basic filename heuristic if processing fails
+        try:
+            size_mb = len(uploaded_file.read()) / 1024 / 1024
+        except Exception:
+            size_mb = None
+        finally:
+            try:
+                uploaded_file.seek(0)
+            except Exception:
+                pass
+
+        description = f"Video processing failed: {str(e)}"
+        if size_mb is not None:
+            description += f" (size={size_mb:.1f} MB)"
         return [{
-            "Knowledge": f"Video Processing Error",
+            "Knowledge": "Video Processing Error",
             "Type": "systems",
             "Confidence": 0.3,
             "Category": "Processing Error",
-            "Description": f"Error processing video: {str(e)}",
+            "Description": description[:500],
             "Source": file_name,
             "Extracted_At": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }]
+    finally:
+        # Cleanup temp file if created
+        if temp_path and os.path.exists(temp_path):
+            try:
+                os.remove(temp_path)
+            except Exception:
+                pass
 
 def extract_knowledge_from_audio(uploaded_file, file_name):
     """Extract knowledge from audio files using intelligent analysis"""
