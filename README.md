@@ -1,145 +1,185 @@
 # 🧠 EXPLAINIUM - Advanced AI-Powered Knowledge Extraction System
 
-EXPLAINIUM has been transformed from a basic entity extraction system into a sophisticated, AI-powered knowledge processing platform that extracts deep, meaningful insights from company documents and tacit knowledge.
+EXPLAINIUM is a sophisticated, AI-powered knowledge processing platform that extracts deep, meaningful insights from documents, images, videos, and audio files using advanced local AI models.
+
+## ⚡ Quick Start (First Time Setup)
+
+### **🎯 For Absolute Beginners**
+```bash
+# 1. Open Terminal (Applications > Utilities > Terminal)
+
+# 2. Clone the repository
+git clone <repository-url>
+cd explainium-2.0
+
+# 3. Run automated setup (takes 5-10 minutes)
+chmod +x setup.sh && ./setup.sh
+
+# 4. Start the application
+./start.sh
+```
+
+### **🚀 Launch Application**
+```bash
+./start.sh
+```
+
+**🎉 Success!** Your system is now running at:
+- 🎨 **Main Interface**: http://localhost:8501 ← **Click here to start!**
+- 🔧 **API Backend**: http://localhost:8000
+- 📚 **API Docs**: http://localhost:8000/docs
+
+### **📱 First Steps**
+1. **Open** http://localhost:8501 in your browser
+2. **Upload** any file (PDF, image, video, audio)
+3. **Click** the processing button
+4. **Watch** AI extract knowledge automatically!
+5. **Explore** the results in the interactive table
+
+---
 
 ## 🚀 Key Features
 
-### **Deep Knowledge Extraction**
-- **Multi-pass AI Analysis**: Uses local LLMs (Mistral-7B, Phi-2, TinyLlama) for comprehensive understanding
-- **Contextual Processing**: Understands document purpose, business context, and domain-specific patterns
-- **Tacit Knowledge Discovery**: Identifies implicit workflows, organizational structures, and unstated operational patterns
-- **Operational Intelligence**: Extracts SOPs, decision criteria, compliance requirements, and risk factors
+### **Multi-Modal AI Processing**
+- **📄 Documents**: PDF, TXT, DOCX with deep text analysis
+- **🖼️ Images**: JPG, PNG, GIF with OCR and visual analysis
+- **🎥 Videos**: MP4, AVI, MOV with scene detection
+- **🎵 Audio**: MP3, WAV, FLAC with speech-to-text transcription
 
 ### **Advanced AI Models**
-- **Primary LLM**: Mistral-7B-Instruct-v0.2 (4-bit quantized for 16GB RAM)
-- **Embeddings**: BAAI/bge-small-en-v1.5 for semantic search
-- **Document Understanding**: Microsoft LayoutLMv3 for structured documents
-- **Vision**: Salesforce BLIP for image understanding
-- **Audio**: Whisper + Pyannote for transcription and speaker diarization
+- **🧠 Primary LLM**: Mistral-7B-Instruct-v0.2 (4-bit quantized)
+- **🔍 Embeddings**: BAAI/bge-small-en-v1.5 for semantic search
+- **👁️ Computer Vision**: OCR and image analysis
+- **🎤 Speech Processing**: Whisper AI for audio transcription
 
-### **Knowledge Graph Architecture**
-- **In-Memory Graph**: Neo4jLiteGraph for interconnected knowledge representation
-- **Node Types**: Concepts, People, Processes, Systems, Requirements, Risks
-- **Relationship Types**: Dependencies, Workflows, Hierarchies, Associations
-- **Real-time Updates**: Dynamic graph building as new knowledge is extracted
+### **Knowledge Types Extracted**
+- **💡 Concepts**: Key ideas and terminology
+- **⚙️ Processes**: Workflows and procedures
+- **🖥️ Systems**: Technical components and tools
+- **📋 Requirements**: Rules and compliance needs
+- **👥 People**: Roles and responsibilities
+- **⚠️ Risks**: Potential issues and hazards
 
-### **Apple M4 Optimization**
-- **Metal Acceleration**: Leverages Apple Silicon neural engine
-- **Memory Management**: 4-bit quantization, dynamic batching, lazy loading
-- **Performance Monitoring**: Real-time RAM usage and processing speed tracking
-- **Hardware Profiles**: Automatic detection and optimization for 16GB/32GB configurations
+### **Apple Silicon Optimization**
+- **🚀 Metal Acceleration**: Leverages Apple M4 neural engine
+- **💾 Memory Management**: 4-bit quantization for 16GB+ RAM
+- **⚡ Performance**: Real-time processing with hardware optimization
 
 ## 🏗️ System Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    EXPLAINIUM System                       │
+│                 🧠 EXPLAINIUM System                       │
 ├─────────────────────────────────────────────────────────────┤
-│  Frontend Layer                                            │
-│  ├── Knowledge Table (Streamlit)                          │
-│  ├── Interactive Visualizations                           │
-│  └── Export & Documentation                               │
+│  🎨 Frontend (Streamlit)                                   │
+│  ├── Multi-Modal File Upload                              │
+│  ├── Real-Time Knowledge Table                            │
+│  ├── Interactive Analytics & Charts                       │
+│  └── Export & Filtering                                   │
 ├─────────────────────────────────────────────────────────────┤
-│  Processing Layer                                          │
-│  ├── Advanced Knowledge Engine                            │
-│  ├── Intelligent Document Processor                       │
-│  └── Multi-modal Content Handler                          │
+│  🔧 Backend API (FastAPI)                                  │
+│  ├── Document Processing Pipeline                         │
+│  ├── Multi-Modal Content Handler                          │
+│  └── Knowledge Storage & Retrieval                        │
 ├─────────────────────────────────────────────────────────────┤
-│  AI Model Layer                                            │
-│  ├── Local LLMs (Mistral-7B, Phi-2, TinyLlama)           │
-│  ├── Embedding Models (BGE-small)                         │
-│  ├── Vision Models (BLIP)                                 │
-│  └── Audio Models (Whisper + Pyannote)                    │
+│  🤖 AI Processing Layer                                    │
+│  ├── Mistral-7B LLM (Text Understanding)                  │
+│  ├── BGE Embeddings (Semantic Search)                     │
+│  ├── OCR Engine (Image Text Extraction)                   │
+│  └── Whisper AI (Audio Transcription)                     │
 ├─────────────────────────────────────────────────────────────┤
-│  Knowledge Layer                                           │
-│  ├── Neo4jLiteGraph                                       │
-│  ├── Semantic Search                                       │
-│  └── Relationship Mapping                                  │
-├─────────────────────────────────────────────────────────────┤
-│  Optimization Layer                                        │
-│  ├── Model Caching (DiskCache)                            │
-│  ├── M4-specific Optimizations                            │
-│  ├── Streaming Processing                                 │
-│  └── Performance Monitoring                                │
+│  💾 Data Layer                                             │
+│  ├── SQLite Database (Development)                        │
+│  ├── Session State (Real-time)                            │
+│  └── File Storage (Uploads)                               │
 └─────────────────────────────────────────────────────────────┘
 ```
 
-## 📋 Requirements
+## 📋 System Requirements
 
-### **Hardware Requirements**
-- **Minimum**: Apple M4 Mac with 16GB RAM
-- **Recommended**: Apple M4 Mac with 32GB RAM
-- **Storage**: 10GB+ for models and cache
-- **Network**: Internet connection for initial model download
+### **Hardware (Recommended)**
+- **💻 System**: Apple M4 Mac (or compatible)
+- **🧠 RAM**: 16GB+ (32GB recommended)
+- **� Storrage**: 10GB+ free space
+- **🌐 Network**: Internet (for initial setup)
 
-### **Software Requirements**
-- **OS**: macOS 14.0+ (optimized for Apple Silicon)
-- **Python**: 3.9+
-- **RAM**: 16GB+ available for processing
-- **GPU**: Apple Metal support (automatic)
+### **Software**
+- **🍎 OS**: macOS 14.0+ (Apple Silicon optimized)
+- **🐍 Python**: 3.9+ (automatically installed)
+- **⚡ Metal**: Apple GPU acceleration (automatic)
 
-## 🛠️ Installation
+## 🛠️ Installation & Setup
 
-### **1. Clone the Repository**
+### **Method 1: Automated Setup (Recommended)**
 ```bash
+# Clone repository
 git clone <repository-url>
-cd explainium
+cd explainium-2.0
+
+# One-command setup (handles everything)
+chmod +x setup.sh && ./setup.sh
+
+# Start application
+./start.sh
 ```
 
-### **2. Create Virtual Environment**
+### **Method 2: Manual Setup**
 ```bash
-python -m venv venv
-source venv/bin/activate  # On macOS/Linux
-# or
-venv\Scripts\activate  # On Windows
-```
+# 1. Clone and navigate
+git clone <repository-url>
+cd explainium-2.0
 
-### **3. Install Dependencies**
-```bash
+# 2. Create virtual environment
+python3 -m venv venv
+source venv/bin/activate
+
+# 3. Install dependencies
 pip install -r requirements.txt
+
+# 4. Create directories
+mkdir -p uploaded_files logs models
+
+# 5. Start services
+./start.sh
 ```
 
-### **4. Download AI Models**
+### **🚀 Quick Commands**
 ```bash
-python scripts/model_manager.py --action setup
+./start.sh    # Start both frontend and backend
+./stop.sh     # Stop all services
+./setup.sh    # Run full setup (first time only)
 ```
 
-### **5. Run the System**
+## 🎯 Usage Guide
+
+### **1. Start the System**
 ```bash
-# Start the knowledge table frontend
-streamlit run src/frontend/knowledge_table.py
-
-# Or run the main processor
-python -m src.processors.processor
+./start.sh
 ```
+- 🎨 **Frontend**: http://localhost:8501
+- 🔧 **Backend**: http://localhost:8000
 
-## 🔧 Configuration
+### **2. Upload Files**
+- **📄 Documents**: PDF, TXT, DOCX
+- **🖼️ Images**: JPG, PNG, GIF, BMP, TIFF  
+- **🎥 Videos**: MP4, AVI, MOV, MKV
+- **🎵 Audio**: MP3, WAV, FLAC
 
-### **AI Model Configuration**
-The system automatically detects your hardware profile and configures models accordingly:
+### **3. Extract Knowledge**
+1. Click "Choose a file" in the sidebar
+2. Select your file (any supported format)
+3. Click the processing button (🔍/🎬/🎤/🚀)
+4. Watch AI extract knowledge in real-time!
 
-```python
-# M4 16GB Profile
-llm_model: "TheBloke/Mistral-7B-Instruct-v0.2-GGUF"
-quantization: "Q4_K_M"
-max_ram: "4GB"
+### **4. Analyze Results**
+- **📊 Table**: View extracted knowledge items
+- **📈 Charts**: See distribution and analytics
+- **🔍 Filter**: By type, confidence, search terms
+- **📥 Export**: Download results as CSV
 
-# M4 32GB Profile  
-llm_model: "TheBloke/Mistral-7B-Instruct-v0.2-GGUF"
-quantization: "Q5_K_M"
-max_ram: "8GB"
-```
-
-### **Performance Tuning**
-```python
-# src/core/config.py
-@dataclass
-class AIConfig:
-    batch_size: int = 4  # Optimized for 16GB RAM
-    chunk_size: int = 512
-    chunk_overlap: int = 50
-    use_gpu: bool = True  # Apple Metal acceleration
-    quantization: str = "4bit"
+### **5. Stop the System**
+```bash
+./stop.sh
 ```
 
 ## 📚 Usage Examples
@@ -246,28 +286,64 @@ python scripts/model_manager.py --action setup --hardware-profile m4_16gb
 python scripts/model_manager.py --action cleanup --model-type llm
 ```
 
-## 🧪 Testing
+## 🔧 Troubleshooting
 
-### **Run Test Suite**
+### **Common Issues & Solutions**
+
+#### **🚫 "Command not found" errors**
 ```bash
-# Install test dependencies
-pip install pytest pytest-asyncio
-
-# Run all tests
-pytest tests/ -v
-
-# Run specific test file
-pytest tests/test_advanced_knowledge_engine.py -v
-
-# Run with coverage
-pytest tests/ --cov=src --cov-report=html
+# Make scripts executable
+chmod +x setup.sh start.sh stop.sh
 ```
 
-### **Test Coverage**
-- **Unit Tests**: Individual component testing
-- **Integration Tests**: End-to-end workflow testing
-- **Performance Tests**: Memory usage and speed validation
-- **Model Tests**: AI model functionality validation
+#### **🐍 Python/pip issues**
+```bash
+# Ensure Python 3.9+ is installed
+python3 --version
+
+# Reinstall dependencies
+rm -rf venv
+./setup.sh
+```
+
+#### **🧠 AI models not loading**
+```bash
+# Clear model cache and restart
+rm -rf models/
+./stop.sh && ./start.sh
+```
+
+#### **🔌 Port already in use**
+```bash
+# Kill existing processes
+./stop.sh
+# Or manually kill processes
+pkill -f streamlit
+pkill -f uvicorn
+```
+
+#### **💾 Low memory issues**
+- Close other applications
+- Restart your Mac
+- Ensure 16GB+ RAM available
+
+#### **🌐 Can't access web interface**
+- Check if services are running: `ps aux | grep streamlit`
+- Try different browser or incognito mode
+- Restart services: `./stop.sh && ./start.sh`
+
+### **📊 System Status Check**
+```bash
+# Check if services are running
+ps aux | grep -E "(streamlit|uvicorn)"
+
+# Check ports
+lsof -i :8501  # Frontend
+lsof -i :8000  # Backend
+
+# Check logs
+tail -f logs/*.log
+```
 
 ## 📈 Performance Metrics
 
@@ -366,40 +442,3 @@ monitor = PerformanceMonitor()
 print(monitor.get_system_status())
 ```
 
-## 🤝 Contributing
-
-### **Development Setup**
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests for new functionality
-5. Submit a pull request
-
-### **Code Standards**
-- Follow PEP 8 style guidelines
-- Add type hints for all functions
-- Include docstrings for all classes and methods
-- Write comprehensive tests
-- Update documentation for API changes
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **Mistral AI** for the Mistral-7B model
-- **Microsoft** for Phi-2 and LayoutLMv3
-- **BAAI** for the BGE embedding models
-- **Salesforce** for BLIP vision models
-- **Apple** for Metal Performance Shaders
-
-## 📞 Support
-
-- **Issues**: [GitHub Issues](https://github.com/your-repo/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/your-repo/discussions)
-- **Documentation**: [Wiki](https://github.com/your-repo/wiki)
-
----
-
-**EXPLAINIUM** - Transforming document understanding through advanced AI and deep knowledge extraction. 🧠✨
