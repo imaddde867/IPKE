@@ -38,14 +38,14 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🧠 EXPLAINIUM</h1>
+            <h1>EXPLAINIUM</h1>
             <p>Enterprise Knowledge Extraction System</p>
         </div>
 
         <div class="upload-section">
             <h2>Upload Documents</h2>
             <div class="upload-area" id="uploadArea">
-                <p>📄 Drag and drop files here or click to select</p>
+                <p>Drag and drop files here or click to select</p>
                 <p class="file-types">Supports: PDF, DOCX, PPTX, TXT, MP4, AVI, MOV, MKV, JPG, PNG</p>
                 <input type="file" id="fileInput" multiple accept=".pdf,.txt,.docx,.pptx,.mp4,.avi,.mov,.mkv,.jpg,.jpeg,.png" style="display: none;">
                 <button class="btn" onclick="document.getElementById('fileInput').click()">Select Files</button>
@@ -56,7 +56,7 @@
         <div class="documents-section">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h2>Processed Documents</h2>
-                <button class="btn" onclick="loadDocuments()">🔄 Refresh</button>
+                <button class="btn" onclick="loadDocuments()">Refresh</button>
             </div>
             <div id="documentsContainer">
                 <div class="loading">Loading documents...</div>
@@ -109,7 +109,7 @@
             formData.append('file', file);
 
             const statusDiv = document.getElementById('uploadStatus');
-            statusDiv.innerHTML = `<div class="status processing">📤 Uploading ${file.name}...</div>`;
+            statusDiv.innerHTML = `<div class="status processing">Uploading ${file.name}...</div>`;
 
             try {
                 const response = await fetch(`${API_BASE}/uploadfile/`, {
@@ -126,12 +126,12 @@
                         startTime: Date.now()
                     });
                     
-                    statusDiv.innerHTML = `<div class="status processing">⚙️ Processing ${file.name}... <div class="progress-bar"><div class="progress-fill" style="width: 10%"></div></div></div>`;
+                    statusDiv.innerHTML = `<div class="status processing">Processing ${file.name}... <div class="progress-bar"><div class="progress-fill" style="width: 10%"></div></div></div>`;
                 } else {
-                    statusDiv.innerHTML = `<div class="status error">❌ Upload failed: ${result.detail || 'Unknown error'}</div>`;
+                    statusDiv.innerHTML = `<div class="status error">Upload failed: ${result.detail || 'Unknown error'}</div>`;
                 }
             } catch (error) {
-                statusDiv.innerHTML = `<div class="status error">❌ Upload failed: ${error.message}</div>`;
+                statusDiv.innerHTML = `<div class="status error">Upload failed: ${error.message}</div>`;
             }
         }
 
@@ -147,7 +147,7 @@
                     const elapsed = (Date.now() - task.startTime) / 1000;
                     const progress = Math.min(90, 10 + elapsed * 2); // Simulate progress
                     
-                    statusDiv.innerHTML = `<div class="status processing">⚙️ Processing ${task.filename}... (${elapsed.toFixed(0)}s) <div class="progress-bar"><div class="progress-fill" style="width: ${progress}%"></div></div></div>`;
+                    statusDiv.innerHTML = `<div class="status processing">Processing ${task.filename}... (${elapsed.toFixed(0)}s) <div class="progress-bar"><div class="progress-fill" style="width: ${progress}%"></div></div></div>`;
                 }
             }
 
@@ -164,7 +164,7 @@
                     // If document was processed in the last 10 seconds, consider it newly completed
                     if ((now - docTime) < 10000) {
                         uploadTasks.clear();
-                        statusDiv.innerHTML = `<div class="status success">✅ Document processed successfully!</div>`;
+                        statusDiv.innerHTML = `<div class="status success">Document processed successfully!</div>`;
                         setTimeout(() => {
                             statusDiv.innerHTML = '';
                             loadDocuments();
@@ -198,7 +198,7 @@
                     `;
                 }
             } catch (error) {
-                container.innerHTML = `<div class="status error">❌ Failed to load documents: ${error.message}</div>`;
+                container.innerHTML = `<div class="status error">Failed to load documents: ${error.message}</div>`;
             }
         }
 
@@ -207,10 +207,10 @@
                 <div class="document-card" id="doc-${doc.id}">
                     <div class="document-header">
                         <div>
-                            <div class="document-title">📄 ${doc.filename}</div>
+                            <div class="document-title">${doc.filename}</div>
                             <div class="document-meta">
-                                ${doc.classification_category} • 
-                                ${new Date(doc.processing_timestamp).toLocaleString()} • 
+                                ${doc.classification_category} | 
+                                ${new Date(doc.processing_timestamp).toLocaleString()} | 
                                 ${doc.extracted_text.length} chars
                             </div>
                         </div>
@@ -229,11 +229,11 @@
             try {
                 // Load different types of knowledge data
                 const endpoints = [
-                    { type: 'Equipment', url: `/documents/${docId}/equipment/`, icon: '⚙️' },
-                    { type: 'Procedures', url: `/documents/${docId}/procedures/`, icon: '📋' },
-                    { type: 'Safety Info', url: `/documents/${docId}/safety_info/`, icon: '⚠️' },
-                    { type: 'Technical Specs', url: `/documents/${docId}/technical_specs/`, icon: '📊' },
-                    { type: 'Personnel', url: `/documents/${docId}/personnel/`, icon: '👤' }
+                    { type: 'Equipment', url: `/documents/${docId}/equipment/` },
+                    { type: 'Procedures', url: `/documents/${docId}/procedures/` },
+                    { type: 'Safety Info', url: `/documents/${docId}/safety_info/` },
+                    { type: 'Technical Specs', url: `/documents/${docId}/technical_specs/` },
+                    { type: 'Personnel', url: `/documents/${docId}/personnel/` }
                 ];
 
                 for (const endpoint of endpoints) {
@@ -245,7 +245,6 @@
                                 data.forEach(item => {
                                     knowledgeItems.push({
                                         type: endpoint.type,
-                                        icon: endpoint.icon,
                                         name: item.name || item.title || item.parameter || item.hazard || 'Unknown',
                                         details: formatDetails(item, endpoint.type),
                                         confidence: item.confidence
@@ -261,10 +260,10 @@
                 if (knowledgeItems.length > 0) {
                     container.innerHTML = knowledgeItems.map(item => `
                         <div class="knowledge-item">
-                            <div class="knowledge-type">${item.icon} ${item.type}</div>
+                            <div class="knowledge-type">${item.type}</div>
                             <div class="knowledge-name">${item.name}</div>
                             <div class="knowledge-details">${item.details}</div>
-                            ${item.confidence ? `<div style="font-size: 0.8em; color: #28a745;">Confidence: ${(item.confidence * 100).toFixed(0)}%</div>` : ''}
+                            ${item.confidence ? `<div style=\"font-size: 0.8em; color: #28a745;\">Confidence: ${(item.confidence * 100).toFixed(0)}%</div>` : ''}
                         </div>
                     `).join('');
                 } else {
@@ -286,15 +285,15 @@
                             .replace(/\b\w/g, l => l.toUpperCase())
                             .trim();
                     };
-                    return Object.entries(specs).map(([key, value]) => `• ${formatKey(key)}: ${value}`).join('\n') || 'No specifications';
+                    return Object.entries(specs).map(([key, value]) => `- ${formatKey(key)}: ${value}`).join('\n') || 'No specifications';
                 case 'Procedures':
-                    return `${item.steps?.length || 0} steps • ${item.category || 'General'}`;
+                    return `${item.steps?.length || 0} steps - ${item.category || 'General'}`;
                 case 'Safety Info':
-                    return `${item.precaution || 'See document'} • PPE: ${item.ppe_required || 'Not specified'}`;
+                    return `${item.precaution || 'See document'} - PPE: ${item.ppe_required || 'Not specified'}`;
                 case 'Technical Specs':
-                    return `${item.value} ${item.unit || ''} ${item.tolerance ? `(±${item.tolerance})` : ''}`;
+                    return `${item.value} ${item.unit || ''} ${item.tolerance ? `(+/-${item.tolerance})` : ''}`;
                 case 'Personnel':
-                    return `${item.role || 'Unknown role'} • ${item.certifications?.join(', ') || 'No certifications'}`;
+                    return `${item.role || 'Unknown role'} - ${item.certifications?.join(', ') || 'No certifications'}`;
                 default:
                     return 'Details available in document';
             }
