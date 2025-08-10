@@ -19,15 +19,34 @@ from pydantic import BaseModel, Field
 from sqlalchemy.orm import Session
 
 # Internal imports
-from src.database.database import get_db, init_db
-from src.database import models, crud
-# Updated import: consolidated processor lives in processors/processor.py
-from src.processors.processor import DocumentProcessor
-from src.api.celery_worker import process_document_task, get_task_status
-from src.middleware import ErrorHandlingMiddleware, RequestLoggingMiddleware
-from src.logging_config import get_logger
-from src.core.config import config as config_manager
-from src.exceptions import ProcessingError, ValidationError
+import sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+try:
+    from database.database import get_db, init_db
+    from database import models, crud
+    from processors.processor import DocumentProcessor
+    from api.celery_worker import process_document_task, get_task_status
+    from middleware import ErrorHandlingMiddleware, RequestLoggingMiddleware
+    from logging_config import get_logger
+    from core.config import config as config_manager
+    from exceptions import ProcessingError, ValidationError
+except ImportError as e:
+    print(f"Import error: {e}")
+    # Create minimal fallbacks
+    def get_db(): pass
+    def init_db(): pass
+    models = None
+    crud = None
+    DocumentProcessor = None
+    process_document_task = None
+    get_task_status = None
+    ErrorHandlingMiddleware = None
+    RequestLoggingMiddleware = None
+    def get_logger(name): return logging.getLogger(name)
+    config_manager = None
+    ProcessingError = Exception
+    ValidationError = Exception
 
 logger = get_logger(__name__)
 

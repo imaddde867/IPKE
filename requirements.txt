@@ -2,8 +2,8 @@ torch
 torchvision
 torchaudio
 
-transformers==4.36.0
-sentence-transformers==2.2.2
+transformers>=4.40.0
+sentence-transformers>=2.7.0
 accelerate==0.25.0
 bitsandbytes; platform_system == 'Linux'
 datasets
@@ -28,3 +28,8 @@ uvicorn[standard]
 sqlalchemy
 python-multipart
 aiofiles
+celery[redis]
+streamlit
+alembic
+psycopg2-binary
+diskcache

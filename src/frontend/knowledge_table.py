@@ -15,8 +15,19 @@ from datetime import datetime
 import io
 
 # Internal imports
-from src.export.knowledge_export import KnowledgeExporter
-from src.ai.advanced_knowledge_engine import AdvancedKnowledgeEngine
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+try:
+    from export.knowledge_export import KnowledgeExporter
+    from ai.advanced_knowledge_engine import AdvancedKnowledgeEngine
+    from core.config import AIConfig
+except ImportError:
+    # Fallback for when modules aren't available
+    KnowledgeExporter = None
+    AdvancedKnowledgeEngine = None
+    AIConfig = None
 
 
 class KnowledgeTableFrontend:
@@ -527,31 +538,282 @@ class KnowledgeTableFrontend:
 
 def main():
     """Main function to run the knowledge table frontend"""
+    st.set_page_config(
+        page_title="EXPLAINIUM Knowledge Table",
+        page_icon="🧠",
+        layout="wide",
+        initial_sidebar_state="expanded"
+    )
+    
     st.title("🧠 EXPLAINIUM Knowledge Table")
-    st.info("This is a standalone component. Integrate with your knowledge engine to display data.")
+    st.markdown("**Deep Knowledge Extraction & Analysis Dashboard**")
     
-    # Placeholder for demonstration
-    st.write("""
-    ## Features
+    # Check if we have the full system available
+    if AdvancedKnowledgeEngine is None or AIConfig is None:
+        st.warning("⚠️ Running in demo mode - full AI engine not available")
+        demo_mode()
+    else:
+        # Initialize with proper config
+        try:
+            config = AIConfig()
+            knowledge_engine = AdvancedKnowledgeEngine(config)
+            frontend = KnowledgeTableFrontend(knowledge_engine)
+            frontend.render_knowledge_table()
+        except Exception as e:
+            st.error(f"Error initializing knowledge engine: {e}")
+            st.info("Falling back to demo mode...")
+            demo_mode()
+
+def demo_mode():
+    """Run the app in demo mode with mock data"""
+    # Sidebar controls
+    with st.sidebar:
+        st.header("📊 Demo Controls")
+        
+        # Knowledge type filter
+        knowledge_types = st.multiselect(
+            "Knowledge Types",
+            ["concepts", "processes", "systems", "requirements", "people", "risks"],
+            default=["concepts", "processes", "systems"]
+        )
+        
+        # Confidence filter
+        confidence_range = st.slider(
+            "Confidence Range",
+            min_value=0.0,
+            max_value=1.0,
+            value=(0.5, 1.0),
+            step=0.1
+        )
+        
+        # Date range
+        date_range = st.date_input(
+            "Date Range",
+            value=[datetime.now().date()],
+            help="Filter by extraction date"
+        )
+        
+        # Search
+        search_term = st.text_input("🔍 Search Knowledge", placeholder="Enter search term...")
+        
+        # Export options
+        st.subheader("📥 Export Options")
+        export_format = st.selectbox("Format", ["CSV", "JSON", "Markdown"])
+        
+        if st.button("📥 Export Data"):
+            mock_data = generate_mock_data()
+            df = pd.DataFrame(mock_data)
+            
+            if export_format == "CSV":
+                csv = df.to_csv(index=False)
+                st.download_button(
+                    "Download CSV",
+                    csv,
+                    f"knowledge_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                    "text/csv"
+                )
+            elif export_format == "JSON":
+                json_str = df.to_json(orient='records', indent=2)
+                st.download_button(
+                    "Download JSON",
+                    json_str,
+                    f"knowledge_export_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json",
+                    "application/json"
+                )
     
-    - **Large Knowledge Table**: Display all extracted knowledge in a searchable, filterable table
-    - **Advanced Filtering**: Filter by type, confidence, date range, and search terms
-    - **Visual Analytics**: Charts and graphs showing knowledge distribution and trends
-    - **Knowledge Graph**: Interactive network visualization of relationships
-    - **Export Capabilities**: Export data in multiple formats (CSV, JSON, Markdown)
-    - **Real-time Updates**: Live updates as new knowledge is extracted
+    # Main content
+    col1, col2 = st.columns([3, 1])
     
-    ## Integration
+    with col1:
+        st.header("📊 Knowledge Table")
+        
+        # Generate and display mock data
+        mock_data = generate_mock_data()
+        df = pd.DataFrame(mock_data)
+        
+        # Apply filters
+        if knowledge_types:
+            df = df[df['Type'].isin(knowledge_types)]
+        
+        df = df[
+            (df['Confidence'] >= confidence_range[0]) & 
+            (df['Confidence'] <= confidence_range[1])
+        ]
+        
+        if search_term:
+            df = df[df['Knowledge'].str.contains(search_term, case=False, na=False)]
+        
+        # Display table
+        st.dataframe(
+            df,
+            use_container_width=True,
+            hide_index=True,
+            column_config={
+                "Confidence": st.column_config.ProgressColumn(
+                    "Confidence",
+                    help="Extraction confidence score",
+                    min_value=0,
+                    max_value=1,
+                ),
+                "Type": st.column_config.SelectboxColumn(
+                    "Type",
+                    help="Knowledge type",
+                    options=["concepts", "processes", "systems", "requirements", "people", "risks"]
+                )
+            }
+        )
+        
+        # Statistics
+        st.subheader("📈 Statistics")
+        col_a, col_b, col_c, col_d = st.columns(4)
+        
+        with col_a:
+            st.metric("Total Items", len(df))
+        with col_b:
+            st.metric("Avg Confidence", f"{df['Confidence'].mean():.2f}" if not df.empty else "0.00")
+        with col_c:
+            st.metric("Types", df['Type'].nunique() if not df.empty else 0)
+        with col_d:
+            st.metric("High Confidence", len(df[df['Confidence'] > 0.8]) if not df.empty else 0)
     
-    To use this component, initialize it with your `AdvancedKnowledgeEngine`:
-    
-    ```python
-    from src.frontend.knowledge_table import KnowledgeTableFrontend
-    
-    frontend = KnowledgeTableFrontend(knowledge_engine)
-    frontend.render_knowledge_table()
-    ```
-    """)
+    with col2:
+        st.header("📈 Analytics")
+        
+        if not df.empty:
+            # Type distribution
+            type_counts = df['Type'].value_counts()
+            fig = px.pie(
+                values=type_counts.values,
+                names=type_counts.index,
+                title="Knowledge Type Distribution"
+            )
+            st.plotly_chart(fig, use_container_width=True)
+            
+            # Confidence distribution
+            fig2 = px.histogram(
+                df,
+                x='Confidence',
+                title="Confidence Distribution",
+                nbins=10
+            )
+            st.plotly_chart(fig2, use_container_width=True)
+            
+            # Timeline (mock)
+            timeline_data = pd.DataFrame({
+                'Date': pd.date_range(start='2024-01-01', periods=30, freq='D'),
+                'Extractions': [5, 8, 12, 15, 10, 7, 9, 11, 14, 16, 13, 8, 6, 9, 12, 15, 18, 20, 17, 14, 11, 8, 10, 13, 16, 19, 22, 18, 15, 12]
+            })
+            
+            fig3 = px.line(
+                timeline_data,
+                x='Date',
+                y='Extractions',
+                title="Extraction Timeline"
+            )
+            st.plotly_chart(fig3, use_container_width=True)
+        else:
+            st.info("No data to display with current filters")
+        
+        # System status
+        st.subheader("🔧 System Status")
+        st.success("✅ Frontend: Active")
+        st.warning("⚠️ AI Engine: Demo Mode")
+        st.info("📊 Knowledge Items: " + str(len(df)))
+
+def generate_mock_data():
+    """Generate mock knowledge data for demo"""
+    return [
+        {
+            "Knowledge": "Customer Onboarding Process",
+            "Type": "processes",
+            "Confidence": 0.95,
+            "Category": "Business Process",
+            "Description": "Multi-step workflow for bringing new customers into the system",
+            "Source": "Process Documentation",
+            "Extracted_At": "2024-01-15 10:30:00"
+        },
+        {
+            "Knowledge": "Sales Team",
+            "Type": "people",
+            "Confidence": 0.88,
+            "Category": "Organizational Unit",
+            "Description": "Team responsible for initial customer contact and inquiries",
+            "Source": "Org Chart",
+            "Extracted_At": "2024-01-15 10:31:00"
+        },
+        {
+            "Knowledge": "CRM System",
+            "Type": "systems",
+            "Confidence": 0.92,
+            "Category": "Software System",
+            "Description": "Customer relationship management platform",
+            "Source": "Technical Documentation",
+            "Extracted_At": "2024-01-15 10:32:00"
+        },
+        {
+            "Knowledge": "Data Privacy Compliance",
+            "Type": "requirements",
+            "Confidence": 0.85,
+            "Category": "Legal Requirement",
+            "Description": "Must comply with GDPR and local data protection laws",
+            "Source": "Legal Documentation",
+            "Extracted_At": "2024-01-15 10:33:00"
+        },
+        {
+            "Knowledge": "Technical Complexity Risk",
+            "Type": "risks",
+            "Confidence": 0.78,
+            "Category": "Technical Risk",
+            "Description": "Risk of technical requirements exceeding capabilities",
+            "Source": "Risk Assessment",
+            "Extracted_At": "2024-01-15 10:34:00"
+        },
+        {
+            "Knowledge": "Solution Architecture",
+            "Type": "concepts",
+            "Confidence": 0.82,
+            "Category": "Technical Concept",
+            "Description": "Overall system design and component relationships",
+            "Source": "Architecture Document",
+            "Extracted_At": "2024-01-15 10:35:00"
+        },
+        {
+            "Knowledge": "Quality Assurance Process",
+            "Type": "processes",
+            "Confidence": 0.90,
+            "Category": "Quality Process",
+            "Description": "Systematic approach to ensuring product quality",
+            "Source": "QA Manual",
+            "Extracted_At": "2024-01-15 10:36:00"
+        },
+        {
+            "Knowledge": "Development Team",
+            "Type": "people",
+            "Confidence": 0.87,
+            "Category": "Technical Team",
+            "Description": "Software development and engineering team",
+            "Source": "Team Directory",
+            "Extracted_At": "2024-01-15 10:37:00"
+        },
+        {
+            "Knowledge": "Database System",
+            "Type": "systems",
+            "Confidence": 0.94,
+            "Category": "Data System",
+            "Description": "Primary data storage and management system",
+            "Source": "System Architecture",
+            "Extracted_At": "2024-01-15 10:38:00"
+        },
+        {
+            "Knowledge": "Security Requirements",
+            "Type": "requirements",
+            "Confidence": 0.91,
+            "Category": "Security Requirement",
+            "Description": "System security and access control requirements",
+            "Source": "Security Policy",
+            "Extracted_At": "2024-01-15 10:39:00"
+        }
+    ]
 
 
 if __name__ == "__main__":

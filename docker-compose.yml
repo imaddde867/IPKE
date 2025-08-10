@@ -41,6 +41,7 @@ services:
   # Apache Tika Server (Document Processing)
   tika:
     image: apache/tika:2.9.1.0
+    platform: linux/amd64
     container_name: explainium_tika
     ports:
       - "9998:9998"

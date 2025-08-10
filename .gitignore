@@ -104,4 +104,14 @@ dist/
 
 # Temporary files
 *.tmp
-*.tempmodels/llm/Mistral-7B-Instruct-v0.2-GGUF/*.gguf
+*.temp
+
+# Large local model weights (do not commit)
+models/llm/Mistral-7B-Instruct-v0.2-GGUF/
+models/llm/phi-2/
+models/audio/
+models/embeddings/
+models/vision/
+# Individual large model artifacts
+models/**/*.gguf
+
