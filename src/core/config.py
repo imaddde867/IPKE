@@ -92,6 +92,10 @@ class AIConfig:
     clip_model: str = "openai/clip-vit-base-patch32"
     enable_layout_detection: bool = True  # simple OpenCV-based layout block detection
     enable_speaker_diarization: bool = False  # optional unsupervised diarization
+    # Local LLM integration (used by AdvancedKnowledgeEngine)
+    quantization: str = "Q4_K_M"  # matches downloaded mistral quantization
+    embedding_model: str = "bge-small"  # shorthand for BAAI/bge-small-en-v1.5
+    llm_path: str = "models/llm/Mistral-7B-Instruct-v0.2-GGUF"  # directory containing .gguf file
 
 
 @dataclass
@@ -206,6 +210,10 @@ class Config:
         self.ai.clip_model = os.getenv("CLIP_MODEL", self.ai.clip_model)
         self.ai.enable_layout_detection = os.getenv("ENABLE_LAYOUT_DETECTION", str(self.ai.enable_layout_detection).lower()).lower() == "true"
         self.ai.enable_speaker_diarization = os.getenv("ENABLE_SPEAKER_DIARIZATION", str(self.ai.enable_speaker_diarization).lower()).lower() == "true"
+    # Local LLM extras
+    self.ai.quantization = os.getenv("LLM_QUANTIZATION", self.ai.quantization)
+    self.ai.embedding_model = os.getenv("EMBEDDING_MODEL", self.ai.embedding_model)
+    self.ai.llm_path = os.getenv("LLM_PATH", self.ai.llm_path)
         
         # API configuration
         self.api.host = os.getenv("API_HOST", self.api.host)
