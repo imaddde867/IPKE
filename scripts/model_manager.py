@@ -44,9 +44,7 @@ class ModelManager:
                 "llm": {
                     "primary": "TheBloke/Mistral-7B-Instruct-v0.2-GGUF",
                     "quantization": "Q4_K_M",
-                    "max_ram": "4GB",
-                    "fallback": "microsoft/phi-2",
-                    "fallback_quantization": "Q4_0"
+                    "max_ram": "4GB"
                 },
                 "embeddings": {
                     "primary": "BAAI/bge-small-en-v1.5",
@@ -89,7 +87,7 @@ class ModelManager:
             logger.warning(f"Could not detect hardware profile: {e}")
             return "m4_16gb"
     
-    async def download_model(self, model_id: str, model_type: str = "llm") -> str:
+    async def download_model(self, model_id: str, model_type: str = "llm", quantization: str = None) -> str:
         """Download a model from Hugging Face"""
         try:
             logger.info(f"Downloading {model_id}...")
@@ -106,8 +104,44 @@ class ModelManager:
             
             # Download using huggingface_hub
             try:
-                from huggingface_hub import snapshot_download
+                from huggingface_hub import hf_hub_download, snapshot_download
                 
+                # For GGUF models, download only the specific quantized file
+                if "GGUF" in model_id and quantization:
+                    # Construct expected GGUF filename (keep provided quantization case)
+                    base_name = model_id.split("/")[-1].replace("-GGUF", "").lower()
+                    gguf_filename = f"{base_name}.{quantization}.gguf"
+
+                    logger.info(f"Attempting minimal download of GGUF file: {gguf_filename}")
+
+                    try:
+                        hf_hub_download(
+                            repo_id=model_id,
+                            filename=gguf_filename,
+                            local_dir=str(model_dir),
+                            local_dir_use_symlinks=False
+                        )
+                        logger.info(f"Downloaded only {gguf_filename} (avoided full snapshot)")
+                        return str(model_dir)
+                    except Exception as e:
+                        logger.warning(f"Exact file download failed ({gguf_filename}): {e}")
+                        logger.info("Falling back to limited snapshot (allow_patterns)")
+                        try:
+                            snapshot_download(
+                                repo_id=model_id,
+                                local_dir=str(model_dir),
+                                local_dir_use_symlinks=False,
+                                allow_patterns=[
+                                    f"*{quantization}.gguf",  # target quantized file
+                                    "*.json", "*.md", "README*", ".gitattributes"
+                                ]
+                            )
+                            logger.info("Limited snapshot downloaded (filtered patterns)")
+                            return str(model_dir)
+                        except Exception as e2:
+                            logger.warning(f"Limited snapshot failed: {e2}; downloading full repo (last resort)")
+                
+                # Final fallback: full snapshot
                 snapshot_download(
                     repo_id=model_id,
                     local_dir=str(model_dir),
@@ -143,6 +177,19 @@ class ModelManager:
         model_extensions = ['.gguf', '.bin', '.safetensors', '.pt', '.pth']
         for ext in model_extensions:
             if any(model_dir.rglob(f"*{ext}")):
+                return True
+        return False
+    
+    def _has_quantized_file(self, model_dir: str, quantization: str) -> bool:
+        """Check if a specific quantized file exists"""
+        model_path = Path(model_dir)
+        if not model_path.exists():
+            return False
+        
+        # Look for files with the quantization in the name
+        quantization_lower = quantization.lower()
+        for file_path in model_path.rglob("*.gguf"):
+            if quantization_lower in file_path.name.lower():
                 return True
         return False
     
@@ -249,12 +296,13 @@ class ModelManager:
             if "llm" in config:
                 llm_config = config["llm"]
                 
-                # Download primary LLM
-                llm_path = await self.download_model(llm_config["primary"], "llm")
+                # Download primary LLM with specific quantization
+                quantization = llm_config.get("quantization")
+                llm_path = await self.download_model(llm_config["primary"], "llm", quantization)
                 
-                # Quantize if needed
-                if "quantization" in llm_config:
-                    llm_path = await self.quantize_model(llm_path, llm_config["quantization"])
+                # Quantize if needed (may not be necessary if we downloaded the right file)
+                if quantization and not self._has_quantized_file(llm_path, quantization):
+                    llm_path = await self.quantize_model(llm_path, quantization)
                 
                 # Optimize for M4
                 m4_config = await self.optimize_for_m4(llm_path)
@@ -265,11 +313,10 @@ class ModelManager:
                 
                 # Download fallback if specified
                 if "fallback" in llm_config:
-                    fallback_path = await self.download_model(llm_config["fallback"], "llm")
-                    if "fallback_quantization" in llm_config:
-                        fallback_path = await self.quantize_model(
-                            fallback_path, llm_config["fallback_quantization"]
-                        )
+                    fallback_quantization = llm_config.get("fallback_quantization")
+                    fallback_path = await self.download_model(llm_config["fallback"], "llm", fallback_quantization)
+                    if fallback_quantization and not self._has_quantized_file(fallback_path, fallback_quantization):
+                        fallback_path = await self.quantize_model(fallback_path, fallback_quantization)
                     setup_results["llm"]["fallback"] = fallback_path
             
             # Download embeddings model

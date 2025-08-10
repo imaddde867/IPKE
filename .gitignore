@@ -104,4 +104,4 @@ dist/
 
 # Temporary files
 *.tmp
-*.temp
+*.tempmodels/llm/Mistral-7B-Instruct-v0.2-GGUF/*.gguf
