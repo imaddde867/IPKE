@@ -21,7 +21,8 @@ from sqlalchemy.orm import Session
 # Internal imports
 from src.database.database import get_db, init_db
 from src.database import models, crud
-from src.processors.document_processor import DocumentProcessor
+# Updated import: consolidated processor lives in processors/processor.py
+from src.processors.processor import DocumentProcessor
 from src.api.celery_worker import process_document_task, get_task_status
 from src.middleware import ErrorHandlingMiddleware, RequestLoggingMiddleware
 from src.logging_config import get_logger
