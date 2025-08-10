@@ -19,10 +19,10 @@ import hashlib
 import requests
 from tqdm import tqdm
 
-# Add src to path for imports
-sys.path.append(str(Path(__file__).parent.parent / "src"))
+# Ensure project root is on sys.path so that `src` package is importable
+sys.path.append(str(Path(__file__).parent.parent))
 
-from src.core.config import config_manager
+from src.core.config import config as config_manager
 from src.core.optimization import ModelOptimizer, DiskCache
 
 # Configure logging
@@ -38,6 +38,7 @@ class ModelManager:
         self.models_dir.mkdir(parents=True, exist_ok=True)
         
         # Model configurations for different hardware profiles
+        # Single unified hardware profile (previous m4_16gb). Former m4_32gb profile removed for simplification.
         self.model_configs = {
             "m4_16gb": {
                 "llm": {
@@ -59,25 +60,6 @@ class ModelManager:
                     "primary": "openai/whisper-base",
                     "max_ram": "1GB"
                 }
-            },
-            "m4_32gb": {
-                "llm": {
-                    "primary": "TheBloke/Mistral-7B-Instruct-v0.2-GGUF",
-                    "quantization": "Q5_K_M",
-                    "max_ram": "8GB"
-                },
-                "embeddings": {
-                    "primary": "BAAI/bge-large-en-v1.5",
-                    "max_ram": "2GB"
-                },
-                "vision": {
-                    "primary": "Salesforce/blip2-opt-2.7b",
-                    "max_ram": "4GB"
-                },
-                "audio": {
-                    "primary": "openai/whisper-large-v3",
-                    "max_ram": "2GB"
-                }
             }
         }
         
@@ -96,10 +78,8 @@ class ModelManager:
                 if platform.machine() == "arm64":
                     # Check available RAM
                     ram_gb = psutil.virtual_memory().total / (1024**3)
-                    if ram_gb >= 32:
-                        return "m4_32gb"
-                    else:
-                        return "m4_16gb"
+                    # Single profile regardless of RAM size
+                    return "m4_16gb"
                 else:
                     return "m4_16gb"  # Intel Mac
             else:
@@ -154,9 +134,17 @@ class ModelManager:
     
     def _model_exists(self, model_dir: Path) -> bool:
         """Check if model files exist"""
-        # Look for common model file extensions
+        if not model_dir.exists() or not model_dir.is_dir():
+            return False
+        # Empty directory -> does not exist for our purposes
+        if not any(model_dir.iterdir()):
+            return False
+        # Look for common model file extensions anywhere inside
         model_extensions = ['.gguf', '.bin', '.safetensors', '.pt', '.pth']
-        return any(model_dir.glob(f"*{ext}") for ext in model_extensions)
+        for ext in model_extensions:
+            if any(model_dir.rglob(f"*{ext}")):
+                return True
+        return False
     
     async def quantize_model(self, model_path: str, quantization: str = "Q4_K_M") -> str:
         """Quantize a model to reduce memory usage"""
@@ -165,17 +153,28 @@ class ModelManager:
             if not model_path.exists():
                 raise FileNotFoundError(f"Model path not found: {model_path}")
             
+            # If a directory is provided, locate a model file inside (prefer .gguf)
+            target_file = model_path
+            if model_path.is_dir():
+                candidates = list(model_path.glob("*.gguf")) or list(model_path.glob("*.bin")) \
+                    or list(model_path.glob("*.safetensors")) or list(model_path.glob("*.pt")) \
+                    or list(model_path.glob("*.pth"))
+                if not candidates:
+                    logger.warning(f"No model file found to quantize in {model_path}, skipping quantization")
+                    return str(model_path)
+                target_file = candidates[0]
+
             # Check if already quantized
-            if quantization in model_path.name:
+            if quantization in target_file.name:
                 logger.info(f"Model already quantized with {quantization}")
-                return str(model_path)
+                return str(target_file)
             
             # Use llama.cpp for quantization
             try:
                 from llama_cpp import Llama
                 
                 # Create quantized model path
-                quantized_path = model_path.parent / f"{model_path.stem}_{quantization}.gguf"
+                quantized_path = target_file.parent / f"{target_file.stem}_{quantization}.gguf"
                 
                 if quantized_path.exists():
                     logger.info(f"Quantized model already exists: {quantized_path}")
@@ -186,14 +185,14 @@ class ModelManager:
                 
                 # This is a placeholder - actual quantization would use llama.cpp tools
                 # For now, we'll just copy the model and rename it
-                shutil.copy2(model_path, quantized_path)
+                shutil.copy2(target_file, quantized_path)
                 
                 logger.info(f"Model quantized and saved to {quantized_path}")
                 return str(quantized_path)
                 
             except ImportError:
                 logger.warning("llama-cpp-python not available, skipping quantization")
-                return str(model_path)
+                return str(target_file)
                 
         except Exception as e:
             logger.error(f"Failed to quantize model: {e}")
@@ -208,14 +207,16 @@ class ModelManager:
             optimizations = await self.optimizer.optimize_for_m4()
             
             # Apply optimizations
+            # Our optimizer returns a list of applied optimizations; use sensible defaults
             optimized_config = {
                 "model_path": model_path,
                 "metal_layers": -1,  # Use all Metal layers
-                "threads": optimizations.get("optimal_threads", 8),
-                "batch_size": optimizations.get("optimal_batch_size", 4),
-                "context_length": optimizations.get("optimal_context_length", 4096),
-                "memory_settings": optimizations.get("memory_settings", {}),
-                "quantization": optimizations.get("recommended_quantization", "Q4_K_M")
+                "threads": 8,
+                "batch_size": 4,
+                "context_length": 4096,
+                "memory_settings": {},
+                "quantization": "Q4_K_M",
+                "applied": optimizations,
             }
             
             # Save optimization config
@@ -441,8 +442,9 @@ async def main():
     parser = argparse.ArgumentParser(description="EXPLAINIUM Model Manager")
     parser.add_argument("--action", choices=["setup", "list", "validate", "cleanup"], 
                        default="setup", help="Action to perform")
-    parser.add_argument("--hardware-profile", choices=["m4_16gb", "m4_32gb"], 
-                       help="Hardware profile to use")
+    # Hardware profile argument kept for compatibility; only one option now
+    parser.add_argument("--hardware-profile", choices=["m4_16gb"], 
+                       help="Hardware profile to use (only m4_16gb available)")
     parser.add_argument("--models-dir", default="./models", 
                        help="Directory to store models")
     parser.add_argument("--model-type", help="Specific model type for cleanup")

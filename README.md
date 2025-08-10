@@ -239,8 +239,8 @@ python scripts/model_manager.py --action cleanup
 
 ### **Manual Model Management**
 ```bash
-# Setup for specific hardware profile
-python scripts/model_manager.py --action setup --hardware-profile m4_32gb
+# (Optional) Explicit setup (single unified profile)
+python scripts/model_manager.py --action setup --hardware-profile m4_16gb
 
 # Clean specific model type
 python scripts/model_manager.py --action cleanup --model-type llm
@@ -302,8 +302,8 @@ LOG_LEVEL=DEBUG python -m src.processors.processor
 
 ### **Production Deployment**
 ```bash
-# Build optimized models
-python scripts/model_manager.py --action setup --hardware-profile m4_32gb
+# Build optimized models (single profile)
+python scripts/model_manager.py --action setup --hardware-profile m4_16gb
 
 # Run with production settings
 export ENVIRONMENT=production

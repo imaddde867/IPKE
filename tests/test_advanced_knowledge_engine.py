@@ -223,15 +223,15 @@ class TestModelManager:
             profile = manager.detect_hardware_profile()
             assert profile == "m4_16gb"
             
-            # Mock 32GB RAM
+            # Even with higher RAM, only single profile is returned
             mock_memory.return_value.total = 32 * (1024**3)  # 32GB
             profile = manager.detect_hardware_profile()
-            assert profile == "m4_32gb"
+            assert profile == "m4_16gb"
     
     def test_model_configs(self, manager):
         """Test model configurations for different hardware profiles"""
         assert "m4_16gb" in manager.model_configs
-        assert "m4_32gb" in manager.model_configs
+    # Only unified profile remains
         
         # Check M4 16GB config
         m4_16gb_config = manager.model_configs["m4_16gb"]

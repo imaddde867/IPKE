@@ -675,7 +675,7 @@ class AdvancedKnowledgeEngine:
         if format == "cytoscape":
             return self.knowledge_graph.export_cytoscape()
         elif format == "json":
-        return {
+            return {
                 "nodes": [node.__dict__ for node in self.knowledge_graph.nodes.values()],
                 "edges": [edge.__dict__ for edge in self.knowledge_graph.edges],
                 "metadata": {

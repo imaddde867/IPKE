@@ -32,7 +32,7 @@ import torch
 
 # Internal imports
 from src.logging_config import get_logger, log_processing_step
-from src.config import config_manager
+from src.core.config import config as config_manager
 from src.exceptions import ProcessingError, AIError
 from src.ai.advanced_knowledge_engine import AdvancedKnowledgeEngine
 
@@ -1002,25 +1002,5 @@ class DocumentProcessor:
         """Extract general entities"""
         # Placeholder implementation
         return {}
-            return 0.0
         
-        # Simple heuristic based on text characteristics
-        confidence_factors = []
-        
-        # Check for reasonable word length
-        words = text.split()
-        if words:
-            avg_word_length = sum(len(word) for word in words) / len(words)
-            confidence_factors.append(min(avg_word_length / 5.0, 1.0))
-        
-        # Check for reasonable character distribution
-        alpha_ratio = sum(c.isalpha() for c in text) / len(text)
-        confidence_factors.append(alpha_ratio)
-        
-        # Check for sentence structure
-        sentence_endings = text.count('.') + text.count('!') + text.count('?')
-        if len(text) > 100:
-            sentence_factor = min(sentence_endings / (len(text) / 100), 1.0)
-            confidence_factors.append(sentence_factor)
-        
-        return sum(confidence_factors) / len(confidence_factors) if confidence_factors else 0.5
+    # Note: The OCR confidence helper and its heuristic are defined above

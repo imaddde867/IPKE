@@ -25,7 +25,7 @@ from src.processors.document_processor import DocumentProcessor
 from src.api.celery_worker import process_document_task, get_task_status
 from src.middleware import ErrorHandlingMiddleware, RequestLoggingMiddleware
 from src.logging_config import get_logger
-from src.config import config_manager
+from src.core.config import config as config_manager
 from src.exceptions import ProcessingError, ValidationError
 
 logger = get_logger(__name__)

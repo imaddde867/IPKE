@@ -71,34 +71,27 @@ class ProcessingConfig:
     ])
     enable_ocr: bool = True
     enable_audio_processing: bool = True
+    enable_scene_detection: bool = True  # basic histogram-based scene detection
     parallel_processing: bool = True
     batch_size: int = 10
+    video_frame_interval_seconds: int = 5  # extract one frame every N seconds
 
 
 @dataclass
 class AIConfig:
-    """AI model configuration for local models optimized for M4 Mac"""
-    # Core LLM configuration
-    llm_model: str = "mistral-7b-instruct-v0.2.Q4_K_M.gguf"
-    llm_path: str = "./models"
-    max_tokens: int = 2048
-    temperature: float = 0.1  # Low for factual extraction
-    quantization: str = "4bit"
-    
-    # Embedding model
-    embedding_model: str = "BAAI/bge-small-en-v1.5"
-    
-    # Processing configuration
-    chunk_size: int = 512
-    chunk_overlap: int = 50
-    use_gpu: bool = True  # Metal acceleration on Mac
-    batch_size: int = 4  # Optimized for 16GB RAM
-    
-    # Legacy models (kept for compatibility)
+    """AI model configuration"""
     spacy_model: str = "en_core_web_sm"
+    classification_model: str = "facebook/bart-large-mnli"
+    ner_model: str = "dslim/bert-base-NER"
     whisper_model: str = "base"
     confidence_threshold: float = 0.7
+    enable_gpu: bool = False
     model_cache_dir: str = "models"
+    # Multi-modal feature flags
+    enable_clip: bool = True
+    clip_model: str = "openai/clip-vit-base-patch32"
+    enable_layout_detection: bool = True  # simple OpenCV-based layout block detection
+    enable_speaker_diarization: bool = False  # optional unsupervised diarization
 
 
 @dataclass
@@ -196,8 +189,10 @@ class Config:
         self.processing.max_file_size_mb = int(os.getenv("MAX_FILE_SIZE_MB", self.processing.max_file_size_mb))
         self.processing.enable_ocr = os.getenv("ENABLE_OCR", "true").lower() == "true"
         self.processing.enable_audio_processing = os.getenv("ENABLE_AUDIO_PROCESSING", "true").lower() == "true"
+        self.processing.enable_scene_detection = os.getenv("ENABLE_SCENE_DETECTION", str(self.processing.enable_scene_detection).lower()).lower() == "true"
         self.processing.parallel_processing = os.getenv("PARALLEL_PROCESSING", "true").lower() == "true"
         self.processing.batch_size = int(os.getenv("BATCH_SIZE", self.processing.batch_size))
+        self.processing.video_frame_interval_seconds = int(os.getenv("VIDEO_FRAME_INTERVAL_SECONDS", self.processing.video_frame_interval_seconds))
         
         # AI configuration
         self.ai.spacy_model = os.getenv("SPACY_MODEL", self.ai.spacy_model)
@@ -207,6 +202,10 @@ class Config:
         self.ai.confidence_threshold = float(os.getenv("CONFIDENCE_THRESHOLD", self.ai.confidence_threshold))
         self.ai.enable_gpu = os.getenv("ENABLE_GPU", "false").lower() == "true"
         self.ai.model_cache_dir = os.getenv("MODEL_CACHE_DIR", self.ai.model_cache_dir)
+        self.ai.enable_clip = os.getenv("ENABLE_CLIP", str(self.ai.enable_clip).lower()).lower() == "true"
+        self.ai.clip_model = os.getenv("CLIP_MODEL", self.ai.clip_model)
+        self.ai.enable_layout_detection = os.getenv("ENABLE_LAYOUT_DETECTION", str(self.ai.enable_layout_detection).lower()).lower() == "true"
+        self.ai.enable_speaker_diarization = os.getenv("ENABLE_SPEAKER_DIARIZATION", str(self.ai.enable_speaker_diarization).lower()).lower() == "true"
         
         # API configuration
         self.api.host = os.getenv("API_HOST", self.api.host)
@@ -348,8 +347,10 @@ class Config:
                 'supported_formats': self.processing.supported_formats,
                 'enable_ocr': self.processing.enable_ocr,
                 'enable_audio_processing': self.processing.enable_audio_processing,
+                'enable_scene_detection': self.processing.enable_scene_detection,
                 'parallel_processing': self.processing.parallel_processing,
-                'batch_size': self.processing.batch_size
+                'batch_size': self.processing.batch_size,
+                'video_frame_interval_seconds': self.processing.video_frame_interval_seconds
             },
             'ai': {
                 'spacy_model': self.ai.spacy_model,
@@ -358,7 +359,11 @@ class Config:
                 'whisper_model': self.ai.whisper_model,
                 'confidence_threshold': self.ai.confidence_threshold,
                 'enable_gpu': self.ai.enable_gpu,
-                'model_cache_dir': self.ai.model_cache_dir
+                'model_cache_dir': self.ai.model_cache_dir,
+                'enable_clip': self.ai.enable_clip,
+                'clip_model': self.ai.clip_model,
+                'enable_layout_detection': self.ai.enable_layout_detection,
+                'enable_speaker_diarization': self.ai.enable_speaker_diarization
             },
             'api': {
                 'host': self.api.host,

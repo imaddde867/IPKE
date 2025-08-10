@@ -1,93 +1,30 @@
-# EXPLAINIUM - Clean Dependencies
-# Consolidated and optimized dependency list with version pinning
+torch
+torchvision
+torchaudio
 
-# Core Web Framework
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
-
-# Database
-sqlalchemy==2.0.23
-psycopg2-binary==2.9.9
-alembic==1.12.1
-
-# Task Queue
-celery==5.3.4
-redis==5.0.1
-
-# Document Processing
-python-multipart==0.0.6
-PyMuPDF==1.23.8
-python-docx==1.1.0
-python-pptx==0.6.23
-openpyxl==3.1.2
-pandas==2.1.3
-
-# Image Processing & OCR
-Pillow==10.1.0
-opencv-python==4.8.1.78
-pytesseract==0.3.10
-
-# Audio/Video Processing
-whisper==1.1.10
-ffmpeg-python==0.2.0
-
-# AI & NLP - Advanced Models
-torch==2.1.1
 transformers==4.36.0
-spacy==3.7.2
 sentence-transformers==2.2.2
-
-# Local LLM & Embeddings
-llama-cpp-python==0.2.20  # With Metal support for Apple Silicon
-chromadb==0.4.18
-optimum==1.16.0  # For model quantization
-mlx==0.0.10  # Apple's ML framework
-
-# Advanced Document Understanding
-layoutparser==0.3.4  # For structured document analysis
-pytesseract==0.3.10  # Enhanced OCR
-easyocr==1.7.0  # Alternative OCR engine
-
-# Audio Processing & Speaker Diarization
-pyannote.audio==3.1.1  # For meeting analysis
-whisper==1.1.10  # Audio transcription
-
-# Knowledge Graph & Database
-neo4j==5.14.0  # Or use embedded graph DB
-networkx==3.2.1  # Graph operations
-
-# Vision & Image Understanding
-Pillow==10.1.0
-opencv-python==4.8.1.78
-salesforce-blip==1.0.0  # Image captioning and understanding
-
-# Utilities
-requests==2.31.0
-python-magic==0.4.27
-chardet==5.2.0
-
-# Development & Testing
-pytest==7.4.3
-httpx==0.25.2
-
-# Frontend & Visualization
-streamlit==1.28.1
-plotly==5.17.0
-pandas==2.1.3
-
-# Model Management & Utilities
-huggingface-hub==0.19.4
-tqdm==4.66.1
-psutil==5.9.6
-
-# Optional: Enhanced OCR (uncomment if needed)
-# easyocr==1.7.0
-
-# Optional: Additional NLP (uncomment if needed)
-# nltk==3.8.1
-# textstat==0.7.3
-# langdetect==1.0.9
-
-# Optional: Scientific Computing (uncomment if needed)
-# numpy==1.25.2
-# scikit-learn==1.3.2
+accelerate==0.25.0
+bitsandbytes; platform_system == 'Linux'
+datasets
+soundfile
+librosa
+numpy
+PyMuPDF
+PyPDF2
+python-docx
+pytesseract
+opencv-python
+Pillow
+pandas
+python-pptx
+ffmpeg-python
+openai-whisper
+spacy
+webrtcvad
+scikit-learn
+fastapi
+uvicorn[standard]
+sqlalchemy
+python-multipart
+aiofiles

@@ -212,7 +212,7 @@ class ModelOptimizer:
         # Check if we can use Apple Metal
         if TORCH_AVAILABLE:
             try:
-        if torch.backends.mps.is_available():
+                if torch.backends.mps.is_available():
                     torch.backends.mps.enable()
                     optimizations.append("Apple Metal enabled")
                 else:
