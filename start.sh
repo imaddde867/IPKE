@@ -11,8 +11,16 @@ echo "=================================================================="
 echo -e "${BLUE}EXPLAINIUM - Starting Application${NC}"
 echo "=================================================================="
 
-# Activate virtual environment
-source venv/bin/activate
+# Activate virtual environment (support both venv/ and .venv/ names)
+if [ -f "venv/bin/activate" ]; then
+    # shellcheck disable=SC1091
+    source venv/bin/activate
+elif [ -f ".venv/bin/activate" ]; then
+    # shellcheck disable=SC1091
+    source .venv/bin/activate
+else
+    echo "No virtual environment found (venv/ or .venv/). Create one with: python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt"
+fi
 
 # Function to start backend
 start_backend() {

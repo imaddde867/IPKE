@@ -19,6 +19,7 @@ import asyncio
 import logging
 import json
 import hashlib
+import os
 from typing import Dict, List, Any, Optional, Tuple
 from dataclasses import dataclass, asdict
 from datetime import datetime
@@ -173,12 +174,22 @@ class OptimizedLLMProcessingEngine:
     ]
     
     def __init__(self, config: AIConfig = None):
+        # Core config & state
         self.config = config or AIConfig()
-        self.llm_model = None
-        self.enhanced_engine = None
+        self.llm_model: Optional[Any] = None
+        self.enhanced_engine: Optional[EnhancedExtractionEngine] = None
         self.initialized = False
         self.processing_cache = ProcessingCache()
-        self.executor = ThreadPoolExecutor(max_workers=4)  # Optimize for M4
+
+        # Executors
+        self.executor = ThreadPoolExecutor(max_workers=4)          # general purpose tasks
+        self.llm_executor = ThreadPoolExecutor(max_workers=1)      # serialize llama calls
+
+        # LLM control flags
+        self._llm_enabled = True
+        self._llm_ctx_size = 512  # updated after model load if different
+
+        # Stats
         self.processing_stats = {
             "total_documents": 0,
             "total_processing_time": 0.0,
@@ -186,10 +197,10 @@ class OptimizedLLMProcessingEngine:
             "cache_hits": 0,
             "cache_misses": 0
         }
-        
-        # Performance monitoring
-        self.start_time = None
-        self.performance_metrics = {}
+
+        # Performance timers / metrics
+        self.start_time: Optional[float] = None
+        self.performance_metrics: Dict[str, Any] = {}
     
     async def initialize(self):
         """Initialize the processing engine asynchronously"""
@@ -197,13 +208,28 @@ class OptimizedLLMProcessingEngine:
             return
         
         logger.info("🚀 Initializing Optimized LLM Processing Engine")
+
+        # Environment based disable flags (allow frontend to skip heavy model load)
+        disable_flags = [
+            os.getenv("EXPLAINIUM_DISABLE_LLM"),
+            os.getenv("EXPLAINIUM_LLM_DISABLE"),
+            os.getenv("EXPLAINIUM_DISABLE_LLM_FRONTEND")
+        ]
+        if any(flag and flag.lower() in ("1", "true", "yes") for flag in disable_flags):
+            self._llm_enabled = False
+            logger.warning("⚠️ LLM disabled by environment variable – running in pattern-only mode")
+        else:
+            self._llm_enabled = True
         
         # Initialize enhanced engine
         self.enhanced_engine = EnhancedExtractionEngine()
         
         # Initialize LLM model (if available)
-        if LLAMA_AVAILABLE:
+        if LLAMA_AVAILABLE and self._llm_enabled:
             await self._initialize_primary_llm()
+        else:
+            if not LLAMA_AVAILABLE:
+                logger.warning("⚠️ llama_cpp not available – skipping LLM initialization")
         
         self.initialized = True
         logger.info("✅ Optimized LLM Processing Engine initialized")
@@ -226,29 +252,39 @@ class OptimizedLLMProcessingEngine:
                 model_path = p
 
             if model_path and model_path.exists():
-                # Try conservative memory settings first
+                # Allow runtime overrides through env vars for memory tuning
+                env_ctx = int(os.getenv("EXPLAINIUM_LLM_CTX", "512"))  # default lower to reduce RAM & fragmentation
+                env_batch = int(os.getenv("EXPLAINIUM_LLM_BATCH", "32"))
+                env_threads = int(os.getenv("EXPLAINIUM_LLM_THREADS", "4"))
+                # First attempt
                 try:
                     self.llm_model = Llama(
                         model_path=str(model_path),
-                        n_ctx=1024,
-                        n_batch=64,
-                        n_threads=6,
+                        n_ctx=env_ctx,
+                        n_batch=env_batch,
+                        n_threads=env_threads,
                         n_gpu_layers=0,
                         verbose=False
                     )
-                    logger.info(f"✅ LLM model initialized from {model_path}")
+                    self._llm_ctx_size = env_ctx
+                    logger.info(f"✅ LLM model initialized from {model_path} (ctx={env_ctx}, batch={env_batch})")
                 except Exception as mem_err:
-                    logger.warning(f"⚠️ LLM init with standard settings failed ({mem_err}); retrying with ultra-low memory settings")
+                    logger.warning(f"⚠️ LLM init failed with overrides ({mem_err}); retrying with ultra-low memory settings")
                     # Ultra-low memory retry
-                    self.llm_model = Llama(
-                        model_path=str(model_path),
-                        n_ctx=512,
-                        n_batch=32,
-                        n_threads=4,
-                        n_gpu_layers=0,
-                        verbose=False
-                    )
-                    logger.info(f"✅ LLM model initialized (low-memory mode) from {model_path}")
+                    try:
+                        self.llm_model = Llama(
+                            model_path=str(model_path),
+                            n_ctx=384,
+                            n_batch=16,
+                            n_threads=max(2, env_threads//2),
+                            n_gpu_layers=0,
+                            verbose=False
+                        )
+                        self._llm_ctx_size = 384
+                        logger.info(f"✅ LLM model initialized (ultra-low memory mode) from {model_path}")
+                    except Exception as final_err:
+                        logger.error(f"❌ LLM initialization failed after retries: {final_err}")
+                        self.llm_model = None
             else:
                 logger.warning("⚠️ No GGUF model file found for LLM; proceeding without LLM")
                 self.llm_model = None
@@ -369,13 +405,12 @@ class OptimizedLLMProcessingEngine:
         file_type = metadata.get('file_type', '')
         
         if content_type == 'video_content' or file_type in ('video', 'image'):
-            # Prefer LLM for video and image transcripts when available
-            if self.llm_model is not None:
+            # Skip LLM if disabled, unavailable, or content too short (avoid llama overhead / crashes)
+            if (self.llm_model is not None and self._llm_enabled and content_length >= 80):
                 logger.info("Using LLM processing for media content")
                 return "llm_chunked"
             else:
-                # Enhanced patterns if LLM unavailable
-                logger.info("Using enhanced patterns for media content (LLM unavailable)")
+                logger.info("Using enhanced patterns for media content (LLM disabled/unavailable or short content)")
                 return "enhanced_patterns"
         
         # Rule 1: Fast patterns for simple content
@@ -453,14 +488,11 @@ class OptimizedLLMProcessingEngine:
         # Chunk content for faster processing
         chunks = self._chunk_content_optimized(content, max_chunk_size=800)
         
-        # Process chunks in parallel
-        chunk_tasks = []
+        # Process chunks sequentially to avoid llama.cpp concurrency issues / memory fragmentation
+        chunk_results = []
         for chunk in chunks:
-            task = asyncio.create_task(self._process_chunk_with_llm(chunk, document_type))
-            chunk_tasks.append(task)
-        
-        # Wait for all chunks to complete
-        chunk_results = await asyncio.gather(*chunk_tasks, return_exceptions=True)
+            res = await self._process_chunk_with_llm(chunk, document_type)
+            chunk_results.append(res)
         
         # Merge results
         all_entities = []
@@ -474,6 +506,13 @@ class OptimizedLLMProcessingEngine:
     
     def _chunk_content_optimized(self, content: str, max_chunk_size: int = 1500) -> List[str]:
         """Optimized content chunking for M4 processing"""
+        # Allow env override for chunk size (character based) to adapt to context window
+        env_chunk = os.getenv("EXPLAINIUM_LLM_MAX_CHARS")
+        if env_chunk:
+            try:
+                max_chunk_size = max(200, min(int(env_chunk), max_chunk_size))
+            except ValueError:
+                pass
         chunks = []
         
         # Simple chunking by sentences and paragraphs
@@ -502,60 +541,96 @@ class OptimizedLLMProcessingEngine:
         return chunks
     
     async def _process_chunk_with_llm(self, chunk: str, document_type: str) -> List[ExtractedEntity]:
-        """Process a single chunk with LLM with enhanced video content support"""
+        """Process a single chunk with LLM with enhanced video/content support.
+
+        Returns a list of ExtractedEntity objects (may be empty on failure).
+        """
         try:
-            # Enhanced LLM prompt with video content support
-            if document_type == 'video' or 'video' in document_type.lower() or 'AUDIO TRANSCRIPT' in chunk or 'VISUAL TEXT' in chunk:
-                prompt = f"""Analyze this video content and extract key information:
+            # Configurable timeout & retry strategy (env overrides)
+            llm_timeout = float(os.getenv("EXPLAINIUM_LLM_CHUNK_TIMEOUT", "25"))  # increase from 15 -> 25 default
+            max_retries = int(os.getenv("EXPLAINIUM_LLM_CHUNK_RETRIES", "2"))     # additional retries on timeout
+            base_backoff = float(os.getenv("EXPLAINIUM_LLM_CHUNK_BACKOFF", "3"))  # seconds
 
-{chunk}
-
-For video content, extract:
-- Spoken instructions and procedures from audio
-- Visual text and on-screen information
-- Safety warnings and requirements
-- Technical specifications mentioned
-- Step-by-step processes described
-- Equipment and tools referenced
-- Personnel roles and responsibilities
-- Scene context and visual information
-
-Format each finding as: [Category]: [Specific Information]
-Focus on actionable knowledge and procedural information."""
+            # Enhanced media aware prompt
+            if document_type.lower() == 'video' or 'AUDIO TRANSCRIPT' in chunk or 'VISUAL TEXT' in chunk:
+                prompt = (
+                    "Analyze this video content and extract key information:\n\n"
+                    f"{chunk}\n\n"
+                    "For video content, extract:\n"
+                    "- Spoken instructions and procedures\n"
+                    "- Visual text and on-screen information\n"
+                    "- Safety warnings and requirements\n"
+                    "- Technical specifications mentioned\n"
+                    "- Step-by-step processes described\n"
+                    "- Equipment and tools referenced\n"
+                    "- Personnel roles/responsibilities\n"
+                    "- Scene context / visual cues\n\n"
+                    "Format each finding as: [Category]: [Specific Information]"
+                )
             else:
-                # Standard document processing prompt
-                prompt = f"""Extract key information from this {document_type} document chunk:
-            
-{chunk}
+                prompt = (
+                    f"Extract key information from this {document_type} document chunk:\n\n"
+                    f"{chunk}\n\n"
+                    "Types:\n- Technical specifications\n- Procedures and processes\n- Safety requirements\n- Personnel information\n- Equipment details\n\n"
+                    "Format: [Entity Type]: [Content]"
+                )
 
-Extract entities in this format:
-- Technical specifications
-- Procedures and processes  
-- Safety requirements
-- Personnel information
-- Equipment details
+            # Ensure prompt fits in context window (rough char->token heuristic ~4 chars/token)
+            max_gen_tokens = 256
+            est_tokens = int(len(prompt) / 4) + max_gen_tokens
+            if est_tokens > self._llm_ctx_size - 8:  # leave small safety margin
+                # Calculate allowed prompt tokens
+                allowed_prompt_tokens = max(self._llm_ctx_size - max_gen_tokens - 16, 64)
+                allowed_chars = allowed_prompt_tokens * 4
+                original_len = len(prompt)
+                # Keep header/instructions, truncate dynamic chunk part
+                if "\n\n" in prompt:
+                    header, body = prompt.split("\n\n", 1)
+                else:
+                    header, body = "", prompt
+                if len(body) > allowed_chars:
+                    body = body[:allowed_chars] + "... [TRUNCATED]"
+                prompt = (header + "\n\n" + body).strip()
+                logger.warning(f"Truncated prompt from {original_len} to {len(prompt)} chars to fit ctx={self._llm_ctx_size}")
 
-Format: [Entity Type]: [Content]"""
-
-            # Query LLM with timeout
-            response = await asyncio.wait_for(
-                self._query_llm_async(prompt),
-                timeout=15.0  # 15 second timeout per chunk
-            )
-            
-            # Parse response into entities
+            attempt = 0
+            response = ""
+            while attempt <= max_retries:
+                try:
+                    response = await asyncio.wait_for(self._query_llm_async(prompt), timeout=llm_timeout)
+                    break
+                except asyncio.TimeoutError:
+                    if attempt == max_retries:
+                        raise
+                    sleep_for = base_backoff * (2 ** attempt)
+                    logger.warning(f"LLM chunk timeout (attempt {attempt+1}/{max_retries+1}); backing off {sleep_for:.1f}s and retrying")
+                    await asyncio.sleep(sleep_for)
+                    attempt += 1
             entities = self._parse_llm_response_fast(response, chunk, document_type)
+            if not entities and response.strip():
+                entities.append(ExtractedEntity(
+                    content=response.strip()[:400],
+                    entity_type="llm_summary",
+                    category="llm_extraction",
+                    confidence=0.55,
+                    context=chunk,
+                    metadata={"processing_method": "llm_chunked", "empty_parse_fallback": True},
+                    relationships=[],
+                    source_location="llm_generated"
+                ))
             return entities
-            
-        except Exception as e:
-            logger.warning(f"LLM chunk processing error: {e}")
+        except Exception:
+            logger.warning("LLM chunk processing error", exc_info=True)
             return []
     
     async def _query_llm_async(self, prompt: str) -> str:
         """Async LLM query with thread pool execution"""
+        if not self.llm_model or not self._llm_enabled:
+            return ""
         loop = asyncio.get_event_loop()
+        # Use dedicated single-thread executor to avoid parallel llama calls
         response = await loop.run_in_executor(
-            self.executor,
+            self.llm_executor,
             self._query_llm_sync,
             prompt
         )
@@ -564,12 +639,12 @@ Format: [Entity Type]: [Content]"""
     def _query_llm_sync(self, prompt: str) -> str:
         """Synchronous LLM query"""
         try:
-            if not self.llm_model:
+            if not self.llm_model or not self._llm_enabled:
                 return ""
             response = self.llm_model(prompt, max_tokens=256, temperature=0.1)
             return response.get('choices', [{}])[0].get('text', '')
         except Exception as e:
-            logger.error(f"LLM query error: {e}")
+            logger.error(f"LLM query error: {e}", exc_info=True)
             return ""
     
     def _parse_llm_response_fast(self, response: str, chunk: str, document_type: str) -> List[ExtractedEntity]:
@@ -581,6 +656,18 @@ Format: [Entity Type]: [Content]"""
         for line in lines:
             line = line.strip()
             if not line or not ':' in line:
+                # Fallback: accept bullet / dash style lines as general info
+                if line.startswith(('-', '*', '•')) and len(line) > 8:
+                    entities.append(ExtractedEntity(
+                        content=line.lstrip('-*• ').strip(),
+                        entity_type="general_information",
+                        category="llm_extraction",
+                        confidence=0.6,
+                        context=chunk,
+                        metadata={"processing_method": "llm_chunked", "implicit_parse": True},
+                        relationships=[],
+                        source_location="llm_generated"
+                    ))
                 continue
             
             try:
@@ -707,8 +794,13 @@ Format: [Entity Type]: [Content]"""
     
     def cleanup(self):
         """Cleanup resources (synchronous)"""
-        if self.executor:
-            self.executor.shutdown(wait=True)
+        try:
+            if self.executor:
+                self.executor.shutdown(wait=True)
+            if hasattr(self, 'llm_executor') and self.llm_executor:
+                self.llm_executor.shutdown(wait=True)
+        except Exception:
+            pass
         logger.info("🧹 Optimized LLM Processing Engine cleaned up")
 
 # Backward compatibility

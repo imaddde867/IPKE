@@ -1,40 +1,68 @@
 # Core dependencies for Explainium Optimized Processor
-# These are required for the real AI engines to function properly
+# STABILITY NOTICE (Pinned Versions)
+# ----------------------------------
+# We experienced multiple dependency conflicts (torch / transformers / huggingface-hub / packaging / fsspec) plus
+# ABI issues with numpy 2.x + spaCy/thinc. To guarantee a reproducible environment on macOS (Apple Silicon, Python 3.12),
+# critical libraries are now PINNED. Only relax / upgrade intentionally after validating compatibility.
+#
+# If you already installed extraneous packages (e.g. vllm, moshi, silentcipher, s3fs) and you do NOT actively use them,
+# UNINSTALL them to avoid pulling conflicting dependency trees:
+#   pip uninstall -y vllm moshi silentcipher s3fs
+#
+# If you keep vllm you must upgrade torch (2.7.0 requirement) which is NOT recommended here because we target
+# llama-cpp-python for local inference (Metal build). Hence vllm is treated as optional and excluded.
 
 # HTTP requests
-requests>=2.31.0
+requests==2.32.4
 
 # Computer Vision and Image Processing
-opencv-python>=4.8.0
-Pillow>=10.0.0
-pytesseract>=0.3.10
+opencv-python==4.10.0.84
+Pillow==10.4.0
+pytesseract==0.3.13
 
 # Data Processing
-pandas>=2.0.0
-numpy>=1.24.0
+pandas==2.2.2
+# Pin numpy 1.26.x to avoid ABI breakage with thinc/spaCy wheels (numpy 2.x caused dtype size mismatch)
+numpy==1.26.4
 
 # Document Processing
-python-pptx>=0.6.21
-PyPDF2>=3.0.0
-PyMuPDF>=1.23.0
-python-docx>=0.8.11
+python-pptx==0.6.23
+PyPDF2==3.0.1
+PyMuPDF==1.24.9
+python-docx==0.8.11
 
 # AI and NLP
-spacy>=3.6.0
-torch>=2.0.0
-sentence-transformers>=2.7.0
+spacy==3.7.2          # paired with thinc 8.2.1 (below) – install model: python -m spacy download en_core_web_sm==3.7.2
+thinc==8.2.1
+torch==2.5.1          # stable for Apple Silicon CPU usage; NOT for vllm (remove vllm instead of upgrading torch)
+sentence-transformers==2.7.0
+transformers==4.41.2  # compatible with sentence-transformers 2.7.0 & huggingface-hub >=0.23
+huggingface-hub==0.33.0  # satisfies moshi (<0.34) if ever needed; >=0.23.4 for other deps
+packaging==23.2       # streamlit 1.28.x requires packaging<24
+fsspec==2025.5.1      # aligns with s3fs 2025.5.1 if later installed
 
 # LLM Backends (optional - for local LLM processing)
-llama-cpp-python>=0.2.0
+llama-cpp-python==0.2.82   # Metal build installed locally (use CMAKE_ARGS='-DLLAMA_METAL=on')
 
 # Audio/Video Processing (optional)
-openai-whisper>=20250625
-pytest>=7.0.0
-pytest-asyncio>=0.23.0
+openai-whisper==20231117
+pytest==7.4.3
+pytest-asyncio==0.23.8
 
 # Compatibility for Python < 3.10
-importlib-metadata>=6.8.0; python_version < '3.10'
+importlib-metadata==6.8.0; python_version < '3.10'
 
-# Note: Some packages may require system-level dependencies:
-# - pytesseract requires tesseract-ocr to be installed on the system
-# - spacy requires downloading language models: python -m spacy download en_core_web_sm
+############################################################
+# SYSTEM DEPENDENCIES / POST-INSTALL TASKS
+############################################################
+# 1. Tesseract OCR (macOS): brew install tesseract
+# 2. spaCy model (match pinned spaCy version):
+#    python -m spacy download en_core_web_sm==3.7.2
+# 3. OPTIONAL: If upgrading spaCy to 3.8.x you MUST also:
+#    - upgrade thinc accordingly
+#    - verify numpy wheel compatibility (or rebuild from source)
+# 4. OPTIONAL Metal build of llama-cpp-python already assumed; if reinstalling:
+#    CMAKE_ARGS="-DLLAMA_METAL=on" pip install --force-reinstall --no-binary :all: llama-cpp-python==0.2.82
+# 5. Remove unused heavy libs to prevent dependency conflicts:
+#    pip uninstall -y vllm moshi silentcipher s3fs
+############################################################

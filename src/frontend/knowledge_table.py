@@ -1144,9 +1144,9 @@ def main():
                     
                     # Show method priority
                     if method == 'llm_first_processing':
-                        st.success("🥇 Primary Method")
+                        st.success("Primary Method")
                     else:
-                        st.info("🥈 Fallback Method")
+                        st.info("Fallback Method")
 
         st.divider()
 
