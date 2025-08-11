@@ -119,6 +119,56 @@ class OptimizedDocumentProcessor:
         print(f"🎯 Performance Target: {self.target_processing_time} seconds per document")
         print(f"⚡ Max Workers: {self.max_workers} (optimized for M4)")
         print(f"📁 Supported Formats: {len(self.supported_formats)} categories")
+
+    # Backward-compatibility: legacy callers expect process_document()
+    def process_document(self, file_path: str, document_id: str = None) -> Dict[str, Any]:
+        """Legacy sync entrypoint that returns a dict shaped for the frontend converter.
+
+        This wraps process_document_sync and adapts the result to the
+        structure expected by convert_document_processor_results_to_display().
+        """
+        result = self.process_document_sync(file_path, document_id)
+
+        # Determine method labels compatible with the frontend expectations
+        primary_method = result.processing_method
+        is_llm_primary = primary_method in {"ai_enhanced_processing", "ai_processing"}
+        processing_meta = {
+            "method": "llm_first_processing" if is_llm_primary else "advanced_engine",
+            "processing_method": "llm_primary" if is_llm_primary else primary_method,
+            "confidence_score": result.confidence_score,
+            "processing_time": result.processing_time,
+            "validation_passed": True
+        }
+
+        # Normalize entities to the expected schema
+        extracted_entities: List[Dict[str, Any]] = []
+        for ent in result.entities:
+            if not isinstance(ent, dict):
+                continue
+            core_content = ent.get("core_content") or ent.get("content") or ent.get("key_identifier") or ""
+            extracted_entities.append({
+                "core_content": core_content,
+                "key_identifier": ent.get("key_identifier", (core_content or "")[:50]),
+                "category": ent.get("category", ent.get("entity_type", "unknown")),
+                "entity_type": ent.get("entity_type", ent.get("category", "unknown")),
+                "confidence_score": ent.get("confidence", result.confidence_score),
+                "source_section": ent.get("source_location", ""),
+                "priority_level": "high" if ent.get("confidence", 0.0) >= 0.85 else ("medium" if ent.get("confidence", 0.0) >= 0.6 else "low"),
+                "context_tags": ent.get("relationships", []),
+                "completeness_score": ent.get("completeness", 0.8),
+                "clarity_score": ent.get("clarity", 0.8),
+                "actionability_score": ent.get("actionability", 0.7)
+            })
+
+        return {
+            "knowledge": {
+                "extracted_entities": extracted_entities,
+                "processing_metadata": processing_meta,
+                "extraction_methods": [result.processing_method],
+            },
+            "summary": result.content_summary,
+            "file": Path(file_path).name
+        }
     
     def _init_basic_capabilities(self):
         """Initialize basic processing capabilities"""
@@ -513,6 +563,18 @@ class OptimizedDocumentProcessor:
         try:
             result = self._process_video_document(Path(file_path))
             text = (result.get('text') or '').strip()
+            # If no text from frame OCR, try audio transcription using Whisper if available
+            if not text and self.audio_processing_available:
+                try:
+                    import whisper  # type: ignore
+                    model = whisper.load_model("base")
+                    transcribe = model.transcribe(str(file_path), fp16=False)
+                    audio_text = (transcribe.get("text") or "").strip()
+                    if audio_text:
+                        text = audio_text
+                except Exception as _audio_err:
+                    # Keep silent fallback; return whatever we have
+                    pass
             if text:
                 return text
             return f"Video file: {Path(file_path).name} (no readable text detected)"
@@ -870,9 +932,27 @@ class OptimizedDocumentProcessor:
         if not self.video_processing_available:
             return {'text': '', 'frames_analyzed': 0}
         
+        # Try default backend first
         capture = cv2.VideoCapture(str(file_path))
         if not capture.isOpened():
-            return {'text': '', 'frames_analyzed': 0}
+            # Retry with FFMPEG backend explicitly (helps on some macOS setups)
+            try:
+                capture = cv2.VideoCapture(str(file_path), cv2.CAP_FFMPEG)
+            except Exception:
+                capture = capture  # keep as-is
+        if not capture.isOpened():
+            # As a last resort, try audio-only transcription if available
+            if self.audio_processing_available:
+                try:
+                    import whisper  # type: ignore
+                    model = whisper.load_model("base")
+                    transcribe = model.transcribe(str(file_path), fp16=False)
+                    audio_text = (transcribe.get("text") or "").strip()
+                    if audio_text:
+                        return {'text': audio_text, 'frames_analyzed': 0, 'source': 'audio_whisper'}
+                except Exception:
+                    pass
+            return {'text': '', 'frames_analyzed': 0, 'warning': 'unable_to_open_video'}
         
         try:
             fps = capture.get(cv2.CAP_PROP_FPS) or 0.0
@@ -909,7 +989,7 @@ class OptimizedDocumentProcessor:
                 frame_index += frames_between_samples
             
             ocr_text = "\n".join(collected_lines)
-            return {'text': ocr_text, 'frames_analyzed': frames_analyzed}
+            return {'text': ocr_text, 'frames_analyzed': frames_analyzed, 'source': 'frame_ocr'}
         finally:
             capture.release()
     
