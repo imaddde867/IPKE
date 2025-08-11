@@ -1,35 +1,32 @@
 #!/usr/bin/env python3
 """
-LLM-First Processing Engine - Primary Intelligence Layer
-========================================================
+OPTIMIZED LLM Processing Engine - Performance-First Implementation
+================================================================
 
-This engine implements the LLM-first processing hierarchy where offline AI models
-are the primary source for knowledge extraction, ensuring superior results through
-intelligent document understanding and structured knowledge generation.
+This engine is optimized for SPEED FIRST, then quality. Target: 2 minutes max per document.
+Current: 10+ minutes per document. Improvement needed: 5x speed increase minimum.
 
-PROCESSING HIERARCHY RULES:
-1. LLM Primary Analysis (Priority: CRITICAL)
-2. Enhanced Pattern Recognition (Priority: HIGH) 
-3. Traditional NLP Fallback (Priority: LOW)
-
-QUALITY THRESHOLDS:
-- LLM Confidence Minimum: 0.75
-- Pattern Recognition Minimum: 0.60
-- Combined Analysis Threshold: 0.80
-- Entity Validation Score: 0.70
-
-PROCESSING RULES & VALUES:
+OPTIMIZATION STRATEGIES:
+1. Async Processing Pipeline
+2. Content Chunking & Streaming  
+3. Intelligent Caching System
+4. Parallel Entity Extraction
+5. Smart Processing Decisions
+6. M4 Chip Optimizations
 """
 
 import asyncio
 import logging
 import json
+import hashlib
 from typing import Dict, List, Any, Optional, Tuple
 from dataclasses import dataclass, asdict
 from datetime import datetime
 from enum import Enum
 import re
 from pathlib import Path
+from concurrent.futures import ThreadPoolExecutor
+import time
 
 # Import LLM backends
 try:
@@ -82,63 +79,96 @@ class ProcessingResult:
     validation_passed: bool
     metadata: Dict[str, Any]
 
-class LLMProcessingEngine:
+class ProcessingCache:
+    """Intelligent caching system for processed patterns and entities"""
+    
+    def __init__(self, max_size: int = 1000):
+        self.pattern_cache = {}
+        self.entity_cache = {}
+        self.similarity_cache = {}
+        self.max_size = max_size
+        self.access_count = {}
+    
+    def get_cached_result(self, content_hash: str, pattern_type: str) -> Optional[Any]:
+        """Get cached result for similar content"""
+        if content_hash in self.entity_cache:
+            self.access_count[content_hash] = self.access_count.get(content_hash, 0) + 1
+            return self.entity_cache[content_hash]
+        return None
+    
+    def cache_result(self, content_hash: str, pattern_type: str, result: Any):
+        """Cache processing result"""
+        if len(self.entity_cache) >= self.max_size:
+            # Remove least accessed item
+            least_accessed = min(self.access_count.items(), key=lambda x: x[1])
+            del self.entity_cache[least_accessed[0]]
+            del self.access_count[least_accessed[0]]
+        
+        self.entity_cache[content_hash] = result
+        self.access_count[content_hash] = 1
+    
+    def get_similar_content(self, content: str, threshold: float = 0.8) -> Optional[Any]:
+        """Find similar cached content using simple similarity"""
+        content_hash = hashlib.md5(content.encode()).hexdigest()
+        
+        for cached_hash, cached_result in self.entity_cache.items():
+            # Simple similarity check - can be enhanced with embeddings
+            if self._calculate_similarity(content, cached_result.get('content', '')) > threshold:
+                return cached_result
+        return None
+    
+    def _calculate_similarity(self, text1: str, text2: str) -> float:
+        """Calculate simple text similarity"""
+        words1 = set(text1.lower().split())
+        words2 = set(text2.lower().split())
+        
+        if not words1 or not words2:
+            return 0.0
+        
+        intersection = words1.intersection(words2)
+        union = words1.union(words2)
+        
+        return len(intersection) / len(union) if union else 0.0
+
+class OptimizedLLMProcessingEngine:
     """
-    LLM-First Processing Engine - The Primary Intelligence Layer
+    OPTIMIZED LLM Processing Engine - Performance-First Implementation
     
-    CORE PRINCIPLES:
-    ===============
-    1. LLM SUPREMACY: Offline LLM models are the primary processing source
-    2. QUALITY FIRST: High confidence thresholds ensure superior results
-    3. HIERARCHICAL FALLBACK: Graceful degradation through processing layers
-    4. VALIDATION REQUIRED: All extractions must pass validation thresholds
-    5. STRUCTURED OUTPUT: Clean, categorized, database-ready results
-    
-    PROCESSING RULES:
-    ================
+    CORE OPTIMIZATION PRINCIPLES:
+    ============================
+    1. SPEED FIRST: Target 2 minutes max per document
+    2. ASYNC PROCESSING: Parallel execution of independent tasks
+    3. CONTENT CHUNKING: Process large documents in manageable pieces
+    4. INTELLIGENT CACHING: Avoid re-processing similar content
+    5. SMART ROUTING: Choose fastest processing method for content type
+    6. M4 OPTIMIZATION: Leverage Apple Silicon architecture
     """
     
-    # Core Processing Rules - THE FUNDAMENTAL LAWS
+    # Core Processing Rules - OPTIMIZED FOR SPEED
     PROCESSING_RULES = [
         ProcessingRule(
-            name="LLM_PRIMARY_RULE",
-            condition="llm_available == True",
-            action="use_llm_primary_processing",
+            name="fast_pattern_first",
+            condition="content_length < 2000 and complexity < 0.3",
+            action="use_fast_patterns_only",
+            priority=ProcessingPriority.LOW,
+            threshold=0.50,
+            description="Fast pattern matching for simple content"
+        ),
+        ProcessingRule(
+            name="enhanced_fallback",
+            condition="content_length < 5000 and complexity < 0.6",
+            action="use_enhanced_patterns",
+            priority=ProcessingPriority.MEDIUM,
+            threshold=0.60,
+            description="Enhanced patterns for medium complexity"
+        ),
+        ProcessingRule(
+            name="llm_optimized",
+            condition="content_length >= 5000 or complexity >= 0.6",
+            action="use_llm_with_chunking",
             priority=ProcessingPriority.CRITICAL,
             threshold=0.75,
-            description="LLM must be primary processor for ALL documents when available"
-        ),
-        ProcessingRule(
-            name="QUALITY_THRESHOLD_RULE", 
-            condition="extraction_confidence < 0.70",
-            action="escalate_to_higher_priority_method",
-            priority=ProcessingPriority.HIGH,
-            threshold=0.70,
-            description="Low confidence extractions must be re-processed with higher priority method"
-        ),
-        ProcessingRule(
-            name="VALIDATION_GATE_RULE",
-            condition="entity_count > 0",
-            action="validate_all_entities",
-            priority=ProcessingPriority.CRITICAL,
-            threshold=0.70,
-            description="All extracted entities must pass validation before acceptance"
-        ),
-        ProcessingRule(
-            name="STRUCTURED_OUTPUT_RULE",
-            condition="processing_complete == True",
-            action="ensure_structured_categorized_output",
-            priority=ProcessingPriority.CRITICAL,
-            threshold=0.80,
-            description="Final output must be clean, structured, and categorized"
-        ),
-        ProcessingRule(
-            name="FALLBACK_HIERARCHY_RULE",
-            condition="primary_method_failed == True",
-            action="cascade_through_processing_hierarchy",
-            priority=ProcessingPriority.HIGH,
-            threshold=0.60,
-            description="Failed processing must cascade through hierarchy until success"
+            description="LLM processing with content chunking for complex content"
         )
     ]
     
@@ -147,143 +177,118 @@ class LLMProcessingEngine:
         self.llm_model = None
         self.enhanced_engine = None
         self.initialized = False
+        self.processing_cache = ProcessingCache()
+        self.executor = ThreadPoolExecutor(max_workers=4)  # Optimize for M4
         self.processing_stats = {
-            "llm_primary_used": 0,
-            "enhanced_pattern_used": 0,
-            "fallback_used": 0,
-            "total_processed": 0,
-            "average_confidence": 0.0,
-            "validation_pass_rate": 0.0
+            "total_documents": 0,
+            "total_processing_time": 0.0,
+            "method_usage": {},
+            "cache_hits": 0,
+            "cache_misses": 0
         }
+        
+        # Performance monitoring
+        self.start_time = None
+        self.performance_metrics = {}
         
     async def initialize(self):
-        """Initialize the LLM-first processing engine"""
-        try:
-            logger.info("Initializing LLM-First Processing Engine")
-            
-            # Priority 1: Initialize Primary LLM
-            await self._initialize_primary_llm()
-            
-            # Priority 2: Initialize Enhanced Pattern Engine
-            self.enhanced_engine = EnhancedExtractionEngine(llm_model=self.llm_model)
-            
-            # Priority 3: Validate initialization
-            self._validate_initialization()
-            
-            self.initialized = True
-            logger.info("✅ LLM-First Processing Engine initialized successfully")
-            logger.info(f"🧠 Primary LLM Available: {self.llm_model is not None}")
-            logger.info(f"🔧 Enhanced Engine Ready: {self.enhanced_engine is not None}")
-            
-        except Exception as e:
-            logger.error(f"❌ Failed to initialize LLM Processing Engine: {e}")
-            self.initialized = False
-            raise
-    
-    async def _initialize_primary_llm(self):
-        """Initialize the primary LLM model with optimized settings"""
-        if not LLAMA_AVAILABLE:
-            logger.warning("⚠️ llama-cpp-python not available. LLM processing disabled.")
+        """Initialize the processing engine asynchronously"""
+        if self.initialized:
             return
         
+        logger.info("🚀 Initializing Optimized LLM Processing Engine")
+        
+        # Initialize enhanced engine
+        self.enhanced_engine = EnhancedExtractionEngine()
+        
+        # Initialize LLM model (if available)
+        if LLAMA_AVAILABLE:
+            await self._initialize_primary_llm()
+            
+            self.initialized = True
+        logger.info("✅ Optimized LLM Processing Engine initialized")
+    
+    async def _initialize_primary_llm(self):
+        """Initialize primary LLM model with M4 optimizations"""
         try:
-            # Load model configuration
-            model_config_path = Path("models/setup_config.json")
-            if model_config_path.exists():
-                with open(model_config_path, 'r') as f:
-                    model_config = json.load(f)
-                
-                llm_config = model_config.get("models", {}).get("llm", {})
-                optimization = llm_config.get("m4_optimization", {})
-                
-                # Extract optimal settings
-                model_path = optimization.get("model_path", "models/llm/Mistral-7B-Instruct-v0.2-GGUF")
-                context_length = optimization.get("context_length", 4096)
-                threads = optimization.get("threads", 8)
-                
-                # Initialize with optimal settings for knowledge extraction
-                model_file = Path(model_path) / "mistral-7b-instruct-v0.2.Q4_K_M.gguf"
-                
-                if model_file.exists():
+            # Use smaller, faster model for M4 optimization
+            model_path = self.config.get("llm_model_path", "models/llama-2-7b-chat.gguf")
+            
+            if Path(model_path).exists():
+                # M4-optimized settings
                     self.llm_model = Llama(
-                        model_path=str(model_file),
-                        n_ctx=context_length,
-                        n_threads=threads,
-                        n_gpu_layers=-1,  # Use Metal on M4
-                        verbose=False,
-                        seed=42,  # Reproducible results
-                        n_batch=4,
-                        temperature=0.3,  # Conservative for knowledge extraction
-                        top_p=0.9
-                    )
-                    logger.info(f"🧠 Primary LLM loaded: {model_file.name}")
+                    model_path=model_path,
+                    n_ctx=2048,  # Reduced context for speed
+                    n_batch=512,  # Optimized batch size for M4
+                    n_threads=8,  # Optimize for M4 chip
+                    n_gpu_layers=0,  # CPU-only for M4 optimization
+                    verbose=False
+                )
+                logger.info("✅ LLM model initialized with M4 optimizations")
                 else:
-                    logger.warning(f"⚠️ LLM model file not found: {model_file}")
+                logger.warning("⚠️ LLM model not found, using enhanced patterns only")
+                self.llm_model = None
             
         except Exception as e:
-            logger.error(f"❌ Failed to initialize primary LLM: {e}")
+            logger.error(f"❌ LLM initialization failed: {e}")
             self.llm_model = None
-    
-    def _validate_initialization(self):
-        """Validate that the processing engine meets minimum requirements"""
-        requirements = {
-            "enhanced_engine": self.enhanced_engine is not None,
-            "processing_rules": len(self.PROCESSING_RULES) >= 5,
-            "quality_thresholds": True  # Always available
-        }
-        
-        failed_requirements = [req for req, met in requirements.items() if not met]
-        
-        if failed_requirements:
-            raise RuntimeError(f"Initialization validation failed: {failed_requirements}")
-        
-        logger.info("✅ Processing engine validation passed")
     
     async def process_document(self, content: str, document_type: str = "unknown", 
                              metadata: Dict[str, Any] = None) -> ProcessingResult:
         """
-        PRIMARY PROCESSING FUNCTION - Implements LLM-First Hierarchy
+        OPTIMIZED PROCESSING FUNCTION - Target: 2 minutes max
         
-        PROCESSING FLOW:
-        1. Document Analysis & Complexity Assessment
-        2. LLM Primary Processing (if available & complex)
-        3. Enhanced Pattern Processing (high-quality fallback)
-        4. Entity Validation & Quality Control
+        OPTIMIZED FLOW:
+        1. Fast Content Analysis (async)
+        2. Smart Processing Method Selection
+        3. Parallel Content Processing
+        4. Fast Validation & Enhancement
         5. Structured Output Generation
-        
-        Args:
-            content: Document content to process
-            document_type: Type of document for optimized processing
-            metadata: Additional context and processing hints
-            
-        Returns:
-            ProcessingResult with comprehensive extraction results
         """
         if not self.initialized:
             await self.initialize()
         
-        start_time = datetime.now()
+        self.start_time = time.time()
         metadata = metadata or {}
         
-        logger.info(f"🚀 Starting LLM-First processing for {document_type} document")
+        logger.info(f"🚀 Starting OPTIMIZED processing for {document_type} document")
         
-        # STEP 1: Document Complexity Assessment
-        complexity_score = await self._assess_document_complexity(content, document_type)
+        # STEP 1: Fast Content Analysis (async)
+        complexity_task = asyncio.create_task(self._assess_document_complexity_fast(content, document_type))
         
-        # STEP 2: Apply Processing Rules to Determine Method
-        processing_method = self._determine_processing_method(complexity_score, metadata)
+        # STEP 2: Check Cache First (immediate)
+        cache_result = self.processing_cache.get_similar_content(content)
+        if cache_result:
+            self.processing_stats["cache_hits"] += 1
+            logger.info("🎯 Cache hit - using cached results")
+            return self._create_result_from_cache(cache_result, document_type)
         
-        # STEP 3: Execute Primary Processing
-        entities = await self._execute_processing(content, document_type, processing_method, metadata)
+        self.processing_stats["cache_misses"] += 1
         
-        # STEP 4: Validate and Enhance Results
-        validated_entities = await self._validate_and_enhance_entities(entities, content)
+        # STEP 3: Get Complexity Score
+        complexity_score = await complexity_task
         
-        # STEP 5: Calculate Quality Metrics
-        quality_metrics = self._calculate_quality_metrics(validated_entities, processing_method)
+        # STEP 4: Smart Processing Method Selection
+        processing_method = self._determine_processing_method_fast(complexity_score, len(content), metadata)
         
-        # STEP 6: Generate Final Result
-        processing_time = (datetime.now() - start_time).total_seconds()
+        # STEP 5: Execute Processing (with timeout)
+        try:
+            entities = await asyncio.wait_for(
+                self._execute_processing_optimized(content, document_type, processing_method, metadata),
+                timeout=90.0  # 90 second timeout for 2-minute target
+            )
+        except asyncio.TimeoutError:
+            logger.warning("⏰ Processing timeout, falling back to fast patterns")
+            entities = await self._execute_fast_pattern_fallback(content, document_type)
+        
+        # STEP 6: Fast Validation (minimal)
+        validated_entities = await self._validate_entities_fast(entities, content)
+        
+        # STEP 7: Calculate Quality Metrics (fast)
+        quality_metrics = self._calculate_quality_metrics_fast(validated_entities, processing_method)
+        
+        # STEP 8: Generate Result
+        processing_time = time.time() - self.start_time
         
         result = ProcessingResult(
             entities=validated_entities,
@@ -296,104 +301,78 @@ class LLMProcessingEngine:
             metadata={
                 "document_type": document_type,
                 "complexity_score": complexity_score,
-                "rules_applied": self._get_applied_rules(),
-                "processing_stats": self._update_processing_stats(processing_method, quality_metrics)
+                "processing_stats": self._update_processing_stats(processing_method, quality_metrics),
+                "cache_used": False
             }
         )
         
-        logger.info(f"✅ Processing complete: {len(validated_entities)} entities, "
+        # Cache the result
+        content_hash = hashlib.md5(content.encode()).hexdigest()
+        self.processing_cache.cache_result(content_hash, "document", {
+            "entities": validated_entities,
+            "content": content[:1000],  # Store first 1000 chars for similarity
+            "result": result
+        })
+        
+        # Update stats
+        self.processing_stats["total_documents"] += 1
+        self.processing_stats["total_processing_time"] += processing_time
+        
+        logger.info(f"✅ OPTIMIZED processing complete: {len(validated_entities)} entities, "
                    f"{quality_metrics['overall_confidence']:.2f} confidence, "
-                   f"{processing_time:.2f}s")
+                   f"{processing_time:.2f}s (Target: <120s)")
         
         return result
     
-    async def _assess_document_complexity(self, content: str, document_type: str) -> float:
-        """Assess document complexity to determine optimal processing method"""
-        complexity_indicators = {
-            "length": min(len(content) / 10000, 1.0) * 0.3,  # Longer = more complex
-            "technical_terms": self._count_technical_terms(content) * 0.2,
-            "structured_elements": self._count_structured_elements(content) * 0.2,
-            "domain_specificity": self._assess_domain_specificity(content, document_type) * 0.3
-        }
+    async def _assess_document_complexity_fast(self, content: str, document_type: str) -> float:
+        """Fast document complexity assessment"""
+        # Simple, fast complexity calculation
+        length_factor = min(len(content) / 10000, 1.0) * 0.4
+        technical_factor = min(content.count('specification') + content.count('procedure') + 
+                              content.count('requirement'), 10) / 10 * 0.3
+        structure_factor = min(content.count('\n\n') + content.count('•') + 
+                              content.count('-'), 20) / 20 * 0.3
         
-        complexity_score = sum(complexity_indicators.values())
-        logger.info(f"📊 Document complexity: {complexity_score:.2f} {complexity_indicators}")
-        
+        complexity_score = length_factor + technical_factor + structure_factor
         return min(complexity_score, 1.0)
     
-    def _determine_processing_method(self, complexity_score: float, metadata: Dict[str, Any]) -> str:
-        """Apply processing rules to determine optimal method"""
+    def _determine_processing_method_fast(self, complexity_score: float, content_length: int, 
+                                        metadata: Dict[str, Any]) -> str:
+        """Fast processing method determination"""
         
-        # Rule 1: LLM Primary when available (prioritize local AI models)
-        # Use LLM for ALL documents if available since it's more accurate
+        # Rule 1: Fast patterns for simple content
+        if content_length < 2000 and complexity_score < 0.3:
+            return "fast_patterns"
+        
+        # Rule 2: Enhanced patterns for medium content
+        if content_length < 5000 and complexity_score < 0.6:
+            return "enhanced_patterns"
+        
+        # Rule 3: LLM with chunking for complex content
         if self.llm_model is not None:
-            return "llm_primary_analysis"
+            return "llm_chunked"
         
-        # Rule 2: Enhanced processing for medium complexity (fallback)
-        if complexity_score >= 0.3:
-            return "enhanced_pattern_processing"
-        
-        # Rule 3: Basic processing for simple documents (last resort)
-        return "basic_pattern_processing"
+        # Rule 4: Enhanced patterns as fallback
+        return "enhanced_patterns"
     
-    async def _execute_processing(self, content: str, document_type: str, 
-                                method: str, metadata: Dict[str, Any]) -> List[ExtractedEntity]:
-        """Execute the determined processing method"""
+    async def _execute_processing_optimized(self, content: str, document_type: str, 
+                                          method: str, metadata: Dict[str, Any]) -> List[ExtractedEntity]:
+        """Execute optimized processing method"""
         
-        if method == "llm_primary_analysis":
-            return await self._llm_primary_processing(content, document_type)
-        elif method == "enhanced_pattern_processing":
-            return await self._enhanced_pattern_processing(content, document_type)
+        if method == "fast_patterns":
+            return await self._execute_fast_patterns(content, document_type)
+        elif method == "enhanced_patterns":
+            return await self._execute_enhanced_patterns(content, document_type)
+        elif method == "llm_chunked":
+            return await self._execute_llm_chunked(content, document_type)
         else:
-            return await self._basic_pattern_processing(content, document_type)
+            return await self._execute_fast_patterns(content, document_type)
     
-    async def _llm_primary_processing(self, content: str, document_type: str) -> List[ExtractedEntity]:
-        """LLM-first processing - the primary intelligence method"""
-        logger.info("🧠 Executing LLM Primary Processing")
-        
-        if not self.llm_model:
-            logger.warning("⚠️ LLM not available, falling back to enhanced processing")
-            return await self._enhanced_pattern_processing(content, document_type)
-        
-        # Use enhanced engine with LLM for maximum intelligence
-        entities = self.enhanced_engine.extract_comprehensive_knowledge(content, document_type)
-        
-        # LLM-specific enhancements
-        enhanced_entities = []
-        for entity in entities:
-            # Boost confidence for LLM-enhanced entities
-            if entity.metadata.get("llm_generated") or entity.metadata.get("enhanced_by_llm"):
-                entity.confidence = min(0.95, entity.confidence + 0.10)
-                entity.metadata["processing_method"] = "llm_primary"
-                entity.metadata["quality_boost"] = True
-            
-            enhanced_entities.append(entity)
-        
-        return enhanced_entities
-    
-    async def _enhanced_pattern_processing(self, content: str, document_type: str) -> List[ExtractedEntity]:
-        """Enhanced pattern processing with intelligent extraction"""
-        logger.info("🔧 Executing Enhanced Pattern Processing")
-        
-        if self.enhanced_engine:
-            entities = self.enhanced_engine.extract_comprehensive_knowledge(content, document_type)
-            
-            # Mark as enhanced processing
-            for entity in entities:
-                entity.metadata["processing_method"] = "enhanced_pattern"
-            
-            return entities
-        else:
-            return await self._basic_pattern_processing(content, document_type)
-    
-    async def _basic_pattern_processing(self, content: str, document_type: str) -> List[ExtractedEntity]:
-        """Basic pattern processing - fallback method"""
-        logger.info("📝 Executing Basic Pattern Processing")
-        
-        # Simple pattern-based extraction as absolute fallback
+    async def _execute_fast_patterns(self, content: str, document_type: str) -> List[ExtractedEntity]:
+        """Execute fast pattern matching"""
         entities = []
         
-        # Basic patterns for critical information
+        # Fast, simple patterns
         patterns = {
             "specifications": r'(\d+\.?\d*)\s*(HP|V|PSI|GPM|°F|°C)\s*([^\.]{0,50})',
             "procedures": r'(must|shall|should|required)\s+([^\.]{20,100})',
@@ -406,13 +385,13 @@ class LLMProcessingEngine:
                 entity = ExtractedEntity(
                     content=match.group(0).strip(),
                     entity_type=pattern_type,
-                    category="basic_extraction",
-                    confidence=0.50,  # Lower confidence for basic patterns
+                    category="fast_extraction",
+                    confidence=0.60,
                     context=content[max(0, match.start()-50):match.end()+50],
                     metadata={
-                        "processing_method": "basic_pattern",
+                        "processing_method": "fast_patterns",
                         "pattern_type": pattern_type,
-                        "fallback_used": True
+                        "optimized": True
                     },
                     relationships=[],
                     source_location=f"chars_{match.start()}_{match.end()}"
@@ -421,248 +400,262 @@ class LLMProcessingEngine:
         
         return entities
     
-    async def _validate_and_enhance_entities(self, entities: List[ExtractedEntity], 
-                                          content: str) -> List[ExtractedEntity]:
-        """Validate and enhance extracted entities according to quality rules"""
+    async def _execute_enhanced_patterns(self, content: str, document_type: str) -> List[ExtractedEntity]:
+        """Execute enhanced pattern processing"""
+        if self.enhanced_engine:
+            return self.enhanced_engine.extract_comprehensive_knowledge(content, document_type)
+        else:
+            return await self._execute_fast_patterns(content, document_type)
+    
+    async def _execute_llm_chunked(self, content: str, document_type: str) -> List[ExtractedEntity]:
+        """Execute LLM processing with content chunking"""
+        if not self.llm_model:
+            return await self._execute_enhanced_patterns(content, document_type)
+        
+        # Chunk content for faster processing
+        chunks = self._chunk_content_optimized(content, max_chunk_size=1500)
+        
+        # Process chunks in parallel
+        chunk_tasks = []
+        for chunk in chunks:
+            task = asyncio.create_task(self._process_chunk_with_llm(chunk, document_type))
+            chunk_tasks.append(task)
+        
+        # Wait for all chunks to complete
+        chunk_results = await asyncio.gather(*chunk_tasks, return_exceptions=True)
+        
+        # Merge results
+        all_entities = []
+        for result in chunk_results:
+            if isinstance(result, list):
+                all_entities.extend(result)
+            elif isinstance(result, Exception):
+                logger.warning(f"Chunk processing error: {result}")
+        
+        return all_entities
+    
+    def _chunk_content_optimized(self, content: str, max_chunk_size: int = 1500) -> List[str]:
+        """Optimized content chunking for M4 processing"""
+        chunks = []
+        
+        # Simple chunking by sentences and paragraphs
+        sentences = re.split(r'[.!?]+', content)
+        current_chunk = ""
+        
+        for sentence in sentences:
+            sentence = sentence.strip()
+            if not sentence:
+                continue
+                
+            if len(current_chunk) + len(sentence) < max_chunk_size:
+                current_chunk += sentence + ". "
+            else:
+                if current_chunk:
+                    chunks.append(current_chunk.strip())
+                current_chunk = sentence + ". "
+        
+        if current_chunk:
+            chunks.append(current_chunk.strip())
+        
+        # Ensure we have at least one chunk
+        if not chunks:
+            chunks = [content[:max_chunk_size]]
+        
+        return chunks
+    
+    async def _process_chunk_with_llm(self, chunk: str, document_type: str) -> List[ExtractedEntity]:
+        """Process a single chunk with LLM"""
+        try:
+            # Simple LLM prompt for speed
+            prompt = f"""Extract key information from this {document_type} document chunk:
+            
+{chunk}
+
+Extract entities in this format:
+- Technical specifications
+- Procedures and processes  
+- Safety requirements
+- Personnel information
+- Equipment details
+
+Format: [Entity Type]: [Content]"""
+
+            # Query LLM with timeout
+            response = await asyncio.wait_for(
+                self._query_llm_async(prompt),
+                timeout=15.0  # 15 second timeout per chunk
+            )
+            
+            # Parse response into entities
+            entities = self._parse_llm_response_fast(response, chunk, document_type)
+            return entities
+            
+        except Exception as e:
+            logger.warning(f"LLM chunk processing error: {e}")
+            return []
+    
+    async def _query_llm_async(self, prompt: str) -> str:
+        """Async LLM query with thread pool execution"""
+        loop = asyncio.get_event_loop()
+        response = await loop.run_in_executor(
+            self.executor,
+            self._query_llm_sync,
+            prompt
+        )
+        return response
+    
+    def _query_llm_sync(self, prompt: str) -> str:
+        """Synchronous LLM query"""
+        try:
+            response = self.llm_model(prompt, max_tokens=500, temperature=0.1)
+            return response.get('choices', [{}])[0].get('text', '')
+        except Exception as e:
+            logger.error(f"LLM query error: {e}")
+            return ""
+    
+    def _parse_llm_response_fast(self, response: str, chunk: str, document_type: str) -> List[ExtractedEntity]:
+        """Fast parsing of LLM response"""
+        entities = []
+        
+        # Simple parsing by lines
+        lines = response.split('\n')
+        for line in lines:
+            line = line.strip()
+            if not line or not ':' in line:
+                continue
+            
+            try:
+                entity_type, content = line.split(':', 1)
+                entity_type = entity_type.strip().strip('-').strip()
+                content = content.strip()
+                
+                if len(content) > 10:  # Minimum content length
+                    entity = ExtractedEntity(
+                        content=content,
+                        entity_type=entity_type,
+                        category="llm_extraction",
+                        confidence=0.80,
+                        context=chunk,
+                        metadata={
+                            "processing_method": "llm_chunked",
+                            "chunk_processed": True,
+                            "optimized": True
+                        },
+                        relationships=[],
+                        source_location="llm_generated"
+                    )
+                    entities.append(entity)
+            except:
+                continue
+        
+        return entities
+    
+    async def _execute_fast_pattern_fallback(self, content: str, document_type: str) -> List[ExtractedEntity]:
+        """Fast pattern fallback for timeout scenarios"""
+        return await self._execute_fast_patterns(content, document_type)
+    
+    async def _validate_entities_fast(self, entities: List[ExtractedEntity], content: str) -> List[ExtractedEntity]:
+        """Fast entity validation (minimal)"""
         validated_entities = []
         
         for entity in entities:
-            # Apply validation rules
-            if self._validate_entity(entity):
-                # Apply enhancement rules
-                enhanced_entity = await self._enhance_entity(entity, content)
-                validated_entities.append(enhanced_entity)
-            else:
-                logger.debug(f"Entity failed validation: {entity.content[:50]}...")
+            # Fast validation checks
+            if (entity.confidence >= 0.5 and 
+                len(entity.content) >= 5 and 
+                entity.category != "unknown"):
+                validated_entities.append(entity)
         
-        logger.info(f"✅ Validation complete: {len(validated_entities)}/{len(entities)} entities passed")
         return validated_entities
     
-    def _validate_entity(self, entity: ExtractedEntity) -> bool:
-        """Validate entity against quality thresholds"""
-        validations = {
-            "confidence_threshold": entity.confidence >= QualityThreshold.ENTITY_VALIDATION.value,
-            "content_length": len(entity.content) >= 10,
-            "meaningful_content": not self._is_meaningless_content(entity.content),
-            "category_valid": entity.category != "unknown"
-        }
-        
-        return all(validations.values())
-    
-    async def _enhance_entity(self, entity: ExtractedEntity, content: str) -> ExtractedEntity:
-        """Enhance entity with additional intelligence and context"""
-        
-        # Add structured metadata
-        entity.metadata.update({
-            "enhanced_timestamp": datetime.now().isoformat(),
-            "validation_passed": True,
-            "enhancement_level": self._calculate_enhancement_level(entity),
-            "business_relevance": self._calculate_business_relevance(entity),
-            "actionability": self._calculate_actionability(entity)
-        })
-        
-        return entity
-    
-    def _calculate_quality_metrics(self, entities: List[ExtractedEntity], 
+    def _calculate_quality_metrics_fast(self, entities: List[ExtractedEntity], 
                                  processing_method: str) -> Dict[str, float]:
-        """Calculate comprehensive quality metrics"""
+        """Fast quality metrics calculation"""
         if not entities:
             return {
                 "overall_confidence": 0.0,
                 "validation_score": 0.0,
-                "completeness": 0.0,
-                "diversity": 0.0,
-                "business_value": 0.0
+                "entity_count": 0,
+                "processing_efficiency": 0.0
             }
         
-        # Core metrics
-        confidences = [e.confidence for e in entities]
+        # Fast confidence calculation
+        confidences = [entity.confidence for entity in entities]
         overall_confidence = sum(confidences) / len(confidences)
         
-        # Validation metrics
-        llm_enhanced_count = sum(1 for e in entities if e.metadata.get("llm_generated") or e.metadata.get("enhanced_by_llm"))
-        validation_score = llm_enhanced_count / len(entities) if entities else 0.0
-        
-        # Diversity metrics
-        categories = set(e.category for e in entities)
-        entity_types = set(e.entity_type for e in entities)
-        diversity = (len(categories) + len(entity_types)) / (len(entities) + 1)  # Avoid division by zero
-        
-        # Business value estimation
-        high_value_entities = sum(1 for e in entities if e.confidence > 0.8)
-        business_value = high_value_entities / len(entities) if entities else 0.0
-        
-        # Completeness based on processing method
-        method_completeness = {
-            "llm_primary_analysis": 0.95,
-            "enhanced_pattern_processing": 0.80,
-            "basic_pattern_processing": 0.60
-        }
-        completeness = method_completeness.get(processing_method, 0.50)
+        # Fast validation score
+        validation_score = sum(1 for entity in entities if entity.confidence >= 0.6) / len(entities)
         
         return {
             "overall_confidence": overall_confidence,
             "validation_score": validation_score,
-            "completeness": completeness,
-            "diversity": min(diversity, 1.0),
-            "business_value": business_value,
             "entity_count": len(entities),
-            "llm_enhanced_count": llm_enhanced_count,
-            "processing_method": processing_method
+            "processing_efficiency": 1.0 if processing_method.startswith("llm") else 0.8
         }
     
-    # Helper methods for complexity assessment
-    def _count_technical_terms(self, content: str) -> float:
-        """Count technical terms in content"""
-        technical_patterns = [
-            r'\b\d+\.?\d*\s*(HP|PSI|GPM|RPM|kW|MHz|GHz|°F|°C|V|A|W)\b',
-            r'\b(specification|procedure|protocol|standard|regulation|compliance)\b',
-            r'\b[A-Z]{2,}[-\d]*\b',  # Acronyms
-        ]
+    def _create_result_from_cache(self, cache_result: Dict[str, Any], document_type: str) -> ProcessingResult:
+        """Create result from cached data"""
+        cached_data = cache_result.get("result")
+        if cached_data:
+            # Update metadata for new document type
+            cached_data.metadata["document_type"] = document_type
+            cached_data.metadata["cache_used"] = True
+            cached_data.processing_time = 0.1  # Very fast from cache
+            return cached_data
         
-        count = 0
-        for pattern in technical_patterns:
-            count += len(re.findall(pattern, content, re.IGNORECASE))
-        
-        return min(count / 100, 1.0)  # Normalize to 0-1
-    
-    def _count_structured_elements(self, content: str) -> float:
-        """Count structured elements (lists, tables, sections)"""
-        structured_patterns = [
-            r'^\s*\d+\.', r'^\s*[a-z]\)', r'^\s*[-*•]',  # Lists
-            r'\|.*\|', r'\t.*\t',  # Tables
-            r'^[A-Z\s]+:$', r'#{1,6}\s'  # Headers
-        ]
-        
-        count = 0
-        for line in content.split('\n'):
-            for pattern in structured_patterns:
-                if re.search(pattern, line, re.MULTILINE):
-                    count += 1
-                    break
-        
-        return min(count / 50, 1.0)  # Normalize to 0-1
-    
-    def _assess_domain_specificity(self, content: str, document_type: str) -> float:
-        """Assess domain-specific complexity"""
-        domain_indicators = {
-            "safety": ["hazard", "risk", "danger", "safety", "protection", "warning"],
-            "technical": ["specification", "parameter", "measurement", "calibration"],
-            "regulatory": ["compliance", "standard", "regulation", "requirement", "certification"],
-            "operational": ["procedure", "process", "workflow", "maintenance", "operation"]
-        }
-        
-        content_lower = content.lower()
-        max_score = 0
-        
-        for domain, terms in domain_indicators.items():
-            score = sum(1 for term in terms if term in content_lower)
-            max_score = max(max_score, score)
-        
-        return min(max_score / 20, 1.0)  # Normalize to 0-1
-    
-    def _is_meaningless_content(self, content: str) -> bool:
-        """Check if content is meaningless or too generic"""
-        meaningless_patterns = [
-            r'^[^a-zA-Z]*$',  # No letters
-            r'^(the|and|or|but|in|on|at|to|for|of|with|by).*$',  # Starts with common words only
-            r'^.{1,5}$',  # Too short
-        ]
-        
-        for pattern in meaningless_patterns:
-            if re.match(pattern, content.strip(), re.IGNORECASE):
-                return True
-        
-        return False
-    
-    def _calculate_enhancement_level(self, entity: ExtractedEntity) -> str:
-        """Calculate enhancement level for entity"""
-        if entity.metadata.get("llm_generated") and entity.confidence > 0.85:
-            return "maximum"
-        elif entity.metadata.get("enhanced_by_llm") or entity.confidence > 0.75:
-            return "high"
-        elif entity.confidence > 0.60:
-            return "medium"
-        else:
-            return "basic"
-    
-    def _calculate_business_relevance(self, entity: ExtractedEntity) -> float:
-        """Calculate business relevance score"""
-        relevance_indicators = {
-            "safety": 0.9,
-            "compliance": 0.8,
-            "technical": 0.7,
-            "operational": 0.6,
-            "general": 0.4
-        }
-        
-        entity_category = entity.category.lower()
-        for indicator, score in relevance_indicators.items():
-            if indicator in entity_category:
-                return score
-        
-        return 0.5  # Default relevance
-    
-    def _calculate_actionability(self, entity: ExtractedEntity) -> float:
-        """Calculate how actionable the entity is"""
-        actionable_terms = ["must", "shall", "should", "required", "procedure", "step", "process"]
-        content_lower = entity.content.lower()
-        
-        actionability_score = sum(0.1 for term in actionable_terms if term in content_lower)
-        return min(actionability_score, 1.0)
-    
-    def _get_applied_rules(self) -> List[str]:
-        """Get list of applied processing rules"""
-        return [rule.name for rule in self.PROCESSING_RULES]
+        # Fallback to creating new result
+        return ProcessingResult(
+            entities=cache_result.get("entities", []),
+            processing_method="cached",
+            confidence_score=0.75,
+            quality_metrics={"overall_confidence": 0.75, "cache_hit": True},
+            processing_time=0.1,
+            llm_enhanced=False,
+            validation_passed=True,
+            metadata={"document_type": document_type, "cache_used": True}
+        )
     
     def _update_processing_stats(self, method: str, quality_metrics: Dict[str, float]) -> Dict[str, Any]:
-        """Update and return processing statistics"""
-        self.processing_stats["total_processed"] += 1
+        """Update processing statistics"""
+        if method not in self.processing_stats["method_usage"]:
+            self.processing_stats["method_usage"][method] = 0
         
-        if method.startswith("llm"):
-            self.processing_stats["llm_primary_used"] += 1
-        elif method.startswith("enhanced"):
-            self.processing_stats["enhanced_pattern_used"] += 1
-        else:
-            self.processing_stats["fallback_used"] += 1
+        self.processing_stats["method_usage"][method] += 1
         
-        # Update running averages
-        total = self.processing_stats["total_processed"]
-        self.processing_stats["average_confidence"] = (
-            (self.processing_stats["average_confidence"] * (total - 1) + 
-             quality_metrics["overall_confidence"]) / total
-        )
-        
-        self.processing_stats["validation_pass_rate"] = (
-            (self.processing_stats["validation_pass_rate"] * (total - 1) + 
-             quality_metrics["validation_score"]) / total
-        )
-        
-        return self.processing_stats.copy()
+        return {
+            "method_usage": self.processing_stats["method_usage"],
+            "total_documents": self.processing_stats["total_documents"],
+            "cache_hit_rate": (self.processing_stats["cache_hits"] / 
+                              (self.processing_stats["cache_hits"] + self.processing_stats["cache_misses"]))
+            if (self.processing_stats["cache_hits"] + self.processing_stats["cache_misses"]) > 0 else 0.0
+        }
     
     def get_processing_summary(self) -> Dict[str, Any]:
-        """Get comprehensive processing engine summary"""
+        """Get processing performance summary"""
+        total_docs = self.processing_stats["total_documents"]
+        avg_time = (self.processing_stats["total_processing_time"] / total_docs 
+                   if total_docs > 0 else 0.0)
+        
         return {
-            "engine_status": "initialized" if self.initialized else "not_initialized",
-            "llm_available": self.llm_model is not None,
-            "enhanced_engine_available": self.enhanced_engine is not None,
-            "processing_rules_count": len(self.PROCESSING_RULES),
-            "quality_thresholds": {
-                "llm_minimum": QualityThreshold.LLM_MINIMUM.value,
-                "enhanced_minimum": QualityThreshold.ENHANCED_MINIMUM.value,
-                "combined_minimum": QualityThreshold.COMBINED_MINIMUM.value,
-                "entity_validation": QualityThreshold.ENTITY_VALIDATION.value,
-                "production_ready": QualityThreshold.PRODUCTION_READY.value
-            },
-            "processing_statistics": self.processing_stats,
-            "core_principles": [
-                "LLM Supremacy - Offline models are primary source",
-                "Quality First - High confidence thresholds",
-                "Hierarchical Fallback - Graceful degradation",
-                "Validation Required - All entities validated",
-                "Structured Output - Clean categorized results"
-            ]
+            "total_documents_processed": total_docs,
+            "average_processing_time": avg_time,
+            "cache_hit_rate": (self.processing_stats["cache_hits"] / 
+                              (self.processing_stats["cache_hits"] + self.processing_stats["cache_misses"]))
+            if (self.processing_stats["cache_hits"] + self.processing_stats["cache_misses"]) > 0 else 0.0,
+            "method_distribution": self.processing_stats["method_usage"],
+            "performance_target_met": avg_time <= 120.0,  # 2 minutes target
+            "speed_improvement": (600.0 / avg_time) if avg_time > 0 else 0.0  # 10 min -> target
         }
+    
+    async def cleanup(self):
+        """Cleanup resources"""
+        if self.executor:
+            self.executor.shutdown(wait=True)
+        logger.info("🧹 Optimized LLM Processing Engine cleaned up")
 
+<<<<<<< Current (Your changes)
 # Export the main processing engine
 __all__ = ["LLMProcessingEngine", "ProcessingResult", "ProcessingPriority", "QualityThreshold"]
+=======
+# Backward compatibility
+LLMProcessingEngine = OptimizedLLMProcessingEngine
+>>>>>>> Incoming (Background Agent changes)
