@@ -927,11 +927,24 @@ def main():
         # Filters
         st.subheader("Filters")
         
-        knowledge_types = st.multiselect(
-            "Knowledge Types",
-            ["concepts", "processes", "systems", "requirements", "risks", "people"],
-            default=["concepts", "processes", "systems", "requirements", "risks", "people"]
-        )
+        # Get available knowledge types dynamically from current data
+        available_types = []
+        if st.session_state.knowledge_data:
+            df_temp = pd.DataFrame(st.session_state.knowledge_data)
+            if 'Type' in df_temp.columns:
+                available_types = sorted(df_temp['Type'].dropna().unique().tolist())
+        
+        # Only show knowledge types filter if there are types available
+        if available_types:
+            knowledge_types = st.multiselect(
+                "Knowledge Types",
+                available_types,
+                default=available_types,
+                help="Filter by knowledge types found in your processed documents"
+            )
+        else:
+            st.info("📋 Knowledge Types filter will appear after processing documents")
+            knowledge_types = []
         
         confidence_range = st.slider(
             "Confidence Range",
@@ -968,8 +981,8 @@ def main():
         
         # Apply filters only if DataFrame is not empty
         if not df.empty:
-            # Apply type filter
-            if knowledge_types and 'Type' in df.columns:
+            # Apply type filter only if there are available types and user has selected some
+            if available_types and knowledge_types and 'Type' in df.columns:
                 df = df[df['Type'].isin(knowledge_types)]
             
             # Apply confidence filter
@@ -993,7 +1006,29 @@ def main():
                 - Upload any supported file type for AI analysis
                 """)
             else:
-                st.info("No data matches your current filters. Try adjusting the filters above.")
+                total_items = len(st.session_state.knowledge_data)
+                st.warning(f"🔍 No data matches your current filters (total items available: {total_items})")
+                
+                # Show helpful suggestions
+                with st.expander("💡 Filtering Tips"):
+                    st.markdown("""
+                    **Try these adjustments:**
+                    - **Knowledge Types**: Expand your selection or select all available types
+                    - **Confidence Range**: Lower the minimum confidence threshold
+                    - **Search Term**: Clear the search box or try different keywords
+                    
+                    **Available in your data:**
+                    """)
+                    if available_types:
+                        st.write("📂 **Knowledge Types:**", ", ".join(available_types))
+                    if 'Confidence' in pd.DataFrame(st.session_state.knowledge_data).columns:
+                        conf_df = pd.DataFrame(st.session_state.knowledge_data)
+                        min_conf = conf_df['Confidence'].min()
+                        max_conf = conf_df['Confidence'].max()
+                        st.write(f"📊 **Confidence Range:** {min_conf:.2f} - {max_conf:.2f}")
+                
+                if st.button("🔄 Reset All Filters"):
+                    st.rerun()
         else:
             st.dataframe(
                 df,
@@ -1080,8 +1115,8 @@ def convert_intelligent_ai_results_to_display(ai_results, file_name):
         extracted_entities = ai_results.get('extracted_entities', [])
         for entity in extracted_entities:
             display_items.append({
-                "Knowledge": entity.get('key_identifier', 'Unknown'),
-                "Type": entity.get('entity_type', 'unknown'),
+                "Knowledge": entity.get('core_content', entity.get('key_identifier', 'Unknown')),
+                "Type": entity.get('category', entity.get('entity_type', 'unknown')),
                 "Confidence": entity.get('confidence_score', 0.5),
                 "Category": entity.get('category', 'Unknown').replace('_', ' ').title(),
                 "Description": entity.get('core_content', 'No description available'),
