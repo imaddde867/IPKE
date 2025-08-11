@@ -1,9 +1,32 @@
-# Explainium 2.0 – Intelligent Document Knowledge Extraction Platform
+# Explainium – Intelligent Document Knowledge Extraction Platform
+
+> Phase 1 (Foundation) of the **EXPLAINIUM Central Intelligence Hub** – the smart Knowledge Extraction core.
 
 Explainium converts unstructured technical, safety, compliance and operational documents into structured, validated knowledge. It runs fully locally (offline models) and produces database‑ready entities with confidence and quality metrics so the extracted knowledge can be searched, filtered, audited, or exported.
 
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://python.org)
 [![Offline](https://img.shields.io/badge/processing-offline-success.svg)](https://github.com)
+![EXPLAINIUM Central Intelligence Hub](https://img.shields.io/badge/EXPLAINIUM-Central%20Intelligence%20Hub-ffd200?style=flat&logo=brain&logoColor=black)
+
+## Context: Central Intelligence Hub Alignment
+
+This repository delivers the **Knowledge Extraction Foundation** (Phase 1) of the broader **EXPLAINIUM Central Intelligence Hub** – an industrial AI platform that unifies:
+
+- Tacit Company Knowledge (documents, media, training assets)
+- Multimodal Sensing (future phase: IoT, CV, telemetry fusion)
+- Agent Generated Outputs (future phase: autonomous specialized AI agents)
+
+The current scope focuses on high‑fidelity transformation of unstructured institutional knowledge into normalized, confidence‑scored entities – seeding the knowledge layer that subsequent phases (semantic cortex, agent orchestration, sensor fusion) will leverage.
+
+### Roadmap Positioning
+
+| Phase | Focus | Status |
+|-------|-------|--------|
+| 1. Foundation | Document & media ingestion, structured knowledge extraction | IN PROGRESS (this repo) |
+| 2. Agent Network | Orchestration & specialized autonomous agents | Planned |
+| 3. Multimodal Fusion | Real-time sensor + telemetry integration | Planned |
+
+Lightweight hooks (environment flags, modular engines, model registry stubs) have been designed to enable forward compatibility with later phases without refactoring core extraction logic.
 
 ## Overview
 
