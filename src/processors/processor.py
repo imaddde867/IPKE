@@ -36,6 +36,7 @@ from src.logging_config import get_logger, log_processing_step
 from src.core.config import config as config_manager
 from src.exceptions import ProcessingError, AIError
 from src.ai.advanced_knowledge_engine import AdvancedKnowledgeEngine
+from src.ai.llm_processing_engine import LLMProcessingEngine
 
 logger = get_logger(__name__)
 
@@ -75,8 +76,13 @@ class DocumentProcessor:
         # Initialize advanced knowledge engine
         self._init_knowledge_engine()
         
-        # Set knowledge engine availability
+        # Initialize LLM-first processing engine
+        self._init_llm_processing_engine()
+        
+        # Initialize AI engines
         self.knowledge_engine_available = True
+        self.llm_processing_engine = None
+        self.llm_engine_available = False
     
     def _init_ocr(self):
         """Initialize OCR capabilities"""
@@ -120,6 +126,97 @@ class DocumentProcessor:
         except Exception as e:
             logger.warning(f"Advanced knowledge engine initialization failed: {e}")
             self.knowledge_engine_available = False
+    
+    def _init_llm_processing_engine(self):
+        """Initialize LLM-first processing engine"""
+        try:
+            import asyncio
+            logger.info("Initializing LLM-first processing engine")
+            self.llm_processing_engine = LLMProcessingEngine()
+            
+            # Schedule async initialization
+            if hasattr(asyncio, 'get_running_loop'):
+                try:
+                    loop = asyncio.get_running_loop()
+                    loop.create_task(self.llm_processing_engine.initialize())
+                except RuntimeError:
+                    # No running loop; safe to run synchronously
+                    asyncio.run(self.llm_processing_engine.initialize())
+            else:
+                # No running loop; safe to run synchronously
+                asyncio.run(self.llm_processing_engine.initialize())
+            
+            self.llm_engine_available = True
+            logger.info("✅ LLM-first processing engine scheduled for initialization")
+        except Exception as e:
+            logger.error(f"❌ LLM processing engine initialization failed: {e}")
+            self.llm_engine_available = False
+    
+    def _convert_llm_result_to_knowledge(self, processing_result, filename: str) -> Dict[str, Any]:
+        """Convert LLM processing result to knowledge format"""
+        try:
+            from src.ai.knowledge_categorization_engine import KnowledgeCategory, EntityType
+            
+            # Convert entities to the expected format
+            extracted_entities = []
+            for entity in processing_result.entities:
+                
+                # Map to knowledge categorization format
+                knowledge_entity = {
+                    'entity_type': EntityType.SPECIFICATION,  # Default, will be refined
+                    'key_identifier': entity.content[:50] + "..." if len(entity.content) > 50 else entity.content,
+                    'core_content': entity.content,
+                    'context_tags': entity.metadata.get('context_tags', []),
+                    'priority_level': entity.metadata.get('priority', 'medium'),
+                    'category': entity.category,
+                    'confidence_score': entity.confidence,
+                    'source_section': entity.context[:100] if entity.context else "",
+                    'extraction_method': entity.metadata.get('extraction_method', 'llm_primary'),
+                    'relationships': entity.relationships,
+                    'structured_data': entity.metadata,
+                    'completeness_score': entity.metadata.get('completeness', 0.8),
+                    'clarity_score': entity.metadata.get('clarity', 0.8),
+                    'actionability_score': entity.metadata.get('actionability', 0.7)
+                }
+                
+                extracted_entities.append(knowledge_entity)
+            
+            # Build comprehensive knowledge structure
+            knowledge = {
+                'extracted_entities': extracted_entities,
+                'processing_metadata': {
+                    'method': 'llm_first_processing',
+                    'confidence_score': processing_result.confidence_score,
+                    'quality_metrics': processing_result.quality_metrics,
+                    'processing_time': processing_result.processing_time,
+                    'validation_passed': processing_result.validation_passed,
+                    'llm_enhanced': processing_result.llm_enhanced,
+                    'entity_count': len(extracted_entities),
+                    'filename': filename,
+                    'timestamp': datetime.now().isoformat()
+                },
+                'intelligence_framework': {
+                    'document_intelligence': {
+                        'document_type': processing_result.metadata.get('document_type', 'unknown'),
+                        'complexity_score': processing_result.metadata.get('complexity_score', 0.5),
+                        'confidence': processing_result.confidence_score
+                    },
+                    'processing_rules_applied': processing_result.metadata.get('rules_applied', []),
+                    'quality_validation': {
+                        'validation_passed': processing_result.validation_passed,
+                        'quality_score': processing_result.quality_metrics.get('overall_confidence', 0.0),
+                        'business_value': processing_result.quality_metrics.get('business_value', 0.0)
+                    }
+                },
+                'quality_metrics': processing_result.quality_metrics
+            }
+            
+            logger.info(f"✅ Converted LLM result: {len(extracted_entities)} entities")
+            return knowledge
+            
+        except Exception as e:
+            logger.error(f"❌ Failed to convert LLM result: {e}")
+            return {}
     
     async def process_document_with_context(self, document: Dict[str, Any], company_context: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -271,10 +368,46 @@ class DocumentProcessor:
             else:
                 raise ProcessingError(f"Unsupported file type: {file_extension}")
             
-            # Extract knowledge from content using intelligent AI framework
+            # PRIMARY: LLM-First Processing Engine (Superior Results)
             knowledge = {}
-            if self.knowledge_engine_available:
+            
+            # RULE 1: LLM-First Processing (Primary Method - Guaranteed Best Results)
+            if self.llm_engine_available and self.llm_processing_engine:
                 try:
+                    logger.info("🧠 Using LLM-First Processing Engine (Primary Method)")
+                    import asyncio
+                    loop = asyncio.new_event_loop()
+                    asyncio.set_event_loop(loop)
+                    
+                    # Process with LLM-first engine
+                    processing_result = loop.run_until_complete(
+                        self.llm_processing_engine.process_document(
+                            content=content.get('text', ''),
+                            document_type=file_type,
+                            metadata={
+                                'filename': file_path.name,
+                                'file_type': file_type,
+                                'document_id': document_id,
+                                'content_type': content.get('content_type', 'text'),
+                                'processing_timestamp': datetime.now().isoformat()
+                            }
+                        )
+                    )
+                    loop.close()
+                    
+                    # Convert LLM processing result to knowledge format
+                    knowledge = self._convert_llm_result_to_knowledge(processing_result, file_path.name)
+                    logger.info(f"✅ LLM-First processing successful: {len(processing_result.entities)} entities, "
+                              f"{processing_result.confidence_score:.2f} confidence")
+                    
+                except Exception as e:
+                    logger.warning(f"⚠️ LLM-First processing failed, cascading to fallback: {e}")
+                    knowledge = {}
+            
+            # FALLBACK 1: Advanced Knowledge Engine (High Quality Fallback)
+            if not knowledge and self.knowledge_engine_available:
+                try:
+                    logger.info("🔧 Using Advanced Knowledge Engine (Fallback Method)")
                     import asyncio
                     loop = asyncio.new_event_loop()
                     asyncio.set_event_loop(loop)
@@ -287,44 +420,29 @@ class DocumentProcessor:
                             'filename': file_path.name,
                             'file_type': file_type,
                             'document_id': document_id,
-                            'sections': content.get('sections', [])
-                        }
+                            'content_type': content.get('content_type', 'text'),
+                            'processing_timestamp': datetime.now().isoformat(),
+                            'fallback_reason': 'llm_engine_unavailable'
+                        },
+                        'sections': content.get('sections', []),
+                        'extraction_methods': content.get('extraction_methods', [])
                     }
                     
-                    # Use the new intelligent knowledge extraction framework
-                    knowledge = loop.run_until_complete(
+                    knowledge_results = loop.run_until_complete(
                         self.advanced_engine.extract_intelligent_knowledge(document_data)
                     )
+                    knowledge = knowledge_results
                     loop.close()
+                    logger.info("✅ Advanced knowledge extraction successful (fallback)")
                     
                 except Exception as e:
-                    logger.error(f"Intelligent knowledge extraction failed, falling back to legacy: {e}")
-                    # Fallback to legacy extraction if intelligent framework fails
-                    try:
-                        loop = asyncio.new_event_loop()
-                        asyncio.set_event_loop(loop)
-                        
-                        document_data = {
-                            'id': document_id,
-                            'content': content.get('text', ''),
-                            'metadata': {
-                                'filename': file_path.name,
-                                'file_type': file_type,
-                                'document_id': document_id
-                            }
-                        }
-                        
-                        knowledge = loop.run_until_complete(
-                            self.advanced_engine.extract_deep_knowledge(document_data)
-                        )
-                        knowledge['processing_note'] = 'Used legacy extraction due to intelligent framework failure'
-                        loop.close()
-                        
-                    except Exception as legacy_e:
-                        logger.error(f"Legacy knowledge extraction also failed: {legacy_e}")
-                        knowledge = {'error': f'Both intelligent and legacy extraction failed: {str(e)}, {str(legacy_e)}'}
-            else:
-                knowledge = {'error': 'Knowledge engine not available'}
+                    logger.error(f"❌ Advanced knowledge extraction failed, using legacy: {e}")
+                    knowledge = {}
+            
+            # FALLBACK 2: Legacy Processing (Basic)
+            if not knowledge:
+                logger.warning("⚠️ Using legacy processing (basic patterns)")
+                knowledge = self._extract_knowledge_legacy(content.get('text', ''), file_path.name)
             
             result = {
                 'document_id': document_id,

@@ -849,12 +849,12 @@ def get_demo_data():
 def main():
     """Main application"""
     st.set_page_config(
-        page_title="EXPLAINIUM Knowledge Table",
+        page_title="EXPLAINIUM Intelligent Knowledge Extraction",
         layout="wide",
         initial_sidebar_state="expanded"
     )
     
-    st.title("EXPLAINIUM Knowledge Table")
+    st.title("EXPLAINIUM Intelligent Knowledge Extraction")
     st.markdown("Deep Knowledge Extraction and Analysis Dashboard")
     
     # Show AI engine status prominently
@@ -952,7 +952,7 @@ def main():
                 help="Filter by knowledge types found in your processed documents"
             )
         else:
-            st.info("📋 Knowledge Types filter will appear after processing documents")
+            st.info("Knowledge Types filter will appear after processing documents")
             knowledge_types = []
         
         confidence_range = st.slider(
@@ -980,44 +980,96 @@ def main():
                 st.success("Demo data loaded.")
                 st.rerun()
     
-    # Processing Summary Section (outside main table)
+        # LLM-First Processing Summary Section (Priority Display)
     if st.session_state.processing_metadata:
-        st.header("📊 Processing Summary")
+        st.header("🧠 LLM-First Processing Intelligence")
         
-        # Display processing metadata in a clean format
+        # Show processing engine status
+        col_status1, col_status2, col_status3 = st.columns(3)
+        
+        # Analyze processing methods used
+        llm_count = sum(1 for m in st.session_state.processing_metadata 
+                       if m.get('details', {}).get('method') == 'llm_first_processing')
+        advanced_count = len(st.session_state.processing_metadata) - llm_count
+        
+        with col_status1:
+            st.metric("🧠 LLM Primary", llm_count, help="Documents processed with LLM-first engine")
+        with col_status2:
+            st.metric("🔧 Advanced Fallback", advanced_count, help="Documents using advanced engine fallback")
+        with col_status3:
+            avg_confidence = sum(m.get('confidence', 0) for m in st.session_state.processing_metadata) / max(len(st.session_state.processing_metadata), 1)
+            st.metric("⭐ Avg Quality", f"{avg_confidence:.2f}", help="Average processing confidence")
+
+        # Display processing metadata in enhanced format
         for metadata in st.session_state.processing_metadata[-3:]:  # Show last 3 processed items
-            with st.expander(f"📄 {metadata['title']} - {metadata['source']}", expanded=False):
+            # Determine processing method and show appropriate styling
+            method = metadata.get('details', {}).get('method', 'unknown')
+            if method == 'llm_first_processing':
+                icon = "🧠"
+                method_display = "LLM-First Processing"
+                color = "green"
+            else:
+                icon = "🔧" 
+                method_display = "Advanced Engine"
+                color = "blue"
+            
+            with st.expander(f"{icon} {method_display}: {metadata['title']} - {metadata['source']}", expanded=False):
                 col_meta1, col_meta2 = st.columns([2, 1])
-                
+
                 with col_meta1:
                     if metadata['type'] == 'document_analysis':
                         st.markdown(f"""
-                        **Document Analysis Results:**
+                        **Document Intelligence Results:**
                         - **Document Type:** {metadata['details']['document_type']}
                         - **Complexity Level:** {metadata['details']['complexity']}
                         - **Target Audience:** {metadata['details']['target_audience']}
                         - **Sections Found:** {metadata['details']['sections_found']}
+                        - **Processing Method:** {method_display}
                         """)
                     elif metadata['type'] == 'quality_metrics':
                         st.markdown(f"""
-                        **Processing Quality Metrics:**
+                        **LLM Quality Metrics:**
                         - **Extraction Quality:** {metadata['details']['extraction_quality']:.2f}
                         - **Database Readiness:** {metadata['details']['database_readiness']:.2f}
                         - **Business Value:** {metadata['details']['business_value']:.2f}
                         - **Completeness:** {metadata['details']['completeness']:.2f}
+                        - **LLM Enhanced:** {'✅ Yes' if metadata['details'].get('llm_enhanced') else '❌ No'}
                         """)
-                
+                    
+                    # Show processing hierarchy rules applied
+                    if metadata.get('details', {}).get('rules_applied'):
+                        st.markdown("**🔧 Processing Rules Applied:**")
+                        for rule in metadata['details']['rules_applied']:
+                            st.markdown(f"- {rule}")
+
                 with col_meta2:
-                    st.metric("Confidence", f"{metadata['confidence']:.2f}")
+                    confidence = metadata['confidence']
+                    if confidence >= 0.85:
+                        delta_color = "normal"
+                        delta = "Excellent"
+                    elif confidence >= 0.70:
+                        delta_color = "normal" 
+                        delta = "Good"
+                    else:
+                        delta_color = "inverse"
+                        delta = "Needs Review"
+                    
+                    st.metric("Confidence", f"{confidence:.2f}", delta, delta_color=delta_color)
                     st.caption(f"Processed: {metadata['processed_at']}")
-        
+                    
+                    # Show method priority
+                    if method == 'llm_first_processing':
+                        st.success("🥇 Primary Method")
+                    else:
+                        st.info("🥈 Fallback Method")
+
         st.divider()
 
     # Main content
     col1, col2 = st.columns([3, 1])
     
     with col1:
-        st.header("📚 Extracted Knowledge")
+        st.header("Extracted Knowledge")
         
         # Get and filter data
         df = pd.DataFrame(st.session_state.knowledge_data)

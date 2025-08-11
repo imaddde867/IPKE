@@ -41,7 +41,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 try:
-    from enhanced_extraction_engine import EnhancedExtractionEngine, ExtractedEntity
+    from src.ai.enhanced_extraction_engine import EnhancedExtractionEngine, ExtractedEntity
     ENHANCED_EXTRACTION_AVAILABLE = True
 except ImportError:
     ENHANCED_EXTRACTION_AVAILABLE = False
