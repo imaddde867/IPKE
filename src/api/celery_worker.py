@@ -19,7 +19,7 @@ from celery.signals import task_prerun, task_postrun, task_failure
 from src.core.config import config
 from src.database.database import get_db_session, db_transaction
 from src.database import crud, models
-from src.processors.processor import DocumentProcessor
+from src.processors.optimized_processor import OptimizedDocumentProcessor
 from src.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -71,8 +71,12 @@ celery_app.conf.update(
     },
 )
 
-# Initialize document processor
-document_processor = DocumentProcessor()
+# Initialize optimized document processor and apply M4 optimizations
+document_processor = OptimizedDocumentProcessor()
+try:
+    document_processor.optimize_for_m4()
+except Exception:
+    pass
 
 
 # Celery signal handlers
@@ -172,9 +176,51 @@ def process_document_task(self, file_path: str, document_id: int) -> Dict[str, A
             meta={'current': 1, 'total': 5, 'status': 'Starting document processing'}
         )
         
-        # Process the document
+        # Process the document using the optimized processor
         logger.info(f"Starting document processing for {file_path}")
-        processing_result = document_processor.process_document(file_path, document_id)
+        try:
+            optimized_result = document_processor.process_document_sync(file_path)
+        except Exception as e:
+            logger.error(f"Optimized processing failed: {e}")
+            raise
+        
+        # Adapt optimized result to legacy knowledge dict expected by DB layer
+        knowledge = {
+            'processes': [],
+            'decision_points': [],
+            'compliance_items': [],
+            'risk_assessments': [],
+            'entities': [],
+            'overall_confidence': optimized_result.confidence_score,
+            'processing_metadata': {
+                'processing_time': optimized_result.processing_time,
+                'processing_method': optimized_result.processing_method,
+                'optimization_level': optimized_result.optimization_level,
+                'format_detected': optimized_result.format_detected,
+                'confidence_score': optimized_result.confidence_score,
+            }
+        }
+        
+        for ent in optimized_result.entities:
+            try:
+                knowledge['entities'].append({
+                    'text': ent.get('content') or ent.get('core_content', ''),
+                    'label': ent.get('entity_type', ent.get('category', 'unknown')),
+                    'confidence': float(ent.get('confidence', ent.get('quality_score', 0.5)))
+                })
+            except Exception:
+                continue
+        
+        # Build a minimal processing_result dict for downstream references
+        processing_result = {
+            'knowledge': knowledge,
+            'processing_time': optimized_result.processing_time,
+            'content': {
+                'text': '',
+                'page_count': None,
+                'language': 'en'
+            }
+        }
         
         # Update progress: Document processed
         self.update_state(

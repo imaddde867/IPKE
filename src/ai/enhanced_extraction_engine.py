@@ -33,7 +33,7 @@ class OptimizedEnhancedExtractionEngine:
     
     def __init__(self, llm_model=None):
         # Load spaCy model for NLP processing (lazy loading)
-            self.nlp = None
+        self.nlp = None
         self.nlp_loaded = False
         
         # LLM model for intelligent extraction
@@ -193,17 +193,17 @@ class OptimizedEnhancedExtractionEngine:
             for match in matches:
                 entity = ExtractedEntity(
                     content=match.group(0).strip(),
-                        entity_type="procedure",
+                    entity_type="procedure",
                     category="procedures",
                     confidence=0.70,
                     context=self._get_surrounding_context_fast(content, match),
-                        metadata={
+                    metadata={
                         "processing_method": "fast_pattern",
                         "pattern_type": "procedure",
                         "optimized": True
-                        },
-                        relationships=[],
-                        source_location=f"chars_{match.start()}_{match.end()}"
+                    },
+                    relationships=[],
+                    source_location=f"chars_{match.start()}_{match.end()}"
                 )
                 entities.append(entity)
         
@@ -496,14 +496,14 @@ class OptimizedEnhancedExtractionEngine:
         if any(word in text_lower for word in ['specification', 'parameter', 'measurement']):
             return "technical_specification"
         elif any(word in text_lower for word in ['procedure', 'process', 'step']):
-                return "procedure"
+            return "procedure"
         elif any(word in text_lower for word in ['safety', 'warning', 'caution']):
-                return "safety_requirement"
+            return "safety_requirement"
         elif any(word in text_lower for word in ['personnel', 'operator', 'technician']):
             return "personnel"
         elif any(word in text_lower for word in ['equipment', 'machine', 'device']):
             return "equipment"
-            else:
+        else:
             return "general_information"
     
     def _enhance_with_llm_fast(self, entities: List[ExtractedEntity], content: str, document_type: str) -> List[ExtractedEntity]:
@@ -517,7 +517,7 @@ class OptimizedEnhancedExtractionEngine:
         for entity in high_confidence_entities:
             # Simple LLM enhancement
             entity.metadata["llm_enhanced"] = True
-                entity.confidence = min(0.95, entity.confidence + 0.05)
+            entity.confidence = min(0.95, entity.confidence + 0.05)
         
         return entities
     
@@ -563,11 +563,6 @@ class OptimizedEnhancedExtractionEngine:
             "target_met": avg_time <= 120.0  # 2 minutes target
         }
     
-<<<<<<< Current (Your changes)
-    print(f"Extracted {len(entities)} entities:")
-    for i, entity in enumerate(entities[:10]):  # Show first 10
-        print(f"{i+1}. [{entity.category}] {entity.content[:80]}... (Confidence: {entity.confidence:.2f})")
-=======
     def cleanup(self):
         """Cleanup resources"""
         if self.executor:
@@ -576,4 +571,3 @@ class OptimizedEnhancedExtractionEngine:
 
 # Backward compatibility
 EnhancedExtractionEngine = OptimizedEnhancedExtractionEngine
->>>>>>> Incoming (Background Agent changes)

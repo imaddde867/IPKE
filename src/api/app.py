@@ -24,7 +24,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 try:
     from database.database import get_db, init_db
     from database import models, crud
-    from processors.processor import DocumentProcessor
+    from processors.optimized_processor import OptimizedDocumentProcessor
     from api.celery_worker import process_document_task, get_task_status
     from middleware import ErrorHandlingMiddleware, RequestLoggingMiddleware
     from logging_config import get_logger
@@ -37,7 +37,7 @@ except ImportError as e:
     def init_db(): pass
     models = None
     crud = None
-    DocumentProcessor = None
+    OptimizedDocumentProcessor = None
     process_document_task = None
     get_task_status = None
     ErrorHandlingMiddleware = None
@@ -92,8 +92,12 @@ UPLOAD_DIRECTORY = config_manager.get_upload_directory()
 MAX_FILE_SIZE = config_manager.get_max_file_size()
 os.makedirs(UPLOAD_DIRECTORY, exist_ok=True)
 
-# Initialize document processor
-document_processor = DocumentProcessor()
+# Initialize optimized document processor and apply M4 optimizations
+document_processor = OptimizedDocumentProcessor()
+try:
+    document_processor.optimize_for_m4()
+except Exception:
+    pass
 
 
 # Pydantic models for API

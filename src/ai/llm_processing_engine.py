@@ -190,7 +190,7 @@ class OptimizedLLMProcessingEngine:
         # Performance monitoring
         self.start_time = None
         self.performance_metrics = {}
-        
+    
     async def initialize(self):
         """Initialize the processing engine asynchronously"""
         if self.initialized:
@@ -204,8 +204,8 @@ class OptimizedLLMProcessingEngine:
         # Initialize LLM model (if available)
         if LLAMA_AVAILABLE:
             await self._initialize_primary_llm()
-            
-            self.initialized = True
+        
+        self.initialized = True
         logger.info("✅ Optimized LLM Processing Engine initialized")
     
     async def _initialize_primary_llm(self):
@@ -216,7 +216,7 @@ class OptimizedLLMProcessingEngine:
             
             if Path(model_path).exists():
                 # M4-optimized settings
-                    self.llm_model = Llama(
+                self.llm_model = Llama(
                     model_path=model_path,
                     n_ctx=2048,  # Reduced context for speed
                     n_batch=512,  # Optimized batch size for M4
@@ -225,10 +225,10 @@ class OptimizedLLMProcessingEngine:
                     verbose=False
                 )
                 logger.info("✅ LLM model initialized with M4 optimizations")
-                else:
+            else:
                 logger.warning("⚠️ LLM model not found, using enhanced patterns only")
                 self.llm_model = None
-            
+                
         except Exception as e:
             logger.error(f"❌ LLM initialization failed: {e}")
             self.llm_model = None
@@ -568,7 +568,7 @@ Format: [Entity Type]: [Content]"""
         return validated_entities
     
     def _calculate_quality_metrics_fast(self, entities: List[ExtractedEntity], 
-                                 processing_method: str) -> Dict[str, float]:
+                                      processing_method: str) -> Dict[str, float]:
         """Fast quality metrics calculation"""
         if not entities:
             return {
@@ -652,10 +652,5 @@ Format: [Entity Type]: [Content]"""
             self.executor.shutdown(wait=True)
         logger.info("🧹 Optimized LLM Processing Engine cleaned up")
 
-<<<<<<< Current (Your changes)
-# Export the main processing engine
-__all__ = ["LLMProcessingEngine", "ProcessingResult", "ProcessingPriority", "QualityThreshold"]
-=======
 # Backward compatibility
 LLMProcessingEngine = OptimizedLLMProcessingEngine
->>>>>>> Incoming (Background Agent changes)

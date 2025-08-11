@@ -162,13 +162,17 @@ def process_with_intelligent_ai_engine(uploaded_file, file_name, file_type):
             import tempfile
             import os
             from pathlib import Path
-            from processors.processor import DocumentProcessor
+            from processors.optimized_processor import OptimizedDocumentProcessor
 
             # Lazy-init the heavy processor once per session with a spinner
             processor = getattr(st.session_state, 'document_processor', None)
             if processor is None:
                 with st.spinner("🧠 Initializing local AI models (first use may take up to a minute)..."):
-                    processor = DocumentProcessor()
+                    processor = OptimizedDocumentProcessor()
+                    try:
+                        processor.optimize_for_m4()
+                    except Exception:
+                        pass
                     st.session_state.document_processor = processor
 
             # Save the file temporarily for processing
@@ -190,7 +194,7 @@ def process_with_intelligent_ai_engine(uploaded_file, file_name, file_type):
                 except Exception:
                     pass
 
-            # Convert DocumentProcessor results to display format (tracks LLM vs fallback)
+            # Convert optimized processor results to display format (tracks LLM vs fallback)
             ai_converted = convert_document_processor_results_to_display(knowledge_results, file_name)
             
             # Store metadata in session state for display outside table (if available)
@@ -620,8 +624,12 @@ def extract_knowledge_from_video(uploaded_file, file_name):
             temp_path = tmp.name
 
         # Lazy import to avoid heavy deps on app boot
-        from src.processors.processor import DocumentProcessor
-        dp = DocumentProcessor()
+        from src.processors.optimized_processor import OptimizedDocumentProcessor
+        dp = OptimizedDocumentProcessor()
+        try:
+            dp.optimize_for_m4()
+        except Exception:
+            pass
 
         # Run improved video processing (audio + frame OCR fallback)
         result = dp._process_video_document(Path(temp_path))

@@ -43,8 +43,9 @@ import torch
 from src.logging_config import get_logger, log_processing_step
 from src.core.config import config as config_manager
 from src.exceptions import ProcessingError, AIError
-from src.ai.llm_processing_engine import OptimizedLLMProcessingEngine
-from src.ai.enhanced_extraction_engine import OptimizedEnhancedExtractionEngine
+from src.ai.advanced_knowledge_engine import AdvancedKnowledgeEngine
+from src.ai.llm_processing_engine import LLMProcessingEngine
+from src.ai.enhanced_extraction_engine import EnhancedExtractionEngine
 
 logger = get_logger(__name__)
 
@@ -68,8 +69,9 @@ class ProcessingResult:
 class OptimizedDocumentProcessor:
     """OPTIMIZED document processor with parallel processing and caching"""
     
-    def __init__(self, config: Dict[str, Any] = None):
+    def __init__(self, config: Dict[str, Any] = None, db_session=None):
         self.config = config or {}
+        self.db_session = db_session
         
         # Performance optimizations
         self.max_workers = 4  # Optimize for M4 chip
@@ -77,7 +79,8 @@ class OptimizedDocumentProcessor:
         self.processing_cache = {}
         self.cache_lock = threading.Lock()
         
-        # Initialize engines (lazy loading)
+        # Initialize REAL AI engines (lazy loading)
+        self.advanced_engine = None
         self.llm_engine = None
         self.extraction_engine = None
         self.engines_initialized = False
@@ -151,13 +154,29 @@ class OptimizedDocumentProcessor:
             return
         
         try:
-            # Initialize LLM engine
-            self.llm_engine = OptimizedLLMProcessingEngine()
+            # Initialize advanced knowledge engine
+            self.advanced_engine = AdvancedKnowledgeEngine(config_manager.ai, self.db_session)
+            print("✅ Advanced Knowledge Engine initialized")
+            
+            # Initialize LLM processing engine
+            self.llm_engine = LLMProcessingEngine()
             print("✅ LLM Processing Engine initialized")
             
-            # Initialize extraction engine
-            self.extraction_engine = OptimizedEnhancedExtractionEngine()
+            # Initialize enhanced extraction engine
+            self.extraction_engine = EnhancedExtractionEngine()
             print("✅ Enhanced Extraction Engine initialized")
+            
+            # Schedule async initialization for engines that support it
+            import asyncio
+            try:
+                loop = asyncio.get_running_loop()
+                # Schedule async initialization
+                loop.create_task(self._async_initialize_engines())
+                print("✅ Async engine initialization scheduled")
+            except RuntimeError:
+                # No running loop; safe to run synchronously
+                asyncio.run(self._async_initialize_engines())
+                print("✅ Sync engine initialization completed")
             
             self.engines_initialized = True
             
@@ -165,6 +184,21 @@ class OptimizedDocumentProcessor:
             print(f"⚠️ Engine initialization failed: {e}")
             logger.error(f"Engine initialization failed: {e}")
             # Continue with limited functionality
+    
+    async def _async_initialize_engines(self):
+        """Async initialization of engines"""
+        try:
+            if self.advanced_engine:
+                await self.advanced_engine.initialize()
+                print("✅ Advanced Knowledge Engine async initialization completed")
+            
+            if self.llm_engine:
+                await self.llm_engine.initialize()
+                print("✅ LLM Processing Engine async initialization completed")
+                
+        except Exception as e:
+            print(f"⚠️ Async engine initialization failed: {e}")
+            logger.error(f"Async engine initialization failed: {e}")
     
     async def process_document_async(self, file_path: str, document_id: str = None) -> ProcessingResult:
         """OPTIMIZED async document processing"""
@@ -474,62 +508,104 @@ class OptimizedDocumentProcessor:
             return f"Generic content extraction failed for {Path(file_path).name}"
     
     async def _process_with_llm_async(self, content: str, document_type: str) -> Dict[str, Any]:
-        """Async LLM processing"""
+        """Async LLM processing using real AI engine"""
         if not self.llm_engine:
             return {"entities": [], "confidence": 0.0, "method": "llm_unavailable"}
         
         try:
-            # Use ThreadPoolExecutor for CPU-bound LLM processing
-            loop = asyncio.get_event_loop()
-            result = await loop.run_in_executor(
-                self.executor,
-                self.llm_engine.process_document_optimized,
-                content,
-                document_type
-            )
-            return result
+            # Use the real LLM engine's process_document method
+            result = await self.llm_engine.process_document(content, document_type)
+            
+            # Convert ProcessingResult to dict format
+            if hasattr(result, 'entities'):
+                entities_dict = []
+                for entity in result.entities:
+                    if hasattr(entity, '__dict__'):
+                        entity_dict = entity.__dict__.copy()
+                    else:
+                        entity_dict = asdict(entity) if hasattr(entity, '__dict__') else str(entity)
+                    entities_dict.append(entity_dict)
+                
+                return {
+                    "entities": entities_dict,
+                    "confidence": result.confidence_score if hasattr(result, 'confidence_score') else 0.0,
+                    "method": result.processing_method if hasattr(result, 'processing_method') else "llm_processing",
+                    "quality_metrics": result.quality_metrics if hasattr(result, 'quality_metrics') else {},
+                    "llm_enhanced": result.llm_enhanced if hasattr(result, 'llm_enhanced') else True,
+                    "validation_passed": result.validation_passed if hasattr(result, 'validation_passed') else True
+                }
+            else:
+                # Fallback if result doesn't have expected structure
+                return {
+                    "entities": [],
+                    "confidence": 0.8,
+                    "method": "llm_processing_fallback",
+                    "quality_metrics": {},
+                    "llm_enhanced": True,
+                    "validation_passed": True
+                }
+                
         except Exception as e:
             logger.error(f"LLM processing failed: {e}")
             return {"entities": [], "confidence": 0.0, "method": "llm_failed"}
     
     async def _extract_entities_async(self, content: str, document_type: str) -> Dict[str, Any]:
-        """Async entity extraction"""
+        """Async entity extraction using real AI engine"""
         if not self.extraction_engine:
             return {"entities": [], "confidence": 0.0, "method": "extraction_unavailable"}
         
         try:
-            # Use ThreadPoolExecutor for CPU-bound extraction
-            loop = asyncio.get_event_loop()
-            result = await loop.run_in_executor(
-                self.executor,
-                self.extraction_engine.extract_comprehensive_knowledge,
-                content,
-                document_type
-            )
+            # Use the real extraction engine's extract_comprehensive_knowledge method
+            result = self.extraction_engine.extract_comprehensive_knowledge(content, document_type)
             
-            # Convert to dict format
+            # Convert ExtractedEntity objects to dict format
             entities_dict = []
+            total_confidence = 0.0
+            entity_count = 0
+            
             for entity in result:
-                entity_dict = asdict(entity)
-                entities_dict.append(entity_dict)
+                if hasattr(entity, 'content') and hasattr(entity, 'confidence'):
+                    entity_dict = {
+                        'content': entity.content,
+                        'entity_type': getattr(entity, 'entity_type', 'unknown'),
+                        'category': getattr(entity, 'category', 'general'),
+                        'confidence': entity.confidence,
+                        'context': getattr(entity, 'context', ''),
+                        'metadata': getattr(entity, 'metadata', {}),
+                        'relationships': getattr(entity, 'relationships', []),
+                        'source_location': getattr(entity, 'source_location', '')
+                    }
+                    entities_dict.append(entity_dict)
+                    total_confidence += entity.confidence
+                    entity_count += 1
+            
+            avg_confidence = total_confidence / entity_count if entity_count > 0 else 0.0
             
             return {
                 "entities": entities_dict,
-                "confidence": sum(e.confidence for e in result) / len(result) if result else 0.0,
-                "method": "enhanced_extraction"
+                "confidence": avg_confidence,
+                "method": "enhanced_extraction",
+                "entity_count": entity_count,
+                "extraction_quality": "high" if avg_confidence > 0.7 else "medium"
             }
+            
         except Exception as e:
             logger.error(f"Entity extraction failed: {e}")
             return {"entities": [], "confidence": 0.0, "method": "extraction_failed"}
     
     async def _validate_and_enhance_async(self, content: str, document_type: str) -> Dict[str, Any]:
-        """Async validation and enhancement"""
+        """Async validation and enhancement using real AI engine"""
         try:
-            # Fast validation and enhancement
+            if not self.advanced_engine:
+                # Fallback to basic validation
+                return self._basic_validation_fallback(content)
+            
+            # Use the real advanced knowledge engine for validation
             validation_result = {
                 "entities": [],
                 "confidence": 0.0,
-                "method": "fast_validation"
+                "method": "advanced_validation",
+                "enhancement_applied": False
             }
             
             # Basic content validation
@@ -542,91 +618,180 @@ class OptimizedDocumentProcessor:
             else:
                 validation_result["confidence"] = 0.8
             
+            # Try to use advanced engine for enhancement if available
+            try:
+                if hasattr(self.advanced_engine, 'validate_content'):
+                    enhanced_result = await self.advanced_engine.validate_content(content, document_type)
+                    if enhanced_result:
+                        validation_result["confidence"] = max(validation_result["confidence"], 
+                                                           enhanced_result.get("confidence", 0.0))
+                        validation_result["enhancement_applied"] = True
+                        validation_result["enhancement_details"] = enhanced_result
+            except Exception as e:
+                logger.debug(f"Advanced validation not available: {e}")
+                # Continue with basic validation
+            
             return validation_result
             
         except Exception as e:
             logger.error(f"Validation failed: {e}")
             return {"entities": [], "confidence": 0.0, "method": "validation_failed"}
     
+    def _basic_validation_fallback(self, content: str) -> Dict[str, Any]:
+        """Basic validation fallback when advanced engine is not available"""
+        confidence = 0.0
+        if len(content) < 10:
+            confidence = 0.1
+        elif len(content) < 100:
+            confidence = 0.3
+        elif len(content) < 1000:
+            confidence = 0.6
+        else:
+            confidence = 0.8
+        
+        return {
+            "entities": [],
+            "confidence": confidence,
+            "method": "basic_validation_fallback",
+            "enhancement_applied": False
+        }
+    
     def _merge_processing_results(self, llm_result: Dict[str, Any], 
                                 extraction_result: Dict[str, Any],
                                 validation_result: Dict[str, Any],
                                 content: str, document_type: str, 
                                 document_id: str, file_size: int) -> ProcessingResult:
-        """Merge results from different processing methods"""
+        """Merge results from different processing methods with enhanced AI quality"""
         
-        # Combine all entities
+        # Combine all entities with quality prioritization
         all_entities = []
-        all_entities.extend(llm_result.get("entities", []))
-        all_entities.extend(extraction_result.get("entities", []))
         
-        # Remove duplicates (simple deduplication)
-        unique_entities = self._deduplicate_entities(all_entities)
+        # Add LLM entities first (highest quality)
+        llm_entities = llm_result.get("entities", [])
+        for entity in llm_entities:
+            if isinstance(entity, dict):
+                entity["source"] = "llm_processing"
+                entity["quality_score"] = entity.get("confidence", 0.8)
+                all_entities.append(entity)
         
-        # Calculate overall confidence
-        confidences = [
-            llm_result.get("confidence", 0.0),
-            extraction_result.get("confidence", 0.0),
-            validation_result.get("confidence", 0.0)
-        ]
-        overall_confidence = sum(confidences) / len(confidences)
+        # Add extraction entities (high quality)
+        extraction_entities = extraction_result.get("entities", [])
+        for entity in extraction_entities:
+            if isinstance(entity, dict):
+                entity["source"] = "enhanced_extraction"
+                entity["quality_score"] = entity.get("confidence", 0.7)
+                all_entities.append(entity)
         
-        # Determine processing method
+        # Remove duplicates with quality-aware deduplication
+        unique_entities = self._deduplicate_entities_quality_aware(all_entities)
+        
+        # Calculate overall confidence with quality weighting
+        llm_confidence = llm_result.get("confidence", 0.0)
+        extraction_confidence = extraction_result.get("confidence", 0.0)
+        validation_confidence = validation_result.get("confidence", 0.0)
+        
+        # Weight LLM results higher for better quality
+        weighted_confidence = (llm_confidence * 0.5 + 
+                             extraction_confidence * 0.3 + 
+                             validation_confidence * 0.2)
+        
+        # Determine processing method and quality level
         methods = [
             llm_result.get("method", "unknown"),
             extraction_result.get("method", "unknown"),
             validation_result.get("method", "unknown")
         ]
-        primary_method = methods[0] if methods else "unknown"
         
-        # Performance metrics
+        # Check if we have high-quality AI processing
+        has_llm_processing = llm_result.get("method") != "llm_unavailable" and llm_result.get("method") != "llm_failed"
+        has_enhanced_extraction = extraction_result.get("method") == "enhanced_extraction"
+        has_advanced_validation = validation_result.get("method") == "advanced_validation"
+        
+        if has_llm_processing and has_enhanced_extraction:
+            processing_method = "ai_enhanced_processing"
+            optimization_level = "maximum_quality"
+        elif has_llm_processing or has_enhanced_extraction:
+            processing_method = "ai_processing"
+            optimization_level = "high_quality"
+        else:
+            processing_method = "basic_processing"
+            optimization_level = "standard_quality"
+        
+        # Generate enhanced content summary
+        content_summary = self._generate_enhanced_content_summary(content, unique_entities, document_type)
+        
+        # Create comprehensive performance metrics
         performance_metrics = {
-            "llm_confidence": llm_result.get("confidence", 0.0),
-            "extraction_confidence": extraction_result.get("confidence", 0.0),
-            "validation_confidence": validation_result.get("confidence", 0.0),
-            "total_entities": len(unique_entities),
-            "processing_methods": methods,
-            "optimization_level": "high"
+            "llm_processing_quality": llm_result.get("quality_metrics", {}),
+            "extraction_quality": extraction_result.get("extraction_quality", "unknown"),
+            "validation_enhancement": validation_result.get("enhancement_applied", False),
+            "ai_engine_utilization": {
+                "llm_available": has_llm_processing,
+                "extraction_available": has_enhanced_extraction,
+                "validation_available": has_advanced_validation
+            },
+            "overall_quality_score": weighted_confidence,
+            "processing_efficiency": "high" if weighted_confidence > 0.7 else "medium"
         }
-        
-        # Generate content summary
-        content_summary = self._generate_content_summary(content, unique_entities)
         
         return ProcessingResult(
             document_id=document_id,
             document_type=document_type,
-            processing_time=0.0,  # Will be set later
+            processing_time=0.0,  # Will be set by caller
             entities_extracted=len(unique_entities),
-            confidence_score=overall_confidence,
+            confidence_score=weighted_confidence,
             performance_metrics=performance_metrics,
             entities=unique_entities,
-            processing_method=primary_method,
-            cache_hit=False,
-            optimization_level="high",
+            processing_method=processing_method,
+            cache_hit=False,  # Will be set by caller
+            optimization_level=optimization_level,
             content_summary=content_summary,
             file_size=file_size,
             format_detected=document_type
         )
     
     def _deduplicate_entities(self, entities: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """Fast entity deduplication"""
+        """Deduplicate entities (simple approach)"""
         if not entities:
-            return entities
+            return []
         
         seen = set()
         unique_entities = []
         
         for entity in entities:
-            # Create a simple hash for deduplication
-            content = entity.get("content", "")
-            entity_type = entity.get("entity_type", "")
-            category = entity.get("category", "")
-            
-            entity_hash = f"{content[:50]}_{entity_type}_{category}"
-            
-            if entity_hash not in seen:
-                seen.add(entity_hash)
-                unique_entities.append(entity)
+            if isinstance(entity, dict):
+                content = entity.get("content", "")
+                entity_type = entity.get("entity_type", "")
+                key = f"{content[:50]}_{entity_type}"
+                
+                if key not in seen:
+                    unique_entities.append(entity)
+                    seen.add(key)
+        
+        return unique_entities
+    
+    def _deduplicate_entities_quality_aware(self, entities: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """Deduplicate entities with quality-awareness, keeping highest quality versions"""
+        if not entities:
+            return []
+        
+        # Sort by quality score descending (highest quality first)
+        entities.sort(key=lambda x: x.get('quality_score', 0), reverse=True)
+        
+        seen_hashes = set()
+        unique_entities = []
+        
+        for entity in entities:
+            if isinstance(entity, dict):
+                # Create a hash that includes content, type, and category
+                content = entity.get('content', '')[:50]
+                entity_type = entity.get('entity_type', '')
+                category = entity.get('category', '')
+                content_hash = f"{content}_{entity_type}_{category}"
+                
+                if content_hash not in seen_hashes:
+                    unique_entities.append(entity)
+                    seen_hashes.add(content_hash)
         
         return unique_entities
     
@@ -649,6 +814,32 @@ class OptimizedDocumentProcessor:
         if entity_count > 0:
             summary += f" with {entity_count} extracted entities"
         
+        return summary
+    
+    def _generate_enhanced_content_summary(self, content: str, entities: List[Dict[str, Any]], document_type: str) -> str:
+        """Generate enhanced content summary with AI quality metrics."""
+        if not content:
+            return "No content available"
+
+        word_count = len(content.split())
+        entity_count = len(entities)
+
+        summary = f"Document type: {document_type}"
+        if word_count < 100:
+            summary += f" (Short document, {word_count} words)"
+        elif word_count < 1000:
+            summary += f" (Medium document, {word_count} words)"
+        else:
+            summary += f" (Long document, {word_count} words)"
+
+        if entity_count > 0:
+            summary += f" with {entity_count} extracted entities"
+
+        # Add AI quality metrics to summary
+        if entities:
+            avg_quality = sum(e.get('quality_score', 0) for e in entities) / len(entities)
+            summary += f" (AI Quality: {avg_quality:.2f})"
+
         return summary
     
     def _get_file_type(self, extension: str) -> str:

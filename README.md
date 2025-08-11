@@ -126,14 +126,13 @@ PRODUCTION_READY = 0.85
 
 Process a document via the orchestration layer:
 ```python
-from src.processors.processor import DocumentProcessor
+from src.processors.optimized_processor import OptimizedDocumentProcessor
 
-processor = DocumentProcessor()
-result = processor.process_document("/path/to/document.pdf", document_id=1)
+processor = OptimizedDocumentProcessor()
+processor.optimize_for_m4()
+result = processor.process_document_sync("/path/to/document.pdf")
 
-entities = result['knowledge']['extracted_entities']
-method = result['knowledge']['processing_metadata']['method']
-confidence = result['knowledge']['processing_metadata']['confidence_score']
+print(result.entities_extracted, result.confidence_score)
 ```
 
 Direct semantic engine invocation (async):
@@ -165,8 +164,7 @@ asyncio.run(t())"
 
 Quality / statistics probe:
 ```bash
-python -c "from src.processors.processor import DocumentProcessor; p=DocumentProcessor();
-print(getattr(p,'llm_engine_available',False))"
+python -c "from src.processors.optimized_processor import OptimizedDocumentProcessor; p=OptimizedDocumentProcessor(); p.optimize_for_m4(); print('ok')"
 ```
 
 ## License

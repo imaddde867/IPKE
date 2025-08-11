@@ -678,7 +678,8 @@ class DatabaseOutputGenerator:
         
         expanded_text = text
         for abbrev, expansion in abbreviations.items():
-            expanded_text = re.sub(abbrev, f"{expansion} ({abbrev.strip('\\b')})", expanded_text)
+            # Avoid f-string backslash parsing issues by using format()
+            expanded_text = re.sub(abbrev, "{} ({})".format(expansion, abbrev.strip('\\b')), expanded_text)
         
         return expanded_text
     
