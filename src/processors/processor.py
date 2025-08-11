@@ -79,10 +79,8 @@ class DocumentProcessor:
         # Initialize LLM-first processing engine
         self._init_llm_processing_engine()
         
-        # Initialize AI engines
+        # Initialize AI engines  
         self.knowledge_engine_available = True
-        self.llm_processing_engine = None
-        self.llm_engine_available = False
     
     def _init_ocr(self):
         """Initialize OCR capabilities"""
@@ -147,10 +145,11 @@ class DocumentProcessor:
                 asyncio.run(self.llm_processing_engine.initialize())
             
             self.llm_engine_available = True
-            logger.info("✅ LLM-first processing engine scheduled for initialization")
+            logger.info("✅ LLM-first processing engine initialized successfully")
         except Exception as e:
             logger.error(f"❌ LLM processing engine initialization failed: {e}")
             self.llm_engine_available = False
+            self.llm_processing_engine = None
     
     def _convert_llm_result_to_knowledge(self, processing_result, filename: str) -> Dict[str, Any]:
         """Convert LLM processing result to knowledge format"""
@@ -372,7 +371,7 @@ class DocumentProcessor:
             knowledge = {}
             
             # RULE 1: LLM-First Processing (Primary Method - Guaranteed Best Results)
-            if self.llm_engine_available and self.llm_processing_engine:
+            if hasattr(self, 'llm_engine_available') and self.llm_engine_available and self.llm_processing_engine and self.llm_processing_engine.initialized:
                 try:
                     logger.info("🧠 Using LLM-First Processing Engine (Primary Method)")
                     import asyncio

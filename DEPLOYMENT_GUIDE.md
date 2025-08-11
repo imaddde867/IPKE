@@ -1,4 +1,4 @@
-# 🚀 EXPLAINIUM Deployment Guide - Clean Version
+# Explainium Deployment Guide
 
 ## Quick Start (Recommended)
 
@@ -35,9 +35,9 @@ make quick
 ```
 
 ### 4. Access Application
-- **Web Interface**: http://localhost:8000
-- **API Docs**: http://localhost:8000/docs
-- **Health Check**: http://localhost:8000/health
+- Web Interface: http://localhost:8000
+- API Docs: http://localhost:8000/docs
+- Health Check: http://localhost:8000/health
 
 ## Production Deployment
 
@@ -61,22 +61,21 @@ ENABLE_HTTPS=true
 ```
 
 ### 2. Security Considerations
-- The deployment script generates a secure SECRET_KEY automatically
+- Deployment script generates a random SECRET_KEY (review/replace as needed)
 - Change default database password in production
-- Configure proper CORS origins for your domain
-- Enable HTTPS for production deployments
-- Use strong passwords for all services
+- Configure strict CORS origins for your domain
+- Enable HTTPS (reverse proxy or load balancer)
+- Use strong unique passwords for all services
 
-### 3. Clean Architecture Benefits
-- **Single API**: Consolidated FastAPI application in `src/api/app.py`
-- **Unified Processing**: All document processing in `src/processors/processor.py`
-- **Centralized Config**: All configuration in `src/core/config.py`
-- **Clean Database**: Optimized models and CRUD operations
-- **Professional Deployment**: Automated deployment with health checks
-- Set up proper firewall rules
-- Regular security updates
+### 3. Architecture Highlights
+- Single API service: `src/api/app.py`
+- Processing orchestration: `src/processors/processor.py`
+- Central configuration: `src/core/config.py`
+- Database layer: `src/database/`
+- Automated deployment with health checks
+- Apply firewall rules and schedule security patching
 
-### 3. Performance Tuning
+### 4. Performance Tuning
 ```bash
 # Increase worker concurrency
 CELERY_CONCURRENCY=8
@@ -89,7 +88,7 @@ DB_MAX_OVERFLOW=40
 MAX_FILE_SIZE_MB=200
 ```
 
-### 4. Monitoring
+### 5. Monitoring
 ```bash
 # Check service status
 docker-compose ps
@@ -169,7 +168,7 @@ docker run --rm -v explainium-20_elasticsearch_data:/data -v $(pwd):/backup alpi
 docker-compose up -d
 ```
 
-## Scaling
+## Scaling & Resources
 
 ### Horizontal Scaling
 ```bash
@@ -213,7 +212,8 @@ docker-compose pull
 docker-compose up -d
 ```
 
-## Support
+## Support & References
 
-- **Documentation**: [README.md](README.md)
-- **Health Monitoring**: http://localhost:8000/health/detailed
+- Documentation: [README.md](README.md)
+- Technical Specs: [TECHNICAL_SPECS.md](TECHNICAL_SPECS.md)
+- Detailed Health: http://localhost:8000/health/detailed

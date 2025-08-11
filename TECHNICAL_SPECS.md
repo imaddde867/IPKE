@@ -1,16 +1,16 @@
-# 🔧 Explainium 2.0 - Technical Specifications
+# Explainium 2.0 – Technical Specifications
 
-## 🧠 **LLM-First Processing Engine Architecture**
+## Processing Architecture Overview
 
 ### **Core Processing Rules & Values**
 
 | Rule Name | Condition | Action | Priority | Threshold | Status |
 |-----------|-----------|--------|----------|-----------|--------|
-| **LLM_PRIMARY_RULE** | `document_complexity >= 0.5 AND llm_available == True` | `use_llm_primary_processing` | CRITICAL | 0.75 | ✅ Active |
-| **QUALITY_THRESHOLD_RULE** | `extraction_confidence < 0.70` | `escalate_to_higher_priority_method` | HIGH | 0.70 | ✅ Active |
-| **VALIDATION_GATE_RULE** | `entity_count > 0` | `validate_all_entities` | CRITICAL | 0.70 | ✅ Active |
-| **STRUCTURED_OUTPUT_RULE** | `processing_complete == True` | `ensure_structured_categorized_output` | CRITICAL | 0.80 | ✅ Active |
-| **FALLBACK_HIERARCHY_RULE** | `primary_method_failed == True` | `cascade_through_processing_hierarchy` | HIGH | 0.60 | ✅ Active |
+| Primary Semantic Rule | `document_complexity >= 0.5 AND llm_available == True` | `use_llm_primary_processing` | Critical | 0.75 | Active |
+| Quality Threshold Rule | `extraction_confidence < 0.70` | `escalate_to_higher_priority_method` | High | 0.70 | Active |
+| Validation Gate Rule | `entity_count > 0` | `validate_all_entities` | Critical | 0.70 | Active |
+| Structured Output Rule | `processing_complete == True` | `ensure_structured_categorized_output` | Critical | 0.80 | Active |
+| Fallback Hierarchy Rule | `primary_method_failed == True` | `cascade_through_processing_hierarchy` | High | 0.60 | Active |
 
 ### **Processing Hierarchy & Confidence Targets**
 
@@ -18,19 +18,19 @@
 ┌─────────────────────────────────────────────────────────────┐
 │                    PROCESSING HIERARCHY                     │
 ├─────────────────────────────────────────────────────────────┤
-│ 🥇 LLM-First Processing Engine                            │
+│ Primary Semantic Engine                                  │
 │    ├── Confidence Range: 0.75 - 0.95                     │
 │    ├── Primary LLM: Mistral-7B-Instruct-v0.2             │
 │    ├── Multi-Prompt Strategy: 5 specialized prompts      │
 │    └── Validation: Entity + Relationship extraction      │
 ├─────────────────────────────────────────────────────────────┤
-│ 🥈 Enhanced Pattern Recognition                           │
+│ Enhanced Pattern Recognition                              │
 │    ├── Confidence Range: 0.60 - 0.80                     │
 │    ├── 10+ Specialized extraction patterns               │
 │    ├── NLP Enhancement: spaCy + embeddings               │
 │    └── Context-aware tagging                             │
 ├─────────────────────────────────────────────────────────────┤
-│ 🥉 Legacy Pattern Matching                               │
+│ Legacy Pattern Matching                                   │
 │    ├── Confidence Range: 0.50 - 0.65                     │
 │    ├── Basic regex patterns                              │
 │    ├── Emergency fallback only                           │
@@ -49,7 +49,7 @@ class QualityThreshold(Enum):
     PRODUCTION_READY = 0.85     # Production deployment threshold
 ```
 
-## 📊 **Knowledge Categories & Entity Types**
+## Knowledge Categories & Entity Types
 
 ### **Primary Knowledge Categories**
 
@@ -77,7 +77,7 @@ EntityType = {
 }
 ```
 
-## 🎭 **LLM Processing Prompts**
+## Semantic Prompt Templates
 
 ### **5 Specialized Prompt Types**
 
@@ -146,7 +146,7 @@ For each organizational element, identify:
 Target Confidence: 0.75+
 ```
 
-## 🔧 **Model Configuration**
+## Model Configuration
 
 ### **Primary LLM Configuration**
 
@@ -183,7 +183,7 @@ PROCESSING_CONFIG = {
 }
 ```
 
-## 📈 **Performance Benchmarks**
+## Performance Benchmarks
 
 ### **Processing Speed Benchmarks**
 
@@ -196,7 +196,7 @@ PROCESSING_CONFIG = {
 
 ### **Quality Improvement Metrics**
 
-| Metric | Before Enhancement | After LLM-First | Improvement |
+| Metric | Baseline | Current | Improvement |
 |--------|-------------------|-----------------|-------------|
 | **Entity Extraction** | 4 avg | 24 avg | **6x increase** |
 | **Confidence Score** | 0.55 avg | 0.87 avg | **58% increase** |
@@ -204,7 +204,7 @@ PROCESSING_CONFIG = {
 | **Quality Rating** | 100% POOR | 85% EXCELLENT | **Massive** |
 | **Validation Pass Rate** | 45% | 92% | **104% increase** |
 
-## 🗃️ **Database Schema**
+## Database Schema
 
 ### **Knowledge Entities Table**
 ```sql
@@ -240,7 +240,7 @@ CREATE TABLE processing_metadata (
 );
 ```
 
-## 🔌 **API Endpoints**
+## API Endpoints
 
 ### **Core Processing Endpoints**
 
@@ -286,7 +286,7 @@ CREATE TABLE processing_metadata (
 }
 ```
 
-## 🛠️ **Development Guidelines**
+## Development Guidelines
 
 ### **Code Quality Standards**
 
@@ -320,7 +320,7 @@ def test_structured_output():
 - **Confidence Target**: ≥0.75 for production deployment
 - **Validation Pass Rate**: ≥90% for all processing methods
 
-## 📊 **Monitoring & Metrics**
+## Monitoring & Metrics
 
 ### **Key Performance Indicators (KPIs)**
 
@@ -354,4 +354,4 @@ MONITORING_METRICS = {
 
 ---
 
-**🎯 Technical Excellence Through LLM-First Architecture**
+Technical execution focuses on consistent quality gates, transparent fallback attribution, and reproducible structured outputs.

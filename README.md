@@ -1,151 +1,104 @@
-# 🧠 Explainium 2.0 - LLM-First Knowledge Extraction Platform
+# Explainium 2.0 – Intelligent Document Knowledge Extraction Platform
 
-> **Revolutionary document processing with offline LLM intelligence as the primary source for superior knowledge extraction results.**
+Explainium converts unstructured technical, safety, compliance and operational documents into structured, validated knowledge. It runs fully locally (offline models) and produces database‑ready entities with confidence and quality metrics so the extracted knowledge can be searched, filtered, audited, or exported.
 
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://python.org)
-[![LLM-First](https://img.shields.io/badge/AI-LLM--First-green.svg)](https://github.com)
-[![Offline Processing](https://img.shields.io/badge/processing-offline-orange.svg)](https://github.com)
+[![Offline](https://img.shields.io/badge/processing-offline-success.svg)](https://github.com)
 
-## 🚀 **Core Principles & Processing Rules**
+## Overview
 
-### **THE FUNDAMENTAL LAWS OF EXPLAINIUM**
+Core goals:
+1. Extract high‑value knowledge (specifications, processes, safety measures, compliance requirements, roles, definitions) from heterogeneous document formats.
+2. Maintain a structured schema with traceable confidence scores and validation flags.
+3. Provide a predictable processing pipeline with graceful fallback when advanced semantic extraction is unavailable.
 
-1. **🧠 LLM SUPREMACY RULE**: Offline LLM models are the PRIMARY processing source (Confidence Threshold: ≥0.75)
-2. **⭐ QUALITY FIRST RULE**: High confidence thresholds ensure superior results (Production Threshold: ≥0.85)
-3. **🔄 HIERARCHICAL FALLBACK RULE**: Graceful degradation through processing layers when needed
-4. **✅ VALIDATION REQUIRED RULE**: All extractions must pass validation thresholds (≥0.70)
-5. **📊 STRUCTURED OUTPUT RULE**: Clean, categorized, database-ready results mandatory
+## Processing Pipeline
 
-### **Processing Hierarchy (In Order of Priority)**
+Priority order:
+1. Primary semantic engine (large local instruction model + multi‑prompt strategy)
+2. Enhanced pattern / NLP extraction (specialised patterns & embeddings)
+3. Lightweight legacy pattern matching (minimal emergency fallback)
+
+Quality gates (examples):
+- Minimum semantic extraction confidence: 0.75
+- Entity validation threshold: 0.70
+- Production readiness threshold: 0.85 aggregate confidence
+
+## Knowledge Categories
+
+| Category | Typical Content | Target Confidence |
+|----------|-----------------|-------------------|
+| Technical Specifications | Parameters, measurements, operating ranges | 0.95 |
+| Safety / Risk Requirements | Hazards, mitigation measures, PPE | 0.90 |
+| Process Intelligence | Steps, workflows, procedures | 0.85 |
+| Compliance & Governance | Regulations, standards, mandatory items | 0.80 |
+| Organizational Data | Roles, responsibilities, qualifications | 0.75 |
+| Definitions / Terminology | Terms and explanations | 0.70 |
+
+## Key Features
+
+Extraction & Semantics:
+- Multi‑prompt semantic analysis (role/targeted prompts per category)
+- Relationship and context capture between extracted entities
+- Confidence scoring + validation pass flags per entity
+
+Quality & Governance:
+- Hierarchical fallback with explicit method attribution
+- Configurable thresholds for acceptance and production use
+- Structured, normalized output ready for persistence / export
+
+Operational:
+- Local model execution (no external calls required once models are present)
+- Multi‑format ingestion: PDF, DOCX, TXT, images (OCR), audio (transcription), video (extracted audio)
+- Batch processing support with metadata tracking
+
+Interface & Access:
+- Streamlit dashboard for interactive review and filtering
+- FastAPI backend with OpenAPI documentation
+- Export utilities for downstream integration
+
+## Architecture (Simplified Directory View)
 
 ```
-🥇 PRIMARY:   LLM-First Processing Engine    (Confidence: 0.75-0.95)
-🥈 FALLBACK:  Enhanced Pattern Recognition   (Confidence: 0.60-0.80)  
-🥉 EMERGENCY: Legacy Pattern Matching        (Confidence: 0.50-0.65)
+explainium-2.0/
+├── src/ai/                       # Semantic & extraction engines
+│   ├── llm_processing_engine.py  # Primary semantic engine
+│   ├── enhanced_extraction_engine.py
+│   ├── knowledge_categorization_engine.py
+│   ├── advanced_knowledge_engine.py
+│   └── document_intelligence_analyzer.py
+├── src/processors/               # Orchestration / pipeline
+│   └── processor.py
+├── src/database/                 # Models and CRUD operations
+├── src/frontend/                 # Streamlit interface
+├── models/                       # Local model assets
+└── documents_samples/            # Sample input documents
 ```
 
-## 📋 **What Explainium Extracts & How**
+## Quick Start
 
-### **🎯 Knowledge Categories Extracted**
-
-| Category | Confidence | LLM Enhanced | Examples |
-|----------|------------|--------------|----------|
-| **📊 Technical Specifications** | 0.95 | ✅ Yes | Equipment specs, parameters, measurements |
-| **🛡️ Safety Requirements** | 0.90 | ✅ Yes | Hazards, protective equipment, procedures |
-| **🔄 Process Intelligence** | 0.85 | ✅ Yes | Workflows, step-by-step procedures |
-| **⚖️ Compliance Governance** | 0.80 | ✅ Yes | Regulations, standards, requirements |
-| **👥 Organizational Data** | 0.75 | ✅ Yes | Roles, responsibilities, certifications |
-| **📚 Knowledge Definitions** | 0.70 | ✅ Yes | Terms, definitions, explanations |
-
-### **🎭 LLM Processing Prompts (5 Specialized Types)**
-
-1. **🔄 Key Processes**: Workflow extraction and process identification
-2. **🛡️ Safety Requirements**: Hazard identification and risk mitigation measures  
-3. **⚙️ Technical Specifications**: Parameter extraction with units and ranges
-4. **📋 Compliance Requirements**: Regulatory and standard identification
-5. **👥 Organizational Info**: Role and responsibility extraction
-
-## 🏗️ **Architecture Overview**
-
-```
-📁 explainium-2.0/
-├── 🧠 src/ai/                          # AI Processing Engines
-│   ├── llm_processing_engine.py        # PRIMARY: LLM-First Engine
-│   ├── enhanced_extraction_engine.py   # Pattern Recognition Engine  
-│   ├── knowledge_categorization_engine.py # Entity Classification
-│   ├── advanced_knowledge_engine.py    # Legacy Fallback Engine
-│   └── document_intelligence_analyzer.py # Document Analysis
-├── 🔧 src/processors/                  # Document Processing
-│   └── processor.py                    # Main Document Processor
-├── 🎨 src/frontend/                    # User Interface
-│   └── knowledge_table.py             # Streamlit Dashboard
-├── 📊 src/database/                    # Data Management
-│   ├── models.py                       # Database Models
-│   └── crud.py                         # Database Operations
-├── 🤖 models/                          # AI Models (Offline)
-│   ├── llm/Mistral-7B-Instruct-v0.2/  # Primary LLM Model
-│   ├── embeddings/                     # Embedding Models
-│   └── setup_config.json              # Model Configuration
-└── 📚 documents_samples/               # Test Documents
-```
-
-## 🚀 **Quick Start**
-
-### **Prerequisites**
+Prerequisites:
 - Python 3.12+
-- 16GB+ RAM (for optimal LLM performance)
-- macOS with Metal support (M-series chips) or CUDA GPU
+- 16 GB RAM recommended for larger model variants (smaller models also supported)
+- macOS (Metal) or Linux with suitable CPU/GPU acceleration
 
-### **Installation**
-
+Installation:
 ```bash
-# Clone repository
 git clone https://github.com/your-org/explainium-2.0.git
 cd explainium-2.0
-
-# Setup environment
 chmod +x setup.sh
 ./setup.sh
-
-# Start application
 ./start.sh
 ```
 
-### **Access Points**
-- **🎨 Frontend Dashboard**: http://localhost:8501
-- **🔧 Backend API**: http://localhost:8000  
-- **📖 API Documentation**: http://localhost:8000/docs
+Access:
+- Dashboard: http://localhost:8501
+- API: http://localhost:8000
+- API Docs: http://localhost:8000/docs
 
-## 📊 **Performance Metrics**
+## Configuration Snippets
 
-### **Before vs After LLM-First Enhancement**
-
-| Metric | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| **Entities Extracted** | 4 | 24 | **6x increase** |
-| **Average Confidence** | 0.55 | 0.85 | **55% increase** |
-| **Quality Rating** | 100% POOR | 80% EXCELLENT | **Massive improvement** |
-| **Processing Methods** | 1 basic | 5 intelligent | **5x more methods** |
-
-### **LLM-First Results Example**
-
-From a simple 20-line industrial manual:
-- **📊 6 Technical Specifications** (0.95 confidence)
-- **🛡️ 3 Safety Requirements** (0.90 confidence)  
-- **👥 5 Personnel Records** (0.85 confidence)
-- **🔄 3 Process Procedures** (0.80 confidence)
-- **📚 6 Knowledge Definitions** (0.75 confidence)
-
-## 🎯 **Key Features**
-
-### **🧠 LLM-First Intelligence**
-- **Offline Mistral-7B** model for primary processing
-- **Multi-prompt strategy** for comprehensive extraction
-- **Intelligent relationship discovery** between entities
-- **Context-aware semantic understanding**
-
-### **📊 Quality Assurance** 
-- **Hierarchical processing** with automatic fallbacks
-- **Validation gates** at every processing stage
-- **Confidence scoring** with quality thresholds
-- **Real-time quality metrics** and monitoring
-
-### **🎨 Professional UI/UX**
-- **LLM-First processing indicators** in dashboard
-- **Dynamic filter generation** based on extracted types
-- **Processing method visualization** (Primary/Fallback)
-- **Quality confidence indicators** with color coding
-
-### **🔧 Document Support**
-- **Multi-format processing**: PDF, DOCX, TXT, Images, Audio, Video
-- **Intelligent document type detection**
-- **OCR and audio transcription** capabilities
-- **Batch processing** with quality tracking
-
-## 🛠️ **Configuration**
-
-### **LLM Model Settings**
-
+Model configuration example:
 ```json
 {
   "hardware_profile": "m4_16gb",
@@ -160,84 +113,62 @@ From a simple 20-line industrial manual:
 }
 ```
 
-### **Quality Thresholds**
-
+Threshold constants:
 ```python
-# Processing Engine Thresholds
-LLM_MINIMUM = 0.75          # Minimum LLM confidence
-ENHANCED_MINIMUM = 0.60     # Enhanced extraction minimum  
-COMBINED_MINIMUM = 0.80     # Combined analysis threshold
-ENTITY_VALIDATION = 0.70    # Entity validation score
-PRODUCTION_READY = 0.85     # Production deployment threshold
+LLM_MINIMUM = 0.75
+ENHANCED_MINIMUM = 0.60
+COMBINED_MINIMUM = 0.80
+ENTITY_VALIDATION = 0.70
+PRODUCTION_READY = 0.85
 ```
 
-## 📈 **API Usage**
+## API Usage Examples
 
-### **Process Document**
-
+Process a document via the orchestration layer:
 ```python
 from src.processors.processor import DocumentProcessor
 
 processor = DocumentProcessor()
 result = processor.process_document("/path/to/document.pdf", document_id=1)
 
-# Access LLM-extracted knowledge
-knowledge = result['knowledge']['extracted_entities']
-processing_method = result['knowledge']['processing_metadata']['method']
+entities = result['knowledge']['extracted_entities']
+method = result['knowledge']['processing_metadata']['method']
 confidence = result['knowledge']['processing_metadata']['confidence_score']
 ```
 
-### **LLM-First Engine Direct**
-
+Direct semantic engine invocation (async):
 ```python
-from src.ai.llm_processing_engine import LLMProcessingEngine
-
-engine = LLMProcessingEngine()
-await engine.initialize()
-
-result = await engine.process_document(
-    content="Your document content here",
-    document_type="technical_manual",
-    metadata={"filename": "manual.pdf"}
-)
-
-# Access comprehensive results
-entities = result.entities
-confidence = result.confidence_score
-quality_metrics = result.quality_metrics
-```
-
-## 🔬 **Development & Testing**
-
-### **Run Tests**
-```bash
-# Test LLM processing
-python -c "
 from src.ai.llm_processing_engine import LLMProcessingEngine
 import asyncio
 
-async def test():
+async def run():
     engine = LLMProcessingEngine()
     await engine.initialize()
-    print('✅ LLM Engine ready')
+    out = await engine.process_document(
+        content="Document text...",
+        document_type="technical_manual",
+        metadata={"filename": "manual.pdf"}
+    )
+    print(out.entities)
 
-asyncio.run(test())
-"
+asyncio.run(run())
 ```
 
-### **Quality Monitoring**
+## Development & Verification
+
+Basic readiness test:
 ```bash
-# Check processing statistics
-python -c "
-from src.processors.processor import DocumentProcessor
-processor = DocumentProcessor()
-if processor.llm_engine_available:
-    stats = processor.llm_processing_engine.get_processing_summary()
-    print(f'LLM Available: {stats[\"llm_available\"]}')
-    print(f'Processing Rules: {stats[\"processing_rules_count\"]}')
-"
+python -c "from src.ai.llm_processing_engine import LLMProcessingEngine;import asyncio;async def t():
+    e=LLMProcessingEngine();await e.initialize();print('Engine ready')
+asyncio.run(t())"
 ```
 
-## 📝 **License**
+Quality / statistics probe:
+```bash
+python -c "from src.processors.processor import DocumentProcessor; p=DocumentProcessor();
+print(getattr(p,'llm_engine_available',False))"
+```
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## License
+
+MIT License – see [LICENSE](LICENSE).
