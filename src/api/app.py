@@ -61,18 +61,33 @@ app = FastAPI(
 # Configure middleware
 app.add_middleware(ErrorHandlingMiddleware)
 app.add_middleware(RequestLoggingMiddleware, log_request_body=False, log_response_body=False)
-origins = getattr(config_manager, 'get_cors_origins', lambda: ['*'])()
+# CORS: explicitly allow the Streamlit frontend origins to avoid 403s
+default_origins = ['http://localhost:8501', 'http://127.0.0.1:8501']
+origins = getattr(config_manager, 'get_cors_origins', lambda: default_origins)()
+if not origins:
+    origins = default_origins
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*"]
 )
 
 # Static mounting intentionally disabled; Streamlit is the only frontend
 
-# Configuration
+# Configuration (guard against missing config in rare import order issues)
+if config_manager is None:
+    class _MinimalConfig:
+        def get_upload_directory(self):
+            return str(Path("uploaded_files"))
+        def get_max_file_size(self):
+            return 100 * 1024 * 1024
+        def get_cors_origins(self):
+            return ['http://localhost:8501', 'http://127.0.0.1:8501']
+    config_manager = _MinimalConfig()
+
 UPLOAD_DIRECTORY = config_manager.get_upload_directory()
 MAX_FILE_SIZE = config_manager.get_max_file_size()
 os.makedirs(UPLOAD_DIRECTORY, exist_ok=True)
