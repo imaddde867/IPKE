@@ -89,12 +89,68 @@ cd explainium-2.0
 chmod +x setup.sh
 ./setup.sh
 ./start.sh
+./scripts/health_check.sh   # optional validation
 ```
 
 Access:
 - Dashboard: http://localhost:8501
 - API: http://localhost:8000
 - API Docs: http://localhost:8000/docs
+
+Health check (any time):
+```bash
+./scripts/health_check.sh
+```
+
+Stop services:
+```bash
+./stop.sh
+```
+
+Clean (remove caches & logs):
+```bash
+find . -name '__pycache__' -prune -exec rm -rf {} +
+rm -rf logs/*.log
+```
+
+## Environment Variables (Tuning)
+
+| Variable | Purpose | Default |
+|----------|---------|---------|
+| EXPLAINIUM_LLM_CTX | LLM context window | 512 |
+| EXPLAINIUM_LLM_BATCH | LLM batch size | 32 |
+| EXPLAINIUM_LLM_THREADS | Inference threads | 4 |
+| EXPLAINIUM_LLM_CHUNK_TIMEOUT | Per-chunk timeout (s) | 25 |
+| EXPLAINIUM_LLM_CHUNK_RETRIES | LLM retries on timeout | 2 |
+| EXPLAINIUM_LLM_CHUNK_BACKOFF | Initial backoff (s) | 3 |
+| EXPLAINIUM_LLM_MAX_CHARS | Max chars per chunk (truncate) | (internal) |
+| EXPLAINIUM_DISABLE_LLM / EXPLAINIUM_LLM_DISABLE | Disable LLM layer | unset |
+
+Example:
+```bash
+export EXPLAINIUM_LLM_CTX=768
+export EXPLAINIUM_LLM_CHUNK_TIMEOUT=35
+./start.sh
+```
+
+## Presenter’s Checklist
+
+- [ ] Clean dependency install: `pip install -r requirements.txt`
+- [ ] Models present under `models/llm` (GGUF) & spaCy model installed
+- [ ] Health check passes
+- [ ] Process a sample PDF + image + video (entities > 0)
+- [ ] No error stack traces in console during demo
+- [ ] LLM timeouts rare (<2 per document) or gracefully retried
+- [ ] Database (even fallback SQLite) shows populated knowledge_entities
+
+## Scripts
+
+| Script | Purpose |
+|--------|---------|
+| setup.sh | First-time environment + dependencies |
+| start.sh | Launch backend + frontend |
+| stop.sh | Stop all services |
+| scripts/health_check.sh | Run readiness diagnostics |
 
 ## Configuration Snippets
 
