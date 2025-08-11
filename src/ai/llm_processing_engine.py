@@ -102,11 +102,11 @@ class LLMProcessingEngine:
     PROCESSING_RULES = [
         ProcessingRule(
             name="LLM_PRIMARY_RULE",
-            condition="document_complexity >= 0.5 AND llm_available == True",
+            condition="llm_available == True",
             action="use_llm_primary_processing",
             priority=ProcessingPriority.CRITICAL,
             threshold=0.75,
-            description="LLM must be primary processor for complex documents"
+            description="LLM must be primary processor for ALL documents when available"
         ),
         ProcessingRule(
             name="QUALITY_THRESHOLD_RULE", 
@@ -324,15 +324,16 @@ class LLMProcessingEngine:
     def _determine_processing_method(self, complexity_score: float, metadata: Dict[str, Any]) -> str:
         """Apply processing rules to determine optimal method"""
         
-        # Rule 1: LLM Primary for complex documents
-        if complexity_score >= 0.5 and self.llm_model is not None:
+        # Rule 1: LLM Primary when available (prioritize local AI models)
+        # Use LLM for ALL documents if available since it's more accurate
+        if self.llm_model is not None:
             return "llm_primary_analysis"
         
-        # Rule 2: Enhanced processing for medium complexity
+        # Rule 2: Enhanced processing for medium complexity (fallback)
         if complexity_score >= 0.3:
             return "enhanced_pattern_processing"
         
-        # Rule 3: Basic processing for simple documents
+        # Rule 3: Basic processing for simple documents (last resort)
         return "basic_pattern_processing"
     
     async def _execute_processing(self, content: str, document_type: str, 

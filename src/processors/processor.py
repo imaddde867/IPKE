@@ -396,6 +396,13 @@ class DocumentProcessor:
                     
                     # Convert LLM processing result to knowledge format
                     knowledge = self._convert_llm_result_to_knowledge(processing_result, file_path.name)
+                    
+                    # Set processing method metadata
+                    if 'processing_metadata' not in knowledge:
+                        knowledge['processing_metadata'] = {}
+                    knowledge['processing_metadata']['processing_method'] = 'llm_primary'
+                    knowledge['extraction_methods'] = ['llm_primary']
+                    
                     logger.info(f"✅ LLM-First processing successful: {len(processing_result.entities)} entities, "
                               f"{processing_result.confidence_score:.2f} confidence")
                     

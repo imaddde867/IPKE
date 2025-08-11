@@ -156,42 +156,48 @@ def process_with_intelligent_ai_engine(uploaded_file, file_name, file_type):
         else:
             content = f"File: {file_name}"
         
-        # Try to use intelligent AI framework
+        # Try to use intelligent AI framework with LLM-first processing
         try:
-            from ai.advanced_knowledge_engine import AdvancedKnowledgeEngine
-            from core.config import AIConfig
+            from processors.processor import DocumentProcessor
             
-            config = AIConfig()
-            engine = AdvancedKnowledgeEngine(config)
+            # Use the DocumentProcessor which has LLM-first processing
+            processor = DocumentProcessor()
             
-            document_data = {
-                'id': 1,  # Placeholder ID for frontend processing
-                'content': content,
-                'filename': file_name,
-                'metadata': {
-                    'filename': file_name,
-                    'file_type': file_type,
-                    'sections': []  # Could be enhanced with section extraction
-                }
-            }
+            # Save the file temporarily for processing
+            import tempfile
+            import os
+            from pathlib import Path
             
-            # Run async intelligent extraction
-            import asyncio
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
+            # Create a temporary file with the correct extension
+            file_extension = Path(file_name).suffix or '.txt'
+            with tempfile.NamedTemporaryFile(mode='w+b', suffix=file_extension, delete=False) as temp_file:
+                # Write content to temporary file
+                if file_type == "text/plain":
+                    temp_file.write(content.encode('utf-8'))
+                else:
+                    # For non-text files, use the original file content
+                    uploaded_file.seek(0)
+                    temp_file.write(uploaded_file.read())
+                temp_file_path = temp_file.name
             
-            knowledge_results = loop.run_until_complete(
-                engine.extract_intelligent_knowledge(document_data)
-            )
-            loop.close()
+            try:
+                # Process with DocumentProcessor (uses LLM-first processing)
+                knowledge_results = processor.process_document(temp_file_path, document_id=1)
+            finally:
+                # Clean up temporary file
+                os.unlink(temp_file_path)
             
-            # Convert intelligent AI results to display format
-            ai_converted = convert_intelligent_ai_results_to_display(knowledge_results, file_name)
+            # Convert DocumentProcessor results to display format
+            ai_converted = convert_document_processor_results_to_display(knowledge_results, file_name)
             
-            # Store metadata in session state for display outside table
-            if 'processing_metadata' not in st.session_state:
-                st.session_state.processing_metadata = []
-            st.session_state.processing_metadata.extend(ai_converted["processing_metadata"])
+            # Store metadata in session state for display outside table (if available)
+            try:
+                if 'processing_metadata' not in st.session_state:
+                    st.session_state.processing_metadata = []
+                st.session_state.processing_metadata.extend(ai_converted["processing_metadata"])
+            except Exception:
+                # Session state not available (e.g., running outside Streamlit)
+                pass
             
             return ai_converted["knowledge_items"]  # Return only knowledge items for table
             
@@ -1179,6 +1185,80 @@ def main():
             st.metric("Avg Confidence", f"{df['Confidence'].mean():.2f}")
         if not df.empty and 'Type' in df.columns:
             st.metric("Types", df['Type'].nunique())
+
+def convert_document_processor_results_to_display(processor_results, file_name):
+    """Convert DocumentProcessor results to display format with LLM processing indicators"""
+    try:
+        knowledge_items = []  # Actual extracted knowledge
+        processing_metadata = []  # Processing summaries and metadata
+        
+        # Extract knowledge from DocumentProcessor results
+        knowledge = processor_results.get('knowledge', {})
+        extracted_entities = knowledge.get('extracted_entities', [])
+        processing_meta = knowledge.get('processing_metadata', {})
+        
+        # Determine processing method used
+        method = processing_meta.get('method', 'unknown')
+        processing_method = processing_meta.get('processing_method', 'unknown')
+        
+        # Check if LLM was used (prioritize LLM indicators)
+        is_llm_primary = (method == 'llm_first_processing' or 
+                         processing_method == 'llm_primary' or
+                         'llm' in str(knowledge.get('extraction_methods', [])).lower())
+        
+        # Add processing summary to metadata
+        processing_metadata.append({
+            "type": "llm_processing" if is_llm_primary else "advanced_fallback",
+            "title": "🧠 LLM-First Processing" if is_llm_primary else "🔧 Advanced Engine",
+            "confidence": processing_meta.get('confidence_score', 0.8),
+            "details": {
+                "processing_method": "LLM Primary" if is_llm_primary else "Advanced Fallback",
+                "entities_found": len(extracted_entities),
+                "confidence_score": processing_meta.get('confidence_score', 0.8),
+                "processing_time": processing_meta.get('processing_time', 0),
+                "validation_passed": processing_meta.get('validation_passed', True)
+            },
+            "source": file_name,
+            "processed_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "method_icon": "🧠" if is_llm_primary else "🔧"
+        })
+        
+        # Process extracted entities
+        for entity in extracted_entities:
+            knowledge_items.append({
+                "Knowledge": entity.get('core_content', entity.get('key_identifier', 'Unknown')),
+                "Type": entity.get('category', entity.get('entity_type', 'unknown')),
+                "Confidence": entity.get('confidence_score', 0.5),
+                "Category": entity.get('category', 'Unknown').replace('_', ' ').title(),
+                "Description": entity.get('core_content', 'No description available'),
+                "Source": entity.get('source_section', file_name),
+                "Extracted_At": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "Priority": entity.get('priority_level', 'medium').title(),
+                "Context_Tags": ', '.join(entity.get('context_tags', [])),
+                "Completeness": entity.get('completeness_score', 0.5),
+                "Clarity": entity.get('clarity_score', 0.5),
+                "Actionability": entity.get('actionability_score', 0.5),
+                "Processing_Method": "🧠 LLM Primary" if is_llm_primary else "🔧 Advanced Fallback"
+            })
+        
+        return {
+            "knowledge_items": knowledge_items,
+            "processing_metadata": processing_metadata
+        }
+        
+    except Exception as e:
+        print(f"Error converting DocumentProcessor results: {e}")
+        return {
+            "knowledge_items": [],
+            "processing_metadata": [{
+                "type": "error",
+                "title": "Processing Error",
+                "confidence": 0.0,
+                "details": {"error": str(e)},
+                "source": file_name,
+                "processed_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            }]
+        }
 
 def convert_intelligent_ai_results_to_display(ai_results, file_name):
     """Convert intelligent AI framework results to display format with separated metadata"""
