@@ -646,8 +646,8 @@ Format: [Entity Type]: [Content]"""
             "speed_improvement": (600.0 / avg_time) if avg_time > 0 else 0.0  # 10 min -> target
         }
     
-    async def cleanup(self):
-        """Cleanup resources"""
+    def cleanup(self):
+        """Cleanup resources (synchronous)"""
         if self.executor:
             self.executor.shutdown(wait=True)
         logger.info("🧹 Optimized LLM Processing Engine cleaned up")

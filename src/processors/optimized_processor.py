@@ -434,10 +434,25 @@ class OptimizedDocumentProcessor:
             # Convert to grayscale for better OCR
             gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             
-            # Fast OCR extraction
+            # Fast path OCR
             text = pytesseract.image_to_string(gray, config='--psm 6')
+            if text and text.strip():
+                return text
             
-            return text if text.strip() else "No text detected in image"
+            # Quick, low-cost enhancement if first pass failed
+            # OTSU thresholding often improves contrast for documents
+            _, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+            text2 = pytesseract.image_to_string(binary, config='--psm 6')
+            if text2 and text2.strip():
+                return text2
+            
+            # Light denoising as a last fast fallback
+            denoised = cv2.fastNlMeansDenoising(gray)
+            text3 = pytesseract.image_to_string(denoised, config='--psm 6')
+            if text3 and text3.strip():
+                return text3
+            
+            return "No text detected in image"
             
         except Exception as e:
             return f"Image extraction failed: {str(e)}"
@@ -489,13 +504,18 @@ class OptimizedDocumentProcessor:
             return f"Audio extraction failed: {str(e)}"
     
     def _extract_video_content(self, file_path: str) -> str:
-        """Fast video content extraction"""
+        """Fast video content extraction via sparse frame OCR."""
         if not self.video_processing_available:
             return "Video processing not available"
+        if not self.ocr_available:
+            return f"Video file: {Path(file_path).name} (OCR not available)"
         
         try:
-            # Basic video metadata extraction
-            return f"Video file: {Path(file_path).name} (content extraction not available)"
+            result = self._process_video_document(Path(file_path))
+            text = (result.get('text') or '').strip()
+            if text:
+                return text
+            return f"Video file: {Path(file_path).name} (no readable text detected)"
         except Exception as e:
             return f"Video extraction failed: {str(e)}"
     
@@ -841,6 +861,57 @@ class OptimizedDocumentProcessor:
             summary += f" (AI Quality: {avg_quality:.2f})"
 
         return summary
+    
+    def _process_video_document(self, file_path: Path) -> Dict[str, Any]:
+        """Compatibility helper for sparse OCR over video frames.
+        Samples frames at fixed time intervals and performs fast OCR.
+        Returns a dict with 'text' and 'frames_analyzed'.
+        """
+        if not self.video_processing_available:
+            return {'text': '', 'frames_analyzed': 0}
+        
+        capture = cv2.VideoCapture(str(file_path))
+        if not capture.isOpened():
+            return {'text': '', 'frames_analyzed': 0}
+        
+        try:
+            fps = capture.get(cv2.CAP_PROP_FPS) or 0.0
+            total_frames = int(capture.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
+            interval_seconds = getattr(config_manager.processing, 'video_frame_interval_seconds', 5) or 5
+            frames_between_samples = max(1, int(round((fps or 1.0) * max(1, interval_seconds))))
+            
+            # Safety caps for speed: analyze at most ~50 frames
+            max_frames = min(total_frames, 50)
+            frame_index = 0
+            frames_analyzed = 0
+            collected_lines: List[str] = []
+            
+            while frame_index < total_frames and frames_analyzed < max_frames:
+                capture.set(cv2.CAP_PROP_POS_FRAMES, frame_index)
+                success, frame = capture.read()
+                if not success or frame is None:
+                    frame_index += frames_between_samples
+                    continue
+                
+                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                # Light denoising and thresholding (fast)
+                denoised = cv2.fastNlMeansDenoising(gray)
+                _, thresh = cv2.threshold(denoised, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+                
+                text = pytesseract.image_to_string(thresh) if self.ocr_available else ''
+                if text and text.strip():
+                    # Keep short, meaningful snippets
+                    snippet = " ".join(text.strip().split())
+                    if snippet:
+                        collected_lines.append(snippet[:200])
+                
+                frames_analyzed += 1
+                frame_index += frames_between_samples
+            
+            ocr_text = "\n".join(collected_lines)
+            return {'text': ocr_text, 'frames_analyzed': frames_analyzed}
+        finally:
+            capture.release()
     
     def _get_file_type(self, extension: str) -> str:
         """Get file type from extension"""
