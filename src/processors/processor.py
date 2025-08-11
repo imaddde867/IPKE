@@ -36,7 +36,7 @@ from src.logging_config import get_logger, log_processing_step
 from src.core.config import config as config_manager
 from src.exceptions import ProcessingError, AIError
 from src.ai.advanced_knowledge_engine import AdvancedKnowledgeEngine
-from src.ai.llm_processing_engine import LLMProcessingEngine
+# LLM processing engine imported conditionally in _init_llm_processing_engine
 
 logger = get_logger(__name__)
 
@@ -56,8 +56,14 @@ class DocumentProcessor:
     
     def __init__(self, db_session=None):
         self.tika_url = config_manager.get_tika_url()
-        self.advanced_engine = AdvancedKnowledgeEngine(config_manager.ai, db_session)
         self.db_session = db_session
+        
+        # Initialize advanced engine optionally (may fail without DB)
+        try:
+            self.advanced_engine = AdvancedKnowledgeEngine(config_manager.ai, db_session)
+        except Exception as e:
+            logger.warning(f"Failed to initialize advanced knowledge engine: {e}")
+            self.advanced_engine = None
         self.supported_formats = {
             'text': ['.pdf', '.doc', '.docx', '.txt', '.rtf'],
             'image': ['.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff'],
@@ -111,6 +117,11 @@ class DocumentProcessor:
     def _init_knowledge_engine(self):
         """Initialize the advanced knowledge engine"""
         try:
+            if self.advanced_engine is None:
+                logger.warning("Advanced engine not available, skipping knowledge engine initialization")
+                self.knowledge_engine_available = False
+                return
+                
             import asyncio
             # If we're already inside an event loop (e.g., FastAPI with uvicorn reload), schedule task
             try:
@@ -130,7 +141,15 @@ class DocumentProcessor:
         try:
             import asyncio
             logger.info("Initializing LLM-first processing engine")
-            self.llm_processing_engine = LLMProcessingEngine()
+            
+            # Try to import the LLM processing engine
+            try:
+                from src.ai.llm_processing_engine import LLMProcessingEngine
+                self.llm_processing_engine = LLMProcessingEngine()
+            except ImportError as e:
+                logger.warning(f"LLM processing engine not available: {e}")
+                self.llm_engine_available = False
+                return
             
             # Schedule async initialization
             if hasattr(asyncio, 'get_running_loop'):
