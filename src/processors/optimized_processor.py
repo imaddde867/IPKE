@@ -15,6 +15,7 @@ import hashlib
 from typing import Dict, List, Any, Optional, Tuple
 from dataclasses import dataclass, asdict
 from pathlib import Path
+from typing import Callable
 import concurrent.futures
 from concurrent.futures import ThreadPoolExecutor
 import threading
@@ -596,7 +597,14 @@ class OptimizedDocumentProcessor:
         
         try:
             # Use the real LLM engine's process_document method
-            result = await self.llm_engine.process_document(content, document_type)
+            # Pass metadata to encourage LLM processing for video/image
+            metadata = {
+                'file_type': 'video' if document_type == 'video' else ('image' if document_type == 'image' else document_type),
+                'content_type': 'video_content' if document_type == 'video' else 'document'
+            }
+            # Ensure non-empty content to avoid degenerate LLM calls
+            safe_content = content if isinstance(content, str) and content.strip() else ""
+            result = await self.llm_engine.process_document(safe_content, document_type, metadata)
             
             # Convert ProcessingResult to dict format
             if hasattr(result, 'entities'):
@@ -924,10 +932,12 @@ class OptimizedDocumentProcessor:
 
         return summary
     
-    def _process_video_document(self, file_path: Path) -> Dict[str, Any]:
+    def _process_video_document(self, file_path: Path, progress_callback: Optional[Callable[[int, int], None]] = None) -> Dict[str, Any]:
         """Compatibility helper for sparse OCR over video frames.
         Samples frames at fixed time intervals and performs fast OCR.
         Returns a dict with 'text' and 'frames_analyzed'.
+
+        progress_callback: optional callable(done_frames, planned_max_frames) to allow UI heartbeat.
         """
         if not self.video_processing_available:
             return {'text': '', 'frames_analyzed': 0}
@@ -960,8 +970,12 @@ class OptimizedDocumentProcessor:
             interval_seconds = getattr(config_manager.processing, 'video_frame_interval_seconds', 5) or 5
             frames_between_samples = max(1, int(round((fps or 1.0) * max(1, interval_seconds))))
             
-            # Safety caps for speed: analyze at most ~50 frames
-            max_frames = min(total_frames, 50)
+            # Safety caps for speed: default 50, overridable via env var EXPLAINIUM_MAX_VIDEO_FRAMES
+            try:
+                env_cap = int(os.getenv("EXPLAINIUM_MAX_VIDEO_FRAMES", "50"))
+            except Exception:
+                env_cap = 50
+            max_frames = min(total_frames, max(5, env_cap))
             frame_index = 0
             frames_analyzed = 0
             collected_lines: List[str] = []
@@ -986,6 +1000,11 @@ class OptimizedDocumentProcessor:
                         collected_lines.append(snippet[:200])
                 
                 frames_analyzed += 1
+                if progress_callback:
+                    try:
+                        progress_callback(frames_analyzed, max_frames)
+                    except Exception:
+                        pass
                 frame_index += frames_between_samples
             
             ocr_text = "\n".join(collected_lines)

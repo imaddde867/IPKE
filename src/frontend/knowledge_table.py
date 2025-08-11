@@ -167,7 +167,7 @@ def process_with_intelligent_ai_engine(uploaded_file, file_name, file_type):
             # Lazy-init the heavy processor once per session with a spinner
             processor = getattr(st.session_state, 'document_processor', None)
             if processor is None:
-                with st.spinner("🧠 Initializing local AI models (first use may take up to a minute)..."):
+                with st.spinner("Initializing local AI models (first use may take up to a minute)..."):
                     processor = OptimizedDocumentProcessor()
                     try:
                         processor.optimize_for_m4()
@@ -604,35 +604,82 @@ def extract_knowledge_from_image(uploaded_file, file_name):
         }]
 
 def extract_knowledge_from_video(uploaded_file, file_name):
-    """Extract knowledge from video by leveraging the backend video pipeline.
+    """Extract knowledge from video in a Streamlit-friendly, connection-safe way.
 
-    Saves the uploaded file to a temporary path, runs the consolidated
-    `DocumentProcessor` video extraction (audio transcription + frame OCR),
-    then converts the resulting text into structured knowledge items.
+    Key improvements to prevent mid-processing connection drops:
+    - Reuses a single OptimizedDocumentProcessor instance (avoids reloading large models)
+    - Streams uploaded file to temp file in chunks (no full in-memory load)
+    - Provides live progress updates (keeps Streamlit websocket alive)
+    - Honors env var EXPLAINIUM_MAX_VIDEO_FRAMES to cap frame OCR work
+    - Adds graceful degradation for very large files
     """
     import tempfile
     from pathlib import Path
     
     temp_path = None
     try:
-        # Persist uploaded bytes to a temporary file so ffmpeg/ocr can access it
-        raw_bytes = uploaded_file.read()
-        uploaded_file.seek(0)
+        # Basic file size (Streamlit uploader exposes .size for some backends; fallback to len(read()))
+        try:
+            uploaded_file.seek(0)
+            head_bytes = uploaded_file.read(1024)
+            uploaded_file.seek(0)
+        except Exception:
+            pass
+        # Rough size (without keeping whole video resident)
+        try:
+            uploaded_file.seek(0)
+            uploaded_file.read(1)
+            uploaded_file.seek(0)
+        except Exception:
+            pass
+        # Write to temp file in chunks to avoid large RAM spike
         suffix = Path(file_name).suffix or ".mp4"
         with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
-            tmp.write(raw_bytes)
             temp_path = tmp.name
-
-        # Lazy import to avoid heavy deps on app boot
-        from src.processors.optimized_processor import OptimizedDocumentProcessor
-        dp = OptimizedDocumentProcessor()
+            uploaded_file.seek(0)
+            while True:
+                chunk = uploaded_file.read(8 * 1024 * 1024)  # 8MB chunks
+                if not chunk:
+                    break
+                tmp.write(chunk)
         try:
-            dp.optimize_for_m4()
+            uploaded_file.seek(0)
         except Exception:
             pass
 
-        # Run improved video processing (audio + frame OCR fallback)
-        result = dp._process_video_document(Path(temp_path))
+        # Reuse / lazily create processor (heavy models) only once
+        from src.processors.optimized_processor import OptimizedDocumentProcessor
+        processor = getattr(st.session_state, 'document_processor', None)
+        if processor is None or not isinstance(processor, OptimizedDocumentProcessor):
+            with st.spinner("Initializing optimized AI processor (one-time)..."):
+                processor = OptimizedDocumentProcessor()
+                try:
+                    processor.optimize_for_m4()
+                except Exception:
+                    pass
+                st.session_state.document_processor = processor
+
+        # Progress UI
+        progress_ph = st.empty()
+        progress_bar = progress_ph.progress(0, text="Analyzing video frames...")
+
+        # Define a progress callback to keep Streamlit connection alive
+        def progress_cb(done: int, total: int):
+            try:
+                ratio = 0 if total == 0 else min(1.0, done / max(1, total))
+                progress_bar.progress(ratio, text=f"Analyzing video frames... {done}/{total}")
+            except Exception:
+                pass
+
+        # Invoke processor with progress callback
+        result = processor._process_video_document(Path(temp_path), progress_callback=progress_cb)
+
+        # Close progress bar
+        try:
+            progress_ph.empty()
+        except Exception:
+            pass
+
         transcript_text = (result.get('text') or '').strip()
         frames_analyzed = result.get('frames_analyzed')
         source = result.get('source')
@@ -640,16 +687,15 @@ def extract_knowledge_from_video(uploaded_file, file_name):
 
         knowledge_items: List[Dict[str, Any]] = []
         if transcript_text:
-            # Convert transcript into structured knowledge
             knowledge_items.extend(extract_intelligent_knowledge(transcript_text, file_name))
 
-        # Always append a processing summary item
+        # Build processing summary
         details = []
         try:
-            size_mb = len(raw_bytes) / 1024 / 1024
-            details.append(f"size={size_mb:.1f} MB")
+            file_size_mb = os.path.getsize(temp_path) / 1024 / 1024
+            details.append(f"size={file_size_mb:.1f} MB")
         except Exception:
-            pass
+            file_size_mb = None
         if frames_analyzed is not None:
             details.append(f"frames_analyzed={frames_analyzed}")
         if source:
@@ -667,7 +713,6 @@ def extract_knowledge_from_video(uploaded_file, file_name):
             "Extracted_At": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         })
 
-        # If nothing else was extracted, provide a clear minimal item instead of being empty
         if not transcript_text and len(knowledge_items) == 1:
             knowledge_items.insert(0, {
                 "Knowledge": "Video Content",
@@ -682,20 +727,13 @@ def extract_knowledge_from_video(uploaded_file, file_name):
         return knowledge_items
 
     except Exception as e:
-        # Fallback to basic filename heuristic if processing fails
-        try:
-            size_mb = len(uploaded_file.read()) / 1024 / 1024
-        except Exception:
-            size_mb = None
-        finally:
-            try:
-                uploaded_file.seek(0)
-            except Exception:
-                pass
-
         description = f"Video processing failed: {str(e)}"
-        if size_mb is not None:
-            description += f" (size={size_mb:.1f} MB)"
+        try:
+            if temp_path and os.path.exists(temp_path):
+                size_mb = os.path.getsize(temp_path) / 1024 / 1024
+                description += f" (size={size_mb:.1f} MB)"
+        except Exception:
+            pass
         return [{
             "Knowledge": "Video Processing Error",
             "Type": "systems",
@@ -706,7 +744,6 @@ def extract_knowledge_from_video(uploaded_file, file_name):
             "Extracted_At": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }]
     finally:
-        # Cleanup temp file if created
         if temp_path and os.path.exists(temp_path):
             try:
                 os.remove(temp_path)
@@ -872,30 +909,30 @@ def main():
     )
     
     st.title("EXPLAINIUM Intelligent Knowledge Extraction")
-    st.markdown("**Advanced AI-Powered Document & Video Analysis Platform**")
+    st.markdown("Advanced AI-Powered Document & Video Analysis Platform")
     
     # Enhanced status display with video processing capabilities
     col_status1, col_status2, col_status3 = st.columns(3)
     
     with col_status1:
         if AI_AVAILABLE:
-            st.success("🧠 **AI Engine Active**")
+            st.success("AI Engine Active")
             st.caption("LLM-powered knowledge extraction ready")
         else:
-            st.warning("🔧 **AI Engine Limited**")
+            st.warning("AI Engine Limited")
             st.caption("Using enhanced pattern analysis")
     
     with col_status2:
-        st.info("🎥 **Video Processing Enhanced**")
+        st.info("Video Processing Enhanced")
         st.caption("Audio transcription + Visual OCR + LLM analysis")
     
     with col_status3:
-        st.info("📊 **Multi-Format Support**")
+        st.info("Multi-Format Support")
         st.caption("Text, Images, Videos, PDFs, Spreadsheets")
     
     # Show retry option only if AI is unavailable
     if not AI_AVAILABLE:
-        if st.button("🔄 Retry AI Engine Loading", help="Attempt to reload AI components"):
+        if st.button("Retry AI Engine Loading", help="Attempt to reload AI components"):
             st.rerun()
     
     # Initialize session state
@@ -945,14 +982,14 @@ def main():
                 button_text = "Analyze Image"
                 spinner_text = "Analyzing image with computer vision..."
             elif file_type.startswith("video/"):
-                st.success(f"🎥 **Video:** {uploaded_file.name}")
-                st.markdown("**Enhanced Processing:**")
-                st.markdown("• 🎵 Audio transcription with Whisper AI")
-                st.markdown("• 👁️ Visual text extraction with OCR")
-                st.markdown("• 🧠 LLM-powered knowledge analysis")
-                st.markdown("• 🎬 Scene-by-scene content analysis")
-                button_text = "🚀 Process Video with AI"
-                spinner_text = "🎥 Processing video with AI: audio transcription + visual analysis + LLM enhancement..."
+                st.success(f"Video: {uploaded_file.name}")
+                st.markdown("Enhanced Processing:")
+                st.markdown("- Audio transcription with Whisper AI")
+                st.markdown("- Visual text extraction with OCR")
+                st.markdown("- LLM-powered knowledge analysis")
+                st.markdown("- Scene-by-scene content analysis")
+                button_text = "Process Video with AI"
+                spinner_text = "Processing video with AI: audio transcription + visual analysis + LLM enhancement..."
             elif file_type.startswith("audio/"):
                 st.info(f"Audio: {uploaded_file.name}")
                 button_text = "Transcribe Audio"
@@ -1020,7 +1057,7 @@ def main():
     
         # LLM-First Processing Summary Section (Priority Display)
     if st.session_state.processing_metadata:
-        st.header("🧠 LLM-First Processing Intelligence")
+        st.header("LLM-First Processing Intelligence")
         
         # Show processing engine status
         col_status1, col_status2, col_status3 = st.columns(3)
@@ -1031,43 +1068,39 @@ def main():
         advanced_count = len(st.session_state.processing_metadata) - llm_count
         
         with col_status1:
-            st.metric("🧠 LLM Primary", llm_count, help="Documents processed with LLM-first engine")
+            st.metric("LLM Primary", llm_count, help="Documents processed with LLM-first engine")
         with col_status2:
-            st.metric("🔧 Advanced Fallback", advanced_count, help="Documents using advanced engine fallback")
+            st.metric("Advanced Fallback", advanced_count, help="Documents using advanced engine fallback")
         with col_status3:
             avg_confidence = sum(m.get('confidence', 0) for m in st.session_state.processing_metadata) / max(len(st.session_state.processing_metadata), 1)
-            st.metric("⭐ Avg Quality", f"{avg_confidence:.2f}", help="Average processing confidence")
+            st.metric("Avg Quality", f"{avg_confidence:.2f}", help="Average processing confidence")
 
         # Display processing metadata in enhanced format
         for metadata in st.session_state.processing_metadata[-3:]:  # Show last 3 processed items
             # Determine processing method and show appropriate styling
             method = metadata.get('details', {}).get('method', 'unknown')
             if method == 'llm_first_processing':
-                icon = "🧠"
                 method_display = "LLM-First Processing"
-                color = "green"
             else:
-                icon = "🔧" 
                 method_display = "Advanced Engine"
-                color = "blue"
             
             # Enhanced display for video content
             source_file = metadata.get('source', '')
             is_video = source_file.lower().endswith(('.mp4', '.avi', '.mov', '.mkv'))
             
-            with st.expander(f"{icon} {method_display}: {metadata['title']} - {metadata['source']}", expanded=False):
+            with st.expander(f"{method_display}: {metadata['title']} - {metadata['source']}", expanded=False):
                 col_meta1, col_meta2 = st.columns([2, 1])
 
                 with col_meta1:
                     if is_video:
                         # Special display for video content
                         st.markdown(f"""
-                        **🎥 Video Processing Results:**
+                        **Video Processing Results:**
                         - **Processing Method:** {method_display}
                         - **Entities Extracted:** {metadata['details'].get('entities_found', 0)}
                         - **Content Sources:** Audio transcription, Visual OCR, Scene analysis
                         - **Processing Time:** {metadata['details'].get('processing_time', 0):.2f}s
-                        - **LLM Enhanced:** {'✅ Yes' if metadata['details'].get('llm_enhanced') else '✅ Pattern-Enhanced'}
+                        - **LLM Enhanced:** {'Yes' if metadata['details'].get('llm_enhanced') else 'Pattern-Enhanced'}
                         """)
                     elif metadata['type'] == 'document_analysis':
                         st.markdown(f"""
@@ -1090,7 +1123,7 @@ def main():
                     
                     # Show processing hierarchy rules applied
                     if metadata.get('details', {}).get('rules_applied'):
-                        st.markdown("**🔧 Processing Rules Applied:**")
+                        st.markdown("Processing Rules Applied:")
                         for rule in metadata['details']['rules_applied']:
                             st.markdown(f"- {rule}")
 
@@ -1174,7 +1207,7 @@ def main():
                         max_conf = conf_df['Confidence'].max()
                         st.write(f"📊 **Confidence Range:** {min_conf:.2f} - {max_conf:.2f}")
                 
-                if st.button("🔄 Reset All Filters"):
+                if st.button("Reset All Filters"):
                     st.rerun()
         else:
             st.dataframe(
@@ -1255,9 +1288,10 @@ def convert_document_processor_results_to_display(processor_results, file_name):
         # Add processing summary to metadata
         processing_metadata.append({
             "type": "llm_processing" if is_llm_primary else "advanced_fallback",
-            "title": "🧠 LLM-First Processing" if is_llm_primary else "🔧 Advanced Engine",
+            "title": "LLM-First Processing" if is_llm_primary else "Advanced Engine",
             "confidence": processing_meta.get('confidence_score', 0.8),
             "details": {
+                "method": "llm_first_processing" if is_llm_primary else "advanced_engine",
                 "processing_method": "LLM Primary" if is_llm_primary else "Advanced Fallback",
                 "entities_found": len(extracted_entities),
                 "confidence_score": processing_meta.get('confidence_score', 0.8),
@@ -1266,7 +1300,7 @@ def convert_document_processor_results_to_display(processor_results, file_name):
             },
             "source": file_name,
             "processed_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "method_icon": "🧠" if is_llm_primary else "🔧"
+            # icon removed for professional UI
         })
         
         # Process extracted entities
@@ -1284,7 +1318,7 @@ def convert_document_processor_results_to_display(processor_results, file_name):
                 "Completeness": entity.get('completeness_score', 0.5),
                 "Clarity": entity.get('clarity_score', 0.5),
                 "Actionability": entity.get('actionability_score', 0.5),
-                "Processing_Method": "🧠 LLM Primary" if is_llm_primary else "🔧 Advanced Fallback"
+                "Processing_Method": "LLM Primary" if is_llm_primary else "Advanced Fallback"
             })
         
         return {

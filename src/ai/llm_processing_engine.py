@@ -211,24 +211,48 @@ class OptimizedLLMProcessingEngine:
     async def _initialize_primary_llm(self):
         """Initialize primary LLM model with M4 optimizations"""
         try:
-            # Use smaller, faster model for M4 optimization
-            model_path = self.config.get("llm_model_path", "models/llama-2-7b-chat.gguf")
-            
-            if Path(model_path).exists():
-                # M4-optimized settings
-                self.llm_model = Llama(
-                    model_path=model_path,
-                    n_ctx=2048,  # Reduced context for speed
-                    n_batch=512,  # Optimized batch size for M4
-                    n_threads=8,  # Optimize for M4 chip
-                    n_gpu_layers=0,  # CPU-only for M4 optimization
-                    verbose=False
-                )
-                logger.info("✅ LLM model initialized with M4 optimizations")
+            # Resolve model path from config (AIConfig dataclass)
+            configured_path = getattr(self.config, 'llm_path', None)
+            candidate_path = configured_path or "models/llm/Mistral-7B-Instruct-v0.2-GGUF"
+
+            model_path: Optional[Path] = None
+            p = Path(candidate_path)
+            if p.is_dir():
+                # Find a GGUF file inside the directory
+                ggufs = sorted(p.glob("**/*.gguf"))
+                if ggufs:
+                    model_path = ggufs[0]
+            elif p.is_file():
+                model_path = p
+
+            if model_path and model_path.exists():
+                # Try conservative memory settings first
+                try:
+                    self.llm_model = Llama(
+                        model_path=str(model_path),
+                        n_ctx=1024,
+                        n_batch=64,
+                        n_threads=6,
+                        n_gpu_layers=0,
+                        verbose=False
+                    )
+                    logger.info(f"✅ LLM model initialized from {model_path}")
+                except Exception as mem_err:
+                    logger.warning(f"⚠️ LLM init with standard settings failed ({mem_err}); retrying with ultra-low memory settings")
+                    # Ultra-low memory retry
+                    self.llm_model = Llama(
+                        model_path=str(model_path),
+                        n_ctx=512,
+                        n_batch=32,
+                        n_threads=4,
+                        n_gpu_layers=0,
+                        verbose=False
+                    )
+                    logger.info(f"✅ LLM model initialized (low-memory mode) from {model_path}")
             else:
-                logger.warning("⚠️ LLM model not found, using enhanced patterns only")
+                logger.warning("⚠️ No GGUF model file found for LLM; proceeding without LLM")
                 self.llm_model = None
-                
+
         except Exception as e:
             logger.error(f"❌ LLM initialization failed: {e}")
             self.llm_model = None
@@ -344,14 +368,14 @@ class OptimizedLLMProcessingEngine:
         content_type = metadata.get('content_type', '')
         file_type = metadata.get('file_type', '')
         
-        if content_type == 'video_content' or file_type == 'video':
-            # Video content should always use LLM processing for best results
+        if content_type == 'video_content' or file_type in ('video', 'image'):
+            # Prefer LLM for video and image transcripts when available
             if self.llm_model is not None:
-                logger.info("🎥 Using LLM processing for video content")
+                logger.info("Using LLM processing for media content")
                 return "llm_chunked"
             else:
-                # Enhanced patterns for video without LLM
-                logger.info("🎥 Using enhanced patterns for video content (LLM unavailable)")
+                # Enhanced patterns if LLM unavailable
+                logger.info("Using enhanced patterns for media content (LLM unavailable)")
                 return "enhanced_patterns"
         
         # Rule 1: Fast patterns for simple content
@@ -427,7 +451,7 @@ class OptimizedLLMProcessingEngine:
             return await self._execute_enhanced_patterns(content, document_type)
         
         # Chunk content for faster processing
-        chunks = self._chunk_content_optimized(content, max_chunk_size=1500)
+        chunks = self._chunk_content_optimized(content, max_chunk_size=800)
         
         # Process chunks in parallel
         chunk_tasks = []
@@ -540,7 +564,9 @@ Format: [Entity Type]: [Content]"""
     def _query_llm_sync(self, prompt: str) -> str:
         """Synchronous LLM query"""
         try:
-            response = self.llm_model(prompt, max_tokens=500, temperature=0.1)
+            if not self.llm_model:
+                return ""
+            response = self.llm_model(prompt, max_tokens=256, temperature=0.1)
             return response.get('choices', [{}])[0].get('text', '')
         except Exception as e:
             logger.error(f"LLM query error: {e}")
