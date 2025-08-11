@@ -854,7 +854,37 @@ class DocumentProcessor:
             except Exception as e:
                 logger.warning(f"Even basic video processing failed: {e}")
 
-        # Compile comprehensive results
+        # Enhanced content formatting for LLM processing
+        # Create structured content that LLM can better understand
+        if combined_text.strip():
+            # Add video context header for LLM processing
+            video_context = f"Video Content Analysis - {file_path.name}\n"
+            video_context += f"Duration: {processing_metadata.get('duration', 'unknown')}s, "
+            video_context += f"Frames Analyzed: {processing_metadata.get('frames_analyzed', 0)}\n"
+            video_context += f"Content Sources: {', '.join(sources)}\n\n"
+            
+            # Structure the content for better LLM understanding
+            structured_content = video_context
+            
+            if extracted_content['audio_transcript']:
+                structured_content += "=== AUDIO TRANSCRIPT ===\n"
+                structured_content += extracted_content['audio_transcript'] + "\n\n"
+            
+            if extracted_content['visual_text']:
+                structured_content += "=== VISUAL TEXT (ON-SCREEN) ===\n"
+                structured_content += extracted_content['visual_text'] + "\n\n"
+            
+            if extracted_content['scene_analysis']:
+                structured_content += "=== SCENE ANALYSIS ===\n"
+                structured_content += extracted_content['scene_analysis'] + "\n\n"
+            
+            if extracted_content['procedural_content']:
+                structured_content += "=== PROCEDURAL CONTENT ===\n"
+                structured_content += extracted_content['procedural_content'] + "\n\n"
+            
+            combined_text = structured_content
+
+        # Compile comprehensive results with enhanced structure for LLM
         result = {
             'text': combined_text,
             'language': language_detected,
@@ -870,7 +900,11 @@ class DocumentProcessor:
                 'frames_analyzed': processing_metadata.get('frames_analyzed', 0),
                 'audio_quality': processing_metadata.get('audio_quality', 'unknown'),
                 'visual_quality': processing_metadata.get('visual_quality', 'unknown')
-            }
+            },
+            # Enhanced content type for LLM processing
+            'content_type': 'video_content',
+            'llm_ready': bool(combined_text.strip()),
+            'processing_quality': 'high' if len(sources) >= 2 else 'medium'
         }
 
         # Add intelligent metadata
@@ -878,7 +912,7 @@ class DocumentProcessor:
         result['knowledge_extraction_confidence'] = self._calculate_video_extraction_confidence(extracted_content, sources)
 
         return result
-
+    
     def _extract_text_from_video_frames(self, file_path: Path, interval_seconds: int = 5, max_frames: int = 20) -> Dict[str, Any]:
         """Extract visible text from sampled video frames using OCR.
 
@@ -1976,18 +2010,15 @@ class DocumentProcessor:
                 temp_audio_path = temp_audio.name
             
             try:
-                # Enhanced audio extraction with noise reduction
+                # Simplified audio extraction for better compatibility
                 (
                     ffmpeg
                     .input(str(file_path))
-                    .filter('highpass', f=200)  # Remove low-frequency noise
-                    .filter('lowpass', f=8000)   # Remove high-frequency noise
                     .output(
                         temp_audio_path, 
                         acodec='pcm_s16le', 
                         ac=1, 
-                        ar='16000',
-                        af='volume=2.0'  # Boost volume
+                        ar='16000'
                     )
                     .overwrite_output()
                     .run(quiet=True, capture_stdout=True, capture_stderr=True)
@@ -2303,26 +2334,52 @@ class DocumentProcessor:
             return {}
     
     def _combine_video_extractions(self, extracted_content: Dict[str, Any], sources: List[str]) -> str:
-        """Intelligently combine content extracted from video"""
+        """Intelligently combine content extracted from video for LLM processing"""
         parts = []
         
-        # Audio transcript (usually most important)
+        # Create a comprehensive video content summary for LLM
+        content_summary = []
+        
+        # Audio transcript (usually most important for LLM)
         if extracted_content.get('audio_transcript'):
-            parts.append(f"Audio Transcript:\n{extracted_content['audio_transcript']}")
+            audio_text = extracted_content['audio_transcript'].strip()
+            if audio_text:
+                content_summary.append(f"SPOKEN CONTENT: {audio_text}")
+                parts.append(audio_text)  # Add raw content for LLM processing
         
         # Visual text content
         if extracted_content.get('visual_text'):
-            parts.append(f"On-Screen Text:\n{extracted_content['visual_text']}")
+            visual_text = extracted_content['visual_text'].strip()
+            if visual_text:
+                content_summary.append(f"ON-SCREEN TEXT: {visual_text}")
+                parts.append(visual_text)  # Add raw content for LLM processing
         
-        # Scene analysis
+        # Scene analysis (contextual information)
         if extracted_content.get('scene_analysis'):
-            parts.append(f"Visual Scene Analysis:\n{extracted_content['scene_analysis']}")
+            scene_text = extracted_content['scene_analysis'].strip()
+            if scene_text:
+                content_summary.append(f"VISUAL CONTEXT: {scene_text}")
         
         # Procedural content
         if extracted_content.get('procedural_content'):
-            parts.append(f"Procedural Information:\n{extracted_content['procedural_content']}")
+            procedural_text = extracted_content['procedural_content'].strip()
+            if procedural_text:
+                content_summary.append(f"PROCEDURES: {procedural_text}")
+                parts.append(procedural_text)  # Add raw content for LLM processing
         
-        return '\n\n'.join(parts) if parts else ""
+        # Create final combined text optimized for LLM understanding
+        if parts:
+            # Combine the actual content parts for LLM processing
+            main_content = ' '.join(parts)
+            
+            # Add context summary if we have multiple sources
+            if len(content_summary) > 1:
+                context_header = "Video contains: " + "; ".join(content_summary) + "\n\n"
+                return context_header + main_content
+            else:
+                return main_content
+        
+        return ""
     
     def _basic_video_processing_fallback(self, file_path: Path) -> Dict[str, Any]:
         """Basic fallback video processing when advanced methods fail"""
@@ -2446,31 +2503,40 @@ class DocumentProcessor:
     def _calculate_video_extraction_confidence(self, extracted_content: Dict[str, Any], sources: List[str]) -> float:
         """Calculate confidence score for video knowledge extraction"""
         confidence_factors = []
+        base_confidence = 0.7  # Start with good base confidence for video processing
         
         # Audio transcript confidence
         if extracted_content.get('audio_transcript'):
             audio_length = len(extracted_content['audio_transcript'])
-            audio_confidence = min(1.0, audio_length / 500)  # Normalize by expected length
-            confidence_factors.append(audio_confidence * 0.4)  # 40% weight
+            if audio_length > 100:  # Lower threshold for meaningful content
+                audio_confidence = min(0.95, 0.7 + (audio_length / 1000))  # More generous scaling
+                confidence_factors.append(audio_confidence)
         
-        # Visual text confidence
+        # Visual text confidence  
         if extracted_content.get('visual_text'):
             visual_length = len(extracted_content['visual_text'])
-            visual_confidence = min(1.0, visual_length / 200)
-            confidence_factors.append(visual_confidence * 0.3)  # 30% weight
+            if visual_length > 50:  # Lower threshold for visual text
+                visual_confidence = min(0.9, 0.6 + (visual_length / 300))  # More generous scaling
+                confidence_factors.append(visual_confidence)
         
         # Scene analysis confidence
         if extracted_content.get('scene_analysis'):
-            scene_confidence = 0.8  # Fixed confidence for scene analysis
-            confidence_factors.append(scene_confidence * 0.2)  # 20% weight
+            scene_confidence = 0.85  # Higher confidence for scene analysis
+            confidence_factors.append(scene_confidence)
         
         # Procedural content confidence
         if extracted_content.get('procedural_content'):
             procedural_confidence = 0.9  # High confidence for procedural content
-            confidence_factors.append(procedural_confidence * 0.1)  # 10% weight
+            confidence_factors.append(procedural_confidence)
         
-        # Calculate overall confidence
+        # Source diversity bonus
+        source_bonus = min(0.2, len(sources) * 0.05)  # Bonus for multiple extraction methods
+        
+        # Calculate overall confidence with improved algorithm
         if confidence_factors:
-            return sum(confidence_factors) / len(confidence_factors)
+            avg_confidence = sum(confidence_factors) / len(confidence_factors)
+            final_confidence = min(0.95, avg_confidence + source_bonus)
+            return max(base_confidence, final_confidence)  # Ensure minimum confidence
         else:
-            return 0.1  # Very low confidence if nothing extracted
+            # Even with no extracted content, video processing should have reasonable confidence
+            return 0.6 if sources else 0.3

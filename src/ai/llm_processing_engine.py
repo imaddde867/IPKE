@@ -338,7 +338,21 @@ class OptimizedLLMProcessingEngine:
     
     def _determine_processing_method_fast(self, complexity_score: float, content_length: int, 
                                         metadata: Dict[str, Any]) -> str:
-        """Fast processing method determination"""
+        """Fast processing method determination with video content support"""
+        
+        # Special handling for video content
+        content_type = metadata.get('content_type', '')
+        file_type = metadata.get('file_type', '')
+        
+        if content_type == 'video_content' or file_type == 'video':
+            # Video content should always use LLM processing for best results
+            if self.llm_model is not None:
+                logger.info("🎥 Using LLM processing for video content")
+                return "llm_chunked"
+            else:
+                # Enhanced patterns for video without LLM
+                logger.info("🎥 Using enhanced patterns for video content (LLM unavailable)")
+                return "enhanced_patterns"
         
         # Rule 1: Fast patterns for simple content
         if content_length < 2000 and complexity_score < 0.3:
@@ -464,10 +478,29 @@ class OptimizedLLMProcessingEngine:
         return chunks
     
     async def _process_chunk_with_llm(self, chunk: str, document_type: str) -> List[ExtractedEntity]:
-        """Process a single chunk with LLM"""
+        """Process a single chunk with LLM with enhanced video content support"""
         try:
-            # Simple LLM prompt for speed
-            prompt = f"""Extract key information from this {document_type} document chunk:
+            # Enhanced LLM prompt with video content support
+            if document_type == 'video' or 'video' in document_type.lower() or 'AUDIO TRANSCRIPT' in chunk or 'VISUAL TEXT' in chunk:
+                prompt = f"""Analyze this video content and extract key information:
+
+{chunk}
+
+For video content, extract:
+- Spoken instructions and procedures from audio
+- Visual text and on-screen information
+- Safety warnings and requirements
+- Technical specifications mentioned
+- Step-by-step processes described
+- Equipment and tools referenced
+- Personnel roles and responsibilities
+- Scene context and visual information
+
+Format each finding as: [Category]: [Specific Information]
+Focus on actionable knowledge and procedural information."""
+            else:
+                # Standard document processing prompt
+                prompt = f"""Extract key information from this {document_type} document chunk:
             
 {chunk}
 
