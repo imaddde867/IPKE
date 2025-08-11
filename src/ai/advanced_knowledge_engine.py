@@ -307,18 +307,26 @@ class AdvancedKnowledgeEngine:
         metadata = document.get('metadata', {})
         document_id = document.get('id')
         
-        logger.info(f"Starting intelligent knowledge extraction for document: {filename}")
+        # Extract enhanced multi-modal content
+        sections = document.get('sections', [])
+        extraction_methods = document.get('extraction_methods', [])
+        multimodal_content = self._extract_multimodal_content(document)
         
-        # Phase 1: Document Intelligence Assessment
+        logger.info(f"Starting intelligent knowledge extraction for document: {filename}")
+        logger.info(f"Extraction methods used: {', '.join(extraction_methods) if extraction_methods else 'standard'}")
+        logger.info(f"Multi-modal content types: {', '.join(multimodal_content.keys()) if multimodal_content else 'text only'}")
+        
+        # Phase 1: Document Intelligence Assessment (Enhanced with multi-modal awareness)
         logger.info("Phase 1: Document Intelligence Assessment")
+        enhanced_metadata = {**metadata, 'multimodal_content': multimodal_content, 'extraction_methods': extraction_methods}
         document_intelligence = await self.document_analyzer.analyze_document_intelligence(
-            content, filename, metadata
+            content, filename, enhanced_metadata
         )
         
-        # Phase 2: Intelligent Knowledge Categorization
+        # Phase 2: Intelligent Knowledge Categorization (Enhanced with multi-modal sections)
         logger.info("Phase 2: Intelligent Knowledge Categorization")
         knowledge_entities = await self.categorization_engine.categorize_knowledge(
-            content, document_intelligence, metadata.get('sections', [])
+            content, document_intelligence, sections, multimodal_content
         )
         
         # Phase 3: Database-Optimized Output Generation
@@ -558,6 +566,70 @@ class AdvancedKnowledgeEngine:
         }.get(document_intelligence.complexity_level, 0.8)
         
         return entity_completeness * complexity_factor
+    
+    def _extract_multimodal_content(self, document: Dict[str, Any]) -> Dict[str, Any]:
+        """Extract and organize multi-modal content from enhanced processors"""
+        multimodal_content = {}
+        
+        # Image content
+        if 'computer_vision_analysis' in document:
+            cv_analysis = document['computer_vision_analysis']
+            multimodal_content['visual_analysis'] = {
+                'scene_type': cv_analysis.get('scene_type', 'unknown'),
+                'description': cv_analysis.get('description', ''),
+                'visual_elements': cv_analysis.get('visual_features', {}),
+                'text_regions': cv_analysis.get('text_regions', [])
+            }
+        
+        if 'structure_analysis' in document:
+            structure = document['structure_analysis']
+            multimodal_content['document_structure'] = {
+                'elements': structure.get('structural_elements', []),
+                'has_tables': structure.get('has_tables', False),
+                'has_forms': structure.get('has_forms', False),
+                'structural_text': structure.get('structural_text', '')
+            }
+        
+        if 'diagram_analysis' in document:
+            diagram = document['diagram_analysis']
+            multimodal_content['diagram_analysis'] = {
+                'elements': diagram.get('diagram_elements', []),
+                'is_flowchart': diagram.get('is_flowchart', False),
+                'is_chart': diagram.get('is_chart', False),
+                'chart_type': diagram.get('chart_type', 'unknown'),
+                'diagram_text': diagram.get('diagram_text', '')
+            }
+        
+        # Video content
+        if 'video_analysis' in document:
+            video = document['video_analysis']
+            multimodal_content['video_analysis'] = {
+                'duration': video.get('duration', 0),
+                'fps': video.get('fps', 0),
+                'frames_analyzed': video.get('frames_analyzed', 0),
+                'audio_quality': video.get('audio_quality', 'unknown'),
+                'visual_quality': video.get('visual_quality', 'unknown')
+            }
+        
+        if 'content_breakdown' in document:
+            breakdown = document['content_breakdown']
+            multimodal_content['content_breakdown'] = {
+                'audio_transcript': breakdown.get('audio_transcript', ''),
+                'visual_text': breakdown.get('visual_text', ''),
+                'scene_analysis': breakdown.get('scene_analysis', ''),
+                'procedural_content': breakdown.get('procedural_content', '')
+            }
+        
+        # Content type detection
+        content_type = document.get('content_type_detected', 'unknown')
+        if content_type != 'unknown':
+            multimodal_content['content_type'] = content_type
+        
+        # Quality metrics
+        if 'knowledge_extraction_confidence' in document:
+            multimodal_content['extraction_confidence'] = document['knowledge_extraction_confidence']
+        
+        return multimodal_content
     
     async def _build_knowledge_graph_from_entities(self, entities, metadata):
         """Build knowledge graph from extracted entities"""

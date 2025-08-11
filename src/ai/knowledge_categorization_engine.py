@@ -261,7 +261,8 @@ class KnowledgeCategorizationEngine:
     
     async def categorize_knowledge(self, content: str, 
                                  document_intelligence: DocumentIntelligence,
-                                 sections: List[Dict[str, Any]] = None) -> List[KnowledgeEntity]:
+                                 sections: List[Dict[str, Any]] = None,
+                                 multimodal_content: Dict[str, Any] = None) -> List[KnowledgeEntity]:
         """
         Systematically categorize document content into structured knowledge entities
         
@@ -269,6 +270,7 @@ class KnowledgeCategorizationEngine:
             content: Full document content
             document_intelligence: Phase 1 analysis results
             sections: Document sections with metadata
+            multimodal_content: Multi-modal content from enhanced processors
             
         Returns:
             List of structured knowledge entities ready for database ingestion
@@ -278,43 +280,54 @@ class KnowledgeCategorizationEngine:
         
         logger.info("Starting intelligent knowledge categorization")
         
+        # Prepare enhanced content with multimodal data
+        enhanced_content = self._prepare_enhanced_content(content, multimodal_content)
+        enhanced_sections = self._enhance_sections_with_multimodal(sections, multimodal_content)
+        
         entities = []
         
-        # Phase 2A: Process Intelligence Extraction
+        # Phase 2A: Process Intelligence Extraction (Enhanced)
         process_entities = await self._extract_process_intelligence(
-            content, document_intelligence, sections
+            enhanced_content, document_intelligence, enhanced_sections
         )
         entities.extend(process_entities)
         
-        # Phase 2B: Compliance & Governance Extraction
+        # Phase 2B: Compliance & Governance Extraction (Enhanced)
         compliance_entities = await self._extract_compliance_governance(
-            content, document_intelligence, sections
+            enhanced_content, document_intelligence, enhanced_sections
         )
         entities.extend(compliance_entities)
         
-        # Phase 2C: Quantitative Intelligence Extraction
+        # Phase 2C: Quantitative Intelligence Extraction (Enhanced)
         quantitative_entities = await self._extract_quantitative_intelligence(
-            content, document_intelligence, sections
+            enhanced_content, document_intelligence, enhanced_sections
         )
         entities.extend(quantitative_entities)
         
-        # Phase 2D: Organizational Intelligence Extraction
+        # Phase 2D: Organizational Intelligence Extraction (Enhanced)
         organizational_entities = await self._extract_organizational_intelligence(
-            content, document_intelligence, sections
+            enhanced_content, document_intelligence, enhanced_sections
         )
         entities.extend(organizational_entities)
         
-        # Phase 2E: Knowledge Definitions Extraction
+        # Phase 2E: Knowledge Definitions Extraction (Enhanced)
         definition_entities = await self._extract_knowledge_definitions(
-            content, document_intelligence, sections
+            enhanced_content, document_intelligence, enhanced_sections
         )
         entities.extend(definition_entities)
         
-        # Phase 2F: Risk & Mitigation Intelligence Extraction
+        # Phase 2F: Risk & Mitigation Intelligence Extraction (Enhanced)
         risk_entities = await self._extract_risk_mitigation_intelligence(
-            content, document_intelligence, sections
+            enhanced_content, document_intelligence, enhanced_sections
         )
         entities.extend(risk_entities)
+        
+        # Phase 2G: Multi-modal Specific Extraction
+        if multimodal_content:
+            multimodal_entities = await self._extract_multimodal_specific_knowledge(
+                multimodal_content, document_intelligence
+            )
+            entities.extend(multimodal_entities)
         
         # Phase 2G: Quality Assessment and Ranking
         ranked_entities = await self._assess_and_rank_entities(entities)
@@ -943,3 +956,240 @@ class KnowledgeCategorizationEngine:
     
     async def _extract_monitoring_requirements(self, text: str) -> List[str]:
         return re.findall(r'(?:monitor|check|observe)(.+?)(?:\.|,)', text, re.I)
+    
+    def _prepare_enhanced_content(self, content: str, multimodal_content: Dict[str, Any]) -> str:
+        """Prepare enhanced content incorporating multimodal data"""
+        if not multimodal_content:
+            return content
+        
+        enhanced_parts = [content]
+        
+        # Add visual analysis content
+        if 'visual_analysis' in multimodal_content:
+            visual = multimodal_content['visual_analysis']
+            if visual.get('description'):
+                enhanced_parts.append(f"\nVisual Content Analysis:\n{visual['description']}")
+        
+        # Add structural analysis
+        if 'document_structure' in multimodal_content:
+            structure = multimodal_content['document_structure']
+            if structure.get('structural_text'):
+                enhanced_parts.append(f"\nDocument Structure:\n{structure['structural_text']}")
+        
+        # Add diagram analysis
+        if 'diagram_analysis' in multimodal_content:
+            diagram = multimodal_content['diagram_analysis']
+            if diagram.get('diagram_text'):
+                enhanced_parts.append(f"\nDiagram Analysis:\n{diagram['diagram_text']}")
+        
+        # Add video content breakdown
+        if 'content_breakdown' in multimodal_content:
+            breakdown = multimodal_content['content_breakdown']
+            for key, value in breakdown.items():
+                if value and value.strip():
+                    formatted_key = key.replace('_', ' ').title()
+                    enhanced_parts.append(f"\n{formatted_key}:\n{value}")
+        
+        return '\n\n'.join(enhanced_parts)
+    
+    def _enhance_sections_with_multimodal(self, sections: List[Dict[str, Any]], 
+                                        multimodal_content: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """Enhance sections with multimodal content information"""
+        if not sections or not multimodal_content:
+            return sections or []
+        
+        enhanced_sections = sections.copy()
+        
+        # Add multimodal-specific sections
+        if 'visual_analysis' in multimodal_content:
+            visual = multimodal_content['visual_analysis']
+            if visual.get('description'):
+                enhanced_sections.append({
+                    'title': 'Visual Content Analysis',
+                    'content': visual['description'],
+                    'type': 'visual_analysis',
+                    'multimodal_source': True
+                })
+        
+        if 'diagram_analysis' in multimodal_content:
+            diagram = multimodal_content['diagram_analysis']
+            if diagram.get('diagram_text'):
+                enhanced_sections.append({
+                    'title': 'Diagram and Chart Analysis',
+                    'content': diagram['diagram_text'],
+                    'type': 'diagram_analysis',
+                    'multimodal_source': True
+                })
+        
+        if 'content_breakdown' in multimodal_content:
+            breakdown = multimodal_content['content_breakdown']
+            for key, value in breakdown.items():
+                if value and value.strip():
+                    enhanced_sections.append({
+                        'title': key.replace('_', ' ').title(),
+                        'content': value,
+                        'type': key,
+                        'multimodal_source': True
+                    })
+        
+        return enhanced_sections
+    
+    async def _extract_multimodal_specific_knowledge(self, multimodal_content: Dict[str, Any], 
+                                                   document_intelligence: DocumentIntelligence) -> List[KnowledgeEntity]:
+        """Extract knowledge specific to multimodal content"""
+        entities = []
+        
+        try:
+            # Extract from visual analysis
+            if 'visual_analysis' in multimodal_content:
+                visual_entities = self._extract_visual_knowledge(multimodal_content['visual_analysis'])
+                entities.extend(visual_entities)
+            
+            # Extract from diagram analysis
+            if 'diagram_analysis' in multimodal_content:
+                diagram_entities = self._extract_diagram_knowledge(multimodal_content['diagram_analysis'])
+                entities.extend(diagram_entities)
+            
+            # Extract from video analysis
+            if 'video_analysis' in multimodal_content:
+                video_entities = self._extract_video_knowledge(multimodal_content['video_analysis'])
+                entities.extend(video_entities)
+            
+            # Extract from procedural content (videos)
+            if 'content_breakdown' in multimodal_content:
+                breakdown = multimodal_content['content_breakdown']
+                if breakdown.get('procedural_content'):
+                    procedural_entities = self._extract_procedural_knowledge(breakdown['procedural_content'])
+                    entities.extend(procedural_entities)
+            
+            logger.info(f"Extracted {len(entities)} multimodal-specific entities")
+            return entities
+            
+        except Exception as e:
+            logger.warning(f"Multimodal knowledge extraction failed: {e}")
+            return []
+    
+    def _extract_visual_knowledge(self, visual_analysis: Dict[str, Any]) -> List[KnowledgeEntity]:
+        """Extract knowledge from visual analysis"""
+        entities = []
+        
+        try:
+            scene_type = visual_analysis.get('scene_type', 'unknown')
+            description = visual_analysis.get('description', '')
+            
+            if description and len(description) > 20:
+                entity = KnowledgeEntity(
+                    identifier=f"visual_content_{scene_type}",
+                    category=KnowledgeCategory.KNOWLEDGE_DEFINITIONS,
+                    entity_type=EntityType.DEFINITION,
+                    content=description,
+                    context_tags=[scene_type, 'visual_content', 'image_analysis'],
+                    priority_level=PriorityLevel.MEDIUM,
+                    confidence_score=0.8,
+                    completeness_score=0.7,
+                    clarity_score=0.8,
+                    actionability_score=0.5,
+                    relationships=[]
+                )
+                entities.append(entity)
+            
+            return entities
+        except Exception as e:
+            logger.warning(f"Visual knowledge extraction failed: {e}")
+            return []
+    
+    def _extract_diagram_knowledge(self, diagram_analysis: Dict[str, Any]) -> List[KnowledgeEntity]:
+        """Extract knowledge from diagram analysis"""
+        entities = []
+        
+        try:
+            diagram_text = diagram_analysis.get('diagram_text', '')
+            elements = diagram_analysis.get('elements', [])
+            is_flowchart = diagram_analysis.get('is_flowchart', False)
+            chart_type = diagram_analysis.get('chart_type', 'unknown')
+            
+            if diagram_text and len(diagram_text) > 10:
+                entity_type = EntityType.PROCESS if is_flowchart else EntityType.DEFINITION
+                category = KnowledgeCategory.PROCESS_INTELLIGENCE if is_flowchart else KnowledgeCategory.KNOWLEDGE_DEFINITIONS
+                
+                entity = KnowledgeEntity(
+                    identifier=f"diagram_{chart_type}_analysis",
+                    category=category,
+                    entity_type=entity_type,
+                    content=diagram_text,
+                    context_tags=['diagram', chart_type] + elements,
+                    priority_level=PriorityLevel.HIGH if is_flowchart else PriorityLevel.MEDIUM,
+                    confidence_score=0.85,
+                    completeness_score=0.8,
+                    clarity_score=0.9,
+                    actionability_score=0.8 if is_flowchart else 0.6,
+                    relationships=[]
+                )
+                entities.append(entity)
+            
+            return entities
+        except Exception as e:
+            logger.warning(f"Diagram knowledge extraction failed: {e}")
+            return []
+    
+    def _extract_video_knowledge(self, video_analysis: Dict[str, Any]) -> List[KnowledgeEntity]:
+        """Extract knowledge from video analysis metadata"""
+        entities = []
+        
+        try:
+            duration = video_analysis.get('duration', 0)
+            frames_analyzed = video_analysis.get('frames_analyzed', 0)
+            
+            if duration > 0 and frames_analyzed > 0:
+                metadata_content = f"Video content analyzed: {duration:.1f} seconds duration, {frames_analyzed} frames processed"
+                
+                entity = KnowledgeEntity(
+                    identifier="video_metadata_analysis",
+                    category=KnowledgeCategory.KNOWLEDGE_DEFINITIONS,
+                    entity_type=EntityType.METADATA,
+                    content=metadata_content,
+                    context_tags=['video_analysis', 'metadata', 'processing_info'],
+                    priority_level=PriorityLevel.LOW,
+                    confidence_score=1.0,
+                    completeness_score=1.0,
+                    clarity_score=1.0,
+                    actionability_score=0.3,
+                    relationships=[]
+                )
+                entities.append(entity)
+            
+            return entities
+        except Exception as e:
+            logger.warning(f"Video knowledge extraction failed: {e}")
+            return []
+    
+    def _extract_procedural_knowledge(self, procedural_content: str) -> List[KnowledgeEntity]:
+        """Extract knowledge from procedural content"""
+        entities = []
+        
+        try:
+            if procedural_content and len(procedural_content) > 30:
+                # Split into individual steps
+                steps = [step.strip() for step in procedural_content.split('\n') if step.strip()]
+                
+                for i, step in enumerate(steps):
+                    if len(step) > 15:  # Meaningful step content
+                        entity = KnowledgeEntity(
+                            identifier=f"procedural_step_{i+1}",
+                            category=KnowledgeCategory.PROCESS_INTELLIGENCE,
+                            entity_type=EntityType.PROCESS,
+                            content=step,
+                            context_tags=['procedural', 'step', 'video_derived', 'instruction'],
+                            priority_level=PriorityLevel.HIGH,
+                            confidence_score=0.9,
+                            completeness_score=0.8,
+                            clarity_score=0.85,
+                            actionability_score=0.95,
+                            relationships=[]
+                        )
+                        entities.append(entity)
+            
+            return entities
+        except Exception as e:
+            logger.warning(f"Procedural knowledge extraction failed: {e}")
+            return []

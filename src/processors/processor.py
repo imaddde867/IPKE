@@ -9,6 +9,7 @@ import os
 import io
 import json
 import logging
+import re
 from typing import Dict, Any, List, Optional, Tuple, Union
 from pathlib import Path
 import tempfile
@@ -462,38 +463,78 @@ class DocumentProcessor:
             raise ProcessingError("Unable to decode text file with any supported encoding")
     
     def _process_image_document(self, file_path: Path) -> Dict[str, Any]:
-        """Process image documents with OCR"""
-        if not self.ocr_available:
-            raise ProcessingError("OCR not available")
-        
+        """Process image documents with advanced OCR and computer vision analysis"""
         try:
             # Load and preprocess image
             image = cv2.imread(str(file_path))
             if image is None:
                 raise ProcessingError("Unable to load image")
             
-            # Preprocess for better OCR
-            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-            
-            # Apply denoising and sharpening
-            denoised = cv2.fastNlMeansDenoising(gray)
-            
-            # Extract text using OCR
-            text_content = pytesseract.image_to_string(denoised)
-            
             # Get image metadata
-            height, width = gray.shape
+            height, width, channels = image.shape
             
-            return {
-                'text': text_content.strip(),
+            # Multi-layered text extraction
+            extracted_texts = []
+            extraction_methods = []
+            
+            # Method 1: Enhanced OCR with preprocessing
+            if self.ocr_available:
+                ocr_text = self._enhanced_ocr_extraction(image)
+                if ocr_text.strip():
+                    extracted_texts.append(ocr_text)
+                    extraction_methods.append("enhanced_ocr")
+            
+            # Method 2: Computer vision analysis
+            cv_analysis = self._analyze_image_content(image, file_path)
+            if cv_analysis.get('description'):
+                extracted_texts.append(cv_analysis['description'])
+                extraction_methods.append("computer_vision")
+            
+            # Method 3: Document structure analysis
+            if self.ocr_available:
+                structure_analysis = self._analyze_document_structure_in_image(image)
+                if structure_analysis.get('structural_text'):
+                    extracted_texts.append(structure_analysis['structural_text'])
+                    extraction_methods.append("structure_analysis")
+            
+            # Method 4: Diagram and chart analysis
+            diagram_analysis = self._analyze_diagrams_and_charts(image)
+            if diagram_analysis.get('diagram_text'):
+                extracted_texts.append(diagram_analysis['diagram_text'])
+                extraction_methods.append("diagram_analysis")
+            
+            # Combine all extracted content
+            combined_text = self._combine_image_extractions(extracted_texts, extraction_methods)
+            
+            # Extract sections for intelligent processing
+            sections = self._extract_document_sections(combined_text) if combined_text else []
+            
+            result = {
+                'text': combined_text,
                 'image_width': width,
                 'image_height': height,
-                'ocr_confidence': self._calculate_ocr_confidence(text_content)
+                'image_channels': channels,
+                'extraction_methods': extraction_methods,
+                'sections': sections,
+                'computer_vision_analysis': cv_analysis,
+                'structure_analysis': structure_analysis if 'structure_analysis' in locals() else {},
+                'diagram_analysis': diagram_analysis,
+                'ocr_confidence': self._calculate_ocr_confidence(combined_text) if combined_text else 0.0
             }
+            
+            # Add intelligent metadata
+            result['content_type_detected'] = self._detect_image_content_type(image, combined_text)
+            result['visual_elements'] = self._identify_visual_elements(image)
+            
+            return result
             
         except Exception as e:
             logger.error(f"Failed to process image: {e}")
-            raise ProcessingError(f"Failed to process image: {e}")
+            # Fallback to basic processing
+            try:
+                return self._basic_image_processing_fallback(file_path)
+            except:
+                raise ProcessingError(f"Failed to process image: {e}")
     
     def _process_spreadsheet_document(self, file_path: Path) -> Dict[str, Any]:
         """Process spreadsheet documents"""
@@ -579,87 +620,121 @@ class DocumentProcessor:
             raise ProcessingError(f"Failed to process audio: {e}")
     
     def _process_video_document(self, file_path: Path) -> Dict[str, Any]:
-        """Process video documents by extracting audio and/or on-screen text.
+        """Enhanced video processing with advanced frame analysis and audio transcription.
 
-        Strategy:
-        1) If audio transcription is available, extract audio with ffmpeg and transcribe via Whisper.
-        2) Independently (or as a fallback), sample frames and OCR on-screen text if OCR is available.
-        Returns combined text so videos without clear audio still yield useful content.
+        Multi-layered strategy:
+        1) Audio transcription with Whisper for spoken content
+        2) Advanced frame sampling with intelligent scene detection
+        3) On-screen text extraction with enhanced OCR
+        4) Visual content analysis for procedural videos
+        5) Scene segmentation and content categorization
         """
-        transcript_text = ""
+        # Initialize extraction results
+        extracted_content = {
+            'audio_transcript': '',
+            'visual_text': '',
+            'scene_analysis': '',
+            'procedural_content': '',
+            'metadata': {}
+        }
+        
         language_detected = "unknown"
         segments = []
-        sources: List[str] = []
+        sources = []
+        processing_metadata = {}
 
-        # Attempt audio transcription first when available
+        # Get video metadata
+        try:
+            video_metadata = self._extract_video_metadata(file_path)
+            processing_metadata.update(video_metadata)
+        except Exception as e:
+            logger.warning(f"Failed to extract video metadata: {e}")
+
+        # Method 1: Enhanced Audio Transcription
         if self.audio_processing_available and self.whisper_model is not None:
             try:
-                import ffmpeg  # ffmpeg-python wrapper; requires ffmpeg CLI installed
-
-                with tempfile.NamedTemporaryFile(suffix='.wav', delete=False) as temp_audio:
-                    temp_audio_path = temp_audio.name
-
-                try:
-                    (
-                        ffmpeg
-                        .input(str(file_path))
-                        .output(temp_audio_path, acodec='pcm_s16le', ac=1, ar='16000')
-                        .overwrite_output()
-                        .run(quiet=True)
-                    )
-
-                    result = self.whisper_model.transcribe(temp_audio_path)
-                    transcript_text = (result.get('text') or '').strip()
-                    language_detected = result.get('language', 'unknown')
-                    segments = result.get('segments', []) or []
-                    sources.append('video_audio_extraction')
-                finally:
-                    if os.path.exists(temp_audio_path):
-                        os.unlink(temp_audio_path)
+                audio_result = self._enhanced_audio_transcription(file_path)
+                if audio_result.get('transcript'):
+                    extracted_content['audio_transcript'] = audio_result['transcript']
+                    language_detected = audio_result.get('language', 'unknown')
+                    segments = audio_result.get('segments', [])
+                    sources.append('enhanced_audio_transcription')
+                    processing_metadata['audio_processing'] = audio_result.get('metadata', {})
             except Exception as e:
-                # Do not fail video processing outright; fall back to frame OCR
-                logger.warning(f"Audio transcription from video failed, continuing with frame OCR: {e}")
-        else:
-            logger.info("Audio processing unavailable; attempting frame OCR for video")
+                logger.warning(f"Enhanced audio transcription failed: {e}")
 
-        # Frame OCR (supplemental or fallback)
-        ocr_text = ""
-        frames_analyzed = 0
-        if self.ocr_available:
+        # Method 2: Intelligent Frame Analysis
+        try:
+            frame_analysis = self._intelligent_frame_analysis(file_path)
+            if frame_analysis.get('visual_text'):
+                extracted_content['visual_text'] = frame_analysis['visual_text']
+                sources.append('intelligent_frame_analysis')
+            if frame_analysis.get('scene_analysis'):
+                extracted_content['scene_analysis'] = frame_analysis['scene_analysis']
+            processing_metadata['frame_analysis'] = frame_analysis.get('metadata', {})
+        except Exception as e:
+            logger.warning(f"Intelligent frame analysis failed: {e}")
+
+        # Method 3: Procedural Content Detection
+        try:
+            procedural_analysis = self._detect_procedural_content(file_path, extracted_content)
+            if procedural_analysis.get('procedural_text'):
+                extracted_content['procedural_content'] = procedural_analysis['procedural_text']
+                sources.append('procedural_analysis')
+            processing_metadata['procedural_analysis'] = procedural_analysis.get('metadata', {})
+        except Exception as e:
+            logger.warning(f"Procedural content detection failed: {e}")
+
+        # Method 4: Scene Segmentation and Categorization
+        try:
+            scene_segmentation = self._analyze_video_scenes(file_path)
+            if scene_segmentation.get('scene_descriptions'):
+                extracted_content['scene_analysis'] = scene_segmentation['scene_descriptions']
+                sources.append('scene_segmentation')
+            processing_metadata['scene_segmentation'] = scene_segmentation.get('metadata', {})
+        except Exception as e:
+            logger.warning(f"Scene segmentation failed: {e}")
+
+        # Combine all extracted content intelligently
+        combined_text = self._combine_video_extractions(extracted_content, sources)
+        
+        # Extract sections for intelligent processing
+        sections = self._extract_document_sections(combined_text) if combined_text else []
+
+        # Fallback to basic processing if nothing extracted
+        if not combined_text.strip():
             try:
-                ocr_result = self._extract_text_from_video_frames(
-                    file_path=file_path,
-                    interval_seconds=getattr(getattr(config_manager, 'processing', object()), 'video_frame_interval_seconds', 5),
-                    max_frames=30
-                )
-                ocr_text = ocr_result.get('text', '').strip()
-                frames_analyzed = ocr_result.get('frames_analyzed', 0)
-                if ocr_text:
-                    sources.append('video_frame_ocr')
+                basic_result = self._basic_video_processing_fallback(file_path)
+                combined_text = basic_result.get('text', '')
+                sources.append('basic_fallback')
+                processing_metadata['fallback_used'] = True
             except Exception as e:
-                logger.warning(f"Frame OCR failed for video: {e}")
+                logger.warning(f"Even basic video processing failed: {e}")
 
-        combined_text_parts = [part for part in [transcript_text, ocr_text] if part]
-        combined_text = "\n\n".join(combined_text_parts)
-
-        if not combined_text:
-            # Nothing extracted at all; return a graceful, informative result rather than throwing
-            return {
-                'text': '',
-                'language': language_detected,
-                'segments': segments,
-                'source': ",".join(sources) if sources else 'video_processing_attempted',
-                'frames_analyzed': frames_analyzed,
-                'warning': 'No extractable audio or on-screen text detected from video'
-            }
-
-        return {
+        # Compile comprehensive results
+        result = {
             'text': combined_text,
             'language': language_detected,
             'segments': segments,
-            'source': ",".join(sources) if sources else 'video_processing',
-            'frames_analyzed': frames_analyzed
+            'sources': sources,
+            'sections': sections,
+            'extraction_methods': sources,
+            'video_metadata': processing_metadata,
+            'content_breakdown': extracted_content,
+            'video_analysis': {
+                'duration': processing_metadata.get('duration', 0),
+                'fps': processing_metadata.get('fps', 0),
+                'frames_analyzed': processing_metadata.get('frames_analyzed', 0),
+                'audio_quality': processing_metadata.get('audio_quality', 'unknown'),
+                'visual_quality': processing_metadata.get('visual_quality', 'unknown')
+            }
         }
+
+        # Add intelligent metadata
+        result['content_type_detected'] = self._detect_video_content_type(combined_text, processing_metadata)
+        result['knowledge_extraction_confidence'] = self._calculate_video_extraction_confidence(extracted_content, sources)
+
+        return result
 
     def _extract_text_from_video_frames(self, file_path: Path, interval_seconds: int = 5, max_frames: int = 20) -> Dict[str, Any]:
         """Extract visible text from sampled video frames using OCR.
@@ -1206,3 +1281,1053 @@ class DocumentProcessor:
             return "process"
         else:
             return "general"
+    
+    # Enhanced Image Processing Methods
+    
+    def _enhanced_ocr_extraction(self, image: np.ndarray) -> str:
+        """Enhanced OCR with multiple preprocessing techniques"""
+        try:
+            if not self.ocr_available:
+                return ""
+            
+            # Convert to grayscale
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            
+            # Multiple preprocessing approaches
+            text_results = []
+            
+            # Approach 1: Standard preprocessing
+            denoised = cv2.fastNlMeansDenoising(gray)
+            text1 = pytesseract.image_to_string(denoised, config='--psm 6')
+            if text1.strip():
+                text_results.append(text1.strip())
+            
+            # Approach 2: High contrast
+            _, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+            text2 = pytesseract.image_to_string(binary, config='--psm 6')
+            if text2.strip():
+                text_results.append(text2.strip())
+            
+            # Approach 3: Morphological operations for document text
+            kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 1))
+            morph = cv2.morphologyEx(gray, cv2.MORPH_CLOSE, kernel)
+            text3 = pytesseract.image_to_string(morph, config='--psm 4')
+            if text3.strip():
+                text_results.append(text3.strip())
+            
+            # Approach 4: Edge enhancement
+            edges = cv2.Canny(gray, 50, 150)
+            dilated = cv2.dilate(edges, kernel, iterations=1)
+            text4 = pytesseract.image_to_string(dilated, config='--psm 6')
+            if text4.strip():
+                text_results.append(text4.strip())
+            
+            # Select best result based on confidence and length
+            best_text = ""
+            best_score = 0
+            
+            for text in text_results:
+                # Simple scoring based on length and character variety
+                score = len(text) + len(set(text.lower())) * 2
+                if score > best_score:
+                    best_score = score
+                    best_text = text
+            
+            return best_text
+            
+        except Exception as e:
+            logger.warning(f"Enhanced OCR failed: {e}")
+            return ""
+    
+    def _analyze_image_content(self, image: np.ndarray, file_path: Path) -> Dict[str, Any]:
+        """Analyze image content using computer vision techniques"""
+        try:
+            analysis = {
+                'description': '',
+                'detected_objects': [],
+                'scene_type': 'unknown',
+                'text_regions': [],
+                'visual_features': {}
+            }
+            
+            # Basic scene analysis
+            height, width = image.shape[:2]
+            
+            # Color analysis
+            hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+            dominant_colors = self._extract_dominant_colors(image)
+            
+            # Edge and contour analysis
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            edges = cv2.Canny(gray, 50, 150)
+            contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            
+            # Analyze image content type
+            if self._is_document_image(image, contours):
+                analysis['scene_type'] = 'document'
+                analysis['description'] = self._generate_document_description(image, contours, file_path.name)
+            elif self._is_diagram_or_chart(image, contours):
+                analysis['scene_type'] = 'diagram_chart'
+                analysis['description'] = self._generate_diagram_description(image, contours, file_path.name)
+            elif self._is_screenshot_or_ui(image, contours):
+                analysis['scene_type'] = 'screenshot_ui'
+                analysis['description'] = self._generate_screenshot_description(image, contours, file_path.name)
+            else:
+                analysis['scene_type'] = 'general_image'
+                analysis['description'] = self._generate_general_image_description(image, file_path.name)
+            
+            # Detect text regions
+            analysis['text_regions'] = self._detect_text_regions(image)
+            
+            # Visual features
+            analysis['visual_features'] = {
+                'dominant_colors': dominant_colors,
+                'edge_density': len(contours),
+                'aspect_ratio': width / height,
+                'brightness': cv2.mean(gray)[0] / 255.0,
+                'contrast': gray.std() / 255.0
+            }
+            
+            return analysis
+            
+        except Exception as e:
+            logger.warning(f"Image content analysis failed: {e}")
+            return {
+                'description': f"Image file: {file_path.name}",
+                'detected_objects': [],
+                'scene_type': 'unknown',
+                'text_regions': [],
+                'visual_features': {}
+            }
+    
+    def _analyze_document_structure_in_image(self, image: np.ndarray) -> Dict[str, Any]:
+        """Analyze document structure in images (tables, forms, layouts)"""
+        try:
+            if not self.ocr_available:
+                return {}
+            
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            
+            # Detect horizontal and vertical lines (table detection)
+            horizontal_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (40, 1))
+            vertical_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 40))
+            
+            # Detect horizontal lines
+            horizontal_lines = cv2.morphologyEx(gray, cv2.MORPH_OPEN, horizontal_kernel)
+            # Detect vertical lines
+            vertical_lines = cv2.morphologyEx(gray, cv2.MORPH_OPEN, vertical_kernel)
+            
+            # Combine lines to detect tables
+            table_mask = cv2.bitwise_or(horizontal_lines, vertical_lines)
+            
+            structural_elements = []
+            
+            if cv2.countNonZero(table_mask) > 1000:  # Threshold for table detection
+                structural_elements.append("table")
+                # Extract table content
+                table_text = self._extract_table_content(image, table_mask)
+                structural_text = f"Table Content:\n{table_text}"
+            else:
+                # Look for form-like structures
+                form_elements = self._detect_form_elements(image)
+                if form_elements:
+                    structural_elements.extend(form_elements)
+                    structural_text = f"Form Elements Detected: {', '.join(form_elements)}"
+                else:
+                    structural_text = ""
+            
+            return {
+                'structural_elements': structural_elements,
+                'structural_text': structural_text,
+                'has_tables': 'table' in structural_elements,
+                'has_forms': any('form' in elem for elem in structural_elements)
+            }
+            
+        except Exception as e:
+            logger.warning(f"Document structure analysis failed: {e}")
+            return {}
+    
+    def _analyze_diagrams_and_charts(self, image: np.ndarray) -> Dict[str, Any]:
+        """Analyze diagrams, flowcharts, and charts in images"""
+        try:
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            edges = cv2.Canny(gray, 50, 150)
+            contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            
+            diagram_elements = []
+            diagram_text_parts = []
+            
+            # Detect geometric shapes (flowchart elements)
+            shapes = self._detect_geometric_shapes(contours)
+            if shapes:
+                diagram_elements.extend(shapes)
+                diagram_text_parts.append(f"Geometric shapes detected: {', '.join(shapes)}")
+            
+            # Detect arrows and connectors
+            arrows = self._detect_arrows_and_connectors(image, edges)
+            if arrows:
+                diagram_elements.append("connectors")
+                diagram_text_parts.append(f"Flow connectors: {arrows} arrows/connectors detected")
+            
+            # Detect chart patterns (bars, lines, pie charts)
+            chart_type = self._detect_chart_type(image, contours)
+            if chart_type != 'unknown':
+                diagram_elements.append(chart_type)
+                diagram_text_parts.append(f"Chart type: {chart_type}")
+            
+            diagram_text = "\n".join(diagram_text_parts) if diagram_text_parts else ""
+            
+            return {
+                'diagram_elements': diagram_elements,
+                'diagram_text': diagram_text,
+                'is_flowchart': 'rectangle' in shapes and 'connectors' in diagram_elements if 'shapes' in locals() else False,
+                'is_chart': chart_type != 'unknown',
+                'chart_type': chart_type if 'chart_type' in locals() else 'unknown'
+            }
+            
+        except Exception as e:
+            logger.warning(f"Diagram analysis failed: {e}")
+            return {}
+    
+    def _combine_image_extractions(self, extracted_texts: List[str], methods: List[str]) -> str:
+        """Intelligently combine text extracted from different methods"""
+        if not extracted_texts:
+            return ""
+        
+        # Remove duplicates while preserving order
+        unique_texts = []
+        seen = set()
+        
+        for text in extracted_texts:
+            # Normalize text for comparison
+            normalized = re.sub(r'\s+', ' ', text.strip().lower())
+            if normalized and normalized not in seen:
+                seen.add(normalized)
+                unique_texts.append(text.strip())
+        
+        if len(unique_texts) == 1:
+            return unique_texts[0]
+        
+        # Combine texts with method attribution
+        combined_parts = []
+        for i, (text, method) in enumerate(zip(unique_texts, methods)):
+            if text:
+                if method == "enhanced_ocr":
+                    combined_parts.append(f"Text Content:\n{text}")
+                elif method == "computer_vision":
+                    combined_parts.append(f"Visual Analysis:\n{text}")
+                elif method == "structure_analysis":
+                    combined_parts.append(f"Document Structure:\n{text}")
+                elif method == "diagram_analysis":
+                    combined_parts.append(f"Diagram/Chart Analysis:\n{text}")
+                else:
+                    combined_parts.append(text)
+        
+        return "\n\n".join(combined_parts)
+    
+    # Helper methods for image analysis
+    
+    def _extract_dominant_colors(self, image: np.ndarray, k: int = 3) -> List[str]:
+        """Extract dominant colors from image"""
+        try:
+            # Reshape image to be a list of pixels
+            pixels = image.reshape(-1, 3)
+            # Sample pixels for performance
+            if len(pixels) > 10000:
+                pixels = pixels[::len(pixels)//10000]
+            
+            # Simple dominant color detection (most frequent color ranges)
+            colors = []
+            mean_color = np.mean(pixels, axis=0)
+            
+            if mean_color[0] > 200 and mean_color[1] > 200 and mean_color[2] > 200:
+                colors.append("light/white")
+            elif mean_color[0] < 50 and mean_color[1] < 50 and mean_color[2] < 50:
+                colors.append("dark/black")
+            else:
+                colors.append("mixed_colors")
+            
+            return colors
+        except:
+            return ["unknown"]
+    
+    def _is_document_image(self, image: np.ndarray, contours) -> bool:
+        """Detect if image contains document-like content"""
+        height, width = image.shape[:2]
+        aspect_ratio = width / height
+        
+        # Document-like aspect ratios and text density
+        if 0.7 <= aspect_ratio <= 1.5:  # Portrait or square documents
+            # Check for horizontal text lines
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            horizontal_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (20, 1))
+            horizontal_lines = cv2.morphologyEx(gray, cv2.MORPH_OPEN, horizontal_kernel)
+            return cv2.countNonZero(horizontal_lines) > width * 0.1
+        
+        return False
+    
+    def _is_diagram_or_chart(self, image: np.ndarray, contours) -> bool:
+        """Detect if image contains diagrams or charts"""
+        # Look for geometric shapes and patterns
+        geometric_shapes = 0
+        for contour in contours:
+            if cv2.contourArea(contour) > 100:
+                approx = cv2.approxPolyDP(contour, 0.02 * cv2.arcLength(contour, True), True)
+                if len(approx) in [3, 4, 5, 6, 8]:  # Triangle, rectangle, pentagon, hexagon, octagon
+                    geometric_shapes += 1
+        
+        return geometric_shapes >= 2
+    
+    def _is_screenshot_or_ui(self, image: np.ndarray, contours) -> bool:
+        """Detect if image is a screenshot or UI"""
+        height, width = image.shape[:2]
+        
+        # Look for UI elements like buttons, windows, etc.
+        rectangular_shapes = 0
+        for contour in contours:
+            if cv2.contourArea(contour) > 500:
+                approx = cv2.approxPolyDP(contour, 0.02 * cv2.arcLength(contour, True), True)
+                if len(approx) == 4:  # Rectangle (common in UI)
+                    rectangular_shapes += 1
+        
+        return rectangular_shapes >= 3
+    
+    def _generate_document_description(self, image: np.ndarray, contours, filename: str) -> str:
+        """Generate description for document images"""
+        height, width = image.shape[:2]
+        return f"Document image '{filename}' ({width}x{height}px) containing text content and structured information. Suitable for OCR text extraction and document analysis."
+    
+    def _generate_diagram_description(self, image: np.ndarray, contours, filename: str) -> str:
+        """Generate description for diagram/chart images"""
+        return f"Diagram or chart image '{filename}' containing visual information, geometric shapes, and potentially data visualization elements. May include process flows, organizational charts, or data representations."
+    
+    def _generate_screenshot_description(self, image: np.ndarray, contours, filename: str) -> str:
+        """Generate description for screenshot images"""
+        return f"Screenshot or user interface image '{filename}' showing application interfaces, system windows, or digital content that may contain operational procedures or system information."
+    
+    def _generate_general_image_description(self, image: np.ndarray, filename: str) -> str:
+        """Generate description for general images"""
+        height, width = image.shape[:2]
+        return f"Image file '{filename}' ({width}x{height}px) containing visual content that may include text, objects, or informational elements relevant to organizational knowledge."
+    
+    def _detect_text_regions(self, image: np.ndarray) -> List[Dict[str, Any]]:
+        """Detect regions likely to contain text"""
+        try:
+            if not self.ocr_available:
+                return []
+            
+            # Use pytesseract to get text regions
+            boxes = pytesseract.image_to_boxes(image)
+            regions = []
+            
+            for box in boxes.splitlines():
+                parts = box.split(' ')
+                if len(parts) >= 6:
+                    char = parts[0]
+                    x1, y1, x2, y2 = map(int, parts[1:5])
+                    regions.append({
+                        'character': char,
+                        'bbox': [x1, y1, x2, y2],
+                        'confidence': 0.8  # Default confidence
+                    })
+            
+            return regions
+        except:
+            return []
+    
+    def _extract_table_content(self, image: np.ndarray, table_mask: np.ndarray) -> str:
+        """Extract content from detected tables"""
+        try:
+            if not self.ocr_available:
+                return "Table structure detected but OCR unavailable for content extraction"
+            
+            # Use OCR on the table region
+            table_text = pytesseract.image_to_string(table_mask, config='--psm 6')
+            return table_text.strip() if table_text.strip() else "Table detected but content unclear"
+        except:
+            return "Table structure detected"
+    
+    def _detect_form_elements(self, image: np.ndarray) -> List[str]:
+        """Detect form elements like checkboxes, text fields"""
+        elements = []
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        
+        # Detect checkboxes (small squares)
+        checkbox_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (10, 10))
+        checkbox_detection = cv2.morphologyEx(gray, cv2.MORPH_OPEN, checkbox_kernel)
+        if cv2.countNonZero(checkbox_detection) > 50:
+            elements.append("checkboxes")
+        
+        # Detect horizontal lines (potential text fields)
+        horizontal_kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (30, 1))
+        horizontal_lines = cv2.morphologyEx(gray, cv2.MORPH_OPEN, horizontal_kernel)
+        if cv2.countNonZero(horizontal_lines) > 100:
+            elements.append("text_fields")
+        
+        return elements
+    
+    def _detect_geometric_shapes(self, contours) -> List[str]:
+        """Detect geometric shapes in contours"""
+        shapes = []
+        shape_counts = {'triangle': 0, 'rectangle': 0, 'pentagon': 0, 'circle': 0}
+        
+        for contour in contours:
+            if cv2.contourArea(contour) > 100:
+                # Approximate contour
+                approx = cv2.approxPolyDP(contour, 0.02 * cv2.arcLength(contour, True), True)
+                
+                if len(approx) == 3:
+                    shape_counts['triangle'] += 1
+                elif len(approx) == 4:
+                    shape_counts['rectangle'] += 1
+                elif len(approx) == 5:
+                    shape_counts['pentagon'] += 1
+                elif len(approx) > 8:
+                    shape_counts['circle'] += 1
+        
+        # Return shapes that were found
+        for shape, count in shape_counts.items():
+            if count > 0:
+                shapes.append(shape)
+        
+        return shapes
+    
+    def _detect_arrows_and_connectors(self, image: np.ndarray, edges: np.ndarray) -> int:
+        """Detect arrows and connectors in the image"""
+        # Simple line detection
+        lines = cv2.HoughLinesP(edges, 1, np.pi/180, threshold=50, minLineLength=30, maxLineGap=10)
+        return len(lines) if lines is not None else 0
+    
+    def _detect_chart_type(self, image: np.ndarray, contours) -> str:
+        """Detect type of chart in the image"""
+        # Simple heuristics for chart detection
+        height, width = image.shape[:2]
+        
+        # Look for rectangular regions (bar charts)
+        rectangles = 0
+        for contour in contours:
+            if cv2.contourArea(contour) > 200:
+                approx = cv2.approxPolyDP(contour, 0.02 * cv2.arcLength(contour, True), True)
+                if len(approx) == 4:
+                    rectangles += 1
+        
+        if rectangles >= 3:
+            return "bar_chart"
+        
+        # Look for circular regions (pie charts)
+        circles = 0
+        for contour in contours:
+            if cv2.contourArea(contour) > 500:
+                approx = cv2.approxPolyDP(contour, 0.02 * cv2.arcLength(contour, True), True)
+                if len(approx) > 8:
+                    circles += 1
+        
+        if circles >= 1:
+            return "pie_chart"
+        
+        return "unknown"
+    
+    def _detect_image_content_type(self, image: np.ndarray, text_content: str) -> str:
+        """Detect the type of content in the image"""
+        if not text_content:
+            return "non_textual_image"
+        
+        text_lower = text_content.lower()
+        
+        if any(word in text_lower for word in ['procedure', 'step', 'instruction', 'process']):
+            return "procedural_document"
+        elif any(word in text_lower for word in ['policy', 'compliance', 'regulation', 'standard']):
+            return "policy_document"
+        elif any(word in text_lower for word in ['chart', 'graph', 'data', 'figure']):
+            return "data_visualization"
+        elif any(word in text_lower for word in ['form', 'application', 'request', 'checkbox']):
+            return "form_document"
+        elif any(word in text_lower for word in ['manual', 'guide', 'handbook', 'reference']):
+            return "reference_document"
+        else:
+            return "general_document"
+    
+    def _identify_visual_elements(self, image: np.ndarray) -> Dict[str, Any]:
+        """Identify visual elements in the image"""
+        try:
+            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            edges = cv2.Canny(gray, 50, 150)
+            contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            
+            return {
+                'total_contours': len(contours),
+                'large_objects': len([c for c in contours if cv2.contourArea(c) > 1000]),
+                'edge_density': cv2.countNonZero(edges) / (image.shape[0] * image.shape[1]),
+                'has_geometric_shapes': len([c for c in contours if cv2.contourArea(c) > 100]) > 5
+            }
+        except:
+            return {}
+    
+    def _basic_image_processing_fallback(self, file_path: Path) -> Dict[str, Any]:
+        """Basic fallback processing for images when advanced methods fail"""
+        try:
+            image = cv2.imread(str(file_path))
+            if image is None:
+                raise ProcessingError("Unable to load image")
+            
+            height, width = image.shape[:2]
+            
+            # Try basic OCR if available
+            text_content = ""
+            if self.ocr_available:
+                try:
+                    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+                    text_content = pytesseract.image_to_string(gray)
+                except:
+                    pass
+            
+            return {
+                'text': text_content or f"Image file: {file_path.name} - Advanced processing unavailable",
+                'image_width': width,
+                'image_height': height,
+                'extraction_methods': ['fallback'],
+                'sections': [],
+                'processing_note': 'Basic fallback processing used'
+            }
+        except Exception as e:
+            raise ProcessingError(f"Even fallback image processing failed: {e}")
+    
+    # Enhanced Video Processing Methods
+    
+    def _extract_video_metadata(self, file_path: Path) -> Dict[str, Any]:
+        """Extract comprehensive video metadata"""
+        try:
+            capture = cv2.VideoCapture(str(file_path))
+            if not capture.isOpened():
+                return {}
+            
+            fps = capture.get(cv2.CAP_PROP_FPS) or 0.0
+            frame_count = int(capture.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
+            width = int(capture.get(cv2.CAP_PROP_FRAME_WIDTH) or 0)
+            height = int(capture.get(cv2.CAP_PROP_FRAME_HEIGHT) or 0)
+            duration = frame_count / fps if fps > 0 else 0
+            
+            capture.release()
+            
+            return {
+                'fps': fps,
+                'frame_count': frame_count,
+                'width': width,
+                'height': height,
+                'duration': duration,
+                'aspect_ratio': width / height if height > 0 else 0,
+                'resolution': f"{width}x{height}",
+                'estimated_size_mb': file_path.stat().st_size / (1024 * 1024)
+            }
+        except Exception as e:
+            logger.warning(f"Failed to extract video metadata: {e}")
+            return {}
+    
+    def _enhanced_audio_transcription(self, file_path: Path) -> Dict[str, Any]:
+        """Enhanced audio transcription with better quality and metadata"""
+        try:
+            import ffmpeg
+            
+            # Create temporary audio file with optimized settings
+            with tempfile.NamedTemporaryFile(suffix='.wav', delete=False) as temp_audio:
+                temp_audio_path = temp_audio.name
+            
+            try:
+                # Enhanced audio extraction with noise reduction
+                (
+                    ffmpeg
+                    .input(str(file_path))
+                    .filter('highpass', f=200)  # Remove low-frequency noise
+                    .filter('lowpass', f=8000)   # Remove high-frequency noise
+                    .output(
+                        temp_audio_path, 
+                        acodec='pcm_s16le', 
+                        ac=1, 
+                        ar='16000',
+                        af='volume=2.0'  # Boost volume
+                    )
+                    .overwrite_output()
+                    .run(quiet=True, capture_stdout=True, capture_stderr=True)
+                )
+                
+                # Transcribe with enhanced settings
+                result = self.whisper_model.transcribe(
+                    temp_audio_path,
+                    fp16=False,
+                    language=None,  # Auto-detect
+                    task='transcribe',
+                    verbose=False
+                )
+                
+                transcript = (result.get('text') or '').strip()
+                language = result.get('language', 'unknown')
+                segments = result.get('segments', [])
+                
+                # Calculate confidence and quality metrics
+                avg_confidence = 0.0
+                if segments:
+                    confidences = []
+                    for segment in segments:
+                        if 'avg_logprob' in segment:
+                            # Convert log probability to confidence (rough approximation)
+                            confidence = max(0.0, min(1.0, (segment['avg_logprob'] + 1.0)))
+                            confidences.append(confidence)
+                    avg_confidence = sum(confidences) / len(confidences) if confidences else 0.5
+                
+                return {
+                    'transcript': transcript,
+                    'language': language,
+                    'segments': segments,
+                    'metadata': {
+                        'confidence': avg_confidence,
+                        'segment_count': len(segments),
+                        'audio_duration': result.get('duration', 0),
+                        'processing_time': 0  # Could add timing if needed
+                    }
+                }
+                
+            finally:
+                if os.path.exists(temp_audio_path):
+                    os.unlink(temp_audio_path)
+                    
+        except Exception as e:
+            logger.warning(f"Enhanced audio transcription failed: {e}")
+            return {}
+    
+    def _intelligent_frame_analysis(self, file_path: Path) -> Dict[str, Any]:
+        """Intelligent frame sampling and analysis"""
+        try:
+            capture = cv2.VideoCapture(str(file_path))
+            if not capture.isOpened():
+                return {}
+            
+            fps = capture.get(cv2.CAP_PROP_FPS) or 1.0
+            total_frames = int(capture.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
+            duration = total_frames / fps
+            
+            # Intelligent sampling strategy
+            if duration <= 30:  # Short video - sample every 2 seconds
+                sample_interval = max(1, int(fps * 2))
+                max_frames = 15
+            elif duration <= 300:  # Medium video - sample every 10 seconds
+                sample_interval = max(1, int(fps * 10))
+                max_frames = 30
+            else:  # Long video - sample every 30 seconds
+                sample_interval = max(1, int(fps * 30))
+                max_frames = 60
+            
+            frames_data = []
+            text_content = []
+            scene_descriptions = []
+            frames_analyzed = 0
+            
+            frame_index = 0
+            while frame_index < total_frames and frames_analyzed < max_frames:
+                capture.set(cv2.CAP_PROP_POS_FRAMES, frame_index)
+                success, frame = capture.read()
+                
+                if not success or frame is None:
+                    break
+                
+                # Analyze frame content
+                frame_analysis = self._analyze_video_frame(frame, frame_index, fps)
+                
+                if frame_analysis.get('text'):
+                    text_content.append(frame_analysis['text'])
+                
+                if frame_analysis.get('scene_description'):
+                    scene_descriptions.append(f"Frame {frame_index} ({frame_index/fps:.1f}s): {frame_analysis['scene_description']}")
+                
+                frames_data.append(frame_analysis)
+                frames_analyzed += 1
+                frame_index += sample_interval
+            
+            capture.release()
+            
+            # Combine and deduplicate text content
+            unique_text = self._deduplicate_video_text(text_content)
+            combined_text = '\n'.join(unique_text) if unique_text else ""
+            
+            return {
+                'visual_text': combined_text,
+                'scene_analysis': '\n'.join(scene_descriptions),
+                'metadata': {
+                    'frames_analyzed': frames_analyzed,
+                    'total_frames': total_frames,
+                    'sampling_interval_seconds': sample_interval / fps,
+                    'unique_text_blocks': len(unique_text),
+                    'scene_changes_detected': len(scene_descriptions)
+                }
+            }
+            
+        except Exception as e:
+            logger.warning(f"Intelligent frame analysis failed: {e}")
+            return {}
+    
+    def _analyze_video_frame(self, frame: np.ndarray, frame_index: int, fps: float) -> Dict[str, Any]:
+        """Analyze individual video frame for content"""
+        try:
+            analysis = {
+                'frame_index': frame_index,
+                'timestamp': frame_index / fps,
+                'text': '',
+                'scene_description': '',
+                'visual_elements': {}
+            }
+            
+            # Enhanced OCR for text extraction
+            if self.ocr_available:
+                text = self._enhanced_ocr_extraction(frame)
+                if text and len(text.strip()) > 3:  # Filter very short text
+                    analysis['text'] = text.strip()
+            
+            # Scene analysis
+            scene_type = self._classify_video_scene(frame)
+            analysis['scene_type'] = scene_type
+            
+            # Generate scene description based on type
+            if scene_type == 'presentation':
+                analysis['scene_description'] = "Presentation slide with text content"
+            elif scene_type == 'document':
+                analysis['scene_description'] = "Document or text-heavy content"
+            elif scene_type == 'interface':
+                analysis['scene_description'] = "Software interface or application screen"
+            elif scene_type == 'diagram':
+                analysis['scene_description'] = "Diagram, chart, or visual schematic"
+            elif scene_type == 'procedural':
+                analysis['scene_description'] = "Procedural content showing steps or actions"
+            else:
+                analysis['scene_description'] = "General video content"
+            
+            # Visual elements analysis
+            analysis['visual_elements'] = self._identify_visual_elements(frame)
+            
+            return analysis
+            
+        except Exception as e:
+            logger.warning(f"Frame analysis failed for frame {frame_index}: {e}")
+            return {'frame_index': frame_index, 'timestamp': frame_index / fps}
+    
+    def _classify_video_scene(self, frame: np.ndarray) -> str:
+        """Classify the type of scene in a video frame"""
+        try:
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            height, width = gray.shape
+            
+            # Text density analysis
+            if self.ocr_available:
+                try:
+                    data = pytesseract.image_to_data(frame, output_type=pytesseract.Output.DICT)
+                    text_regions = len([conf for conf in data['conf'] if int(conf) > 30])
+                    text_density = text_regions / (width * height / 10000)  # Normalize by area
+                    
+                    if text_density > 5:
+                        return 'document'
+                    elif text_density > 2:
+                        return 'presentation'
+                except:
+                    text_density = 0
+            else:
+                text_density = 0
+            
+            # Edge and contour analysis
+            edges = cv2.Canny(gray, 50, 150)
+            contours, _ = cv2.findContours(edges, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+            
+            # Rectangle detection (UI elements)
+            rectangles = 0
+            for contour in contours:
+                if cv2.contourArea(contour) > 500:
+                    approx = cv2.approxPolyDP(contour, 0.02 * cv2.arcLength(contour, True), True)
+                    if len(approx) == 4:
+                        rectangles += 1
+            
+            if rectangles > 5:
+                return 'interface'
+            
+            # Geometric shapes (diagrams)
+            geometric_shapes = 0
+            for contour in contours:
+                if cv2.contourArea(contour) > 200:
+                    approx = cv2.approxPolyDP(contour, 0.02 * cv2.arcLength(contour, True), True)
+                    if len(approx) in [3, 4, 5, 6, 8]:
+                        geometric_shapes += 1
+            
+            if geometric_shapes > 3:
+                return 'diagram'
+            
+            # Check for procedural content indicators
+            if text_density > 0.5 and rectangles > 1:
+                return 'procedural'
+            
+            return 'general'
+            
+        except Exception as e:
+            logger.warning(f"Scene classification failed: {e}")
+            return 'general'
+    
+    def _detect_procedural_content(self, file_path: Path, extracted_content: Dict[str, Any]) -> Dict[str, Any]:
+        """Detect procedural content in videos (tutorials, instructions, etc.)"""
+        try:
+            # Analyze extracted content for procedural indicators
+            audio_text = extracted_content.get('audio_transcript', '')
+            visual_text = extracted_content.get('visual_text', '')
+            
+            procedural_indicators = [
+                'step', 'first', 'next', 'then', 'now', 'click', 'select', 'choose',
+                'open', 'close', 'press', 'type', 'enter', 'drag', 'drop',
+                'procedure', 'tutorial', 'how to', 'instruction', 'guide'
+            ]
+            
+            combined_text = f"{audio_text} {visual_text}".lower()
+            indicator_count = sum(1 for indicator in procedural_indicators if indicator in combined_text)
+            
+            if indicator_count >= 3:  # Threshold for procedural content
+                # Extract step-by-step information
+                procedural_text = self._extract_procedural_steps(audio_text, visual_text)
+                
+                return {
+                    'procedural_text': procedural_text,
+                    'metadata': {
+                        'procedural_indicator_count': indicator_count,
+                        'is_procedural': True,
+                        'confidence': min(1.0, indicator_count / 10.0)
+                    }
+                }
+            
+            return {'metadata': {'is_procedural': False}}
+            
+        except Exception as e:
+            logger.warning(f"Procedural content detection failed: {e}")
+            return {}
+    
+    def _analyze_video_scenes(self, file_path: Path) -> Dict[str, Any]:
+        """Analyze video for scene changes and content categorization"""
+        try:
+            capture = cv2.VideoCapture(str(file_path))
+            if not capture.isOpened():
+                return {}
+            
+            fps = capture.get(cv2.CAP_PROP_FPS) or 1.0
+            total_frames = int(capture.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
+            
+            # Sample frames for scene analysis
+            scene_changes = []
+            prev_frame_features = None
+            scenes = []
+            
+            # Sample every 5 seconds for scene analysis
+            sample_interval = max(1, int(fps * 5))
+            
+            frame_index = 0
+            scene_count = 0
+            
+            while frame_index < total_frames and scene_count < 20:  # Limit scenes
+                capture.set(cv2.CAP_PROP_POS_FRAMES, frame_index)
+                success, frame = capture.read()
+                
+                if not success or frame is None:
+                    break
+                
+                # Calculate frame features for scene change detection
+                frame_features = self._calculate_frame_features(frame)
+                
+                if prev_frame_features is not None:
+                    # Simple scene change detection
+                    difference = self._calculate_frame_difference(frame_features, prev_frame_features)
+                    if difference > 0.3:  # Threshold for scene change
+                        scene_changes.append(frame_index / fps)
+                        scene_type = self._classify_video_scene(frame)
+                        scenes.append(f"Scene {scene_count + 1} at {frame_index/fps:.1f}s: {scene_type}")
+                        scene_count += 1
+                
+                prev_frame_features = frame_features
+                frame_index += sample_interval
+            
+            capture.release()
+            
+            return {
+                'scene_descriptions': '\n'.join(scenes),
+                'metadata': {
+                    'scene_count': len(scenes),
+                    'scene_changes': scene_changes,
+                    'average_scene_length': (total_frames / fps) / max(len(scenes), 1)
+                }
+            }
+            
+        except Exception as e:
+            logger.warning(f"Scene analysis failed: {e}")
+            return {}
+    
+    def _combine_video_extractions(self, extracted_content: Dict[str, Any], sources: List[str]) -> str:
+        """Intelligently combine content extracted from video"""
+        parts = []
+        
+        # Audio transcript (usually most important)
+        if extracted_content.get('audio_transcript'):
+            parts.append(f"Audio Transcript:\n{extracted_content['audio_transcript']}")
+        
+        # Visual text content
+        if extracted_content.get('visual_text'):
+            parts.append(f"On-Screen Text:\n{extracted_content['visual_text']}")
+        
+        # Scene analysis
+        if extracted_content.get('scene_analysis'):
+            parts.append(f"Visual Scene Analysis:\n{extracted_content['scene_analysis']}")
+        
+        # Procedural content
+        if extracted_content.get('procedural_content'):
+            parts.append(f"Procedural Information:\n{extracted_content['procedural_content']}")
+        
+        return '\n\n'.join(parts) if parts else ""
+    
+    def _basic_video_processing_fallback(self, file_path: Path) -> Dict[str, Any]:
+        """Basic fallback video processing when advanced methods fail"""
+        try:
+            # Try the original frame OCR method
+            ocr_result = self._extract_text_from_video_frames(
+                file_path=file_path,
+                interval_seconds=10,  # Less frequent sampling for fallback
+                max_frames=10
+            )
+            
+            text_content = ocr_result.get('text', '').strip()
+            if not text_content:
+                text_content = f"Video file: {file_path.name} - Content extraction unavailable"
+            
+            return {
+                'text': text_content,
+                'frames_analyzed': ocr_result.get('frames_analyzed', 0),
+                'processing_note': 'Basic fallback processing used'
+            }
+            
+        except Exception as e:
+            logger.warning(f"Even basic video processing failed: {e}")
+            return {
+                'text': f"Video file: {file_path.name} - Processing failed",
+                'frames_analyzed': 0,
+                'processing_note': 'All video processing methods failed'
+            }
+    
+    # Helper methods for video processing
+    
+    def _deduplicate_video_text(self, text_list: List[str]) -> List[str]:
+        """Remove duplicate text content from video frames"""
+        unique_texts = []
+        seen_normalized = set()
+        
+        for text in text_list:
+            if not text or len(text.strip()) < 5:
+                continue
+            
+            # Normalize for comparison
+            normalized = re.sub(r'\s+', ' ', text.strip().lower())
+            normalized = re.sub(r'[^\w\s]', '', normalized)  # Remove punctuation
+            
+            if normalized not in seen_normalized:
+                seen_normalized.add(normalized)
+                unique_texts.append(text.strip())
+        
+        return unique_texts
+    
+    def _extract_procedural_steps(self, audio_text: str, visual_text: str) -> str:
+        """Extract procedural steps from audio and visual content"""
+        combined_text = f"{audio_text}\n{visual_text}"
+        
+        # Look for step patterns
+        step_patterns = [
+            r'step (\d+)[:\.](.+?)(?=step \d+|$)',
+            r'(\d+)\.(.+?)(?=\d+\.|$)',
+            r'(first|second|third|fourth|fifth|next|then|finally)[,:](.+?)(?=first|second|third|fourth|fifth|next|then|finally|$)'
+        ]
+        
+        extracted_steps = []
+        for pattern in step_patterns:
+            matches = re.finditer(pattern, combined_text, re.IGNORECASE | re.MULTILINE)
+            for match in matches:
+                if len(match.groups()) >= 2:
+                    step_content = match.group(2).strip()
+                    if len(step_content) > 10:
+                        extracted_steps.append(f"Step: {step_content}")
+        
+        return '\n'.join(extracted_steps) if extracted_steps else ""
+    
+    def _calculate_frame_features(self, frame: np.ndarray) -> np.ndarray:
+        """Calculate features for frame comparison"""
+        try:
+            # Convert to grayscale and resize for speed
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+            small = cv2.resize(gray, (64, 64))
+            
+            # Calculate histogram as feature
+            hist = cv2.calcHist([small], [0], None, [32], [0, 256])
+            return hist.flatten()
+        except:
+            return np.zeros(32)
+    
+    def _calculate_frame_difference(self, features1: np.ndarray, features2: np.ndarray) -> float:
+        """Calculate difference between frame features"""
+        try:
+            # Normalize features
+            norm1 = features1 / (np.sum(features1) + 1e-6)
+            norm2 = features2 / (np.sum(features2) + 1e-6)
+            
+            # Calculate histogram difference
+            diff = np.sum(np.abs(norm1 - norm2))
+            return diff
+        except:
+            return 0.0
+    
+    def _detect_video_content_type(self, text_content: str, metadata: Dict[str, Any]) -> str:
+        """Detect the type of content in the video"""
+        if not text_content:
+            return "non_textual_video"
+        
+        text_lower = text_content.lower()
+        
+        if any(word in text_lower for word in ['tutorial', 'how to', 'step', 'instruction', 'guide']):
+            return "instructional_video"
+        elif any(word in text_lower for word in ['presentation', 'slide', 'agenda', 'overview']):
+            return "presentation_video"
+        elif any(word in text_lower for word in ['procedure', 'process', 'workflow', 'protocol']):
+            return "procedural_video"
+        elif any(word in text_lower for word in ['meeting', 'discussion', 'review', 'interview']):
+            return "meeting_video"
+        elif any(word in text_lower for word in ['training', 'course', 'lesson', 'education']):
+            return "training_video"
+        elif any(word in text_lower for word in ['demo', 'demonstration', 'example', 'showcase']):
+            return "demonstration_video"
+        else:
+            return "general_video"
+    
+    def _calculate_video_extraction_confidence(self, extracted_content: Dict[str, Any], sources: List[str]) -> float:
+        """Calculate confidence score for video knowledge extraction"""
+        confidence_factors = []
+        
+        # Audio transcript confidence
+        if extracted_content.get('audio_transcript'):
+            audio_length = len(extracted_content['audio_transcript'])
+            audio_confidence = min(1.0, audio_length / 500)  # Normalize by expected length
+            confidence_factors.append(audio_confidence * 0.4)  # 40% weight
+        
+        # Visual text confidence
+        if extracted_content.get('visual_text'):
+            visual_length = len(extracted_content['visual_text'])
+            visual_confidence = min(1.0, visual_length / 200)
+            confidence_factors.append(visual_confidence * 0.3)  # 30% weight
+        
+        # Scene analysis confidence
+        if extracted_content.get('scene_analysis'):
+            scene_confidence = 0.8  # Fixed confidence for scene analysis
+            confidence_factors.append(scene_confidence * 0.2)  # 20% weight
+        
+        # Procedural content confidence
+        if extracted_content.get('procedural_content'):
+            procedural_confidence = 0.9  # High confidence for procedural content
+            confidence_factors.append(procedural_confidence * 0.1)  # 10% weight
+        
+        # Calculate overall confidence
+        if confidence_factors:
+            return sum(confidence_factors) / len(confidence_factors)
+        else:
+            return 0.1  # Very low confidence if nothing extracted
