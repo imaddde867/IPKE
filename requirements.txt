@@ -22,12 +22,16 @@ python-docx>=0.8.11
 # AI and NLP
 spacy>=3.6.0
 torch>=2.0.0
+sentence-transformers>=2.7.0
 
 # LLM Backends (optional - for local LLM processing)
 llama-cpp-python>=0.2.0
 
 # Audio/Video Processing (optional)
 whisper>=1.0.0
+
+# Compatibility for Python < 3.10
+importlib-metadata>=6.8.0; python_version < '3.10'
 
 # Note: Some packages may require system-level dependencies:
 # - pytesseract requires tesseract-ocr to be installed on the system
