@@ -133,16 +133,6 @@ export EXPLAINIUM_LLM_CHUNK_TIMEOUT=35
 ./start.sh
 ```
 
-## Presenter’s Checklist
-
-- [ ] Clean dependency install: `pip install -r requirements.txt`
-- [ ] Models present under `models/llm` (GGUF) & spaCy model installed
-- [ ] Health check passes
-- [ ] Process a sample PDF + image + video (entities > 0)
-- [ ] No error stack traces in console during demo
-- [ ] LLM timeouts rare (<2 per document) or gracefully retried
-- [ ] Database (even fallback SQLite) shows populated knowledge_entities
-
 ## Scripts
 
 | Script | Purpose |
