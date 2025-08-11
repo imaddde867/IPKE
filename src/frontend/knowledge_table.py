@@ -186,7 +186,14 @@ def process_with_intelligent_ai_engine(uploaded_file, file_name, file_type):
             loop.close()
             
             # Convert intelligent AI results to display format
-            return convert_intelligent_ai_results_to_display(knowledge_results, file_name)
+            ai_converted = convert_intelligent_ai_results_to_display(knowledge_results, file_name)
+            
+            # Store metadata in session state for display outside table
+            if 'processing_metadata' not in st.session_state:
+                st.session_state.processing_metadata = []
+            st.session_state.processing_metadata.extend(ai_converted["processing_metadata"])
+            
+            return ai_converted["knowledge_items"]  # Return only knowledge items for table
             
         except Exception as e:
             print(f"Intelligent AI framework failed, using standard extraction: {e}")
@@ -861,6 +868,8 @@ def main():
     # Initialize session state
     if 'knowledge_data' not in st.session_state:
         st.session_state.knowledge_data = []
+    if 'processing_metadata' not in st.session_state:
+        st.session_state.processing_metadata = []
     
     # Sidebar controls
     with st.sidebar:
@@ -961,6 +970,7 @@ def main():
         with col_a:
             if st.button("Clear All"):
                 st.session_state.knowledge_data = []
+                st.session_state.processing_metadata = []
                 st.success("All data cleared.")
                 st.rerun()
         
@@ -970,11 +980,44 @@ def main():
                 st.success("Demo data loaded.")
                 st.rerun()
     
+    # Processing Summary Section (outside main table)
+    if st.session_state.processing_metadata:
+        st.header("📊 Processing Summary")
+        
+        # Display processing metadata in a clean format
+        for metadata in st.session_state.processing_metadata[-3:]:  # Show last 3 processed items
+            with st.expander(f"📄 {metadata['title']} - {metadata['source']}", expanded=False):
+                col_meta1, col_meta2 = st.columns([2, 1])
+                
+                with col_meta1:
+                    if metadata['type'] == 'document_analysis':
+                        st.markdown(f"""
+                        **Document Analysis Results:**
+                        - **Document Type:** {metadata['details']['document_type']}
+                        - **Complexity Level:** {metadata['details']['complexity']}
+                        - **Target Audience:** {metadata['details']['target_audience']}
+                        - **Sections Found:** {metadata['details']['sections_found']}
+                        """)
+                    elif metadata['type'] == 'quality_metrics':
+                        st.markdown(f"""
+                        **Processing Quality Metrics:**
+                        - **Extraction Quality:** {metadata['details']['extraction_quality']:.2f}
+                        - **Database Readiness:** {metadata['details']['database_readiness']:.2f}
+                        - **Business Value:** {metadata['details']['business_value']:.2f}
+                        - **Completeness:** {metadata['details']['completeness']:.2f}
+                        """)
+                
+                with col_meta2:
+                    st.metric("Confidence", f"{metadata['confidence']:.2f}")
+                    st.caption(f"Processed: {metadata['processed_at']}")
+        
+        st.divider()
+
     # Main content
     col1, col2 = st.columns([3, 1])
     
     with col1:
-        st.header("Knowledge Table")
+        st.header("📚 Extracted Knowledge")
         
         # Get and filter data
         df = pd.DataFrame(st.session_state.knowledge_data)
@@ -1086,9 +1129,10 @@ def main():
             st.metric("Types", df['Type'].nunique())
 
 def convert_intelligent_ai_results_to_display(ai_results, file_name):
-    """Convert intelligent AI framework results to display format"""
+    """Convert intelligent AI framework results to display format with separated metadata"""
     try:
-        display_items = []
+        knowledge_items = []  # Actual extracted knowledge
+        processing_metadata = []  # Processing summaries and metadata
         
         # Extract summary information
         intelligence_framework = ai_results.get('intelligence_framework', {})
@@ -1096,25 +1140,25 @@ def convert_intelligent_ai_results_to_display(ai_results, file_name):
         knowledge_categorization = intelligence_framework.get('knowledge_categorization', {})
         database_optimization = intelligence_framework.get('database_optimization', {})
         
-        # Add document intelligence summary
-        display_items.append({
-            "Knowledge": f"Document Analysis Summary",
-            "Type": "document_intelligence",
-            "Confidence": document_intelligence.get('confidence_score', 0.8),
-            "Category": "Document Intelligence",
-            "Description": f"Document Type: {document_intelligence.get('document_type', 'Unknown')}\n"
-                          f"Complexity: {document_intelligence.get('complexity_level', 'Unknown')}\n"
-                          f"Target Audience: {', '.join(document_intelligence.get('target_audience', []))}\n"
-                          f"Sections Found: {document_intelligence.get('structure_analysis', {}).get('section_count', 0)}",
-            "Source": file_name,
-            "Extracted_At": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "Priority": "High"
+        # Add document intelligence summary to metadata (not knowledge table)
+        processing_metadata.append({
+            "type": "document_analysis",
+            "title": "Document Analysis Summary",
+            "confidence": document_intelligence.get('confidence_score', 0.8),
+            "details": {
+                "document_type": document_intelligence.get('document_type', 'Unknown'),
+                "complexity": document_intelligence.get('complexity_level', 'Unknown'),
+                "target_audience": ', '.join(document_intelligence.get('target_audience', [])),
+                "sections_found": document_intelligence.get('structure_analysis', {}).get('section_count', 0)
+            },
+            "source": file_name,
+            "processed_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         })
         
-        # Process extracted entities
+        # Process extracted entities (ACTUAL KNOWLEDGE ITEMS)
         extracted_entities = ai_results.get('extracted_entities', [])
         for entity in extracted_entities:
-            display_items.append({
+            knowledge_items.append({
                 "Knowledge": entity.get('core_content', entity.get('key_identifier', 'Unknown')),
                 "Type": entity.get('category', entity.get('entity_type', 'unknown')),
                 "Confidence": entity.get('confidence_score', 0.5),
@@ -1129,10 +1173,10 @@ def convert_intelligent_ai_results_to_display(ai_results, file_name):
                 "Actionability": entity.get('actionability_score', 0.5)
             })
         
-        # Process database-ready units
+        # Process database-ready units (ACTUAL KNOWLEDGE ITEMS)
         database_units = ai_results.get('database_ready_units', [])
         for unit in database_units:
-            display_items.append({
+            knowledge_items.append({
                 "Knowledge": f"Database Unit: {unit.get('table_name', 'Unknown')}",
                 "Type": "database_unit",
                 "Confidence": unit.get('confidence_score', 0.5),
@@ -1146,36 +1190,42 @@ def convert_intelligent_ai_results_to_display(ai_results, file_name):
                 "Synthesis_Notes": unit.get('synthesis_notes', '')
             })
         
-        # Add quality metrics summary
+        # Add quality metrics summary to metadata (NOT knowledge table)
         quality_metrics = ai_results.get('quality_metrics', {})
-        display_items.append({
-            "Knowledge": "Processing Quality Metrics",
-            "Type": "quality_metrics",
-            "Confidence": quality_metrics.get('extraction_quality', 0.5),
-            "Category": "Quality Assessment",
-            "Description": f"Extraction Quality: {quality_metrics.get('extraction_quality', 0.0):.2f}\n"
-                          f"Database Readiness: {quality_metrics.get('database_readiness', 0.0):.2f}\n"
-                          f"Business Value: {quality_metrics.get('business_value', 0.0):.2f}\n"
-                          f"Completeness: {quality_metrics.get('completeness', 0.0):.2f}",
-            "Source": file_name,
-            "Extracted_At": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "Priority": "Medium"
+        processing_metadata.append({
+            "type": "quality_metrics",
+            "title": "Processing Quality Metrics",
+            "confidence": quality_metrics.get('extraction_quality', 0.5),
+            "details": {
+                "extraction_quality": quality_metrics.get('extraction_quality', 0.0),
+                "database_readiness": quality_metrics.get('database_readiness', 0.0),
+                "business_value": quality_metrics.get('business_value', 0.0),
+                "completeness": quality_metrics.get('completeness', 0.0)
+            },
+            "source": file_name,
+            "processed_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         })
         
-        return display_items
+        return {
+            "knowledge_items": knowledge_items,
+            "processing_metadata": processing_metadata
+        }
         
     except Exception as e:
         print(f"Error converting intelligent AI results: {e}")
-        return [{
-            "Knowledge": "AI Processing Error",
-            "Type": "error",
-            "Confidence": 0.0,
-            "Category": "System Error",
-            "Description": f"Failed to process intelligent AI results: {str(e)}",
-            "Source": file_name,
-            "Extracted_At": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "Priority": "Low"
-        }]
+        return {
+            "knowledge_items": [{
+                "Knowledge": "AI Processing Error",
+                "Type": "error",
+                "Confidence": 0.0,
+                "Category": "System Error",
+                "Description": f"Failed to process intelligent AI results: {str(e)}",
+                "Source": file_name,
+                "Extracted_At": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+                "Priority": "Low"
+            }],
+            "processing_metadata": []
+        }
 
 
 if __name__ == "__main__":
