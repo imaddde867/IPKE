@@ -36,6 +36,17 @@ from src.logging_config import get_logger
 from src.core.config import AIConfig
 from src.ai.document_intelligence_analyzer import DocumentIntelligence, PriorityContext
 
+# Enhanced extraction engine
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+try:
+    from enhanced_extraction_engine import EnhancedExtractionEngine, ExtractedEntity
+    ENHANCED_EXTRACTION_AVAILABLE = True
+except ImportError:
+    ENHANCED_EXTRACTION_AVAILABLE = False
+    print("Warning: Enhanced extraction engine not available. Using fallback methods.")
+
 logger = get_logger(__name__)
 
 
@@ -252,12 +263,207 @@ class KnowledgeCategorizationEngine:
             
             # Initialize embedding model
             self.embedder = SentenceTransformer('BAAI/bge-small-en-v1.5')
+            
+            # Initialize enhanced extraction engine with LLM
+            if ENHANCED_EXTRACTION_AVAILABLE:
+                self.enhanced_engine = EnhancedExtractionEngine(llm_model=getattr(self, 'llm', None))
+                logger.info("Enhanced extraction engine initialized with LLM support")
+            
             self.initialized = True
             logger.info("Knowledge Categorization Engine initialized successfully")
             
         except Exception as e:
             logger.warning(f"Failed to initialize models, using fallback methods: {e}")
             self.initialized = False
+    
+    async def _convert_enhanced_to_knowledge_entity(self, enhanced_entity: 'ExtractedEntity', 
+                                                   document_intelligence: DocumentIntelligence) -> KnowledgeEntity:
+        """Convert enhanced extraction entity to KnowledgeEntity format"""
+        
+        # Map categories
+        category_mapping = {
+            "technical_specifications": KnowledgeCategory.QUANTITATIVE_INTELLIGENCE,
+            "process_intelligence": KnowledgeCategory.PROCESS_INTELLIGENCE,
+            "risk_mitigation_intelligence": KnowledgeCategory.RISK_MITIGATION_INTELLIGENCE,
+            "compliance_governance": KnowledgeCategory.COMPLIANCE_GOVERNANCE,
+            "organizational_intelligence": KnowledgeCategory.ORGANIZATIONAL_INTELLIGENCE,
+            "asset_intelligence": KnowledgeCategory.QUANTITATIVE_INTELLIGENCE,
+            "maintenance_intelligence": KnowledgeCategory.PROCESS_INTELLIGENCE,
+            "knowledge_definitions": KnowledgeCategory.KNOWLEDGE_DEFINITIONS,
+            "nlp_enhanced": KnowledgeCategory.KNOWLEDGE_DEFINITIONS,
+            "llm_extracted": KnowledgeCategory.PROCESS_INTELLIGENCE
+        }
+        
+        # Map entity types
+        entity_type_mapping = {
+            "specification": EntityType.SPECIFICATION,
+            "procedure": EntityType.PROCEDURE,
+            "process": EntityType.PROCESS,
+            "safety_requirement": EntityType.RISK,
+            "safety_equipment": EntityType.SPECIFICATION,
+            "hazard": EntityType.RISK,
+            "equipment": EntityType.SPECIFICATION,
+            "maintenance": EntityType.PROCEDURE,
+            "compliance": EntityType.COMPLIANCE_ITEM,
+            "compliance_requirement": EntityType.COMPLIANCE_ITEM,
+            "personnel": EntityType.ROLE,
+            "role": EntityType.ROLE,
+            "warning": EntityType.RISK,
+            "measurement": EntityType.QUANTITATIVE_DATA,
+            "definition": EntityType.DEFINITION
+        }
+        
+        category = category_mapping.get(enhanced_entity.category, KnowledgeCategory.KNOWLEDGE_DEFINITIONS)
+        entity_type = entity_type_mapping.get(enhanced_entity.entity_type, EntityType.SPECIFICATION)
+        
+        # Determine priority level
+        priority_level = self._determine_priority_from_metadata(enhanced_entity.metadata)
+        
+        # Create structured data
+        structured_data = {
+            "original_category": enhanced_entity.category,
+            "original_entity_type": enhanced_entity.entity_type,
+            "extraction_metadata": enhanced_entity.metadata,
+            "relationships": enhanced_entity.relationships,
+            "source_location": enhanced_entity.source_location
+        }
+        
+        # Add LLM insights if available
+        if enhanced_entity.metadata.get("llm_enhancement"):
+            structured_data["llm_insights"] = enhanced_entity.metadata["llm_enhancement"]
+        
+        return KnowledgeEntity(
+            entity_type=entity_type,
+            key_identifier=self._generate_key_identifier(enhanced_entity.content),
+            core_content=enhanced_entity.content,
+            context_tags=self._extract_context_tags(enhanced_entity.context),
+            priority_level=PriorityLevel(priority_level),
+            category=category,
+            confidence_score=enhanced_entity.confidence,
+            source_section=enhanced_entity.context[:100] if enhanced_entity.context else "",
+            extraction_method=enhanced_entity.metadata.get("extraction_method", "enhanced_pattern"),
+            relationships=enhanced_entity.relationships,
+            structured_data=structured_data,
+            completeness_score=self._calculate_completeness(enhanced_entity),
+            clarity_score=self._calculate_clarity(enhanced_entity),
+            actionability_score=self._calculate_actionability(enhanced_entity)
+        )
+    
+    def _determine_priority_from_metadata(self, metadata: Dict[str, Any]) -> str:
+        """Determine priority level from enhanced entity metadata"""
+        
+        # Check for critical indicators
+        if metadata.get("safety_level") == "critical":
+            return "high"
+        
+        if metadata.get("mandatory", False) or metadata.get("requirement_type") == "mandatory":
+            return "high"
+        
+        if metadata.get("llm_generated", False):
+            return "medium"  # LLM extractions are generally important
+        
+        if metadata.get("has_numbers", False) and metadata.get("has_technical_terms", False):
+            return "medium"
+        
+        return "low"
+    
+    def _generate_key_identifier(self, content: str) -> str:
+        """Generate a concise key identifier from content"""
+        # Take first meaningful words, max 50 chars
+        words = content.split()[:8]
+        identifier = " ".join(words)
+        
+        if len(identifier) > 50:
+            identifier = identifier[:47] + "..."
+        
+        return identifier
+    
+    def _extract_context_tags(self, context: str) -> List[str]:
+        """Extract context tags from context text"""
+        if not context:
+            return []
+        
+        tags = []
+        context_lower = context.lower()
+        
+        # Common domain tags
+        domain_indicators = {
+            "safety": ["safety", "hazard", "risk", "danger", "protection"],
+            "maintenance": ["maintenance", "inspect", "replace", "lubricate", "check"],
+            "technical": ["specification", "parameter", "measurement", "value"],
+            "compliance": ["standard", "regulation", "requirement", "compliance"],
+            "operational": ["procedure", "process", "step", "operation"],
+            "personnel": ["role", "responsibility", "certified", "qualified"]
+        }
+        
+        for domain, indicators in domain_indicators.items():
+            if any(indicator in context_lower for indicator in indicators):
+                tags.append(domain)
+        
+        return tags[:5]  # Limit to 5 tags
+    
+    def _calculate_completeness(self, enhanced_entity: 'ExtractedEntity') -> float:
+        """Calculate completeness score for enhanced entity"""
+        score = 0.5  # Base score
+        
+        # Content length indicator
+        if len(enhanced_entity.content) > 50:
+            score += 0.2
+        
+        # Has metadata
+        if enhanced_entity.metadata:
+            score += 0.1
+        
+        # Has relationships
+        if enhanced_entity.relationships:
+            score += 0.1
+        
+        # LLM enhanced
+        if enhanced_entity.metadata.get("enhanced_by_llm"):
+            score += 0.1
+        
+        return min(1.0, score)
+    
+    def _calculate_clarity(self, enhanced_entity: 'ExtractedEntity') -> float:
+        """Calculate clarity score for enhanced entity"""
+        score = 0.5  # Base score
+        
+        # Check for specific technical terms
+        if enhanced_entity.metadata.get("has_technical_terms"):
+            score += 0.2
+        
+        # Check for numbers/measurements
+        if enhanced_entity.metadata.get("has_numbers"):
+            score += 0.1
+        
+        # Check for action words
+        if enhanced_entity.metadata.get("has_action_words"):
+            score += 0.1
+        
+        # LLM analysis often provides clearer context
+        if enhanced_entity.metadata.get("llm_generated"):
+            score += 0.1
+        
+        return min(1.0, score)
+    
+    def _calculate_actionability(self, enhanced_entity: 'ExtractedEntity') -> float:
+        """Calculate actionability score for enhanced entity"""
+        score = 0.3  # Base score
+        
+        # Check entity type for actionability
+        actionable_types = ["procedure", "process", "safety_requirement", "maintenance", "compliance_requirement"]
+        if enhanced_entity.entity_type in actionable_types:
+            score += 0.3
+        
+        # Check for action words
+        if enhanced_entity.metadata.get("has_action_words"):
+            score += 0.2
+        
+        # Check for specific requirements
+        if enhanced_entity.metadata.get("mandatory"):
+            score += 0.2
+        
+        return min(1.0, score)
     
     async def categorize_knowledge(self, content: str, 
                                  document_intelligence: DocumentIntelligence,
@@ -286,6 +492,26 @@ class KnowledgeCategorizationEngine:
         
         entities = []
         
+        # Use enhanced extraction engine if available
+        if ENHANCED_EXTRACTION_AVAILABLE and hasattr(self, 'enhanced_engine'):
+            logger.info("Using enhanced extraction engine with LLM support")
+            
+            # Extract using the enhanced engine
+            enhanced_entities = self.enhanced_engine.extract_comprehensive_knowledge(
+                enhanced_content, 
+                document_intelligence.document_type.value if document_intelligence else "unknown"
+            )
+            
+            # Convert enhanced entities to KnowledgeEntity format
+            for enhanced_entity in enhanced_entities:
+                knowledge_entity = await self._convert_enhanced_to_knowledge_entity(
+                    enhanced_entity, document_intelligence
+                )
+                entities.append(knowledge_entity)
+            
+            logger.info(f"Enhanced extraction produced {len(entities)} entities")
+        
+        # Fallback to original extraction methods for additional coverage
         # Phase 2A: Process Intelligence Extraction (Enhanced)
         process_entities = await self._extract_process_intelligence(
             enhanced_content, document_intelligence, enhanced_sections
