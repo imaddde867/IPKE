@@ -162,7 +162,7 @@ def process_with_intelligent_ai_engine(uploaded_file, file_name, file_type):
             import tempfile
             import os
             from pathlib import Path
-            from processors.optimized_processor import OptimizedDocumentProcessor
+            from processors.processor import OptimizedDocumentProcessor
 
             # Lazy-init the heavy processor once per session with a spinner
             processor = getattr(st.session_state, 'document_processor', None)
@@ -648,7 +648,7 @@ def extract_knowledge_from_video(uploaded_file, file_name):
             pass
 
         # Reuse / lazily create processor (heavy models) only once
-        from src.processors.optimized_processor import OptimizedDocumentProcessor
+        from src.processors.processor import OptimizedDocumentProcessor
         processor = getattr(st.session_state, 'document_processor', None)
         if processor is None or not isinstance(processor, OptimizedDocumentProcessor):
             with st.spinner("Initializing optimized AI processor (one-time)..."):
