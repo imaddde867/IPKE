@@ -24,7 +24,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 try:
     from database.database import get_db, init_db
     from database import models, crud
-    from processors.optimized_processor import OptimizedDocumentProcessor
+    from processors.processor import OptimizedDocumentProcessor
     from api.celery_worker import process_document_task, get_task_status
     from middleware import ErrorHandlingMiddleware, RequestLoggingMiddleware
     from logging_config import get_logger

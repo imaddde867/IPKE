@@ -19,7 +19,7 @@ from celery.signals import task_prerun, task_postrun, task_failure
 from src.core.config import config
 from src.database.database import get_db_session, db_transaction
 from src.database import crud, models
-from src.processors.optimized_processor import OptimizedDocumentProcessor
+from src.processors.processor import OptimizedDocumentProcessor
 from src.logging_config import get_logger
 
 logger = get_logger(__name__)
