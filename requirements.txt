@@ -12,6 +12,15 @@
 # If you keep vllm you must upgrade torch (2.7.0 requirement) which is NOT recommended here because we target
 # llama-cpp-python for local inference (Metal build). Hence vllm is treated as optional and excluded.
 
+# Web Framework
+fastapi==0.104.1
+uvicorn==0.24.0
+streamlit==1.28.1
+
+# Database
+sqlalchemy==2.0.23
+alembic==1.12.1
+
 # HTTP requests
 requests==2.32.4
 

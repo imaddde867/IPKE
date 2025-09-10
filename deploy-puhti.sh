@@ -17,7 +17,7 @@ source venv/bin/activate
 export ENVIRONMENT=production
 export DATABASE_URL=sqlite:///./explainium.db
 export REDIS_URL=redis://localhost:6379
-export UPLOAD_DIRECTORY=/scratch/project_2001234/explainium-2.0-1/uploaded_files
+export UPLOAD_DIRECTORY=/scratch/project_2015237/explainium-2.0-1/uploaded_files
 export MAX_FILE_SIZE_MB=500
 export LOG_LEVEL=INFO
 
