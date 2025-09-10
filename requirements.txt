@@ -45,7 +45,7 @@ fsspec==2025.5.1      # aligns with s3fs 2025.5.1 if later installed
 llama-cpp-python==0.2.82   # Metal build installed locally (use CMAKE_ARGS='-DLLAMA_METAL=on')
 
 # Audio/Video Processing (optional)
-openai-whisper==20231117
+openai-whisper==20240930
 pytest==7.4.3
 pytest-asyncio==0.23.8
 

@@ -22,7 +22,7 @@ RUN apt-get update && apt-get install -y \
     libxext6 \
     libfontconfig1 \
     libxrender1 \
-    libgl1-mesa-glx \
+    libgl1-mesa-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Create virtual environment
@@ -56,7 +56,7 @@ RUN apt-get update && apt-get install -y \
     libxext6 \
     libfontconfig1 \
     libxrender1 \
-    libgl1-mesa-glx \
+    libgl1-mesa-dev \
     curl \
     && rm -rf /var/lib/apt/lists/*
 
