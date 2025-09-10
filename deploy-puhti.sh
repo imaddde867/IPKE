@@ -42,17 +42,6 @@ echo "API Documentation: http://localhost:8000/docs"
 echo ""
 echo "Press Ctrl+C to stop"
 
-# Start backend in background
-uvicorn src.api.app:app --host 0.0.0.0 --port 8000 &
-BACKEND_PID=$!
-
-# Wait a moment for backend to start
-sleep 3
-
-# Start frontend
-streamlit run src/frontend/knowledge_table.py --server.port 8501 --server.address 0.0.0.0 &
-FRONTEND_PID=$!
-
-# Wait for interrupt
-trap 'echo "Shutting down..."; kill $BACKEND_PID $FRONTEND_PID 2>/dev/null; exit' INT
-wait
+# Start frontend only (backend has issues)
+echo "Starting Streamlit frontend only..."
+streamlit run src/frontend/knowledge_table.py --server.port 8501 --server.address 0.0.0.0
