@@ -189,6 +189,9 @@ class DatabaseManager:
 # Global database manager instance
 db_manager = DatabaseManager()
 
+# Export DATABASE_URL for alembic
+DATABASE_URL = db_url
+
 
 def get_db() -> Generator[Session, None, None]:
     """
