@@ -16,8 +16,8 @@ import sys
 import os
 
 # Simple AI availability check
-AI_AVAILABLE = False
-import_error_msg = "AI components disabled for Puhti deployment"
+AI_AVAILABLE = True
+import_error_msg = "AI components enabled for Puhti deployment"
 
 def process_document(uploaded_file, use_ai=True):
     """Process uploaded document/media and extract knowledge"""
