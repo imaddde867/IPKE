@@ -15,69 +15,9 @@ import io
 import sys
 import os
 
-# Simple approach: just check if we can import the basic AI components
+# Simple AI availability check
 AI_AVAILABLE = False
-import_error_msg = ""
-
-# Add current working directory and src to path
-current_dir = os.path.dirname(os.path.abspath(__file__))
-project_root = os.path.dirname(os.path.dirname(current_dir))
-
-# Add paths
-for path in [os.getcwd(), project_root, os.path.join(project_root, 'src'), os.path.join(os.getcwd(), 'src')]:
-    if path not in sys.path:
-        sys.path.insert(0, path)
-
-# Try simple import test - just check if the modules exist
-try:
-    # Test if we can at least import the config
-    import importlib.util
-    
-    # Check if the AI modules exist
-    ai_engine_path = None
-    config_path = None
-    
-    # Look for the modules in different locations
-    possible_paths = [
-        os.path.join(os.getcwd(), 'src', 'ai', 'advanced_knowledge_engine.py'),
-        os.path.join(project_root, 'src', 'ai', 'advanced_knowledge_engine.py'),
-    ]
-    
-    for path in possible_paths:
-        if os.path.exists(path):
-            ai_engine_path = path
-            break
-    
-    possible_config_paths = [
-        os.path.join(os.getcwd(), 'src', 'core', 'config.py'),
-        os.path.join(project_root, 'src', 'core', 'config.py'),
-    ]
-    
-    for path in possible_config_paths:
-        if os.path.exists(path):
-            config_path = path
-            break
-    
-    if ai_engine_path and config_path:
-        # Try to import without triggering all the dependencies
-        try:
-            from ai.advanced_knowledge_engine import AdvancedKnowledgeEngine
-            from core.config import AIConfig
-            AI_AVAILABLE = True
-            print("AI Engine components loaded successfully")
-        except Exception as e:
-            # Fallback: just mark as available if files exist
-            AI_AVAILABLE = True
-            print(f"AI Engine files found (will load on demand): {e}")
-    else:
-        AI_AVAILABLE = False
-        import_error_msg = "AI engine files not found"
-        print(f"AI Engine files not found")
-        
-except Exception as e:
-    AI_AVAILABLE = False
-    import_error_msg = str(e)
-    print(f"AI Engine check failed: {e}")
+import_error_msg = "AI components disabled for Puhti deployment"
 
 def process_document(uploaded_file, use_ai=True):
     """Process uploaded document/media and extract knowledge"""
