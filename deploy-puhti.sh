@@ -15,7 +15,8 @@ source venv/bin/activate
 
 # Set CSC-specific environment variables
 export ENVIRONMENT=production
-export SECRET_KEY=explainium_secret_key_2024_puhti_deployment
+# SECRET_KEY should be set via environment variable for security
+# export SECRET_KEY=${SECRET_KEY:-"explainium_secret_key_2024_puhti_deployment"}
 export DATABASE_URL=sqlite:///./explainium.db
 export REDIS_URL=redis://localhost:6379
 export UPLOAD_DIRECTORY=/projappl/project_2015237/explainium-2.0/uploaded_files

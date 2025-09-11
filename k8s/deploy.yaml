@@ -9,6 +9,9 @@ data:
   ENVIRONMENT: "csc_cloud"
   CSC_CLOUD: "true"
   DB_HOST: "postgres-service"
+  DB_PORT: "5432"
+  DB_NAME: "explainium"
+  DB_USER: "postgres"
   REDIS_HOST: "redis-service"
   MAX_FILE_SIZE_MB: "500"
 ---
@@ -59,6 +62,10 @@ spec:
       containers:
       - name: postgres
         image: postgres:15-alpine
+        securityContext:
+          allowPrivilegeEscalation: false
+        ports:
+        - containerPort: 5432
         volumeMounts:
         - name: pgdata
           mountPath: /var/lib/postgresql/data
@@ -72,6 +79,23 @@ spec:
             secretKeyRef:
               name: explainium-secrets
               key: DB_PASSWORD
+        readinessProbe:
+          exec:
+            command: ["pg_isready","-U","postgres","-d","explainium"]
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        livenessProbe:
+          exec:
+            command: ["pg_isready","-U","postgres","-d","explainium"]
+          initialDelaySeconds: 20
+          periodSeconds: 20
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "1Gi"
       volumes:
       - name: pgdata
         persistentVolumeClaim:

@@ -28,6 +28,7 @@ def _can_connect(host: str, port: int, timeout: float = 1.0) -> bool:
         return False
 
 db_url = config.database.url
+CONFIGURED_DATABASE_URL = config.database.url  # For tooling (e.g., Alembic)
 using_sqlite_fallback = False
 if db_url.startswith("postgresql") and not _can_connect(config.database.host, config.database.port):
     # Fallback to local sqlite for developer manual testing
@@ -189,8 +190,8 @@ class DatabaseManager:
 # Global database manager instance
 db_manager = DatabaseManager()
 
-# Export DATABASE_URL for alembic
-DATABASE_URL = db_url
+# Export DATABASE_URL for Alembic (always the configured URL, not runtime fallback)
+DATABASE_URL = CONFIGURED_DATABASE_URL
 
 
 def get_db() -> Generator[Session, None, None]:
