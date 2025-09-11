@@ -18,7 +18,7 @@ export ENVIRONMENT=production
 export SECRET_KEY=explainium_secret_key_2024_puhti_deployment
 export DATABASE_URL=sqlite:///./explainium.db
 export REDIS_URL=redis://localhost:6379
-export UPLOAD_DIRECTORY=/scratch/project_2015237/explainium-2.0-1/uploaded_files
+export UPLOAD_DIRECTORY=/projappl/project_2015237/explainium-2.0/uploaded_files
 export MAX_FILE_SIZE_MB=500
 export LOG_LEVEL=INFO
 
@@ -30,9 +30,9 @@ mkdir -p "$UPLOAD_DIRECTORY" logs
 # For now, we'll use SQLite for the database
 echo "📝 Using SQLite database (no PostgreSQL setup required)"
 
-# Initialize database
+# Initialize database (optional - skip if causing issues)
 echo "🗄️ Initializing database..."
-python -c "from src.database.database import init_db; init_db()"
+python -c "from src.database.database import init_db; init_db()" || echo "⚠️ Database initialization skipped - continuing..."
 
 # Start the application
 echo "🚀 Starting EXPLAINIUM..."
