@@ -15,6 +15,12 @@ import io
 import sys
 import os
 
+# Add src directory to path for AI imports
+current_dir = os.path.dirname(os.path.abspath(__file__))
+src_dir = os.path.dirname(current_dir)
+if src_dir not in sys.path:
+    sys.path.insert(0, src_dir)
+
 # Simple AI availability check
 AI_AVAILABLE = True
 import_error_msg = "AI components enabled for Puhti deployment"
