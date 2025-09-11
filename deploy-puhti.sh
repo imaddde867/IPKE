@@ -24,7 +24,7 @@ export LOG_LEVEL=INFO
 
 # Create necessary directories
 echo "📁 Creating directories..."
-mkdir -p uploaded_files logs
+mkdir -p "$UPLOAD_DIRECTORY" logs
 
 # Note: PostgreSQL and Redis need to be installed separately on Puhti
 # For now, we'll use SQLite for the database

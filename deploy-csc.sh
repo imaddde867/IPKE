@@ -22,7 +22,7 @@ echo "📁 Project: $(oc project -q)"
 
 # Deploy the application
 echo "🚀 Deploying EXPLAINIUM to CSC..."
-oc create -f k8s/deploy.yaml
+oc apply -f k8s/deploy.yaml
 
 # Wait for deployment
 echo "⏳ Waiting for deployment to complete..."

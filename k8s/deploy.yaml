@@ -17,9 +17,20 @@ kind: Secret
 metadata:
   name: explainium-secrets
 type: Opaque
-data:
-  DB_PASSWORD: cGFzc3dvcmQ=  # "password" in base64
-  SECRET_KEY: eW91ci1zZWNyZXQta2V5LWNoYW5nZS1pbi1wcm9kdWN0aW9u
+# Note: Create this secret manually with:
+# oc create secret generic explainium-secrets \
+#   --from-literal=DB_PASSWORD='your-secure-password' \
+#   --from-literal=SECRET_KEY='your-secret-key'
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-pvc
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 10Gi
 ---
 apiVersion: v1
 kind: Service
@@ -48,6 +59,9 @@ spec:
       containers:
       - name: postgres
         image: postgres:15-alpine
+        volumeMounts:
+        - name: pgdata
+          mountPath: /var/lib/postgresql/data
         env:
         - name: POSTGRES_DB
           value: "explainium"
@@ -58,6 +72,10 @@ spec:
             secretKeyRef:
               name: explainium-secrets
               key: DB_PASSWORD
+      volumes:
+      - name: pgdata
+        persistentVolumeClaim:
+          claimName: postgres-pvc
 ---
 apiVersion: v1
 kind: Service
@@ -114,8 +132,21 @@ spec:
       containers:
       - name: app
         image: explainium:latest  # Your Docker image
+        imagePullPolicy: Always
         ports:
         - containerPort: 8000
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 20
         envFrom:
         - configMapRef:
             name: explainium-config
