@@ -34,6 +34,7 @@ easyocr==1.7.0  # Primary OCR method (no system dependencies)
 pandas==2.2.2
 # Pin numpy 1.26.x to avoid ABI breakage with thinc/spaCy wheels (numpy 2.x caused dtype size mismatch)
 numpy==1.26.4
+scipy==1.13.1  # Required by EasyOCR for image processing
 
 # Document Processing
 python-pptx==0.6.23
