@@ -89,21 +89,17 @@ def process_with_intelligent_ai_engine(uploaded_file, file_name, file_type):
         if file_type == "application/pdf":
             content = extract_pdf_content(uploaded_file)
         elif file_type.startswith("image/"):
-            # Use PaddleOCR for images
+            # Use EasyOCR for images
             try:
-                from paddleocr import PaddleOCR
+                import easyocr
                 from PIL import Image
                 image = Image.open(uploaded_file)
-                ocr = PaddleOCR(use_angle_cls=True, lang='en')
-                result = ocr.ocr(image, cls=True)
+                reader = easyocr.Reader(['en'], gpu=False)
+                result = reader.readtext(image)
                 text_parts = []
-                if result and result[0]:
-                    for line in result[0]:
-                        if line and len(line) >= 2:
-                            text = line[1][0]
-                            confidence = line[1][1]
-                            if confidence > 0.5:
-                                text_parts.append(text)
+                for (bbox, detected_text, confidence) in result:
+                    if confidence > 0.5:
+                        text_parts.append(detected_text)
                 content = ' '.join(text_parts) if text_parts else f"Image file: {file_name}"
             except:
                 content = f"Image file: {file_name}"
@@ -184,21 +180,17 @@ def process_with_ai_engine(uploaded_file, file_name, file_type):
         if file_type == "application/pdf":
             content = extract_pdf_content(uploaded_file)
         elif file_type.startswith("image/"):
-            # Use PaddleOCR for images
+            # Use EasyOCR for images
             try:
-                from paddleocr import PaddleOCR
+                import easyocr
                 from PIL import Image
                 image = Image.open(uploaded_file)
-                ocr = PaddleOCR(use_angle_cls=True, lang='en')
-                result = ocr.ocr(image, cls=True)
+                reader = easyocr.Reader(['en'], gpu=False)
+                result = reader.readtext(image)
                 text_parts = []
-                if result and result[0]:
-                    for line in result[0]:
-                        if line and len(line) >= 2:
-                            text = line[1][0]
-                            confidence = line[1][1]
-                            if confidence > 0.5:
-                                text_parts.append(text)
+                for (bbox, detected_text, confidence) in result:
+                    if confidence > 0.5:
+                        text_parts.append(detected_text)
                 content = ' '.join(text_parts) if text_parts else f"Image file: {file_name}"
             except:
                 content = f"Image file: {file_name}"
@@ -490,19 +482,15 @@ def extract_knowledge_from_image(uploaded_file, file_name):
         
         knowledge_items = []
         
-        # PaddleOCR attempt for text extraction
+        # EasyOCR attempt for text extraction
         try:
-            from paddleocr import PaddleOCR
-            ocr = PaddleOCR(use_angle_cls=True, lang='en')
-            result = ocr.ocr(image, cls=True)
+            import easyocr
+            reader = easyocr.Reader(['en'], gpu=False)
+            result = reader.readtext(image)
             text_parts = []
-            if result and result[0]:
-                for line in result[0]:
-                    if line and len(line) >= 2:
-                        text = line[1][0]
-                        confidence = line[1][1]
-                        if confidence > 0.5:
-                            text_parts.append(text)
+            for (bbox, detected_text, confidence) in result:
+                if confidence > 0.5:
+                    text_parts.append(detected_text)
             text = ' '.join(text_parts)
             if text.strip() and len(text.strip()) > 20:
                 # Use intelligent extraction on OCR text
