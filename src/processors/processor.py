@@ -29,7 +29,7 @@ import requests
 import cv2
 import numpy as np
 from PIL import Image, ImageEnhance
-import pytesseract
+# import pytesseract  # Replaced with EasyOCR
 import pandas as pd
 from pptx import Presentation
 import PyPDF2
@@ -173,13 +173,15 @@ class OptimizedDocumentProcessor:
     
     def _init_basic_capabilities(self):
         """Initialize basic processing capabilities"""
+        # Test PaddleOCR availability (primary OCR method)
         try:
-            # Test OCR availability
-            pytesseract.get_tesseract_version()
+            from paddleocr import PaddleOCR
+            # Test if PaddleOCR can actually work
+            test_ocr = PaddleOCR(use_angle_cls=True, lang='en')
             self.ocr_available = True
-            logger.info("OCR initialized successfully")
+            logger.info("PaddleOCR initialized successfully")
         except Exception as e:
-            logger.warning(f"OCR initialization failed: {e}")
+            logger.warning(f"PaddleOCR initialization failed: {e}")
             self.ocr_available = False
         
         # Initialize other capabilities as needed
@@ -472,38 +474,34 @@ class OptimizedDocumentProcessor:
             return f"Generic extraction failed: {str(e)}"
     
     def _extract_image_content(self, file_path: str) -> str:
-        """Fast image content extraction with OCR"""
+        """Fast image content extraction with PaddleOCR"""
         try:
             if not self.ocr_available:
                 return "OCR not available for image processing"
             
-            # Load image
-            image = cv2.imread(file_path)
-            if image is None:
-                return "Failed to load image"
+            # Use PaddleOCR for text extraction
+            from paddleocr import PaddleOCR
+            ocr = PaddleOCR(use_angle_cls=True, lang='en')
             
-            # Convert to grayscale for better OCR
-            gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            # Extract text from image
+            result = ocr.ocr(file_path, cls=True)
             
-            # Fast path OCR
-            text = pytesseract.image_to_string(gray, config='--psm 6')
-            if text and text.strip():
-                return text
+            # Combine all detected text
+            text_parts = []
+            if result and result[0]:
+                for line in result[0]:
+                    if line and len(line) >= 2:
+                        text = line[1][0]  # Extract text
+                        confidence = line[1][1]  # Extract confidence
+                        if confidence > 0.5:  # Filter low-confidence results
+                            text_parts.append(text)
             
-            # Quick, low-cost enhancement if first pass failed
-            # OTSU thresholding often improves contrast for documents
-            _, binary = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-            text2 = pytesseract.image_to_string(binary, config='--psm 6')
-            if text2 and text2.strip():
-                return text2
-            
-            # Light denoising as a last fast fallback
-            denoised = cv2.fastNlMeansDenoising(gray)
-            text3 = pytesseract.image_to_string(denoised, config='--psm 6')
-            if text3 and text3.strip():
-                return text3
-            
-            return "No text detected in image"
+            combined_text = ' '.join(text_parts)
+            if combined_text.strip():
+                logger.info(f"PaddleOCR extracted {len(combined_text)} characters from image")
+                return combined_text
+            else:
+                return "No text detected in image"
             
         except Exception as e:
             return f"Image extraction failed: {str(e)}"
@@ -555,7 +553,7 @@ class OptimizedDocumentProcessor:
             return f"Audio extraction failed: {str(e)}"
     
     def _extract_video_content(self, file_path: str) -> str:
-        """Fast video content extraction via sparse frame OCR."""
+        """Fast video content extraction via sparse frame OCR with EasyOCR"""
         if not self.video_processing_available:
             return "Video processing not available"
         if not self.ocr_available:
@@ -992,7 +990,7 @@ class OptimizedDocumentProcessor:
                 denoised = cv2.fastNlMeansDenoising(gray)
                 _, thresh = cv2.threshold(denoised, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
                 
-                text = pytesseract.image_to_string(thresh) if self.ocr_available else ''
+                text = self._extract_text_from_frame(thresh) if self.ocr_available else ''
                 if text and text.strip():
                     # Keep short, meaningful snippets
                     snippet = " ".join(text.strip().split())
@@ -1011,6 +1009,29 @@ class OptimizedDocumentProcessor:
             return {'text': ocr_text, 'frames_analyzed': frames_analyzed, 'source': 'frame_ocr'}
         finally:
             capture.release()
+    
+    def _extract_text_from_frame(self, frame) -> str:
+        """Extract text from a video frame using PaddleOCR"""
+        try:
+            from paddleocr import PaddleOCR
+            ocr = PaddleOCR(use_angle_cls=True, lang='en')
+            result = ocr.ocr(frame, cls=True)
+            
+            text_parts = []
+            if result and result[0]:
+                for line in result[0]:
+                    if line and len(line) >= 2:
+                        text = line[1][0]
+                        confidence = line[1][1]
+                        if confidence > 0.5:
+                            text_parts.append(text)
+            
+            if text_parts:
+                return ' '.join(text_parts)
+            return ""
+        except Exception as e:
+            logger.warning(f"Frame OCR failed: {e}")
+            return ""
     
     def _get_file_type(self, extension: str) -> str:
         """Get file type from extension"""
