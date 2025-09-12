@@ -27,7 +27,7 @@ requests==2.32.4
 
 # Computer Vision and Image Processing
 opencv-python==4.10.0.84
-Pillow==10.4.0
+Pillow==9.5.0  # Compatible with EasyOCR 1.7.0 (ANTIALIAS support)
 easyocr==1.7.0  # Primary OCR method (no system dependencies)
 
 # Data Processing
