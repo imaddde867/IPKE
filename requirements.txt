@@ -46,7 +46,7 @@ python-docx==0.8.11
 # AI and NLP
 spacy==3.7.2          # paired with thinc 8.2.1 (below) – install model: python -m spacy download en_core_web_sm==3.7.2
 thinc==8.2.1
-torch==2.5.1+cpu      # CPU-only build for Puhti compatibility (no CUDA dependencies)
+torch==2.5.1          # CPU-only build for Puhti compatibility (install with: pip install torch==2.5.1 --index-url https://download.pytorch.org/whl/cpu)
 sentence-transformers==2.7.0
 transformers==4.41.2  # compatible with sentence-transformers 2.7.0 & huggingface-hub >=0.23
 huggingface-hub==0.33.0  # satisfies moshi (<0.34) if ever needed; >=0.23.4 for other deps
