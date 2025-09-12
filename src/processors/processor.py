@@ -173,15 +173,15 @@ class OptimizedDocumentProcessor:
     
     def _init_basic_capabilities(self):
         """Initialize basic processing capabilities"""
-        # Test PaddleOCR availability (primary OCR method)
+        # Test EasyOCR availability (primary OCR method)
         try:
-            from paddleocr import PaddleOCR
-            # Test if PaddleOCR can actually work
-            test_ocr = PaddleOCR(use_angle_cls=True, lang='en')
+            import easyocr
+            # Test if EasyOCR can actually work
+            test_reader = easyocr.Reader(['en'], gpu=False)
             self.ocr_available = True
-            logger.info("PaddleOCR initialized successfully")
+            logger.info("EasyOCR initialized successfully")
         except Exception as e:
-            logger.warning(f"PaddleOCR initialization failed: {e}")
+            logger.warning(f"EasyOCR initialization failed: {e}")
             self.ocr_available = False
         
         # Initialize other capabilities as needed
@@ -474,31 +474,27 @@ class OptimizedDocumentProcessor:
             return f"Generic extraction failed: {str(e)}"
     
     def _extract_image_content(self, file_path: str) -> str:
-        """Fast image content extraction with PaddleOCR"""
+        """Fast image content extraction with EasyOCR"""
         try:
             if not self.ocr_available:
                 return "OCR not available for image processing"
             
-            # Use PaddleOCR for text extraction
-            from paddleocr import PaddleOCR
-            ocr = PaddleOCR(use_angle_cls=True, lang='en')
+            # Use EasyOCR for text extraction
+            import easyocr
+            reader = easyocr.Reader(['en'], gpu=False)
             
             # Extract text from image
-            result = ocr.ocr(file_path, cls=True)
+            result = reader.readtext(file_path)
             
             # Combine all detected text
             text_parts = []
-            if result and result[0]:
-                for line in result[0]:
-                    if line and len(line) >= 2:
-                        text = line[1][0]  # Extract text
-                        confidence = line[1][1]  # Extract confidence
-                        if confidence > 0.5:  # Filter low-confidence results
-                            text_parts.append(text)
+            for (bbox, detected_text, confidence) in result:
+                if confidence > 0.5:  # Filter low-confidence results
+                    text_parts.append(detected_text)
             
             combined_text = ' '.join(text_parts)
             if combined_text.strip():
-                logger.info(f"PaddleOCR extracted {len(combined_text)} characters from image")
+                logger.info(f"EasyOCR extracted {len(combined_text)} characters from image")
                 return combined_text
             else:
                 return "No text detected in image"
@@ -1011,20 +1007,16 @@ class OptimizedDocumentProcessor:
             capture.release()
     
     def _extract_text_from_frame(self, frame) -> str:
-        """Extract text from a video frame using PaddleOCR"""
+        """Extract text from a video frame using EasyOCR"""
         try:
-            from paddleocr import PaddleOCR
-            ocr = PaddleOCR(use_angle_cls=True, lang='en')
-            result = ocr.ocr(frame, cls=True)
+            import easyocr
+            reader = easyocr.Reader(['en'], gpu=False)
+            result = reader.readtext(frame)
             
             text_parts = []
-            if result and result[0]:
-                for line in result[0]:
-                    if line and len(line) >= 2:
-                        text = line[1][0]
-                        confidence = line[1][1]
-                        if confidence > 0.5:
-                            text_parts.append(text)
+            for (bbox, detected_text, confidence) in result:
+                if confidence > 0.5:
+                    text_parts.append(detected_text)
             
             if text_parts:
                 return ' '.join(text_parts)

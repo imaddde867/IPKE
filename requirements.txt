@@ -28,8 +28,7 @@ requests==2.32.4
 # Computer Vision and Image Processing
 opencv-python==4.10.0.84
 Pillow==10.4.0
-paddleocr==3.2.0  # Primary OCR method (no system dependencies)
-paddlepaddle==3.0.0  # PaddlePaddle backend for PaddleOCR
+easyocr==1.7.0  # Primary OCR method (no system dependencies)
 
 # Data Processing
 pandas==2.2.2
