@@ -38,7 +38,12 @@ from docx import Document as DocxDocument
 
 # AI and NLP libraries (lazy loading)
 import spacy
-import torch
+try:
+    import torch
+    TORCH_AVAILABLE = True
+except ImportError:
+    TORCH_AVAILABLE = False
+    torch = None
 
 # Internal imports
 from src.logging_config import get_logger, log_processing_step
