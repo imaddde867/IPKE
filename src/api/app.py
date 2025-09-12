@@ -93,11 +93,16 @@ MAX_FILE_SIZE = config_manager.get_max_file_size()
 os.makedirs(UPLOAD_DIRECTORY, exist_ok=True)
 
 # Initialize optimized document processor and apply M4 optimizations
-document_processor = OptimizedDocumentProcessor()
 try:
-    document_processor.optimize_for_m4()
-except Exception:
-    pass
+    document_processor = OptimizedDocumentProcessor()
+    try:
+        document_processor.optimize_for_m4()
+    except Exception:
+        pass
+except Exception as e:
+    print(f"⚠️ Failed to initialize OptimizedDocumentProcessor: {e}")
+    print("⚠️ Running in fallback mode without advanced AI features")
+    document_processor = None
 
 
 # Pydantic models for API
