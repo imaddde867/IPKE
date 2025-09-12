@@ -209,16 +209,24 @@ class ModelOptimizer:
         """Apply M4-specific optimizations"""
         optimizations = []
         
-        # Check if we can use Apple Metal
+        # Check if we can use Apple Metal (only on macOS)
         if TORCH_AVAILABLE:
             try:
-                if torch.backends.mps.is_available():
-                    torch.backends.mps.enable()
-                    optimizations.append("Apple Metal enabled")
+                import platform
+                if platform.system() == "Darwin":  # Only on macOS
+                    if hasattr(torch.backends, 'mps') and torch.backends.mps.is_available():
+                        torch.backends.mps.enable()
+                        optimizations.append("Apple Metal enabled")
+                    else:
+                        optimizations.append("Apple Metal not available")
                 else:
-                    optimizations.append("Apple Metal not available")
+                    # On Linux (Puhti), check for CUDA instead
+                    if torch.cuda.is_available():
+                        optimizations.append(f"CUDA enabled ({torch.cuda.device_count()} devices)")
+                    else:
+                        optimizations.append("No GPU acceleration available")
             except Exception as e:
-                logger.warning(f"Failed to enable Apple Metal: {e}")
+                logger.warning(f"Failed to enable GPU acceleration: {e}")
         
         # Check MLX availability
         if MLX_AVAILABLE:
