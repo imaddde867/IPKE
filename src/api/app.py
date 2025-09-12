@@ -22,14 +22,14 @@ import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 try:
-    from database.database import get_db, init_db
-    from database import models, crud
-    from processors.processor import OptimizedDocumentProcessor
-    from api.celery_worker import process_document_task, get_task_status
-    from middleware import ErrorHandlingMiddleware, RequestLoggingMiddleware
-    from logging_config import get_logger
-    from core.config import config as config_manager
-    from exceptions import ProcessingError, ValidationError
+    from src.database.database import get_db, init_db
+    from src.database import models, crud
+    from src.processors.processor import OptimizedDocumentProcessor
+    from src.api.celery_worker import process_document_task, get_task_status
+    from src.middleware import ErrorHandlingMiddleware, RequestLoggingMiddleware
+    from src.logging_config import get_logger
+    from src.core.config import config as config_manager
+    from src.exceptions import ProcessingError, ValidationError
 except ImportError as e:
     print(f"Import error: {e}")
     # Create minimal fallbacks
