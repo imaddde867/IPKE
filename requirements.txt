@@ -19,54 +19,54 @@ streamlit==1.10.0
 
 # Database
 sqlalchemy==1.4.50
-alembic==1.8.1
-psycopg2-binary==2.9.9
+alembic==1.7.7
+psycopg2-binary==2.9.7
 
 # HTTP requests
 requests==2.28.2
 
 # Computer Vision and Image Processing
-opencv-python==4.10.0.84
+opencv-python==4.8.1.78
 Pillow==9.5.0  # Compatible with EasyOCR 1.7.0 (ANTIALIAS support)
-easyocr==1.7.0  # Primary OCR method (no system dependencies)
+easyocr==1.6.2  # Primary OCR method (no system dependencies)
 
 # Data Processing
 pandas==1.5.3
 # Pin numpy 1.26.x to avoid ABI breakage with thinc/spaCy wheels (numpy 2.x caused dtype size mismatch)
 numpy==1.24.3
-scipy==1.13.1  # Required by EasyOCR for image processing
-plotly==5.17.0  # For interactive visualizations in frontend
+scipy==1.10.1  # Required by EasyOCR for image processing
+plotly==5.15.0  # For interactive visualizations in frontend
 
 # Document Processing
-python-pptx==0.6.23
-PyPDF2==3.0.1
-PyMuPDF==1.24.9
+python-pptx==0.6.21
+PyPDF2==3.0.0
+PyMuPDF==1.23.8
 python-docx==0.8.11
 
 # AI and NLP
-spacy==3.7.2          # paired with thinc 8.2.1 (below)
-thinc==8.2.1
-en-core-web-sm==3.7.2  # spaCy English model
+spacy==3.6.1          # paired with thinc 8.1.12 (below)
+thinc==8.1.12
+en-core-web-sm==3.6.1  # spaCy English model
 # PyTorch: Use Puhti's module system instead of pip install
 # On Puhti: module load pytorch/2.3 (or later) - TESTED WORKING ✅
 # PyTorch 2.3.1+cu121 successfully loaded from /usr/local/lib64/python3.9/site-packages/
 # PyTorch is provided by CSC's containerized modules
-sentence-transformers==2.7.0
-transformers==4.41.2  # compatible with sentence-transformers 2.7.0 & huggingface-hub >=0.23
-huggingface-hub==0.33.0  # satisfies moshi (<0.34) if ever needed; >=0.23.4 for other deps
-packaging==23.2       # streamlit 1.28.x requires packaging<24
-fsspec==2025.5.1      # aligns with s3fs 2025.5.1 if later installed
+sentence-transformers==2.2.2
+transformers==4.21.3  # compatible with sentence-transformers 2.2.2 & huggingface-hub >=0.10
+huggingface-hub==0.10.1  # satisfies moshi (<0.34) if ever needed; >=0.10.0 for other deps
+packaging==21.3       # streamlit 1.10.x requires packaging<22
+fsspec==2023.6.0      # aligns with s3fs 2023.6.0 if later installed
 
 # LLM Backends (optional - for local LLM processing)
 llama-cpp-python==0.2.20   # Metal build installed locally (use CMAKE_ARGS='-DLLAMA_METAL=on')
 
 # Audio/Video Processing (optional)
-openai-whisper==20240930
-pytest==7.4.3
-pytest-asyncio==0.23.8
+openai-whisper==20231117
+pytest==7.2.2
+pytest-asyncio==0.21.1
 
 # Compatibility for Python < 3.10
-importlib-metadata==6.8.0; python_version < '3.10'
+importlib-metadata==5.2.0; python_version < '3.10'
 
 ############################################################
 # SYSTEM DEPENDENCIES / POST-INSTALL TASKS
