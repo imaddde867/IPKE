@@ -51,4 +51,4 @@ echo "Press Ctrl+C to stop"
 
 # Start the main application
 echo "Starting EXPLAINIUM application..."
-streamlit run src/api/app.py --server.port 8501 --server.address 0.0.0.0
+streamlit run src/frontend/knowledge_table.py --server.port 8501 --server.address 0.0.0.0
