@@ -247,15 +247,21 @@ class ModelManager:
         
         try:
             if model_name == "bge-small":
+                if not SENTENCE_TRANSFORMERS_AVAILABLE:
+                    logger.warning("sentence-transformers not available, skipping embedding model")
+                    return None
                 model = SentenceTransformer('BAAI/bge-small-en-v1.5')
                 self.model_cache[cache_key] = model
+                logger.info(f"Successfully loaded embedding model: {model_name}")
                 return model
             else:
-                raise ValueError(f"Unsupported embedding model: {model_name}")
+                logger.warning(f"Unsupported embedding model: {model_name}")
+                return None
                 
         except Exception as e:
             logger.error(f"Failed to load embedding model {model_name}: {e}")
-            raise
+            logger.warning("Continuing without embedding model - some features may be limited")
+            return None
     
     def get_memory_usage(self) -> int:
         """Get current memory usage in bytes"""
@@ -309,7 +315,8 @@ class AdvancedKnowledgeEngine:
             
         except Exception as e:
             logger.error(f"Failed to initialize knowledge engine: {e}")
-            raise
+            # Don't raise - allow graceful degradation
+            self.initialized = False
     
     async def extract_intelligent_knowledge(self, document: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -861,10 +868,14 @@ class AdvancedKnowledgeEngine:
         try:
             # Generate embeddings for semantic search
             content_text = str(extracted_data)
-            embeddings = self.embedder.encode(content_text)
             
-            # Find similar existing knowledge
-            similar_nodes = await self._find_similar_knowledge(embeddings)
+            if self.embedder is not None:
+                embeddings = self.embedder.encode(content_text)
+                # Find similar existing knowledge
+                similar_nodes = await self._find_similar_knowledge(embeddings)
+            else:
+                logger.warning("No embedding model available, skipping semantic search")
+                similar_nodes = []
             
             # Identify conflicts and gaps
             conflicts = await self._identify_conflicts(extracted_data, similar_nodes)
@@ -964,8 +975,12 @@ class AdvancedKnowledgeEngine:
                     )
                     
                     # Generate embeddings
-                    if self.embedder:
-                        node.embeddings = self.embedder.encode(concept['name'])
+                    if self.embedder is not None:
+                        try:
+                            node.embeddings = self.embedder.encode(concept['name'])
+                        except Exception as e:
+                            logger.warning(f"Failed to generate embeddings for concept '{concept['name']}': {e}")
+                            node.embeddings = None
                     
                     self.knowledge_graph.add_node(node)
             
