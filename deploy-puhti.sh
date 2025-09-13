@@ -11,7 +11,7 @@ module load python-data
 
 # Activate virtual environment
 echo "🐍 Activating Python environment..."
-source venv/bin/activate
+source venv_scratch/bin/activate
 
 # Set CSC-specific environment variables
 export ENVIRONMENT=production
