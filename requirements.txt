@@ -14,7 +14,7 @@
 
 # Web Framework
 fastapi==0.83.0
-uvicorn==0.24.0
+uvicorn==0.17.0
 streamlit==1.28.1
 
 # Database
