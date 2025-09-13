@@ -7,7 +7,7 @@ echo "=================================="
 
 # Load required modules
 echo "📦 Loading modules..."
-module load python-data
+# module load python-data  # Commented out to avoid conflicts with venv_scratch
 
 # Activate virtual environment
 echo "🐍 Activating Python environment..."
@@ -15,6 +15,7 @@ source venv_scratch/bin/activate
 
 # Set CSC-specific environment variables
 export ENVIRONMENT=production
+export PYTHONPATH="${PYTHONPATH}:/scratch/project_2015237/explainium-2.0"
 # SECRET_KEY should be set via environment variable for security
 # export SECRET_KEY=${SECRET_KEY:-"explainium_secret_key_2024_puhti_deployment"}
 export DATABASE_URL=sqlite:///./explainium.db
@@ -39,7 +40,7 @@ echo "📝 Using SQLite database (no PostgreSQL setup required)"
 
 # Initialize database (optional - skip if causing issues)
 echo "🗄️ Initializing database..."
-python -c "from src.database.database import init_db; init_db()" || echo "⚠️ Database initialization skipped - continuing..."
+./venv_scratch/bin/python -c "from src.database.database import init_db; init_db()" || echo "⚠️ Database initialization skipped - continuing..."
 
 # Start the application
 echo "🚀 Starting EXPLAINIUM..."
@@ -51,4 +52,4 @@ echo "Press Ctrl+C to stop"
 
 # Start the main application
 echo "Starting EXPLAINIUM application..."
-streamlit run src/frontend/knowledge_table.py --server.port 8501 --server.address 0.0.0.0
+./venv_scratch/bin/python -m streamlit run src/frontend/knowledge_table.py --server.port 8501 --server.address 0.0.0.0
