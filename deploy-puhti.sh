@@ -23,6 +23,12 @@ export UPLOAD_DIRECTORY=/projappl/project_2015237/explainium-2.0/uploaded_files
 export MAX_FILE_SIZE_MB=500
 export LOG_LEVEL=INFO
 
+# Set AI processing environment variables
+export EXPLAINIUM_LLM_CHUNK_TIMEOUT=300
+export EXPLAINIUM_LLM_CHUNK_RETRIES=1
+export EXPLAINIUM_LLM_CHUNK_BACKOFF=60
+export STREAMLIT_SERVER_FILE_WATCHER_TYPE=none
+
 # Create necessary directories
 echo "📁 Creating directories..."
 mkdir -p "$UPLOAD_DIRECTORY" logs
@@ -43,6 +49,6 @@ echo "API Documentation: http://localhost:8000/docs"
 echo ""
 echo "Press Ctrl+C to stop"
 
-# Start frontend only (backend has issues)
-echo "Starting Streamlit frontend only..."
-streamlit run src/frontend/knowledge_table.py --server.port 8501 --server.address 0.0.0.0
+# Start the main application
+echo "Starting EXPLAINIUM application..."
+streamlit run src/api/app.py --server.port 8501 --server.address 0.0.0.0
