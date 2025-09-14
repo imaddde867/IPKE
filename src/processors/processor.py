@@ -381,7 +381,7 @@ class OptimizedDocumentProcessor:
             content = await self._extract_content_async(file_path, format_detected)
             
             # Initialize engines if needed
-            self._initialize_engines()
+            self._initialize_engines_lazy()
             
             # Parallel processing pipeline
             processing_tasks = [
