@@ -46,7 +46,6 @@ python-docx==0.8.11
 # AI and NLP
 spacy==3.4.4          # paired with thinc 8.0.17 (below)
 thinc==8.0.17
-en-core-web-sm==3.4.1  # spaCy English model
 # PyTorch: Use Puhti's module system instead of pip install
 # On Puhti: module load pytorch/2.3 (or later) - TESTED WORKING ✅
 # PyTorch 2.3.1+cu121 successfully loaded from /usr/local/lib64/python3.9/site-packages/
