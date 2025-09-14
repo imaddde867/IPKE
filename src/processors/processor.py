@@ -582,14 +582,9 @@ class OptimizedDocumentProcessor:
             import numpy as np
             from PIL import Image, ImageEnhance
             
-            # Timeout protection for OCR processing
-            def timeout_handler(signum, frame):
-                raise TimeoutError("OCR processing timed out")
-            
-            # Set timeout only on Unix systems
-            if hasattr(signal, 'SIGALRM'):
-                signal.signal(signal.SIGALRM, timeout_handler)
-                signal.alarm(60)  # 60 second timeout for OCR
+            # Use threading-based timeout instead of signal (works in Streamlit)
+            import threading
+            import time
             
             try:
                 # Preprocess image for better OCR
@@ -616,65 +611,78 @@ class OptimizedDocumentProcessor:
                     cv2.imwrite(temp_file.name, denoised)
                     temp_path = temp_file.name
                 
-                try:
-                    # Use EasyOCR with multiple languages and lower confidence threshold
-                    reader = easyocr.Reader(['en'], gpu=False)
-                    
-                    # Extract text from preprocessed image
-                    result = reader.readtext(temp_path)
-                    
-                    print(f"📊 EasyOCR detected {len(result)} text regions:")
-                    
-                    # Process results with detailed debugging
-                    text_parts = []
-                    all_text_parts = []  # For debugging
-                    
-                    for i, (bbox, detected_text, confidence) in enumerate(result):
-                        all_text_parts.append(f"Region {i+1}: '{detected_text}' (conf: {confidence:.2f})")
-                        
-                        # Lower confidence threshold for better text capture
-                        if confidence > 0.3:  # Reduced from 0.5 to 0.3
-                            text_parts.append(detected_text)
-                            print(f"  ✅ Region {i+1}: '{detected_text}' (conf: {confidence:.2f})")
-                        else:
-                            print(f"  ❌ Region {i+1}: '{detected_text}' (conf: {confidence:.2f}) - filtered out")
-                    
-                    # Print all detected regions for debugging
-                    if all_text_parts:
-                        print("🔍 All detected text regions:")
-                        for part in all_text_parts:
-                            print(f"  {part}")
-                    
-                    combined_text = ' '.join(text_parts)
-                    
-                    # Cancel timeout
-                    if hasattr(signal, 'SIGALRM'):
-                        signal.alarm(0)
-                    
-                    if combined_text.strip():
-                        print(f"✅ Final extracted text ({len(combined_text)} chars): '{combined_text[:100]}{'...' if len(combined_text) > 100 else ''}'")
-                        logger.info(f"EasyOCR extracted {len(combined_text)} characters from image")
-                        return combined_text
-                    else:
-                        print("❌ No text passed confidence threshold")
-                        return "No text detected in image (all regions below confidence threshold)"
-                        
-                finally:
-                    # Clean up temp file
-                    import os
-                    try:
-                        os.unlink(temp_path)
-                    except Exception:
-                        pass
-                    
-            except TimeoutError:
-                logger.warning("OCR processing timed out")
+                # Use threading-based timeout for OCR processing
+                result_container = [None]
+                error_container = [None]
                 
-                # Cancel timeout
-                if hasattr(signal, 'SIGALRM'):
-                    signal.alarm(0)
-                    
-                return "OCR processing timed out - image too complex or system overloaded"
+                def ocr_worker():
+                    try:
+                        # Use EasyOCR with multiple languages and lower confidence threshold
+                        reader = easyocr.Reader(['en'], gpu=False)
+                        
+                        # Extract text from preprocessed image
+                        result = reader.readtext(temp_path)
+                        
+                        print(f"📊 EasyOCR detected {len(result)} text regions:")
+                        
+                        # Process results with detailed debugging
+                        text_parts = []
+                        all_text_parts = []  # For debugging
+                        
+                        for i, (bbox, detected_text, confidence) in enumerate(result):
+                            all_text_parts.append(f"Region {i+1}: '{detected_text}' (conf: {confidence:.2f})")
+                            
+                            # Lower confidence threshold for better text capture
+                            if confidence > 0.3:  # Reduced from 0.5 to 0.3
+                                text_parts.append(detected_text)
+                                print(f"  ✅ Region {i+1}: '{detected_text}' (conf: {confidence:.2f})")
+                            else:
+                                print(f"  ❌ Region {i+1}: '{detected_text}' (conf: {confidence:.2f}) - filtered out")
+                        
+                        # Print all detected regions for debugging
+                        if all_text_parts:
+                            print("🔍 All detected text regions:")
+                            for part in all_text_parts:
+                                print(f"  {part}")
+                        
+                        combined_text = ' '.join(text_parts)
+                        
+                        if combined_text.strip():
+                            print(f"✅ Final extracted text ({len(combined_text)} chars): '{combined_text[:100]}{'...' if len(combined_text) > 100 else ''}'")
+                            logger.info(f"EasyOCR extracted {len(combined_text)} characters from image")
+                            result_container[0] = combined_text
+                        else:
+                            print("❌ No text passed confidence threshold")
+                            result_container[0] = "No text detected in image (all regions below confidence threshold)"
+                            
+                    except Exception as e:
+                        error_container[0] = e
+                
+                # Start OCR in a separate thread with timeout
+                thread = threading.Thread(target=ocr_worker)
+                thread.daemon = True
+                thread.start()
+                thread.join(timeout=60)  # 60 second timeout for OCR
+                
+                # Clean up temp file
+                import os
+                try:
+                    os.unlink(temp_path)
+                except Exception:
+                    pass
+                
+                if thread.is_alive():
+                    # Thread is still running, timeout occurred
+                    logger.warning("OCR processing timed out")
+                    return "OCR processing timed out - image too complex or system overloaded"
+                else:
+                    # Thread completed
+                    if error_container[0]:
+                        return f"Image extraction failed: {str(error_container[0])}"
+                    elif result_container[0]:
+                        return result_container[0]
+                    else:
+                        return "No text detected in image"
             
         except Exception as e:
             print(f"❌ OCR processing failed: {e}")
