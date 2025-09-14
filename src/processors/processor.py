@@ -178,37 +178,50 @@ class OptimizedDocumentProcessor:
     
     def _init_basic_capabilities(self):
         """Initialize basic processing capabilities"""
-        # Test EasyOCR availability (primary OCR method) with timeout protection
+        # Test EasyOCR availability (primary OCR method) without signal-based timeout
         try:
-            import signal
             import easyocr
+            import threading
+            import time
             
-            # Timeout protection for EasyOCR initialization
-            def timeout_handler(signum, frame):
-                raise TimeoutError("EasyOCR initialization timed out")
+            # Use threading-based timeout instead of signal (works in Streamlit)
+            def test_easyocr():
+                try:
+                    test_reader = easyocr.Reader(['en'], gpu=False)
+                    return True, None
+                except Exception as e:
+                    return False, e
             
-            # Set timeout only on Unix systems - shorter timeout for faster startup
-            if hasattr(signal, 'SIGALRM'):
-                signal.signal(signal.SIGALRM, timeout_handler)
-                signal.alarm(10)  # 10 second timeout for faster startup
+            # Start EasyOCR test in a separate thread with timeout
+            result_container = [None]
+            error_container = [None]
             
-            try:
-                # Test if EasyOCR can actually work
-                test_reader = easyocr.Reader(['en'], gpu=False)
-                self.ocr_available = True
-                logger.info("EasyOCR initialized successfully")
-                
-                # Cancel timeout
-                if hasattr(signal, 'SIGALRM'):
-                    signal.alarm(0)
-                    
-            except TimeoutError:
+            def worker():
+                try:
+                    success, error = test_easyocr()
+                    result_container[0] = success
+                    error_container[0] = error
+                except Exception as e:
+                    result_container[0] = False
+                    error_container[0] = e
+            
+            thread = threading.Thread(target=worker)
+            thread.daemon = True
+            thread.start()
+            thread.join(timeout=10)  # 10 second timeout
+            
+            if thread.is_alive():
+                # Thread is still running, timeout occurred
                 logger.warning("EasyOCR initialization timed out")
                 self.ocr_available = False
-                
-                # Cancel timeout
-                if hasattr(signal, 'SIGALRM'):
-                    signal.alarm(0)
+            else:
+                # Thread completed
+                if result_container[0]:
+                    self.ocr_available = True
+                    logger.info("EasyOCR initialized successfully")
+                else:
+                    self.ocr_available = False
+                    logger.warning(f"EasyOCR initialization failed: {error_container[0]}")
                     
         except Exception as e:
             logger.warning(f"EasyOCR initialization failed: {e}")
