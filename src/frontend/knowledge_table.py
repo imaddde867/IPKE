@@ -535,7 +535,7 @@ def extract_knowledge_from_image(uploaded_file, file_name):
                 import os
                 os.unlink(temp_file_path)
                 
-                if text and len(text.strip()) > 20 and "OCR" not in text and "not available" not in text:
+                if text and len(text.strip()) > 20 and "not available" not in text and "failed" not in text.lower():
                     # Use intelligent extraction on OCR text
                     text_knowledge = extract_intelligent_knowledge(text.strip(), f"{file_name} (OCR)")
                     knowledge_items.extend(text_knowledge)
