@@ -30,6 +30,19 @@ export EXPLAINIUM_LLM_CHUNK_RETRIES=1
 export EXPLAINIUM_LLM_CHUNK_BACKOFF=60
 export STREAMLIT_SERVER_FILE_WATCHER_TYPE=none
 
+# HPC-specific environment variables for compute node compatibility
+export TRANSFORMERS_OFFLINE=1
+export HF_HUB_OFFLINE=1
+export HF_DATASETS_OFFLINE=1
+export TRANSFORMERS_CACHE=/tmp/transformers_cache
+export HF_HOME=/tmp/hf_home
+export TORCH_DISABLE_DYNAMO=1
+export PYTORCH_DISABLE_DYNAMO=1
+export TORCH_COMPILE_DISABLED=1
+
+# Create cache directories
+mkdir -p /tmp/transformers_cache /tmp/hf_home
+
 # Create necessary directories
 echo "📁 Creating directories..."
 mkdir -p "$UPLOAD_DIRECTORY" logs
@@ -41,6 +54,41 @@ echo "📝 Using SQLite database (no PostgreSQL setup required)"
 # Initialize database (optional - skip if causing issues)
 echo "🗄️ Initializing database..."
 ./venv_scratch/bin/python -c "from src.database.database import init_db; init_db()" || echo "⚠️ Database initialization skipped - continuing..."
+
+# Test basic imports to ensure environment is working
+echo "🔍 Testing environment..."
+./venv_scratch/bin/python -c "
+import sys
+print(f'Python version: {sys.version}')
+
+# Test basic imports
+try:
+    import streamlit
+    print('✅ Streamlit imported successfully')
+except Exception as e:
+    print(f'❌ Streamlit import failed: {e}')
+    sys.exit(1)
+
+try:
+    import torch
+    print(f'✅ PyTorch imported successfully (version: {torch.__version__})')
+except Exception as e:
+    print(f'⚠️ PyTorch import failed: {e}')
+
+try:
+    from transformers import AutoTokenizer
+    print('✅ Transformers imported successfully')
+except Exception as e:
+    print(f'⚠️ Transformers import failed: {e}')
+
+try:
+    import easyocr
+    print('✅ EasyOCR imported successfully')
+except Exception as e:
+    print(f'⚠️ EasyOCR import failed: {e}')
+
+print('✅ Environment test completed')
+"
 
 # Start the application
 echo "🚀 Starting EXPLAINIUM..."
