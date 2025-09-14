@@ -648,52 +648,84 @@ class OptimizedLLMProcessingEngine:
             return ""
     
     def _parse_llm_response_fast(self, response: str, chunk: str, document_type: str) -> List[ExtractedEntity]:
-        """Fast parsing of LLM response"""
+        """Fast parsing of LLM response with enhanced flexibility"""
         entities = []
+        
+        # Debug logging
+        logger.info(f"LLM Response (first 200 chars): {response[:200]}...")
+        logger.info(f"LLM Response length: {len(response)}")
+        
+        # If response is empty, return empty list
+        if not response or not response.strip():
+            logger.warning("Empty LLM response received")
+            return entities
         
         # Simple parsing by lines
         lines = response.split('\n')
+        logger.info(f"LLM Response lines: {len(lines)}")
+        
         for line in lines:
             line = line.strip()
-            if not line or not ':' in line:
-                # Fallback: accept bullet / dash style lines as general info
-                if line.startswith(('-', '*', '•')) and len(line) > 8:
-                    entities.append(ExtractedEntity(
-                        content=line.lstrip('-*• ').strip(),
-                        entity_type="general_information",
-                        category="llm_extraction",
-                        confidence=0.6,
-                        context=chunk,
-                        metadata={"processing_method": "llm_chunked", "implicit_parse": True},
-                        relationships=[],
-                        source_location="llm_generated"
-                    ))
+            if not line:
                 continue
-            
-            try:
-                entity_type, content = line.split(':', 1)
-                entity_type = entity_type.strip().strip('-').strip()
-                content = content.strip()
                 
-                if len(content) > 10:  # Minimum content length
-                    entity = ExtractedEntity(
-                        content=content,
-                        entity_type=entity_type,
-                        category="llm_extraction",
-                        confidence=0.80,
-                        context=chunk,
-                        metadata={
-                            "processing_method": "llm_chunked",
-                            "chunk_processed": True,
-                            "optimized": True
-                        },
-                        relationships=[],
-                        source_location="llm_generated"
-                    )
-                    entities.append(entity)
-            except:
-                continue
+            # Check for colon-separated format: [Entity Type]: [Content]
+            if ':' in line:
+                try:
+                    entity_type, content = line.split(':', 1)
+                    entity_type = entity_type.strip().strip('-').strip()
+                    content = content.strip()
+                    
+                    if len(content) > 10:  # Minimum content length
+                        entity = ExtractedEntity(
+                            content=content,
+                            entity_type=entity_type,
+                            category="llm_extraction",
+                            confidence=0.80,
+                            context=chunk,
+                            metadata={
+                                "processing_method": "llm_chunked",
+                                "chunk_processed": True,
+                                "optimized": True
+                            },
+                            relationships=[],
+                            source_location="llm_generated"
+                        )
+                        entities.append(entity)
+                        logger.info(f"Parsed entity: {entity_type} -> {content[:50]}...")
+                except Exception as e:
+                    logger.warning(f"Failed to parse line with colon: {line[:50]}... Error: {e}")
+                    continue
+            
+            # Fallback: accept bullet / dash style lines as general info
+            elif line.startswith(('-', '*', '•')) and len(line) > 8:
+                entities.append(ExtractedEntity(
+                    content=line.lstrip('-*• ').strip(),
+                    entity_type="general_information",
+                    category="llm_extraction",
+                    confidence=0.6,
+                    context=chunk,
+                    metadata={"processing_method": "llm_chunked", "implicit_parse": True},
+                    relationships=[],
+                    source_location="llm_generated"
+                ))
+                logger.info(f"Parsed bullet point: {line[:50]}...")
+            
+            # Enhanced fallback: accept any meaningful line as general information
+            elif len(line) > 20 and not line.startswith(('The', 'This', 'It', 'In', 'For', 'With')):
+                entities.append(ExtractedEntity(
+                    content=line,
+                    entity_type="general_information",
+                    category="llm_extraction",
+                    confidence=0.5,
+                    context=chunk,
+                    metadata={"processing_method": "llm_chunked", "enhanced_fallback": True},
+                    relationships=[],
+                    source_location="llm_generated"
+                ))
+                logger.info(f"Parsed general info: {line[:50]}...")
         
+        logger.info(f"Total entities parsed: {len(entities)}")
         return entities
     
     async def _execute_fast_pattern_fallback(self, content: str, document_type: str) -> List[ExtractedEntity]:
