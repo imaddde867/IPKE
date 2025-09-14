@@ -571,13 +571,16 @@ class OptimizedDocumentProcessor:
             return f"Generic extraction failed: {str(e)}"
     
     def _extract_image_content(self, file_path: str) -> str:
-        """Fast image content extraction with EasyOCR and timeout protection"""
+        """Enhanced image content extraction with EasyOCR, preprocessing, and debugging"""
         try:
             if not self.ocr_available:
                 return "OCR not available for image processing"
             
             import signal
             import easyocr
+            import cv2
+            import numpy as np
+            from PIL import Image, ImageEnhance
             
             # Timeout protection for OCR processing
             def timeout_handler(signum, frame):
@@ -589,29 +592,80 @@ class OptimizedDocumentProcessor:
                 signal.alarm(60)  # 60 second timeout for OCR
             
             try:
-                # Use EasyOCR for text extraction
-                reader = easyocr.Reader(['en'], gpu=False)
+                # Preprocess image for better OCR
+                print(f"🔍 Processing image: {Path(file_path).name}")
                 
-                # Extract text from image
-                result = reader.readtext(file_path)
+                # Load and preprocess image
+                img = cv2.imread(file_path)
+                if img is None:
+                    return "Could not load image file"
                 
-                # Combine all detected text
-                text_parts = []
-                for (bbox, detected_text, confidence) in result:
-                    if confidence > 0.5:  # Filter low-confidence results
-                        text_parts.append(detected_text)
+                # Convert to grayscale
+                gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                 
-                combined_text = ' '.join(text_parts)
+                # Enhance contrast
+                clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+                enhanced = clahe.apply(gray)
                 
-                # Cancel timeout
-                if hasattr(signal, 'SIGALRM'):
-                    signal.alarm(0)
+                # Denoise
+                denoised = cv2.fastNlMeansDenoising(enhanced)
                 
-                if combined_text.strip():
-                    logger.info(f"EasyOCR extracted {len(combined_text)} characters from image")
-                    return combined_text
-                else:
-                    return "No text detected in image"
+                # Save preprocessed image temporarily
+                import tempfile
+                with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as temp_file:
+                    cv2.imwrite(temp_file.name, denoised)
+                    temp_path = temp_file.name
+                
+                try:
+                    # Use EasyOCR with multiple languages and lower confidence threshold
+                    reader = easyocr.Reader(['en'], gpu=False)
+                    
+                    # Extract text from preprocessed image
+                    result = reader.readtext(temp_path)
+                    
+                    print(f"📊 EasyOCR detected {len(result)} text regions:")
+                    
+                    # Process results with detailed debugging
+                    text_parts = []
+                    all_text_parts = []  # For debugging
+                    
+                    for i, (bbox, detected_text, confidence) in enumerate(result):
+                        all_text_parts.append(f"Region {i+1}: '{detected_text}' (conf: {confidence:.2f})")
+                        
+                        # Lower confidence threshold for better text capture
+                        if confidence > 0.3:  # Reduced from 0.5 to 0.3
+                            text_parts.append(detected_text)
+                            print(f"  ✅ Region {i+1}: '{detected_text}' (conf: {confidence:.2f})")
+                        else:
+                            print(f"  ❌ Region {i+1}: '{detected_text}' (conf: {confidence:.2f}) - filtered out")
+                    
+                    # Print all detected regions for debugging
+                    if all_text_parts:
+                        print("🔍 All detected text regions:")
+                        for part in all_text_parts:
+                            print(f"  {part}")
+                    
+                    combined_text = ' '.join(text_parts)
+                    
+                    # Cancel timeout
+                    if hasattr(signal, 'SIGALRM'):
+                        signal.alarm(0)
+                    
+                    if combined_text.strip():
+                        print(f"✅ Final extracted text ({len(combined_text)} chars): '{combined_text[:100]}{'...' if len(combined_text) > 100 else ''}'")
+                        logger.info(f"EasyOCR extracted {len(combined_text)} characters from image")
+                        return combined_text
+                    else:
+                        print("❌ No text passed confidence threshold")
+                        return "No text detected in image (all regions below confidence threshold)"
+                        
+                finally:
+                    # Clean up temp file
+                    import os
+                    try:
+                        os.unlink(temp_path)
+                    except Exception:
+                        pass
                     
             except TimeoutError:
                 logger.warning("OCR processing timed out")
@@ -623,6 +677,7 @@ class OptimizedDocumentProcessor:
                 return "OCR processing timed out - image too complex or system overloaded"
             
         except Exception as e:
+            print(f"❌ OCR processing failed: {e}")
             return f"Image extraction failed: {str(e)}"
     
     def _extract_spreadsheet_content(self, file_path: str) -> str:
