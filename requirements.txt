@@ -31,10 +31,10 @@ Pillow==9.5.0  # Compatible with EasyOCR 1.7.0 (ANTIALIAS support)
 easyocr==1.6.2  # Primary OCR method (no system dependencies)
 
 # Data Processing
-pandas==1.2.5
+pandas==1.5.3
 # Pin numpy 1.26.x to avoid ABI breakage with thinc/spaCy wheels (numpy 2.x caused dtype size mismatch)
-numpy==1.19.5
-scipy==1.6.3  # Required by EasyOCR for image processing
+numpy==1.24.3
+scipy==1.10.1  # Required by EasyOCR for image processing
 plotly==5.15.0  # For interactive visualizations in frontend
 
 # Document Processing
@@ -46,7 +46,7 @@ python-docx==0.8.11
 # AI and NLP
 spacy==3.4.4          # paired with thinc 8.0.17 (below)
 thinc==8.0.17
-# PyTorch: Use Puhti's module system instead of pip install
+en-core-web-sm==3.4.1  # spaCy English model
 # On Puhti: module load pytorch/2.3 (or later) - TESTED WORKING ✅
 # PyTorch 2.3.1+cu121 successfully loaded from /usr/local/lib64/python3.9/site-packages/
 # PyTorch is provided by CSC's containerized modules
