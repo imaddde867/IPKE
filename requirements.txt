@@ -2,7 +2,7 @@
 # STABILITY NOTICE (Pinned Versions)
 # ----------------------------------
 # We experienced multiple dependency conflicts (torch / transformers / huggingface-hub / packaging / fsspec) plus
-# ABI issues with numpy 2.x + spaCy/thinc. To guarantee a reproducible environment on macOS (Apple Silicon, Python 3.12),
+# ABI issues with numpy 2.x + spaCy/thinc. To guarantee a reproducible environment on Puhti (Python 3.9),
 # critical libraries are now PINNED. Only relax / upgrade intentionally after validating compatibility.
 #
 # If you already installed extraneous packages (e.g. vllm, moshi, silentcipher, s3fs) and you do NOT actively use them,
@@ -44,9 +44,9 @@ PyMuPDF==1.23.8
 python-docx==0.8.11
 
 # AI and NLP
-spacy==3.6.1          # paired with thinc 8.1.12 (below)
-thinc==8.1.12
-en-core-web-sm==3.6.1  # spaCy English model
+spacy==3.4.4          # paired with thinc 8.0.17 (below)
+thinc==8.0.17
+en-core-web-sm==3.4.1  # spaCy English model
 # PyTorch: Use Puhti's module system instead of pip install
 # On Puhti: module load pytorch/2.3 (or later) - TESTED WORKING ✅
 # PyTorch 2.3.1+cu121 successfully loaded from /usr/local/lib64/python3.9/site-packages/
