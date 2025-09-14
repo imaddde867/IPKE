@@ -20,7 +20,7 @@ streamlit==1.10.0
 # Database
 sqlalchemy==1.4.50
 alembic==1.7.7
-psycopg2-binary==2.9.7
+psycopg2-binary==2.9.6
 
 # HTTP requests
 requests==2.28.2
