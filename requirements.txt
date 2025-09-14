@@ -1,82 +1,63 @@
 # Core dependencies for Explainium Optimized Processor
-# STABILITY NOTICE (Pinned Versions)
+# Updated for Python 3.12 on Puhti
 # ----------------------------------
-# We experienced multiple dependency conflicts (torch / transformers / huggingface-hub / packaging / fsspec) plus
-# ABI issues with numpy 2.x + spaCy/thinc. To guarantee a reproducible environment on Puhti (Python 3.9),
-# critical libraries are now PINNED. Only relax / upgrade intentionally after validating compatibility.
-#
-# If you already installed extraneous packages (e.g. vllm, moshi, silentcipher, s3fs) and you do NOT actively use them,
-# UNINSTALL them to avoid pulling conflicting dependency trees:
-#   pip uninstall -y vllm moshi silentcipher s3fs
-#
-# If you keep vllm you must upgrade torch (2.7.0 requirement) which is NOT recommended here because we target
-# llama-cpp-python for local inference (Metal build). Hence vllm is treated as optional and excluded.
 
 # Web Framework
-fastapi==0.83.0
-uvicorn==0.17.0
-streamlit==1.10.0
+fastapi>=0.104.0
+uvicorn>=0.24.0
+streamlit>=1.28.0
 
 # Database
-sqlalchemy==1.4.50
-alembic==1.7.7
-psycopg2-binary==2.9.6
+sqlalchemy>=2.0.0
+alembic>=1.12.0
+psycopg2-binary>=2.9.0
 
 # HTTP requests
-requests==2.28.2
+requests>=2.31.0
 
 # Computer Vision and Image Processing
-opencv-python==4.8.1.78
-Pillow==9.5.0  # Compatible with EasyOCR 1.7.0 (ANTIALIAS support)
-easyocr==1.6.2  # Primary OCR method (no system dependencies)
+opencv-python>=4.8.0
+Pillow>=10.0.0
+easyocr>=1.7.0
 
 # Data Processing
-pandas==1.5.3
-# Pin numpy 1.26.x to avoid ABI breakage with thinc/spaCy wheels (numpy 2.x caused dtype size mismatch)
-numpy==1.24.3
-scipy==1.10.1  # Required by EasyOCR for image processing
-plotly==5.15.0  # For interactive visualizations in frontend
+pandas>=2.0.0
+numpy>=1.24.0
+scipy>=1.10.0
+plotly>=5.17.0
 
 # Document Processing
-python-pptx==0.6.21
-PyPDF2==3.0.0
-PyMuPDF==1.23.8
-python-docx==0.8.11
+python-pptx>=0.6.23
+PyPDF2>=3.0.0
+PyMuPDF>=1.23.0
+python-docx>=0.8.11
 
 # AI and NLP
-spacy==3.4.4          # paired with thinc 8.0.17 (below)
-thinc==8.0.17
-# PyTorch: Use Puhti's module system instead of pip install
-# PyTorch 2.3.1+cu121 successfully loaded from /usr/local/lib64/python3.9/site-packages/
-# PyTorch is provided by CSC's containerized modules
-sentence-transformers==2.2.2
-transformers==4.21.3  # compatible with sentence-transformers 2.2.2 & huggingface-hub >=0.10
-huggingface-hub==0.10.1  # satisfies moshi (<0.34) if ever needed; >=0.10.0 for other deps
-packaging==21.3       # streamlit 1.10.x requires packaging<22
-fsspec==2023.6.0      # aligns with s3fs 2023.6.0 if later installed
+spacy>=3.7.0
+sentence-transformers>=2.7.0
+transformers>=4.41.0
+huggingface-hub>=0.33.0
+packaging>=23.0
+fsspec>=2025.0.0
 
 # LLM Backends (optional - for local LLM processing)
-llama-cpp-python==0.2.20   # Metal build installed locally (use CMAKE_ARGS='-DLLAMA_METAL=on')
+llama-cpp-python>=0.2.80
 
 # Audio/Video Processing (optional)
-openai-whisper==20231117
-pytest==7.2.2
-pytest-asyncio==0.21.1
+openai-whisper>=20240930
+
+# Testing
+pytest>=7.4.0
+pytest-asyncio>=0.23.0
 
 # Compatibility for Python < 3.10
-importlib-metadata==5.2.0; python_version < '3.10'
+importlib-metadata>=6.0.0; python_version < '3.10'
 
 ############################################################
-# SYSTEM DEPENDENCIES / POST-INSTALL TASKS
+# POST-INSTALL TASKS
 ############################################################
-# 1. Tesseract OCR (macOS): brew install tesseract
-# 2. spaCy model (match pinned spaCy version):
-#    python -m spacy download en_core_web_sm==3.7.2
-# 3. OPTIONAL: If upgrading spaCy to 3.8.x you MUST also:
-#    - upgrade thinc accordingly
-#    - verify numpy wheel compatibility (or rebuild from source)
-# 4. OPTIONAL Metal build of llama-cpp-python already assumed; if reinstalling:
-#    CMAKE_ARGS="-DLLAMA_METAL=on" pip install --force-reinstall --no-binary :all: llama-cpp-python==0.2.20
-# 5. Remove unused heavy libs to prevent dependency conflicts:
-#    pip uninstall -y vllm moshi silentcipher s3fs
+# 1. Download spaCy model:
+#    python -m spacy download en_core_web_sm
+# 2. For Metal build of llama-cpp-python (macOS):
+#    CMAKE_ARGS="-DLLAMA_METAL=on" pip install --force-reinstall --no-binary :all: llama-cpp-python
 ############################################################
