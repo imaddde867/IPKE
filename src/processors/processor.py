@@ -232,9 +232,27 @@ class OptimizedDocumentProcessor:
             pass
     
     def _initialize_engines(self):
-        """Lazy initialize processing engines with graceful fallback"""
+        """Lazy initialize processing engines - skip for HPC compatibility"""
         if self.engines_initialized:
             return
+        
+        # Skip AI engine initialization on HPC systems to prevent hanging
+        print("⚠️ Skipping AI engine initialization for HPC compatibility")
+        print("ℹ️ AI engines will be initialized when actually needed")
+        
+        self.advanced_engine = None
+        self.llm_engine = None
+        self.extraction_engine = None
+        self.engines_initialized = True
+        
+        # Note: AI engines will be initialized lazily when process_document is called
+    
+    def _initialize_engines_lazy(self):
+        """Initialize AI engines only when actually needed for processing"""
+        if self.engines_initialized and (self.advanced_engine or self.llm_engine or self.extraction_engine):
+            return  # Already initialized
+        
+        print("🔄 Initializing AI engines for document processing...")
         
         try:
             import signal
@@ -251,56 +269,43 @@ class OptimizedDocumentProcessor:
             # Set timeout only on Unix systems - shorter timeout for faster startup
             if hasattr(signal, 'SIGALRM'):
                 signal.signal(signal.SIGALRM, timeout_handler)
-                signal.alarm(10)  # 10 second timeout for faster startup
+                signal.alarm(5)  # 5 second timeout for lazy initialization
             
             try:
                 # Initialize advanced knowledge engine
-                self.advanced_engine = AdvancedKnowledgeEngine(config_manager.ai, self.db_session)
-                print("✅ Advanced Knowledge Engine initialized")
+                if not self.advanced_engine:
+                    self.advanced_engine = AdvancedKnowledgeEngine(config_manager.ai, self.db_session)
+                    print("✅ Advanced Knowledge Engine initialized")
             except Exception as e:
                 print(f"⚠️ Advanced Knowledge Engine failed to initialize: {e}")
-                logger.warning(f"Advanced Knowledge Engine initialization failed: {e}")
                 self.advanced_engine = None
             
             try:
                 # Initialize LLM processing engine
-                self.llm_engine = LLMProcessingEngine()
-                print("✅ LLM Processing Engine initialized")
+                if not self.llm_engine:
+                    self.llm_engine = LLMProcessingEngine()
+                    print("✅ LLM Processing Engine initialized")
             except Exception as e:
                 print(f"⚠️ LLM Processing Engine failed to initialize: {e}")
-                logger.warning(f"LLM Processing Engine initialization failed: {e}")
                 self.llm_engine = None
             
             try:
                 # Initialize enhanced extraction engine
-                self.extraction_engine = EnhancedExtractionEngine()
-                print("✅ Enhanced Extraction Engine initialized")
+                if not self.extraction_engine:
+                    self.extraction_engine = EnhancedExtractionEngine()
+                    print("✅ Enhanced Extraction Engine initialized")
             except Exception as e:
                 print(f"⚠️ Enhanced Extraction Engine failed to initialize: {e}")
-                logger.warning(f"Enhanced Extraction Engine initialization failed: {e}")
                 self.extraction_engine = None
             
             # Cancel timeout
             if hasattr(signal, 'SIGALRM'):
                 signal.alarm(0)
             
-            # Schedule async initialization for engines that support it
-            import asyncio
-            try:
-                loop = asyncio.get_running_loop()
-                # Schedule async initialization
-                loop.create_task(self._async_initialize_engines())
-                print("✅ Async engine initialization scheduled")
-            except RuntimeError:
-                # No running loop; safe to run synchronously
-                asyncio.run(self._async_initialize_engines())
-                print("✅ Sync engine initialization completed")
-            
             self.engines_initialized = True
             
         except TimeoutError:
             print("⚠️ AI engine initialization timed out - continuing without AI engines")
-            logger.warning("AI engine initialization timed out - continuing without AI engines")
             self.advanced_engine = None
             self.llm_engine = None
             self.extraction_engine = None
@@ -312,8 +317,6 @@ class OptimizedDocumentProcessor:
                 
         except Exception as e:
             print(f"⚠️ Engine initialization failed: {e}")
-            logger.error(f"Engine initialization failed: {e}")
-            # Continue with limited functionality - set all engines to None
             self.advanced_engine = None
             self.llm_engine = None
             self.extraction_engine = None
