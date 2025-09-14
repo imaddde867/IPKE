@@ -131,7 +131,6 @@ def process_with_intelligent_ai_engine(uploaded_file, file_name, file_type):
         try:
             # Use the DocumentProcessor which implements LLM-first processing
             import tempfile
-            import os
             from pathlib import Path
             from processors.processor import OptimizedDocumentProcessor
 
