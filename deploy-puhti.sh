@@ -40,6 +40,9 @@ export TORCH_DISABLE_DYNAMO=1
 export PYTORCH_DISABLE_DYNAMO=1
 export TORCH_COMPILE_DISABLED=1
 
+# Enable AI engines with fast timeout
+export AI_ENGINE_TIMEOUT=10
+
 # Create cache directories
 mkdir -p /tmp/transformers_cache /tmp/hf_home
 

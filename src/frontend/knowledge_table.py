@@ -124,6 +124,9 @@ def process_with_intelligent_ai_engine(uploaded_file, file_name, file_type):
         else:
             content = f"File: {file_name}"
         
+        # Use AI engines with fast timeout for HPC compatibility
+        ai_timeout = int(os.getenv('AI_ENGINE_TIMEOUT', '10'))
+        
         # Try to use intelligent AI framework with LLM-first processing
         try:
             # Use the DocumentProcessor which implements LLM-first processing
