@@ -92,7 +92,6 @@ def process_with_intelligent_ai_engine(uploaded_file, file_name, file_type):
             # Use processor for image OCR instead of direct EasyOCR import
             try:
                 import tempfile
-                import os
                 from pathlib import Path
                 
                 # Save uploaded file to temp location
@@ -530,7 +529,6 @@ def extract_knowledge_from_image(uploaded_file, file_name):
                 text = processor._extract_image_content(temp_file_path)
                 
                 # Clean up temp file
-                import os
                 os.unlink(temp_file_path)
                 
                 if text and len(text.strip()) > 20 and "not available" not in text and "failed" not in text.lower():
