@@ -586,31 +586,31 @@ class OptimizedDocumentProcessor:
             import threading
             import time
             
+            # Preprocess image for better OCR
+            print(f"🔍 Processing image: {Path(file_path).name}")
+            
+            # Load and preprocess image
+            img = cv2.imread(file_path)
+            if img is None:
+                return "Could not load image file"
+            
+            # Convert to grayscale
+            gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+            
+            # Enhance contrast
+            clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+            enhanced = clahe.apply(gray)
+            
+            # Denoise
+            denoised = cv2.fastNlMeansDenoising(enhanced)
+            
+            # Save preprocessed image temporarily
+            import tempfile
+            with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as temp_file:
+                cv2.imwrite(temp_file.name, denoised)
+                temp_path = temp_file.name
+            
             try:
-                # Preprocess image for better OCR
-                print(f"🔍 Processing image: {Path(file_path).name}")
-                
-                # Load and preprocess image
-                img = cv2.imread(file_path)
-                if img is None:
-                    return "Could not load image file"
-                
-                # Convert to grayscale
-                gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-                
-                # Enhance contrast
-                clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
-                enhanced = clahe.apply(gray)
-                
-                # Denoise
-                denoised = cv2.fastNlMeansDenoising(enhanced)
-                
-                # Save preprocessed image temporarily
-                import tempfile
-                with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as temp_file:
-                    cv2.imwrite(temp_file.name, denoised)
-                    temp_path = temp_file.name
-                
                 # Use threading-based timeout for OCR processing
                 result_container = [None]
                 error_container = [None]
@@ -664,13 +664,6 @@ class OptimizedDocumentProcessor:
                 thread.start()
                 thread.join(timeout=60)  # 60 second timeout for OCR
                 
-                # Clean up temp file
-                import os
-                try:
-                    os.unlink(temp_path)
-                except Exception:
-                    pass
-                
                 if thread.is_alive():
                     # Thread is still running, timeout occurred
                     logger.warning("OCR processing timed out")
@@ -683,6 +676,14 @@ class OptimizedDocumentProcessor:
                         return result_container[0]
                     else:
                         return "No text detected in image"
+                        
+            finally:
+                # Clean up temp file
+                import os
+                try:
+                    os.unlink(temp_path)
+                except Exception:
+                    pass
             
         except Exception as e:
             print(f"❌ OCR processing failed: {e}")
