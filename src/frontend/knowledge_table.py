@@ -106,7 +106,7 @@ def process_with_intelligent_ai_engine(uploaded_file, file_name, file_type):
                     processor = OptimizedDocumentProcessor()
                     content = processor._extract_image_content(temp_file_path)
                     
-                    if not content or "OCR" in content and "not available" in content:
+                    if not content or "not available" in content or "failed" in content.lower():
                         content = f"Image file: {file_name}"
                         
                 finally:
@@ -216,7 +216,7 @@ def process_with_ai_engine(uploaded_file, file_name, file_type):
                     processor = OptimizedDocumentProcessor()
                     content = processor._extract_image_content(temp_file_path)
                     
-                    if not content or "OCR" in content and "not available" in content:
+                    if not content or "not available" in content or "failed" in content.lower():
                         content = f"Image file: {file_name}"
                         
                 finally:
