@@ -178,13 +178,38 @@ class OptimizedDocumentProcessor:
     
     def _init_basic_capabilities(self):
         """Initialize basic processing capabilities"""
-        # Test EasyOCR availability (primary OCR method)
+        # Test EasyOCR availability (primary OCR method) with timeout protection
         try:
+            import signal
             import easyocr
-            # Test if EasyOCR can actually work
-            test_reader = easyocr.Reader(['en'], gpu=False)
-            self.ocr_available = True
-            logger.info("EasyOCR initialized successfully")
+            
+            # Timeout protection for EasyOCR initialization
+            def timeout_handler(signum, frame):
+                raise TimeoutError("EasyOCR initialization timed out")
+            
+            # Set timeout only on Unix systems
+            if hasattr(signal, 'SIGALRM'):
+                signal.signal(signal.SIGALRM, timeout_handler)
+                signal.alarm(30)  # 30 second timeout
+            
+            try:
+                # Test if EasyOCR can actually work
+                test_reader = easyocr.Reader(['en'], gpu=False)
+                self.ocr_available = True
+                logger.info("EasyOCR initialized successfully")
+                
+                # Cancel timeout
+                if hasattr(signal, 'SIGALRM'):
+                    signal.alarm(0)
+                    
+            except TimeoutError:
+                logger.warning("EasyOCR initialization timed out")
+                self.ocr_available = False
+                
+                # Cancel timeout
+                if hasattr(signal, 'SIGALRM'):
+                    signal.alarm(0)
+                    
         except Exception as e:
             logger.warning(f"EasyOCR initialization failed: {e}")
             self.ocr_available = False
@@ -207,22 +232,57 @@ class OptimizedDocumentProcessor:
             pass
     
     def _initialize_engines(self):
-        """Lazy initialize processing engines"""
+        """Lazy initialize processing engines with graceful fallback"""
         if self.engines_initialized:
             return
         
         try:
-            # Initialize advanced knowledge engine
-            self.advanced_engine = AdvancedKnowledgeEngine(config_manager.ai, self.db_session)
-            print("✅ Advanced Knowledge Engine initialized")
+            import signal
+            import os
             
-            # Initialize LLM processing engine
-            self.llm_engine = LLMProcessingEngine()
-            print("✅ LLM Processing Engine initialized")
+            # Set offline mode to prevent hanging
+            os.environ['TRANSFORMERS_OFFLINE'] = '1'
+            os.environ['HF_HUB_OFFLINE'] = '1'
             
-            # Initialize enhanced extraction engine
-            self.extraction_engine = EnhancedExtractionEngine()
-            print("✅ Enhanced Extraction Engine initialized")
+            # Timeout protection for AI engine initialization
+            def timeout_handler(signum, frame):
+                raise TimeoutError("AI engine initialization timed out")
+            
+            # Set timeout only on Unix systems
+            if hasattr(signal, 'SIGALRM'):
+                signal.signal(signal.SIGALRM, timeout_handler)
+                signal.alarm(30)  # 30 second timeout
+            
+            try:
+                # Initialize advanced knowledge engine
+                self.advanced_engine = AdvancedKnowledgeEngine(config_manager.ai, self.db_session)
+                print("✅ Advanced Knowledge Engine initialized")
+            except Exception as e:
+                print(f"⚠️ Advanced Knowledge Engine failed to initialize: {e}")
+                logger.warning(f"Advanced Knowledge Engine initialization failed: {e}")
+                self.advanced_engine = None
+            
+            try:
+                # Initialize LLM processing engine
+                self.llm_engine = LLMProcessingEngine()
+                print("✅ LLM Processing Engine initialized")
+            except Exception as e:
+                print(f"⚠️ LLM Processing Engine failed to initialize: {e}")
+                logger.warning(f"LLM Processing Engine initialization failed: {e}")
+                self.llm_engine = None
+            
+            try:
+                # Initialize enhanced extraction engine
+                self.extraction_engine = EnhancedExtractionEngine()
+                print("✅ Enhanced Extraction Engine initialized")
+            except Exception as e:
+                print(f"⚠️ Enhanced Extraction Engine failed to initialize: {e}")
+                logger.warning(f"Enhanced Extraction Engine initialization failed: {e}")
+                self.extraction_engine = None
+            
+            # Cancel timeout
+            if hasattr(signal, 'SIGALRM'):
+                signal.alarm(0)
             
             # Schedule async initialization for engines that support it
             import asyncio
@@ -238,10 +298,26 @@ class OptimizedDocumentProcessor:
             
             self.engines_initialized = True
             
+        except TimeoutError:
+            print("⚠️ AI engine initialization timed out - continuing without AI engines")
+            logger.warning("AI engine initialization timed out - continuing without AI engines")
+            self.advanced_engine = None
+            self.llm_engine = None
+            self.extraction_engine = None
+            self.engines_initialized = True
+            
+            # Cancel timeout if it was set
+            if hasattr(signal, 'SIGALRM'):
+                signal.alarm(0)
+                
         except Exception as e:
             print(f"⚠️ Engine initialization failed: {e}")
             logger.error(f"Engine initialization failed: {e}")
-            # Continue with limited functionality
+            # Continue with limited functionality - set all engines to None
+            self.advanced_engine = None
+            self.llm_engine = None
+            self.extraction_engine = None
+            self.engines_initialized = True
     
     async def _async_initialize_engines(self):
         """Async initialization of engines"""
@@ -479,30 +555,56 @@ class OptimizedDocumentProcessor:
             return f"Generic extraction failed: {str(e)}"
     
     def _extract_image_content(self, file_path: str) -> str:
-        """Fast image content extraction with EasyOCR"""
+        """Fast image content extraction with EasyOCR and timeout protection"""
         try:
             if not self.ocr_available:
                 return "OCR not available for image processing"
             
-            # Use EasyOCR for text extraction
+            import signal
             import easyocr
-            reader = easyocr.Reader(['en'], gpu=False)
             
-            # Extract text from image
-            result = reader.readtext(file_path)
+            # Timeout protection for OCR processing
+            def timeout_handler(signum, frame):
+                raise TimeoutError("OCR processing timed out")
             
-            # Combine all detected text
-            text_parts = []
-            for (bbox, detected_text, confidence) in result:
-                if confidence > 0.5:  # Filter low-confidence results
-                    text_parts.append(detected_text)
+            # Set timeout only on Unix systems
+            if hasattr(signal, 'SIGALRM'):
+                signal.signal(signal.SIGALRM, timeout_handler)
+                signal.alarm(60)  # 60 second timeout for OCR
             
-            combined_text = ' '.join(text_parts)
-            if combined_text.strip():
-                logger.info(f"EasyOCR extracted {len(combined_text)} characters from image")
-                return combined_text
-            else:
-                return "No text detected in image"
+            try:
+                # Use EasyOCR for text extraction
+                reader = easyocr.Reader(['en'], gpu=False)
+                
+                # Extract text from image
+                result = reader.readtext(file_path)
+                
+                # Combine all detected text
+                text_parts = []
+                for (bbox, detected_text, confidence) in result:
+                    if confidence > 0.5:  # Filter low-confidence results
+                        text_parts.append(detected_text)
+                
+                combined_text = ' '.join(text_parts)
+                
+                # Cancel timeout
+                if hasattr(signal, 'SIGALRM'):
+                    signal.alarm(0)
+                
+                if combined_text.strip():
+                    logger.info(f"EasyOCR extracted {len(combined_text)} characters from image")
+                    return combined_text
+                else:
+                    return "No text detected in image"
+                    
+            except TimeoutError:
+                logger.warning("OCR processing timed out")
+                
+                # Cancel timeout
+                if hasattr(signal, 'SIGALRM'):
+                    signal.alarm(0)
+                    
+                return "OCR processing timed out - image too complex or system overloaded"
             
         except Exception as e:
             return f"Image extraction failed: {str(e)}"
