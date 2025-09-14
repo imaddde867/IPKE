@@ -89,19 +89,35 @@ def process_with_intelligent_ai_engine(uploaded_file, file_name, file_type):
         if file_type == "application/pdf":
             content = extract_pdf_content(uploaded_file)
         elif file_type.startswith("image/"):
-            # Use EasyOCR for images
+            # Use processor for image OCR instead of direct EasyOCR import
             try:
-                import easyocr
-                from PIL import Image
-                image = Image.open(uploaded_file)
-                reader = easyocr.Reader(['en'], gpu=False)
-                result = reader.readtext(image)
-                text_parts = []
-                for (bbox, detected_text, confidence) in result:
-                    if confidence > 0.5:
-                        text_parts.append(detected_text)
-                content = ' '.join(text_parts) if text_parts else f"Image file: {file_name}"
-            except:
+                import tempfile
+                import os
+                from pathlib import Path
+                
+                # Save uploaded file to temp location
+                with tempfile.NamedTemporaryFile(delete=False, suffix=Path(file_name).suffix) as temp_file:
+                    temp_file.write(uploaded_file.read())
+                    temp_file_path = temp_file.name
+                
+                try:
+                    # Use processor for OCR processing
+                    from src.processors.processor import OptimizedDocumentProcessor
+                    processor = OptimizedDocumentProcessor()
+                    content = processor._extract_image_content(temp_file_path)
+                    
+                    if not content or "OCR" in content and "not available" in content:
+                        content = f"Image file: {file_name}"
+                        
+                finally:
+                    # Clean up temp file
+                    try:
+                        os.unlink(temp_file_path)
+                    except Exception:
+                        pass
+                        
+            except Exception as e:
+                print(f"Image processing failed: {e}")
                 content = f"Image file: {file_name}"
         elif file_type == "text/plain":
             content = str(uploaded_file.read(), "utf-8")
@@ -180,19 +196,35 @@ def process_with_ai_engine(uploaded_file, file_name, file_type):
         if file_type == "application/pdf":
             content = extract_pdf_content(uploaded_file)
         elif file_type.startswith("image/"):
-            # Use EasyOCR for images
+            # Use processor for image OCR instead of direct EasyOCR import
             try:
-                import easyocr
-                from PIL import Image
-                image = Image.open(uploaded_file)
-                reader = easyocr.Reader(['en'], gpu=False)
-                result = reader.readtext(image)
-                text_parts = []
-                for (bbox, detected_text, confidence) in result:
-                    if confidence > 0.5:
-                        text_parts.append(detected_text)
-                content = ' '.join(text_parts) if text_parts else f"Image file: {file_name}"
-            except:
+                import tempfile
+                import os
+                from pathlib import Path
+                
+                # Save uploaded file to temp location
+                with tempfile.NamedTemporaryFile(delete=False, suffix=Path(file_name).suffix) as temp_file:
+                    temp_file.write(uploaded_file.read())
+                    temp_file_path = temp_file.name
+                
+                try:
+                    # Use processor for OCR processing
+                    from src.processors.processor import OptimizedDocumentProcessor
+                    processor = OptimizedDocumentProcessor()
+                    content = processor._extract_image_content(temp_file_path)
+                    
+                    if not content or "OCR" in content and "not available" in content:
+                        content = f"Image file: {file_name}"
+                        
+                finally:
+                    # Clean up temp file
+                    try:
+                        os.unlink(temp_file_path)
+                    except Exception:
+                        pass
+                        
+            except Exception as e:
+                print(f"Image processing failed: {e}")
                 content = f"Image file: {file_name}"
         elif file_type == "text/plain":
             content = str(uploaded_file.read(), "utf-8")
@@ -482,31 +514,45 @@ def extract_knowledge_from_image(uploaded_file, file_name):
         
         knowledge_items = []
         
-        # EasyOCR attempt for text extraction
+        # Use processor for OCR instead of direct EasyOCR import
         try:
-            import easyocr
-            reader = easyocr.Reader(['en'], gpu=False)
-            result = reader.readtext(image)
-            text_parts = []
-            for (bbox, detected_text, confidence) in result:
-                if confidence > 0.5:
-                    text_parts.append(detected_text)
-            text = ' '.join(text_parts)
-            if text.strip() and len(text.strip()) > 20:
-                # Use intelligent extraction on OCR text
-                text_knowledge = extract_intelligent_knowledge(text.strip(), f"{file_name} (OCR)")
-                knowledge_items.extend(text_knowledge)
+            from src.processors.processor import OptimizedDocumentProcessor
+            processor = OptimizedDocumentProcessor()
+            
+            # Save image to temp file for processor
+            import tempfile
+            with tempfile.NamedTemporaryFile(delete=False, suffix='.png') as temp_file:
+                image.save(temp_file.name)
+                temp_file_path = temp_file.name
+            
+            try:
+                text = processor._extract_image_content(temp_file_path)
                 
-                # Add OCR success indicator
-                knowledge_items.append({
-                    "Knowledge": "Text Recognition Success",
-                    "Type": "systems",
-                    "Confidence": 0.85,
-                    "Category": "OCR Processing",
-                    "Description": f"Successfully extracted {len(text.strip())} characters of text from image using OCR",
-                    "Source": file_name,
-                    "Extracted_At": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                })
+                # Clean up temp file
+                import os
+                os.unlink(temp_file_path)
+                
+                if text and len(text.strip()) > 20 and "OCR" not in text and "not available" not in text:
+                    # Use intelligent extraction on OCR text
+                    text_knowledge = extract_intelligent_knowledge(text.strip(), f"{file_name} (OCR)")
+                    knowledge_items.extend(text_knowledge)
+                    
+                    # Add OCR success indicator
+                    knowledge_items.append({
+                        "Knowledge": "Text Recognition Success",
+                        "Type": "systems",
+                        "Confidence": 0.85,
+                        "Category": "OCR Processing",
+                        "Description": f"Successfully extracted {len(text.strip())} characters of text from image using OCR",
+                        "Source": file_name,
+                        "Extracted_At": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    })
+            except Exception:
+                # Clean up temp file on error
+                try:
+                    os.unlink(temp_file_path)
+                except Exception:
+                    pass
             else:
                 # No meaningful text found
                 knowledge_items.append({
