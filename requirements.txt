@@ -31,10 +31,10 @@ Pillow==9.5.0  # Compatible with EasyOCR 1.7.0 (ANTIALIAS support)
 easyocr==1.6.2  # Primary OCR method (no system dependencies)
 
 # Data Processing
-pandas==1.5.3
+pandas==1.3.5
 # Pin numpy 1.26.x to avoid ABI breakage with thinc/spaCy wheels (numpy 2.x caused dtype size mismatch)
-numpy==1.24.3
-scipy==1.10.1  # Required by EasyOCR for image processing
+numpy==1.21.6
+scipy==1.7.3  # Required by EasyOCR for image processing
 plotly==5.15.0  # For interactive visualizations in frontend
 
 # Document Processing
