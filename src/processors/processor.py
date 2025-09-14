@@ -268,65 +268,64 @@ class OptimizedDocumentProcessor:
         print("🔄 Initializing AI engines for document processing...")
         
         try:
-            import signal
             import os
             
             # Set offline mode to prevent hanging
             os.environ['TRANSFORMERS_OFFLINE'] = '1'
             os.environ['HF_HUB_OFFLINE'] = '1'
             
-            # Timeout protection for AI engine initialization
-            def timeout_handler(signum, frame):
-                raise TimeoutError("AI engine initialization timed out")
+            # Use threading-based timeout for AI engine initialization (works in Streamlit)
+            import threading
+            import time
             
-            # Set timeout only on Unix systems - shorter timeout for faster startup
-            if hasattr(signal, 'SIGALRM'):
-                signal.signal(signal.SIGALRM, timeout_handler)
-                signal.alarm(5)  # 5 second timeout for lazy initialization
+            result_container = [None]
+            error_container = [None]
             
-            try:
-                # Initialize advanced knowledge engine
-                if not self.advanced_engine:
-                    self.advanced_engine = AdvancedKnowledgeEngine(config_manager.ai, self.db_session)
-                    print("✅ Advanced Knowledge Engine initialized")
-            except Exception as e:
-                print(f"⚠️ Advanced Knowledge Engine failed to initialize: {e}")
+            def engine_init_worker():
+                try:
+                    # Initialize advanced knowledge engine
+                    if not self.advanced_engine:
+                        self.advanced_engine = AdvancedKnowledgeEngine(config_manager.ai, self.db_session)
+                        print("✅ Advanced Knowledge Engine initialized")
+                    
+                    # Initialize LLM processing engine
+                    if not self.llm_engine:
+                        self.llm_engine = LLMProcessingEngine()
+                        print("✅ LLM Processing Engine initialized")
+                    
+                    # Initialize enhanced extraction engine
+                    if not self.extraction_engine:
+                        self.extraction_engine = EnhancedExtractionEngine()
+                        print("✅ Enhanced Extraction Engine initialized")
+                    
+                    result_container[0] = True
+                    
+                except Exception as e:
+                    error_container[0] = e
+            
+            # Start AI engine initialization in a separate thread with timeout
+            thread = threading.Thread(target=engine_init_worker)
+            thread.daemon = True
+            thread.start()
+            thread.join(timeout=10)  # 10 second timeout for AI engine initialization
+            
+            if thread.is_alive():
+                # Thread is still running, timeout occurred
+                print("⚠️ AI engine initialization timed out - continuing without AI engines")
                 self.advanced_engine = None
-            
-            try:
-                # Initialize LLM processing engine
-                if not self.llm_engine:
-                    self.llm_engine = LLMProcessingEngine()
-                    print("✅ LLM Processing Engine initialized")
-            except Exception as e:
-                print(f"⚠️ LLM Processing Engine failed to initialize: {e}")
                 self.llm_engine = None
-            
-            try:
-                # Initialize enhanced extraction engine
-                if not self.extraction_engine:
-                    self.extraction_engine = EnhancedExtractionEngine()
-                    print("✅ Enhanced Extraction Engine initialized")
-            except Exception as e:
-                print(f"⚠️ Enhanced Extraction Engine failed to initialize: {e}")
                 self.extraction_engine = None
-            
-            # Cancel timeout
-            if hasattr(signal, 'SIGALRM'):
-                signal.alarm(0)
+            else:
+                # Thread completed
+                if error_container[0]:
+                    print(f"⚠️ Engine initialization failed: {error_container[0]}")
+                    self.advanced_engine = None
+                    self.llm_engine = None
+                    self.extraction_engine = None
+                else:
+                    print("✅ All AI engines initialized successfully")
             
             self.engines_initialized = True
-            
-        except TimeoutError:
-            print("⚠️ AI engine initialization timed out - continuing without AI engines")
-            self.advanced_engine = None
-            self.llm_engine = None
-            self.extraction_engine = None
-            self.engines_initialized = True
-            
-            # Cancel timeout if it was set
-            if hasattr(signal, 'SIGALRM'):
-                signal.alarm(0)
                 
         except Exception as e:
             print(f"⚠️ Engine initialization failed: {e}")
