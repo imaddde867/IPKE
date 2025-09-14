@@ -187,10 +187,10 @@ class OptimizedDocumentProcessor:
             def timeout_handler(signum, frame):
                 raise TimeoutError("EasyOCR initialization timed out")
             
-            # Set timeout only on Unix systems
+            # Set timeout only on Unix systems - shorter timeout for faster startup
             if hasattr(signal, 'SIGALRM'):
                 signal.signal(signal.SIGALRM, timeout_handler)
-                signal.alarm(30)  # 30 second timeout
+                signal.alarm(10)  # 10 second timeout for faster startup
             
             try:
                 # Test if EasyOCR can actually work
@@ -248,10 +248,10 @@ class OptimizedDocumentProcessor:
             def timeout_handler(signum, frame):
                 raise TimeoutError("AI engine initialization timed out")
             
-            # Set timeout only on Unix systems
+            # Set timeout only on Unix systems - shorter timeout for faster startup
             if hasattr(signal, 'SIGALRM'):
                 signal.signal(signal.SIGALRM, timeout_handler)
-                signal.alarm(30)  # 30 second timeout
+                signal.alarm(10)  # 10 second timeout for faster startup
             
             try:
                 # Initialize advanced knowledge engine
