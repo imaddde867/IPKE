@@ -201,7 +201,6 @@ def process_with_ai_engine(uploaded_file, file_name, file_type):
             # Use processor for image OCR instead of direct EasyOCR import
             try:
                 import tempfile
-                import os
                 from pathlib import Path
                 
                 # Save uploaded file to temp location
