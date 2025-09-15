@@ -40,6 +40,12 @@ export TORCH_DISABLE_DYNAMO=1
 export PYTORCH_DISABLE_DYNAMO=1
 export TORCH_COMPILE_DISABLED=1
 
+# CRITICAL: Disable PyTorch Dynamo/Triton to prevent hanging
+export TORCH_DISABLE_TRITON=1
+export TORCH_DISABLE_CUDNN=1
+export TORCH_DISABLE_CUDA=1
+export CUDA_VISIBLE_DEVICES=""
+
 # Enable AI engines with fast timeout
 export AI_ENGINE_TIMEOUT=10
 
