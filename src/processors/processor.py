@@ -291,7 +291,18 @@ class OptimizedDocumentProcessor:
                     # Initialize LLM processing engine
                     if not self.llm_engine:
                         self.llm_engine = LLMProcessingEngine()
-                        print("✅ LLM Processing Engine initialized")
+                        # Initialize the LLM engine asynchronously
+                        import asyncio
+                        try:
+                            # Create a new event loop for this thread
+                            loop = asyncio.new_event_loop()
+                            asyncio.set_event_loop(loop)
+                            loop.run_until_complete(self.llm_engine.initialize())
+                            loop.close()
+                            print("✅ LLM Processing Engine initialized")
+                        except Exception as e:
+                            print(f"⚠️ LLM engine initialization failed: {e}")
+                            self.llm_engine = None
                     
                     # Initialize enhanced extraction engine
                     if not self.extraction_engine:
