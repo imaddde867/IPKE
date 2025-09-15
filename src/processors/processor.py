@@ -521,26 +521,47 @@ class OptimizedDocumentProcessor:
             return f"Text extraction failed: {str(e)}"
     
     def _extract_pdf_content(self, file_path: Path) -> str:
-        """Fast PDF content extraction"""
+        """Fast PDF content extraction with debug logging"""
         try:
             # Try PyMuPDF first (faster)
             doc = fitz.open(file_path)
             text = ""
+            page_count = 0
             for page in doc:
-                text += page.get_text()
+                page_text = page.get_text()
+                text += page_text
+                page_count += 1
+                print(f"📄 PDF Page {page_count}: {len(page_text)} characters")
             doc.close()
+            
+            print(f"📊 PDF Total: {len(text)} characters from {page_count} pages")
+            if len(text.strip()) < 50:
+                print(f"⚠️ PDF content very short: '{text[:100]}...'")
+                return f"PDF content too short ({len(text)} chars): {text[:200]}"
+            
             return text
-        except Exception:
+        except Exception as e:
+            print(f"❌ PyMuPDF failed: {e}")
             try:
                 # Fallback to PyPDF2
                 with open(file_path, 'rb') as file:
                     reader = PyPDF2.PdfReader(file)
                     text = ""
-                    for page in reader.pages:
-                        text += page.extract_text()
-                return text
-            except Exception as e:
-                return f"PDF extraction failed: {str(e)}"
+                    page_count = len(reader.pages)
+                    for i, page in enumerate(reader.pages):
+                        page_text = page.extract_text()
+                        text += page_text
+                        print(f"📄 PDF Page {i+1}: {len(page_text)} characters")
+                    
+                    print(f"📊 PDF Total (PyPDF2): {len(text)} characters from {page_count} pages")
+                    if len(text.strip()) < 50:
+                        print(f"⚠️ PDF content very short: '{text[:100]}...'")
+                        return f"PDF content too short ({len(text)} chars): {text[:200]}"
+                    
+                    return text
+            except Exception as e2:
+                print(f"❌ PyPDF2 also failed: {e2}")
+                return f"PDF extraction failed: PyMuPDF: {e}, PyPDF2: {e2}"
     
     def _extract_word_content(self, file_path: Path) -> str:
         """Fast Word document content extraction"""
@@ -776,6 +797,12 @@ class OptimizedDocumentProcessor:
             return {"entities": [], "confidence": 0.0, "method": "llm_unavailable"}
         
         try:
+            # Debug logging for content received by LLM
+            print(f"🧠 LLM Processing: {document_type} document")
+            print(f"📝 Content length: {len(content) if content else 0} characters")
+            if content and len(content) < 200:
+                print(f"📄 Content preview: '{content[:200]}...'")
+            
             # Use the real LLM engine's process_document method
             # Pass metadata to encourage LLM processing for video/image
             metadata = {
@@ -784,6 +811,11 @@ class OptimizedDocumentProcessor:
             }
             # Ensure non-empty content to avoid degenerate LLM calls
             safe_content = content if isinstance(content, str) and content.strip() else ""
+            
+            if not safe_content or len(safe_content.strip()) < 10:
+                print(f"⚠️ LLM skipping: content too short ({len(safe_content)} chars)")
+                return {"entities": [], "confidence": 0.0, "method": "content_too_short"}
+            
             result = await self.llm_engine.process_document(safe_content, document_type, metadata)
             
             # Convert ProcessingResult to dict format
