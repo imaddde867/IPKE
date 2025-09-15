@@ -532,7 +532,7 @@ class OptimizedDocumentProcessor:
             return f"Text extraction failed: {str(e)}"
     
     def _extract_pdf_content(self, file_path: Path) -> str:
-        """Fast PDF content extraction with debug logging"""
+        """Fast PDF content extraction with OCR fallback for image-based PDFs"""
         try:
             # Try PyMuPDF first (faster)
             doc = fitz.open(file_path)
@@ -546,9 +546,20 @@ class OptimizedDocumentProcessor:
             doc.close()
             
             print(f"📊 PDF Total: {len(text)} characters from {page_count} pages")
+            
+            # If text extraction failed (image-based PDF), try OCR
             if len(text.strip()) < 50:
-                print(f"⚠️ PDF content very short: '{text[:100]}...'")
-                return f"PDF content too short ({len(text)} chars): {text[:200]}"
+                print(f"⚠️ PDF appears to be image-based (only {len(text)} chars)")
+                print(f"🔄 Attempting OCR processing for image-based PDF...")
+                
+                # Try OCR processing for image-based PDF
+                ocr_text = self._extract_pdf_with_ocr(file_path, page_count)
+                if ocr_text and len(ocr_text.strip()) > 50:
+                    print(f"✅ OCR successful: {len(ocr_text)} characters extracted")
+                    return ocr_text
+                else:
+                    print(f"❌ OCR also failed or returned minimal content")
+                    return f"PDF appears to be image-based but OCR failed. Text chars: {len(text)}, OCR chars: {len(ocr_text) if ocr_text else 0}"
             
             return text
         except Exception as e:
@@ -565,14 +576,88 @@ class OptimizedDocumentProcessor:
                         print(f"📄 PDF Page {i+1}: {len(page_text)} characters")
                     
                     print(f"📊 PDF Total (PyPDF2): {len(text)} characters from {page_count} pages")
+                    
+                    # If PyPDF2 also fails, try OCR
                     if len(text.strip()) < 50:
-                        print(f"⚠️ PDF content very short: '{text[:100]}...'")
-                        return f"PDF content too short ({len(text)} chars): {text[:200]}"
+                        print(f"⚠️ PyPDF2 also found minimal text, trying OCR...")
+                        ocr_text = self._extract_pdf_with_ocr(file_path, page_count)
+                        if ocr_text and len(ocr_text.strip()) > 50:
+                            print(f"✅ OCR successful: {len(ocr_text)} characters extracted")
+                            return ocr_text
+                        else:
+                            return f"PDF appears to be image-based but OCR failed. Text chars: {len(text)}, OCR chars: {len(ocr_text) if ocr_text else 0}"
                     
                     return text
             except Exception as e2:
                 print(f"❌ PyPDF2 also failed: {e2}")
                 return f"PDF extraction failed: PyMuPDF: {e}, PyPDF2: {e2}"
+    
+    def _extract_pdf_with_ocr(self, file_path: Path, max_pages: int = 10) -> str:
+        """Extract text from image-based PDF using OCR"""
+        if not self.ocr_available:
+            print(f"❌ OCR not available for image-based PDF processing")
+            return ""
+        
+        try:
+            import fitz  # PyMuPDF for PDF to image conversion
+            import easyocr
+            import cv2
+            import numpy as np
+            
+            print(f"🔍 Starting OCR processing for image-based PDF...")
+            
+            # Convert PDF pages to images and process with OCR
+            doc = fitz.open(file_path)
+            ocr_text = ""
+            pages_processed = 0
+            
+            # Limit to first 10 pages for performance (can be adjusted)
+            max_pages_to_process = min(max_pages, 10)
+            
+            for page_num in range(max_pages_to_process):
+                try:
+                    page = doc[page_num]
+                    # Convert page to image
+                    mat = fitz.Matrix(2.0, 2.0)  # 2x zoom for better OCR
+                    pix = page.get_pixmap(matrix=mat)
+                    img_data = pix.tobytes("png")
+                    
+                    # Convert to OpenCV format
+                    nparr = np.frombuffer(img_data, np.uint8)
+                    img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+                    
+                    if img is not None:
+                        # Preprocess image for better OCR
+                        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                        enhanced = cv2.equalizeHist(gray)
+                        
+                        # Use EasyOCR
+                        reader = easyocr.Reader(['en'], gpu=False)
+                        result = reader.readtext(enhanced)
+                        
+                        # Extract text from OCR results
+                        page_text = ""
+                        for (bbox, detected_text, confidence) in result:
+                            if confidence > 0.3:  # Lower threshold for better coverage
+                                page_text += detected_text + " "
+                        
+                        if page_text.strip():
+                            ocr_text += f"\n--- Page {page_num + 1} ---\n{page_text.strip()}\n"
+                            pages_processed += 1
+                            print(f"📄 OCR Page {page_num + 1}: {len(page_text)} characters")
+                        
+                except Exception as page_error:
+                    print(f"⚠️ OCR failed for page {page_num + 1}: {page_error}")
+                    continue
+            
+            doc.close()
+            
+            print(f"📊 OCR Total: {len(ocr_text)} characters from {pages_processed} pages")
+            return ocr_text
+            
+        except Exception as e:
+            print(f"❌ OCR processing failed: {e}")
+            return ""
     
     def _extract_word_content(self, file_path: Path) -> str:
         """Fast Word document content extraction"""
