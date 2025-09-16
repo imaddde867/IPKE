@@ -635,21 +635,37 @@ class OptimizedDocumentProcessor:
                     if img is not None:
                         # Preprocess image for better OCR
                         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-                        enhanced = cv2.equalizeHist(gray)
                         
-                        # Use EasyOCR (reader already created above)
-                        result = reader.readtext(enhanced)
+                        # Multiple preprocessing techniques for better OCR
+                        # 1. Histogram equalization
+                        enhanced1 = cv2.equalizeHist(gray)
                         
-                        # Extract text from OCR results
-                        page_text = ""
-                        for (bbox, detected_text, confidence) in result:
-                            if confidence > 0.3:  # Lower threshold for better coverage
-                                page_text += detected_text + " "
+                        # 2. Adaptive threshold
+                        enhanced2 = cv2.adaptiveThreshold(gray, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY, 11, 2)
                         
-                        if page_text.strip():
-                            ocr_text += f"\n--- Page {page_num + 1} ---\n{page_text.strip()}\n"
+                        # 3. Morphological operations to clean up
+                        kernel = np.ones((1,1), np.uint8)
+                        enhanced3 = cv2.morphologyEx(enhanced1, cv2.MORPH_CLOSE, kernel)
+                        
+                        # Try OCR on all enhanced versions
+                        all_text = ""
+                        for i, enhanced in enumerate([enhanced1, enhanced2, enhanced3]):
+                            try:
+                                result = reader.readtext(enhanced)
+                                page_text = ""
+                                for (bbox, detected_text, confidence) in result:
+                                    if confidence > 0.1:  # Very low threshold
+                                        page_text += detected_text + " "
+                                if page_text.strip():
+                                    all_text += page_text + " "
+                                    print(f"📄 OCR Page {page_num + 1} (method {i+1}): {len(page_text)} characters")
+                            except Exception as e:
+                                print(f"⚠️ OCR method {i+1} failed for page {page_num + 1}: {e}")
+                        
+                        if all_text.strip():
+                            ocr_text += f"\n--- Page {page_num + 1} ---\n{all_text.strip()}\n"
                             pages_processed += 1
-                            print(f"📄 OCR Page {page_num + 1}: {len(page_text)} characters")
+                            print(f"📄 OCR Page {page_num + 1}: {len(all_text)} characters")
                         
                 except Exception as page_error:
                     print(f"⚠️ OCR failed for page {page_num + 1}: {page_error}")
