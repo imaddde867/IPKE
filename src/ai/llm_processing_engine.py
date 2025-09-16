@@ -504,7 +504,7 @@ class OptimizedLLMProcessingEngine:
         
         return all_entities
     
-    def _chunk_content_optimized(self, content: str, max_chunk_size: int = 1500) -> List[str]:
+    def _chunk_content_optimized(self, content: str, max_chunk_size: int = 5000) -> List[str]:
         """Optimized content chunking for M4 processing"""
         # Allow env override for chunk size (character based) to adapt to context window
         env_chunk = os.getenv("EXPLAINIUM_LLM_MAX_CHARS")
@@ -513,6 +513,13 @@ class OptimizedLLMProcessingEngine:
                 max_chunk_size = max(200, min(int(env_chunk), max_chunk_size))
             except ValueError:
                 pass
+        
+        # For very large documents, use larger chunks to reduce processing time
+        if len(content) > 100000:  # 100K+ characters
+            max_chunk_size = max(max_chunk_size, 8000)  # Use 8K chunks for large docs
+        elif len(content) > 50000:  # 50K+ characters  
+            max_chunk_size = max(max_chunk_size, 6000)  # Use 6K chunks for medium docs
+            
         chunks = []
         
         # Simple chunking by sentences and paragraphs
@@ -547,8 +554,8 @@ class OptimizedLLMProcessingEngine:
         """
         try:
             # Configurable timeout & retry strategy (env overrides)
-            llm_timeout = float(os.getenv("EXPLAINIUM_LLM_CHUNK_TIMEOUT", "25"))  # increase from 15 -> 25 default
-            max_retries = int(os.getenv("EXPLAINIUM_LLM_CHUNK_RETRIES", "2"))     # additional retries on timeout
+            llm_timeout = float(os.getenv("EXPLAINIUM_LLM_CHUNK_TIMEOUT", "60"))  # increase to 60s for large docs
+            max_retries = int(os.getenv("EXPLAINIUM_LLM_CHUNK_RETRIES", "1"))     # reduce retries to speed up
             base_backoff = float(os.getenv("EXPLAINIUM_LLM_CHUNK_BACKOFF", "3"))  # seconds
 
             # Enhanced media aware prompt
