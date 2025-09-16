@@ -619,6 +619,7 @@ class OptimizedDocumentProcessor:
             
             for page_num in range(max_pages_to_process):
                 try:
+                    print(f"🔍 Processing page {page_num + 1}...")
                     page = doc[page_num]
                     # Convert page to image
                     mat = fitz.Matrix(2.0, 2.0)  # 2x zoom for better OCR
@@ -628,6 +629,8 @@ class OptimizedDocumentProcessor:
                     # Convert to OpenCV format
                     nparr = np.frombuffer(img_data, np.uint8)
                     img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
+                    
+                    print(f"📷 Image size: {img.shape if img is not None else 'None'}")
                     
                     if img is not None:
                         # Preprocess image for better OCR
