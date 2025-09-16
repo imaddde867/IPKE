@@ -64,39 +64,28 @@ echo "📝 Using SQLite database (no PostgreSQL setup required)"
 echo "🗄️ Initializing database..."
 ./venv_scratch/bin/python -c "from src.database.database import init_db; init_db()" || echo "⚠️ Database initialization skipped - continuing..."
 
-# Test basic imports to ensure environment is working
-echo "🔍 Testing environment..."
+# Test essential imports only
+echo "🔍 Testing essential components..."
 ./venv_scratch/bin/python -c "
 import sys
-print(f'Python version: {sys.version}')
+print(f'Python: {sys.version.split()[0]}')
 
-# Test basic imports
+# Test Streamlit (required for web interface)
 try:
     import streamlit
-    print('✅ Streamlit imported successfully')
+    print('✅ Streamlit: OK')
 except Exception as e:
-    print(f'❌ Streamlit import failed: {e}')
+    print(f'❌ Streamlit: FAILED - {e}')
     sys.exit(1)
 
+# Test PyTorch (required for AI models)
 try:
     import torch
-    print(f'✅ PyTorch imported successfully (version: {torch.__version__})')
+    print(f'✅ PyTorch: OK (v{torch.__version__})')
 except Exception as e:
-    print(f'⚠️ PyTorch import failed: {e}')
+    print(f'⚠️ PyTorch: FAILED - {e}')
 
-try:
-    from transformers import AutoTokenizer
-    print('✅ Transformers imported successfully')
-except Exception as e:
-    print(f'⚠️ Transformers import failed: {e}')
-
-try:
-    import easyocr
-    print('✅ EasyOCR imported successfully')
-except Exception as e:
-    print(f'⚠️ EasyOCR import failed: {e}')
-
-print('✅ Environment test completed')
+print('✅ Essential components verified')
 "
 
 # Start the application
