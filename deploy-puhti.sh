@@ -87,8 +87,6 @@ except Exception as e:
     sys.exit(1)
 
 # Test PyTorch (optional - skip if hanging)
-print('⚠️ Skipping PyTorch test (known HPC compatibility issues)')
-print('   - PyTorch will be imported when needed for processing')
 
 print('✅ Essential components verified')
 "
