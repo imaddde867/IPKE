@@ -40,11 +40,19 @@ export TORCH_DISABLE_DYNAMO=1
 export PYTORCH_DISABLE_DYNAMO=1
 export TORCH_COMPILE_DISABLED=1
 
-# CRITICAL: Disable PyTorch Dynamo/Triton to prevent hanging
 export TORCH_DISABLE_TRITON=1
 export TORCH_DISABLE_CUDNN=1
 export TORCH_DISABLE_CUDA=1
 export CUDA_VISIBLE_DEVICES=""
+export OMP_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+export OPENBLAS_NUM_THREADS=1
+export NUMEXPR_NUM_THREADS=1
+export VECLIB_MAXIMUM_THREADS=1
+export NUMBA_NUM_THREADS=1
+export HF_HOME=/tmp/hf_home
+export TRANSFORMERS_CACHE=/tmp/transformers_cache
+export HF_DATASETS_CACHE=/tmp/hf_datasets_cache
 
 # Enable AI engines with fast timeout
 export AI_ENGINE_TIMEOUT=10
