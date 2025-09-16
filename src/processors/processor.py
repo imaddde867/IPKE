@@ -606,6 +606,9 @@ class OptimizedDocumentProcessor:
             
             print(f"🔍 Starting OCR processing for image-based PDF...")
             
+            # Create EasyOCR reader once and reuse for all pages
+            reader = easyocr.Reader(['en'], gpu=False)
+            
             # Convert PDF pages to images and process with OCR
             doc = fitz.open(file_path)
             ocr_text = ""
@@ -631,8 +634,7 @@ class OptimizedDocumentProcessor:
                         gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
                         enhanced = cv2.equalizeHist(gray)
                         
-                        # Use EasyOCR
-                        reader = easyocr.Reader(['en'], gpu=False)
+                        # Use EasyOCR (reader already created above)
                         result = reader.readtext(enhanced)
                         
                         # Extract text from OCR results
