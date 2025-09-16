@@ -550,10 +550,10 @@ class OptimizedDocumentProcessor:
             # If text extraction failed (image-based PDF), try OCR
             if len(text.strip()) < 50:
                 print(f"⚠️ PDF appears to be image-based (only {len(text)} chars)")
-                print(f"🔄 Attempting OCR processing for image-based PDF...")
+                print(f"🔄 Quick OCR check on first 3 pages...")
                 
-                # Try OCR processing for image-based PDF
-                ocr_text = self._extract_pdf_with_ocr(file_path, page_count)
+                # Try OCR processing for image-based PDF - only check first 3 pages for speed
+                ocr_text = self._extract_pdf_with_ocr(file_path, 3)  # Only check first 3 pages
                 if ocr_text and len(ocr_text.strip()) > 50:
                     print(f"✅ OCR successful: {len(ocr_text)} characters extracted")
                     return ocr_text
