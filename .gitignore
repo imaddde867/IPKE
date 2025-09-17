@@ -1,6 +1,5 @@
 # Python
 __pycache__/
-venv
 *.py[cod]
 *$py.class
 *.so
@@ -12,61 +11,27 @@ downloads/
 eggs/
 .eggs/
 lib/
-.kiro/
 lib64/
 parts/
 sdist/
-.kiro
 var/
 wheels/
-pip-wheel-metadata/
-share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
-MANIFEST
 
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-
-# IPython
-profile_default/
-ipython_config.py
-
-# pyenv
-.python-version
-
-# pipenv
-Pipfile.lock
-
-# PEP 582
-__pypackages__/
-
-# Celery stuff
-celerybeat-schedule
-celerybeat.pid
-
-# Environments
-.env
-.venv
-env/
+# Virtual environments
 venv/
+env/
 ENV/
 env.bak/
 venv.bak/
 
-# IDEs
+# Logs
+logs/
+*.log
+
+# IDE
 .vscode/
 .idea/
 *.swp
@@ -82,36 +47,10 @@ venv.bak/
 ehthumbs.db
 Thumbs.db
 
-# Project specific
-uploaded_files/
-logs/
-*.log
-test_*.db
-*.sqlite
-
-# Docker
-.dockerignore
-
-# Node.js (for frontend)
-node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# React build
-build/
-dist/
+# Test files
+test.txt
+test_sample.txt
 
 # Temporary files
 *.tmp
 *.temp
-
-# Large local model weights (do not commit)
-models/llm/Mistral-7B-Instruct-v0.2-GGUF/
-models/llm/phi-2/
-models/audio/
-models/embeddings/
-models/vision/
-# Individual large model artifacts
-models/**/*.gguf
-
