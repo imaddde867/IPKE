@@ -5,31 +5,31 @@ This guide provides step-by-step instructions for deploying Explainium 2.0 on CS
 
 ## Prerequisites
 - CSC account with Puhti access
-- Project allocation (project_2015237)
+- Project allocation (your_project_id)
 - Basic knowledge of SSH and Linux commands
 
 ## Step 1: Connect to Puhti
 
 ### Initial Connection
 ```bash
-ssh rbhandar@puhti.csc.fi
+ssh your_username@puhti.csc.fi
 ```
 
 ### Request Compute Resources
 ```bash
-srun --account=project_2015237 --time=4:00:00 --mem=8G --cpus-per-task=4 --pty bash
+srun --account=your_project_id --time=4:00:00 --mem=8G --cpus-per-task=4 --pty bash
 ```
 
 ## Step 2: Clone Repository
 
 ### Navigate to Project Directory
 ```bash
-cd /scratch/project_2015237/
+cd /scratch/your_project_id/
 ```
 
 ### Clone Repository
 ```bash
-git clone https://github.com/imaddde867/explainium-2.0.git
+git clone https://github.com/your-org/explainium-2.0.git
 cd explainium-2.0
 ```
 
@@ -52,9 +52,9 @@ pip install -r requirements.txt
 ### Set CSC-Specific Variables
 ```bash
 export ENVIRONMENT=production
-export PYTHONPATH="${PYTHONPATH}:/scratch/project_2015237/explainium-2.0"
+export PYTHONPATH="${PYTHONPATH}:/scratch/your_project_id/explainium-2.0"
 export DATABASE_URL=sqlite:///./explainium.db
-export UPLOAD_DIRECTORY=/projappl/project_2015237/explainium-2.0/uploaded_files
+export UPLOAD_DIRECTORY=/projappl/your_project_id/explainium-2.0/uploaded_files
 export MAX_FILE_SIZE_MB=500
 export LOG_LEVEL=INFO
 ```
@@ -91,7 +91,7 @@ The script will:
 
 ### Create SSH Tunnel (from local machine)
 ```bash
-ssh -L 8501:r18c01.bullx:8501 -L 8000:r18c01.bullx:8000 rbhandar@puhti.csc.fi
+ssh -L 8501:compute_node:8501 -L 8000:compute_node:8000 your_username@puhti.csc.fi
 ```
 
 ### Access URLs
