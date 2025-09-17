@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 """
-OPTIMIZED Document Processor - Performance-First Implementation
+Optimized Document Processor - Performance-First Implementation
 Target: 2 minutes max per document processing time
-Current: 10+ minutes per document. Improvement needed: 5x speed increase minimum.
-
-This processor is designed for SPEED FIRST, then quality, optimized for M4 MacBook Pro.
+Optimized for M4 MacBook Pro with async processing and intelligent caching
 """
 
 import asyncio
@@ -121,10 +119,10 @@ class OptimizedDocumentProcessor:
         # Initialize basic capabilities
         self._init_basic_capabilities()
         
-        print("🚀 OPTIMIZED Document Processor initialized")
-        print(f"🎯 Performance Target: {self.target_processing_time} seconds per document")
-        print(f"⚡ Max Workers: {self.max_workers} (optimized for M4)")
-        print(f"📁 Supported Formats: {len(self.supported_formats)} categories")
+        print("Optimized Document Processor initialized")
+        print(f"Performance Target: {self.target_processing_time} seconds per document")
+        print(f"Max Workers: {self.max_workers} (optimized for M4)")
+        print(f"Supported Formats: {len(self.supported_formats)} categories")
 
     # Backward-compatibility: legacy callers expect process_document()
     def process_document(self, file_path: str, document_id: str = None) -> Dict[str, Any]:
@@ -250,8 +248,8 @@ class OptimizedDocumentProcessor:
             return
         
         # Skip AI engine initialization on HPC systems to prevent hanging
-        print("⚠️ Skipping AI engine initialization for HPC compatibility")
-        print("ℹ️ AI engines will be initialized when actually needed")
+        print("Skipping AI engine initialization for HPC compatibility")
+        print("AI engines will be initialized when actually needed")
         
         self.advanced_engine = None
         self.llm_engine = None
@@ -265,7 +263,7 @@ class OptimizedDocumentProcessor:
         if self.engines_initialized and (self.advanced_engine or self.llm_engine or self.extraction_engine):
             return  # Already initialized
         
-        print("🔄 Initializing AI engines for document processing...")
+        print("Initializing AI engines for document processing...")
         
         try:
             import os
@@ -286,7 +284,7 @@ class OptimizedDocumentProcessor:
                     # Initialize advanced knowledge engine
                     if not self.advanced_engine:
                         self.advanced_engine = AdvancedKnowledgeEngine(config_manager.ai, self.db_session)
-                        print("✅ Advanced Knowledge Engine initialized")
+                        print("OK Advanced Knowledge Engine initialized")
                     
                     # Initialize LLM processing engine
                     if not self.llm_engine:
@@ -299,15 +297,15 @@ class OptimizedDocumentProcessor:
                             asyncio.set_event_loop(loop)
                             loop.run_until_complete(self.llm_engine.initialize())
                             loop.close()
-                            print("✅ LLM Processing Engine initialized")
+                            print("OK LLM Processing Engine initialized")
                         except Exception as e:
-                            print(f"⚠️ LLM engine initialization failed: {e}")
+                            print(f"WARNING LLM engine initialization failed: {e}")
                             self.llm_engine = None
                     
                     # Initialize enhanced extraction engine
                     if not self.extraction_engine:
                         self.extraction_engine = EnhancedExtractionEngine()
-                        print("✅ Enhanced Extraction Engine initialized")
+                        print("OK Enhanced Extraction Engine initialized")
                     
                     result_container[0] = True
                     
@@ -322,24 +320,24 @@ class OptimizedDocumentProcessor:
             
             if thread.is_alive():
                 # Thread is still running, timeout occurred
-                print("⚠️ AI engine initialization timed out - continuing without AI engines")
+                print("WARNING AI engine initialization timed out - continuing without AI engines")
                 self.advanced_engine = None
                 self.llm_engine = None
                 self.extraction_engine = None
             else:
                 # Thread completed
                 if error_container[0]:
-                    print(f"⚠️ Engine initialization failed: {error_container[0]}")
+                    print(f"WARNING Engine initialization failed: {error_container[0]}")
                     self.advanced_engine = None
                     self.llm_engine = None
                     self.extraction_engine = None
                 else:
-                    print("✅ All AI engines initialized successfully")
+                    print("OK All AI engines initialized successfully")
             
             self.engines_initialized = True
                 
         except Exception as e:
-            print(f"⚠️ Engine initialization failed: {e}")
+            print(f"WARNING Engine initialization failed: {e}")
             self.advanced_engine = None
             self.llm_engine = None
             self.extraction_engine = None
@@ -350,14 +348,14 @@ class OptimizedDocumentProcessor:
         try:
             if self.advanced_engine:
                 await self.advanced_engine.initialize()
-                print("✅ Advanced Knowledge Engine async initialization completed")
+                print("OK Advanced Knowledge Engine async initialization completed")
             
             if self.llm_engine:
                 await self.llm_engine.initialize()
-                print("✅ LLM Processing Engine async initialization completed")
+                print("OK LLM Processing Engine async initialization completed")
                 
         except Exception as e:
-            print(f"⚠️ Async engine initialization failed: {e}")
+            print(f"WARNING Async engine initialization failed: {e}")
             logger.error(f"Async engine initialization failed: {e}")
     
     async def process_document_async(self, file_path: str, document_id: str = None) -> ProcessingResult:
@@ -542,28 +540,28 @@ class OptimizedDocumentProcessor:
                 page_text = page.get_text()
                 text += page_text
                 page_count += 1
-                print(f"📄 PDF Page {page_count}: {len(page_text)} characters")
+                print(f"Page PDF Page {page_count}: {len(page_text)} characters")
             doc.close()
             
-            print(f"📊 PDF Total: {len(text)} characters from {page_count} pages")
+            print(f"Total PDF Total: {len(text)} characters from {page_count} pages")
             
             # If text extraction failed (image-based PDF), try OCR
             if len(text.strip()) < 50:
-                print(f"⚠️ PDF appears to be image-based (only {len(text)} chars)")
-                print(f"🔄 Quick OCR check on first 3 pages...")
+                print(f"WARNING PDF appears to be image-based (only {len(text)} chars)")
+                print(f"INFO Quick OCR check on first 3 pages...")
                 
                 # Try OCR processing for image-based PDF - only check first 3 pages for speed
                 ocr_text = self._extract_pdf_with_ocr(file_path, 3)  # Only check first 3 pages
                 if ocr_text and len(ocr_text.strip()) > 50:
-                    print(f"✅ OCR successful: {len(ocr_text)} characters extracted")
+                    print(f"OK OCR successful: {len(ocr_text)} characters extracted")
                     return ocr_text
                 else:
-                    print(f"❌ OCR also failed or returned minimal content")
+                    print(f"FAILED OCR also failed or returned minimal content")
                     return f"PDF appears to be image-based but OCR failed. Text chars: {len(text)}, OCR chars: {len(ocr_text) if ocr_text else 0}"
             
             return text
         except Exception as e:
-            print(f"❌ PyMuPDF failed: {e}")
+            print(f"FAILED PyMuPDF failed: {e}")
             try:
                 # Fallback to PyPDF2
                 with open(file_path, 'rb') as file:
@@ -573,29 +571,29 @@ class OptimizedDocumentProcessor:
                     for i, page in enumerate(reader.pages):
                         page_text = page.extract_text()
                         text += page_text
-                        print(f"📄 PDF Page {i+1}: {len(page_text)} characters")
+                        print(f"Page PDF Page {i+1}: {len(page_text)} characters")
                     
-                    print(f"📊 PDF Total (PyPDF2): {len(text)} characters from {page_count} pages")
+                    print(f"Total PDF Total (PyPDF2): {len(text)} characters from {page_count} pages")
                     
                     # If PyPDF2 also fails, try OCR
                     if len(text.strip()) < 50:
-                        print(f"⚠️ PyPDF2 also found minimal text, trying OCR...")
+                        print(f"WARNING PyPDF2 also found minimal text, trying OCR...")
                         ocr_text = self._extract_pdf_with_ocr(file_path, page_count)
                         if ocr_text and len(ocr_text.strip()) > 50:
-                            print(f"✅ OCR successful: {len(ocr_text)} characters extracted")
+                            print(f"OK OCR successful: {len(ocr_text)} characters extracted")
                             return ocr_text
                         else:
                             return f"PDF appears to be image-based but OCR failed. Text chars: {len(text)}, OCR chars: {len(ocr_text) if ocr_text else 0}"
                     
                     return text
             except Exception as e2:
-                print(f"❌ PyPDF2 also failed: {e2}")
+                print(f"FAILED PyPDF2 also failed: {e2}")
                 return f"PDF extraction failed: PyMuPDF: {e}, PyPDF2: {e2}"
     
     def _extract_pdf_with_ocr(self, file_path: Path, max_pages: int = 10) -> str:
         """Extract text from image-based PDF using OCR"""
         if not self.ocr_available:
-            print(f"❌ OCR not available for image-based PDF processing")
+            print(f"FAILED OCR not available for image-based PDF processing")
             return ""
         
         try:
@@ -604,7 +602,7 @@ class OptimizedDocumentProcessor:
             import cv2
             import numpy as np
             
-            print(f"🔍 Starting OCR processing for image-based PDF...")
+            print(f"Processing Starting OCR processing for image-based PDF...")
             
             # Create EasyOCR reader once and reuse for all pages
             reader = easyocr.Reader(['en'], gpu=False)
@@ -619,7 +617,7 @@ class OptimizedDocumentProcessor:
             
             for page_num in range(max_pages_to_process):
                 try:
-                    print(f"🔍 Processing page {page_num + 1}...")
+                    print(f"Processing Processing page {page_num + 1}...")
                     page = doc[page_num]
                     # Convert page to image
                     mat = fitz.Matrix(2.0, 2.0)  # 2x zoom for better OCR
@@ -658,26 +656,26 @@ class OptimizedDocumentProcessor:
                                         page_text += detected_text + " "
                                 if page_text.strip():
                                     all_text += page_text + " "
-                                    print(f"📄 OCR Page {page_num + 1} (method {i+1}): {len(page_text)} characters")
+                                    print(f"Page OCR Page {page_num + 1} (method {i+1}): {len(page_text)} characters")
                             except Exception as e:
-                                print(f"⚠️ OCR method {i+1} failed for page {page_num + 1}: {e}")
+                                print(f"WARNING OCR method {i+1} failed for page {page_num + 1}: {e}")
                         
                         if all_text.strip():
                             ocr_text += f"\n--- Page {page_num + 1} ---\n{all_text.strip()}\n"
                             pages_processed += 1
-                            print(f"📄 OCR Page {page_num + 1}: {len(all_text)} characters")
+                            print(f"Page OCR Page {page_num + 1}: {len(all_text)} characters")
                         
                 except Exception as page_error:
-                    print(f"⚠️ OCR failed for page {page_num + 1}: {page_error}")
+                    print(f"WARNING OCR failed for page {page_num + 1}: {page_error}")
                     continue
             
             doc.close()
             
-            print(f"📊 OCR Total: {len(ocr_text)} characters from {pages_processed} pages")
+            print(f"Total OCR Total: {len(ocr_text)} characters from {pages_processed} pages")
             return ocr_text
             
         except Exception as e:
-            print(f"❌ OCR processing failed: {e}")
+            print(f"FAILED OCR processing failed: {e}")
             return ""
     
     def _extract_word_content(self, file_path: Path) -> str:
@@ -724,7 +722,7 @@ class OptimizedDocumentProcessor:
             import time
             
             # Preprocess image for better OCR
-            print(f"🔍 Processing image: {Path(file_path).name}")
+            print(f"Processing Processing image: {Path(file_path).name}")
             
             # Load and preprocess image
             img = cv2.imread(file_path)
@@ -760,7 +758,7 @@ class OptimizedDocumentProcessor:
                         # Extract text from preprocessed image
                         result = reader.readtext(temp_path)
                         
-                        print(f"📊 EasyOCR detected {len(result)} text regions:")
+                        print(f"Total EasyOCR detected {len(result)} text regions:")
                         
                         # Process results with detailed debugging
                         text_parts = []
@@ -772,24 +770,24 @@ class OptimizedDocumentProcessor:
                             # Lower confidence threshold for better text capture
                             if confidence > 0.3:  # Reduced from 0.5 to 0.3
                                 text_parts.append(detected_text)
-                                print(f"  ✅ Region {i+1}: '{detected_text}' (conf: {confidence:.2f})")
+                                print(f"  OK Region {i+1}: '{detected_text}' (conf: {confidence:.2f})")
                             else:
-                                print(f"  ❌ Region {i+1}: '{detected_text}' (conf: {confidence:.2f}) - filtered out")
+                                print(f"  FAILED Region {i+1}: '{detected_text}' (conf: {confidence:.2f}) - filtered out")
                         
                         # Print all detected regions for debugging
                         if all_text_parts:
-                            print("🔍 All detected text regions:")
+                            print("Processing All detected text regions:")
                             for part in all_text_parts:
                                 print(f"  {part}")
                         
                         combined_text = ' '.join(text_parts)
                         
                         if combined_text.strip():
-                            print(f"✅ Final extracted text ({len(combined_text)} chars): '{combined_text[:100]}{'...' if len(combined_text) > 100 else ''}'")
+                            print(f"OK Final extracted text ({len(combined_text)} chars): '{combined_text[:100]}{'...' if len(combined_text) > 100 else ''}'")
                             logger.info(f"EasyOCR extracted {len(combined_text)} characters from image")
                             result_container[0] = combined_text
                         else:
-                            print("❌ No text passed confidence threshold")
+                            print("FAILED No text passed confidence threshold")
                             result_container[0] = "No text detected in image (all regions below confidence threshold)"
                             
                     except Exception as e:
@@ -823,7 +821,7 @@ class OptimizedDocumentProcessor:
                     pass
             
         except Exception as e:
-            print(f"❌ OCR processing failed: {e}")
+            print(f"FAILED OCR processing failed: {e}")
             return f"Image extraction failed: {str(e)}"
     
     def _extract_spreadsheet_content(self, file_path: str) -> str:
@@ -915,10 +913,10 @@ class OptimizedDocumentProcessor:
         
         try:
             # Debug logging for content received by LLM
-            print(f"🧠 LLM Processing: {document_type} document")
-            print(f"📝 Content length: {len(content) if content else 0} characters")
+            print(f"LLM LLM Processing: {document_type} document")
+            print(f"Content Content length: {len(content) if content else 0} characters")
             if content and len(content) < 200:
-                print(f"📄 Content preview: '{content[:200]}...'")
+                print(f"Page Content preview: '{content[:200]}...'")
             
             # Use the real LLM engine's process_document method
             # Pass metadata to encourage LLM processing for video/image
@@ -930,7 +928,7 @@ class OptimizedDocumentProcessor:
             safe_content = content if isinstance(content, str) and content.strip() else ""
             
             if not safe_content or len(safe_content.strip()) < 10:
-                print(f"⚠️ LLM skipping: content too short ({len(safe_content)} chars)")
+                print(f"WARNING LLM skipping: content too short ({len(safe_content)} chars)")
                 return {"entities": [], "confidence": 0.0, "method": "content_too_short"}
             
             result = await self.llm_engine.process_document(safe_content, document_type, metadata)
@@ -1420,13 +1418,13 @@ class OptimizedDocumentProcessor:
     def _monitor_performance(self, processing_time: float, document_id: str):
         """Monitor and report performance"""
         if processing_time > self.target_processing_time:
-            print(f"⚠️ PERFORMANCE WARNING: Document {document_id} took {processing_time:.2f}s "
+            print(f"WARNING PERFORMANCE WARNING: Document {document_id} took {processing_time:.2f}s "
                   f"(target: {self.target_processing_time}s)")
         elif processing_time > self.performance_warning_threshold:
-            print(f"⚠️ PERFORMANCE WARNING: Document {document_id} took {processing_time:.2f}s "
+            print(f"WARNING PERFORMANCE WARNING: Document {document_id} took {processing_time:.2f}s "
                   f"(approaching target limit)")
         else:
-            print(f"✅ Document {document_id} processed in {processing_time:.2f}s "
+            print(f"OK Document {document_id} processed in {processing_time:.2f}s "
                   f"(target: {self.target_processing_time}s)")
     
     def get_performance_summary(self) -> Dict[str, Any]:
@@ -1487,7 +1485,7 @@ class OptimizedDocumentProcessor:
         self.target_processing_time = 120.0  # 2 minutes
         self.performance_warning_threshold = 90.0  # 1.5 minutes
         
-        print(f"✅ M4 optimizations applied: {self.max_workers} workers, "
+        print(f"OK M4 optimizations applied: {self.max_workers} workers, "
               f"{self.target_processing_time}s target")
     
     def cleanup(self):
