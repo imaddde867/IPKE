@@ -57,9 +57,9 @@ class OptimizedEnhancedExtractionEngine:
             try:
                 self.nlp = spacy.load("en_core_web_sm")
                 self.nlp_loaded = True
-                print("✅ spaCy model loaded for enhanced processing")
+                print("OK spaCy model loaded for enhanced processing")
             except OSError:
-                print("⚠️ spaCy model not found. Some features may be limited.")
+                print("WARNING spaCy model not found. Some features may be limited.")
                 self.nlp = None
                 self.nlp_loaded = True
     
