@@ -100,8 +100,8 @@ try:
     except Exception:
         pass
 except Exception as e:
-    print(f"⚠️ Failed to initialize OptimizedDocumentProcessor: {e}")
-    print("⚠️ Running in fallback mode without advanced AI features")
+    print(f"WARNING Failed to initialize OptimizedDocumentProcessor: {e}")
+    print("WARNING Running in fallback mode without advanced AI features")
     document_processor = None
 
 
