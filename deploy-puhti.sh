@@ -1,16 +1,16 @@
 #!/bin/bash
 # EXPLAINIUM - CSC Puhti Deployment Script
-# Run this script on Puhti to start your application
+# Deploys Explainium 2.0 on CSC Puhti supercomputing environment
 
-echo "🚀 EXPLAINIUM CSC Puhti Deployment"
-echo "=================================="
+echo "EXPLAINIUM CSC Puhti Deployment"
+echo "==============================="
 
 # Load required modules
-echo "📦 Loading modules..."
-# module load python-data  # Commented out to avoid conflicts with venv_scratch
+echo "Loading modules..."
+# module load python-data  # Disabled to avoid conflicts with venv_scratch
 
 # Activate virtual environment
-echo "🐍 Activating Python environment..."
+echo "Activating Python environment..."
 source venv_scratch/bin/activate
 
 # Set CSC-specific environment variables
@@ -61,19 +61,18 @@ export AI_ENGINE_TIMEOUT=10
 mkdir -p /tmp/transformers_cache /tmp/hf_home
 
 # Create necessary directories
-echo "📁 Creating directories..."
+echo "Creating directories..."
 mkdir -p "$UPLOAD_DIRECTORY" logs
 
-# Note: PostgreSQL and Redis need to be installed separately on Puhti
-# For now, we'll use SQLite for the database
-echo "📝 Using SQLite database (no PostgreSQL setup required)"
+# Database configuration
+echo "Using SQLite database (no PostgreSQL setup required)"
 
-# Initialize database (optional - skip if causing issues)
-echo "🗄️ Initializing database..."
-./venv_scratch/bin/python -c "from src.database.database import init_db; init_db()" || echo "⚠️ Database initialization skipped - continuing..."
+# Initialize database
+echo "Initializing database..."
+./venv_scratch/bin/python -c "from src.database.database import init_db; init_db()" || echo "Database initialization skipped - continuing..."
 
-# Test essential imports only
-echo "🔍 Testing essential components..."
+# Test essential imports
+echo "Testing essential components..."
 ./venv_scratch/bin/python -c "
 import sys
 print(f'Python: {sys.version.split()[0]}')
@@ -81,18 +80,16 @@ print(f'Python: {sys.version.split()[0]}')
 # Test Streamlit (required for web interface)
 try:
     import streamlit
-    print('✅ Streamlit: OK')
+    print('Streamlit: OK')
 except Exception as e:
-    print(f'❌ Streamlit: FAILED - {e}')
+    print(f'Streamlit: FAILED - {e}')
     sys.exit(1)
 
-# Test PyTorch (optional - skip if hanging)
-
-print('✅ Essential components verified')
+print('Essential components verified')
 "
 
 # Start the application
-echo "🚀 Starting EXPLAINIUM..."
+echo "Starting EXPLAINIUM..."
 echo "Backend API: http://localhost:8000"
 echo "Frontend Dashboard: http://localhost:8501"
 echo "API Documentation: http://localhost:8000/docs"
