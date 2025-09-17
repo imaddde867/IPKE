@@ -1127,7 +1127,7 @@ def main():
                         - **Database Readiness:** {metadata['details']['database_readiness']:.2f}
                         - **Business Value:** {metadata['details']['business_value']:.2f}
                         - **Completeness:** {metadata['details']['completeness']:.2f}
-                        - **LLM Enhanced:** {'✅ Yes' if metadata['details'].get('llm_enhanced') else '❌ No'}
+                        - **LLM Enhanced:** {'OK Yes' if metadata['details'].get('llm_enhanced') else 'FAILED No'}
                         """)
                     
                     # Show processing hierarchy rules applied
@@ -1196,7 +1196,7 @@ def main():
                 """)
             else:
                 total_items = len(st.session_state.knowledge_data)
-                st.warning(f"🔍 No data matches your current filters (total items available: {total_items})")
+                st.warning(f"Processing No data matches your current filters (total items available: {total_items})")
                 
                 # Show helpful suggestions
                 with st.expander("💡 Filtering Tips"):
@@ -1214,7 +1214,7 @@ def main():
                         conf_df = pd.DataFrame(st.session_state.knowledge_data)
                         min_conf = conf_df['Confidence'].min()
                         max_conf = conf_df['Confidence'].max()
-                        st.write(f"📊 **Confidence Range:** {min_conf:.2f} - {max_conf:.2f}")
+                        st.write(f"Total **Confidence Range:** {min_conf:.2f} - {max_conf:.2f}")
                 
                 if st.button("Reset All Filters"):
                     st.rerun()
@@ -1366,7 +1366,7 @@ def convert_intelligent_ai_results_to_display_with_llm_check(ai_results, file_na
         
         # Determine if this should be considered LLM processing
         # The AdvancedKnowledgeEngine uses LLM when available
-        method_title = "🧠 LLM-Enhanced Processing" if is_llm_enhanced else "🔧 Advanced Engine"
+        method_title = "LLM LLM-Enhanced Processing" if is_llm_enhanced else "🔧 Advanced Engine"
         method_type = "llm_processing" if is_llm_enhanced else "advanced_fallback"
         
         # Add document intelligence summary to metadata (not knowledge table)
@@ -1383,7 +1383,7 @@ def convert_intelligent_ai_results_to_display_with_llm_check(ai_results, file_na
             },
             "source": file_name,
             "processed_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-            "method_icon": "🧠" if is_llm_enhanced else "🔧"
+            "method_icon": "LLM" if is_llm_enhanced else "🔧"
         })
         
         # Process extracted entities (ACTUAL KNOWLEDGE ITEMS)
