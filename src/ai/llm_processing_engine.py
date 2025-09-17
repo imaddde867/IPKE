@@ -1,10 +1,8 @@
 #!/usr/bin/env python3
 """
-OPTIMIZED LLM Processing Engine - Performance-First Implementation
-================================================================
+Optimized LLM Processing Engine - Performance-First Implementation
 
 This engine is optimized for SPEED FIRST, then quality. Target: 2 minutes max per document.
-Current: 10+ minutes per document. Improvement needed: 5x speed increase minimum.
 
 OPTIMIZATION STRATEGIES:
 1. Async Processing Pipeline
@@ -207,7 +205,7 @@ class OptimizedLLMProcessingEngine:
         if self.initialized:
             return
         
-        logger.info("🚀 Initializing Optimized LLM Processing Engine")
+        logger.info("Starting Initializing Optimized LLM Processing Engine")
 
         # Environment based disable flags (allow frontend to skip heavy model load)
         disable_flags = [
@@ -217,7 +215,7 @@ class OptimizedLLMProcessingEngine:
         ]
         if any(flag and flag.lower() in ("1", "true", "yes") for flag in disable_flags):
             self._llm_enabled = False
-            logger.warning("⚠️ LLM disabled by environment variable – running in pattern-only mode")
+            logger.warning("WARNING LLM disabled by environment variable – running in pattern-only mode")
         else:
             self._llm_enabled = True
         
@@ -229,10 +227,10 @@ class OptimizedLLMProcessingEngine:
             await self._initialize_primary_llm()
         else:
             if not LLAMA_AVAILABLE:
-                logger.warning("⚠️ llama_cpp not available – skipping LLM initialization")
+                logger.warning("WARNING llama_cpp not available – skipping LLM initialization")
         
         self.initialized = True
-        logger.info("✅ Optimized LLM Processing Engine initialized")
+        logger.info("OK Optimized LLM Processing Engine initialized")
     
     async def _initialize_primary_llm(self):
         """Initialize primary LLM model with M4 optimizations"""
@@ -267,9 +265,9 @@ class OptimizedLLMProcessingEngine:
                         verbose=False
                     )
                     self._llm_ctx_size = env_ctx
-                    logger.info(f"✅ LLM model initialized from {model_path} (ctx={env_ctx}, batch={env_batch})")
+                    logger.info(f"OK LLM model initialized from {model_path} (ctx={env_ctx}, batch={env_batch})")
                 except Exception as mem_err:
-                    logger.warning(f"⚠️ LLM init failed with overrides ({mem_err}); retrying with ultra-low memory settings")
+                    logger.warning(f"WARNING LLM init failed with overrides ({mem_err}); retrying with ultra-low memory settings")
                     # Ultra-low memory retry
                     try:
                         self.llm_model = Llama(
@@ -281,16 +279,16 @@ class OptimizedLLMProcessingEngine:
                             verbose=False
                         )
                         self._llm_ctx_size = 384
-                        logger.info(f"✅ LLM model initialized (ultra-low memory mode) from {model_path}")
+                        logger.info(f"OK LLM model initialized (ultra-low memory mode) from {model_path}")
                     except Exception as final_err:
-                        logger.error(f"❌ LLM initialization failed after retries: {final_err}")
+                        logger.error(f"FAILED LLM initialization failed after retries: {final_err}")
                         self.llm_model = None
             else:
-                logger.warning("⚠️ No GGUF model file found for LLM; proceeding without LLM")
+                logger.warning("WARNING No GGUF model file found for LLM; proceeding without LLM")
                 self.llm_model = None
 
         except Exception as e:
-            logger.error(f"❌ LLM initialization failed: {e}")
+            logger.error(f"FAILED LLM initialization failed: {e}")
             self.llm_model = None
     
     async def process_document(self, content: str, document_type: str = "unknown", 
@@ -311,7 +309,7 @@ class OptimizedLLMProcessingEngine:
         self.start_time = time.time()
         metadata = metadata or {}
         
-        logger.info(f"🚀 Starting OPTIMIZED processing for {document_type} document")
+        logger.info(f"Starting Starting OPTIMIZED processing for {document_type} document")
         
         # STEP 1: Fast Content Analysis (async)
         complexity_task = asyncio.create_task(self._assess_document_complexity_fast(content, document_type))
@@ -320,7 +318,7 @@ class OptimizedLLMProcessingEngine:
         cache_result = self.processing_cache.get_similar_content(content)
         if cache_result:
             self.processing_stats["cache_hits"] += 1
-            logger.info("🎯 Cache hit - using cached results")
+            logger.info("Target Cache hit - using cached results")
             return self._create_result_from_cache(cache_result, document_type)
         
         self.processing_stats["cache_misses"] += 1
@@ -378,7 +376,7 @@ class OptimizedLLMProcessingEngine:
         self.processing_stats["total_documents"] += 1
         self.processing_stats["total_processing_time"] += processing_time
         
-        logger.info(f"✅ OPTIMIZED processing complete: {len(validated_entities)} entities, "
+        logger.info(f"OK OPTIMIZED processing complete: {len(validated_entities)} entities, "
                    f"{quality_metrics['overall_confidence']:.2f} confidence, "
                    f"{processing_time:.2f}s (Target: <120s)")
         
