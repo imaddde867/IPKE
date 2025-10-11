@@ -157,11 +157,6 @@ The system automatically downloads required models on first use:
 - **spaCy**: NLP processing
 - **Mistral-7B**: Large language model (optional)
 
-### Docker (Optional)
-```bash
-docker-compose up
-```
-
 ## 📊 Performance Metrics
 
 ### Before vs After Architecture Cleanup
