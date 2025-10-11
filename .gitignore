@@ -55,3 +55,11 @@ test_sample.txt
 # Temporary files
 *.tmp
 *.temp
+
+
+
+
+
+
+test_cnc.py
+demo_llm.py
