@@ -1,0 +1,53 @@
+# Reduce Docker build context for faster builds
+.git
+.venv/
+.gitignore
+__pycache__/
+*.py[cod]
+*.log
+*.tmp
+*.temp
+*.sqlite
+*.db
+*.egg-info/
+venv/
+env/
+.venv/
+
+# Large model / cache directories (mounted or downloaded at runtime)
+models/
+model_cache/
+cache/
+
+# Uploaded & generated content
+uploaded_files/
+logs/
+documents_samples/
+
+# Frontend build artifacts / node modules
+node_modules/
+dist/
+build/
+
+# Test & docs not needed in runtime image
+tests/
+docs/
+*.md
+*.pdf
+*.mp4
+*.mov
+*.avi
+*.mkv
+
+# Data archives / checkpoints
+*.gguf
+*.bin
+*.pt
+*.pth
+*.tar*
+*.zip
+*.7z
+
+# Misc
+.DS_Store
+coverage*
