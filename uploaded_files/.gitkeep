@@ -1,0 +1,2 @@
+# This file keeps the uploaded_files directory in git
+# The directory is needed for the API to store temporary uploaded files

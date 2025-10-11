@@ -49,17 +49,19 @@ ehthumbs.db
 Thumbs.db
 
 # Test files
-test.txt
-test_sample.txt
+test*.txt
+test*.py
+debug*.py
 
 # Temporary files
 *.tmp
 *.temp
+server.log
 
+# Large model files
+models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf
+models/llm/*.gguf
 
-
-
-
-
-test_cnc.py
-demo_llm.py
+# Uploaded files
+uploaded_files/*
+!uploaded_files/.gitkeep

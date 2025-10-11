@@ -136,9 +136,11 @@ class LLMExtractionStrategy(ExtractionStrategy):
             try:
                 self.llm = Llama(
                     model_path=self.model_path,
-                    n_ctx=4096,
+                    n_ctx=8192,  # Larger context for Mistral
                     n_threads=4,
-                    verbose=False
+                    n_gpu_layers=0,  # CPU only for compatibility
+                    verbose=False,
+                    f16_kv=True  # Use f16 for key-value cache
                 )
                 self._initialized = True
                 logger.info(f"Loaded LLM model: {self.model_path}")
@@ -201,20 +203,31 @@ class LLMExtractionStrategy(ExtractionStrategy):
     
     async def _process_chunk_with_llm(self, chunk: str, document_type: str) -> List[ExtractedEntity]:
         """Process a single chunk with LLM"""
-        prompt = f"""Extract key information from this {document_type} document text. 
-        Identify: procedures, requirements, equipment, personnel roles, safety measures.
-        
-        Text: {chunk}
-        
-        Format as JSON list with fields: content, type, category, confidence.
-        """
+        prompt = f"""[INST] Extract key information from this {document_type} document text and return ONLY a valid JSON array.
+
+Analyze this text and identify:
+- procedures (steps or actions)
+- requirements (conditions or constraints)  
+- equipment (tools or machines)
+- personnel roles (people or responsibilities)
+- safety measures (safety conditions or rules)
+
+Text: {chunk}
+
+Return ONLY a JSON array in this exact format:
+[
+  {{"content": "extracted text", "type": "procedure|requirement|equipment|personnel|safety", "category": "descriptive category", "confidence": 0.85}}
+]
+[/INST]"""
         
         try:
             response = self.llm(
                 prompt,
-                max_tokens=1024,
+                max_tokens=512,
                 temperature=0.1,
-                stop=["</s>"]
+                top_p=0.9,
+                repeat_penalty=1.1,
+                stop=["</s>", "[/INST]"]
             )
             
             return self._parse_llm_response(response['choices'][0]['text'], chunk)
@@ -282,8 +295,8 @@ class UnifiedKnowledgeEngine:
         """Initialize only LLM extraction strategy"""
         # Only LLM strategy - check if available
         if LLAMA_AVAILABLE:
-            # Default LLM path if not configured
-            llm_path = getattr(self.config, 'llm_path', 'models/llm/Mistral-7B-Instruct-v0.2-GGUF')
+            # Use the Mistral model path from config
+            llm_path = getattr(self.config, 'llm_model_path', 'models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf')
             self.strategies['llm'] = LLMExtractionStrategy(llm_path)
             logger.info("Initialized LLM extraction strategy")
         else:

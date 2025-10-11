@@ -50,7 +50,7 @@ class UnifiedConfig:
     
     # AI Models
     spacy_model: str = "en_core_web_sm"
-    llm_model_path: str = "models/llm/Mistral-7B-Instruct-v0.2-GGUF"
+    llm_model_path: str = "models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf"
     embedding_model: str = "models/embeddings/bge-small-en-v1.5"
     whisper_model: str = "base"
     
