@@ -6,7 +6,7 @@ Explainium converts unstructured technical, safety, compliance and operational d
 [![FastAPI](https://img.shields.io/badge/API-FastAPI-00a86b.svg)](https://fastapi.tiangolo.com)
 [![Offline](https://img.shields.io/badge/processing-offline-success.svg)](https://github.com)
 
-## 🎯 Overview
+## Overview
 
 **Explainium 2.0** transforms complex documents into structured knowledge using a modern, streamlined architecture:
 
@@ -16,7 +16,7 @@ Explainium converts unstructured technical, safety, compliance and operational d
 - **Quality Assurance**: Confidence scoring, validation gates, and fallback mechanisms
 - **Production Ready**: Environment-based configuration with health monitoring
 
-## 🏗️ Architecture
+## Architecture
 
 ### Current Clean Structure
 ```
@@ -41,7 +41,7 @@ src/
 3. **LLM Analysis**: Mistral-7B for complex semantic extraction
 4. **Auto-Selection**: Optimal strategy chosen based on document complexity
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Installation
 ```bash
@@ -74,7 +74,7 @@ print(f"Extracted {len(result['entities'])} entities")
 print(f"Confidence: {result['confidence_score']:.2f}")
 ```
 
-## 📋 API Endpoints
+## API Endpoints
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
@@ -108,7 +108,7 @@ curl -X POST "http://localhost:8000/extract" \
 }
 ```
 
-## 🔧 Configuration
+## Configuration
 
 ### Environment Variables
 ```bash
@@ -125,7 +125,7 @@ export EXPLAINIUM_MAX_FILE_SIZE=52428800  # 50MB
 - **Video**: MP4, AVI, MOV (audio extraction)
 - **Archives**: ZIP (extract and process contents)
 
-## 🎛️ Knowledge Categories
+## Knowledge Categories
 
 | Category | Description | Target Confidence |
 |----------|-------------|-------------------|
@@ -136,7 +136,7 @@ export EXPLAINIUM_MAX_FILE_SIZE=52428800  # 50MB
 | **Organizational** | Roles, responsibilities, personnel info | 0.75 |
 | **Definitions** | Terms, explanations, knowledge base | 0.70 |
 
-## 🔬 Development
+## Development
 
 ### Local Development
 ```bash
@@ -147,7 +147,7 @@ pip install -e .
 pytest
 
 # Check code quality
-python -c "from src.ai.unified_knowledge_engine import UnifiedKnowledgeEngine; print('✅ Engine OK')"
+python -c "from src.ai.unified_knowledge_engine import UnifiedKnowledgeEngine; print('Engine OK')"
 ```
 
 ### Model Management
@@ -155,19 +155,7 @@ The system automatically downloads required models on first use:
 - **Whisper**: Speech-to-text (audio processing)
 - **BGE Embeddings**: Semantic similarity 
 - **spaCy**: NLP processing
-- **Mistral-7B**: Large language model (optional)
-
-## 📊 Performance Metrics
-
-### Before vs After Architecture Cleanup
-
-| Metric | Before | After | Improvement |
-|--------|--------|-------|-------------|
-| **Lines of Code** | 13,584 | ~7,500 | -44% |
-| **AI Engines** | 6 separate | 1 unified | -83% |
-| **API Complexity** | 312 lines | ~150 lines | -52% |
-| **Processor** | 1,508 lines | ~400 lines | -73% |
-| **Dependencies** | 23 packages | 18 packages | -22% |
+- **Mistral-7B**: Large language model 
 
 ### Processing Performance
 - **Small Documents** (< 20 pages): ~2-5 seconds
@@ -175,7 +163,7 @@ The system automatically downloads required models on first use:
 - **Large Documents** (100+ pages): ~1-3 minutes
 - **Confidence Scores**: Typically 0.70-0.95 depending on content
 
-## 🛠️ System Requirements
+## System Requirements
 
 ### Minimum
 - **Python**: 3.12+
@@ -186,25 +174,3 @@ The system automatically downloads required models on first use:
 - **RAM**: 8GB+ (for LLM processing)
 - **CPU**: Multi-core for parallel processing
 - **GPU**: Optional (Metal/CUDA acceleration)
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📝 License
-
-MIT License - see [LICENSE](LICENSE) for details.
-
-## 🆘 Support
-
-- **Issues**: [GitHub Issues](https://github.com/imaddde867/explainium-2.0/issues)
-- **Discussions**: [GitHub Discussions](https://github.com/imaddde867/explainium-2.0/discussions)
-- **Documentation**: Built-in API docs at `/docs` endpoint
-
----
-
-**Explainium 2.0** - Clean, fast, and intelligent document knowledge extraction 🚀
