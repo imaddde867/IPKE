@@ -24,36 +24,36 @@ def check_model_availability():
     model_path = config.llm_model_path
     
     if not os.path.exists(model_path):
-        print(f"❌ Model file not found: {model_path}")
+        print(f"ERROR: Model file not found: {model_path}")
         print("Please ensure the Mistral model is downloaded.")
         return False
     
     file_size_gb = os.path.getsize(model_path) / (1024 * 1024 * 1024)
-    print(f"✅ Mistral model found: {model_path}")
+    print(f"SUCCESS: Mistral model found: {model_path}")
     print(f"   Size: {file_size_gb:.2f} GB")
     return True
 
 def main():
     """Run the Explainium API server"""
     print("=" * 60)
-    print("🧠 EXPLAINIUM 2.0 - Knowledge Extraction API")
+    print("EXPLAINIUM 2.0 - Knowledge Extraction API")
     print("=" * 60)
     
     # Check model availability
     if not check_model_availability():
-        print("\n❌ Cannot start server without Mistral model")
+        print("\nERROR: Cannot start server without Mistral model")
         return 1
     
     config = UnifiedConfig()
     
-    print(f"\n🚀 Starting API server...")
+    print(f"\nStarting API server...")
     print(f"   Host: {config.api_host}")
     print(f"   Port: {config.api_port}")
     print(f"   Environment: {config.environment.value}")
     print(f"   LLM: Mistral-7B-Instruct-v0.2")
-    print(f"\n📡 API available at: http://{config.api_host}:{config.api_port}")
-    print(f"📚 Documentation: http://{config.api_host}:{config.api_port}/docs")
-    print(f"\n💡 Upload documents to /extract endpoint for knowledge extraction")
+    print(f"\nAPI available at: http://{config.api_host}:{config.api_port}")
+    print(f"Documentation: http://{config.api_host}:{config.api_port}/docs")
+    print(f"\nUpload documents to /extract endpoint for knowledge extraction")
     
     try:
         uvicorn.run(
@@ -65,10 +65,10 @@ def main():
         )
         return 0
     except KeyboardInterrupt:
-        print("\n🛑 Server stopped by user")
+        print("\nServer stopped by user")
         return 0
     except Exception as e:
-        print(f"❌ Server error: {e}")
+        print(f"ERROR: Server error: {e}")
         return 1
 
 if __name__ == "__main__":
