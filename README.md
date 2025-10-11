@@ -84,18 +84,27 @@ Interface & Access:
 
 ```
 explainium-2.0/
-├── src/ai/                       # Semantic & extraction engines
-│   ├── llm_processing_engine.py  # Primary semantic engine
-│   ├── enhanced_extraction_engine.py
-│   ├── knowledge_categorization_engine.py
-│   ├── advanced_knowledge_engine.py
-│   └── document_intelligence_analyzer.py
-├── src/processors/               # Orchestration / pipeline
-│   └── processor.py
-├── src/database/                 # Models and CRUD operations
-├── src/frontend/                 # Streamlit interface
-├── models/                       # Local model assets
-└── documents_samples/            # Sample input documents
+├── src/
+│   ├── ai/                       # Semantic & extraction engines
+│   │   ├── llm_processing_engine.py  # Primary semantic engine
+│   │   ├── enhanced_extraction_engine.py
+│   │   ├── knowledge_categorization_engine.py
+│   │   ├── advanced_knowledge_engine.py
+│   │   └── document_intelligence_analyzer.py
+│   ├── processors/               # Document processing pipeline
+│   │   └── processor.py
+│   ├── api/                      # FastAPI backend
+│   │   ├── app.py               # Main API application
+│   │   └── celery_worker.py     # Background tasks
+│   ├── frontend/                 # Streamlit interface
+│   │   └── knowledge_table.py
+│   ├── database/                 # Data models and persistence
+│   ├── core/                     # Configuration and optimization
+│   └── export/                   # Export utilities
+├── models/                       # Local AI model assets
+├── documents_samples/            # Sample documents for testing
+├── docker/                       # Docker configuration
+└── scripts/                      # Utility scripts
 ```
 
 ## Quick Start
@@ -107,33 +116,32 @@ Prerequisites:
 
 Installation:
 ```bash
-git clone https://github.com/your-org/explainium-2.0.git
+git clone https://github.com/imaddde867/explainium-2.0.git
 cd explainium-2.0
-chmod +x setup.sh
-./setup.sh
-./start.sh
-./scripts/health_check.sh   # optional validation
+pip install -r requirements.txt
+python -m spacy download en_core_web_sm
+```
+
+For research and development:
+```bash
+# Start the frontend directly
+streamlit run src/frontend/knowledge_table.py
+
+# Or start the API backend
+uvicorn src.api.app:app --host 0.0.0.0 --port 8000
+
+# Optional: Run with Docker
+docker-compose up
 ```
 
 Access:
-- Dashboard: http://localhost:8501
-- API: http://localhost:8000
+- Dashboard: http://localhost:8501 (Streamlit)
+- API: http://localhost:8000 (FastAPI)
 - API Docs: http://localhost:8000/docs
 
-Health check (any time):
+Health check:
 ```bash
 ./scripts/health_check.sh
-```
-
-Stop services:
-```bash
-./stop.sh
-```
-
-Clean (remove caches & logs):
-```bash
-find . -name '__pycache__' -prune -exec rm -rf {} +
-rm -rf logs/*.log
 ```
 
 ## Environment Variables (Tuning)
@@ -160,10 +168,8 @@ export EXPLAINIUM_LLM_CHUNK_TIMEOUT=35
 
 | Script | Purpose |
 |--------|---------|
-| setup.sh | First-time environment + dependencies |
-| start.sh | Launch backend + frontend |
-| stop.sh | Stop all services |
 | scripts/health_check.sh | Run readiness diagnostics |
+| scripts/model_manager.py | Manage AI models and optimization |
 
 ## Configuration Snippets
 
@@ -195,10 +201,9 @@ PRODUCTION_READY = 0.85
 
 Process a document via the orchestration layer:
 ```python
-from src.processors.optimized_processor import OptimizedDocumentProcessor
+from src.processors.processor import OptimizedDocumentProcessor
 
 processor = OptimizedDocumentProcessor()
-processor.optimize_for_m4()
 result = processor.process_document_sync("/path/to/document.pdf")
 
 print(result.entities_extracted, result.confidence_score)
@@ -222,7 +227,7 @@ async def run():
 asyncio.run(run())
 ```
 
-## Development & Verification
+## Development & Research
 
 Basic readiness test:
 ```bash
@@ -231,9 +236,27 @@ python -c "from src.ai.llm_processing_engine import LLMProcessingEngine;import a
 asyncio.run(t())"
 ```
 
+Model management:
+```bash
+# Setup models for your hardware
+python scripts/model_manager.py --action setup --hardware-profile m4_16gb
+
+# List available models
+python scripts/model_manager.py --action list
+
+# Validate model integrity
+python scripts/model_manager.py --action validate
+```
+
 Quality / statistics probe:
 ```bash
-python -c "from src.processors.optimized_processor import OptimizedDocumentProcessor; p=OptimizedDocumentProcessor(); p.optimize_for_m4(); print('ok')"
+python -c "from src.processors.processor import OptimizedDocumentProcessor; p=OptimizedDocumentProcessor(); print('Processor ready')"
+```
+
+Clean development environment:
+```bash
+find . -name '__pycache__' -type d -exec rm -rf {} + 2>/dev/null || true
+rm -f logs/*.log
 ```
 
 ## License
