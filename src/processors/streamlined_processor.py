@@ -43,7 +43,7 @@ except ImportError:
     easyocr = None
 
 from src.logging_config import get_logger
-from src.core.config import ProcessingConfig
+from src.core.unified_config import UnifiedConfig
 from src.ai.unified_knowledge_engine import UnifiedKnowledgeEngine, ExtractionResult
 from src.exceptions import ProcessingError
 
@@ -72,8 +72,8 @@ class StreamlinedDocumentProcessor:
     3. Provides consistent, fast processing
     """
     
-    def __init__(self, config: Optional[ProcessingConfig] = None):
-        self.config = config or ProcessingConfig()
+    def __init__(self, config: Optional[UnifiedConfig] = None):
+        self.config = config or UnifiedConfig()
         self.knowledge_engine = UnifiedKnowledgeEngine()
         self.executor = ThreadPoolExecutor(max_workers=4)
         
@@ -364,6 +364,6 @@ OptimizedDocumentProcessor = StreamlinedDocumentProcessor
 
 
 # Factory function
-def create_document_processor(config: Optional[ProcessingConfig] = None) -> StreamlinedDocumentProcessor:
+def create_document_processor(config: Optional[UnifiedConfig] = None) -> StreamlinedDocumentProcessor:
     """Create a new streamlined document processor"""
     return StreamlinedDocumentProcessor(config)

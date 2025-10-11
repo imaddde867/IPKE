@@ -27,29 +27,14 @@ import time
 
 # External dependencies (lazy loading)
 try:
-    import spacy
-    from spacy.tokens import Doc
-    SPACY_AVAILABLE = True
-except ImportError:
-    SPACY_AVAILABLE = False
-    spacy = None
-
-try:
     from llama_cpp import Llama
     LLAMA_AVAILABLE = True
 except ImportError:
     LLAMA_AVAILABLE = False
     Llama = None
 
-try:
-    from sentence_transformers import SentenceTransformer
-    EMBEDDINGS_AVAILABLE = True
-except ImportError:
-    EMBEDDINGS_AVAILABLE = False
-    SentenceTransformer = None
-
 from src.logging_config import get_logger
-from src.core.config import AIConfig
+from src.core.unified_config import UnifiedConfig
 
 logger = get_logger(__name__)
 
@@ -98,191 +83,42 @@ class ExtractionStrategy(ABC):
         pass
 
 
-class PatternExtractionStrategy(ExtractionStrategy):
-    """Fast pattern-based extraction for common entities"""
-    
-    def __init__(self):
-        self.patterns = self._load_extraction_patterns()
-        self.confidence_threshold = 0.6
-    
-    def _load_extraction_patterns(self) -> Dict[str, List[str]]:
-        """Load optimized regex patterns for entity extraction"""
-        return {
-            'procedures': [
-                r'(?:step\s+\d+|procedure|process):\s*([^.!?]+[.!?])',
-                r'(?:to\s+\w+|must\s+\w+|shall\s+\w+)[^.!?]*[.!?]',
-            ],
-            'requirements': [
-                r'(?:must|shall|required|mandatory)\s+([^.!?]+[.!?])',
-                r'(?:compliance|regulation|standard)\s+([^.!?]+[.!?])',
-            ],
-            'equipment': [
-                r'(?:equipment|device|tool|instrument):\s*([^.!?]+[.!?])',
-                r'(?:model|serial|part)\s+(?:number|#):\s*([^\s,;]+)',
-            ],
-            'personnel': [
-                r'(?:operator|technician|engineer|manager):\s*([^.!?]+[.!?])',
-                r'(?:responsible|assigned|performed)\s+by\s+([^.!?]+[.!?])',
-            ],
-            'safety': [
-                r'(?:danger|warning|caution|hazard):\s*([^.!?]+[.!?])',
-                r'(?:ppe|protective|safety)\s+([^.!?]+[.!?])',
-            ]
-        }
+class BasicExtractionStrategy(ExtractionStrategy):
+    """Minimal fallback extraction when LLM not available"""
     
     async def extract(self, content: str, document_type: str = "unknown") -> ExtractionResult:
-        """Fast pattern-based extraction"""
+        """Basic text analysis fallback"""
         start_time = time.time()
         entities = []
         
-        for category, patterns in self.patterns.items():
-            for pattern in patterns:
-                matches = re.finditer(pattern, content, re.IGNORECASE | re.MULTILINE)
-                for match in matches:
-                    entity = ExtractedEntity(
-                        content=match.group(1).strip() if match.groups() else match.group(0).strip(),
-                        entity_type=category,
-                        category=category,
-                        confidence=self.confidence_threshold + 0.1,
-                        context=self._extract_context(content, match.start(), match.end()),
-                        metadata={'pattern': pattern, 'document_type': document_type}
-                    )
-                    entities.append(entity)
+        # Very basic entity detection
+        words = content.split()
+        if 'CNC' in content or 'mill' in content:
+            entities.append(ExtractedEntity(
+                content="CNC mill operation",
+                entity_type="equipment",
+                category="technical",
+                confidence=0.5,
+                context=content[:200],
+                metadata={'fallback': True}
+            ))
         
         processing_time = time.time() - start_time
-        confidence_score = sum(e.confidence for e in entities) / len(entities) if entities else 0.0
+        confidence_score = 0.5 if entities else 0.0
         
         return ExtractionResult(
             entities=entities,
             confidence_score=confidence_score,
             processing_time=processing_time,
-            strategy_used="pattern_extraction",
-            quality_metrics={'entity_count': len(entities), 'avg_confidence': confidence_score}
+            strategy_used="basic_fallback",
+            quality_metrics={'entity_count': len(entities)}
         )
     
-    def _extract_context(self, content: str, start: int, end: int, window: int = 100) -> str:
-        """Extract context around matched entity"""
-        context_start = max(0, start - window)
-        context_end = min(len(content), end + window)
-        return content[context_start:context_end].strip()
-    
     def get_confidence_threshold(self) -> float:
-        return self.confidence_threshold
+        return 0.5
     
     def get_strategy_name(self) -> str:
-        return "Pattern-Based Extraction"
-
-
-class NLPExtractionStrategy(ExtractionStrategy):
-    """NLP-enhanced extraction using spaCy"""
-    
-    def __init__(self, model_name: str = "en_core_web_sm"):
-        self.model_name = model_name
-        self.nlp = None
-        self.confidence_threshold = 0.7
-        self._initialized = False
-    
-    async def _initialize(self):
-        """Lazy load spaCy model"""
-        if not self._initialized and SPACY_AVAILABLE:
-            try:
-                self.nlp = spacy.load(self.model_name)
-                self._initialized = True
-                logger.info(f"Loaded spaCy model: {self.model_name}")
-            except OSError:
-                logger.warning(f"spaCy model {self.model_name} not found. Using pattern fallback.")
-                self.nlp = None
-                self._initialized = True
-    
-    async def extract(self, content: str, document_type: str = "unknown") -> ExtractionResult:
-        """NLP-enhanced extraction"""
-        start_time = time.time()
-        await self._initialize()
-        
-        if not self.nlp:
-            # Fallback to pattern extraction
-            pattern_strategy = PatternExtractionStrategy()
-            result = await pattern_strategy.extract(content, document_type)
-            result.strategy_used = "nlp_fallback_to_pattern"
-            return result
-        
-        # Process with spaCy
-        doc = self.nlp(content[:1000000])  # Limit to 1M chars for performance
-        entities = []
-        
-        # Extract named entities
-        for ent in doc.ents:
-            entity = ExtractedEntity(
-                content=ent.text,
-                entity_type=ent.label_.lower(),
-                category=self._map_spacy_label_to_category(ent.label_),
-                confidence=self.confidence_threshold + 0.05,
-                context=str(ent.sent),
-                metadata={'spacy_label': ent.label_, 'start': ent.start, 'end': ent.end}
-            )
-            entities.append(entity)
-        
-        # Extract process steps and procedures
-        entities.extend(await self._extract_processes(doc))
-        
-        processing_time = time.time() - start_time
-        confidence_score = sum(e.confidence for e in entities) / len(entities) if entities else 0.0
-        
-        return ExtractionResult(
-            entities=entities,
-            confidence_score=confidence_score,
-            processing_time=processing_time,
-            strategy_used="nlp_extraction",
-            quality_metrics={
-                'entity_count': len(entities),
-                'avg_confidence': confidence_score,
-                'named_entities': len([e for e in entities if e.metadata.get('spacy_label')])
-            }
-        )
-    
-    async def _extract_processes(self, doc: Doc) -> List[ExtractedEntity]:
-        """Extract process-related entities from spaCy doc"""
-        entities = []
-        
-        for sent in doc.sents:
-            sent_text = sent.text.strip()
-            
-            # Look for process indicators
-            if re.search(r'\b(step|procedure|process|method|approach)\b', sent_text, re.I):
-                entity = ExtractedEntity(
-                    content=sent_text,
-                    entity_type="procedure",
-                    category="process",
-                    confidence=self.confidence_threshold,
-                    context=sent_text,
-                    metadata={'sentence_idx': sent.start, 'nlp_extracted': True}
-                )
-                entities.append(entity)
-        
-        return entities
-    
-    def _map_spacy_label_to_category(self, label: str) -> str:
-        """Map spaCy entity labels to our categories"""
-        mapping = {
-            'PERSON': 'personnel',
-            'ORG': 'organization',
-            'GPE': 'location',
-            'PRODUCT': 'equipment',
-            'EVENT': 'process',
-            'LAW': 'requirement',
-            'MONEY': 'financial',
-            'PERCENT': 'metric',
-            'QUANTITY': 'metric',
-            'TIME': 'schedule',
-            'DATE': 'schedule',
-        }
-        return mapping.get(label, 'general')
-    
-    def get_confidence_threshold(self) -> float:
-        return self.confidence_threshold
-    
-    def get_strategy_name(self) -> str:
-        return "NLP-Enhanced Extraction"
+        return "Basic Fallback Extraction"
 
 
 class LLMExtractionStrategy(ExtractionStrategy):
@@ -317,11 +153,15 @@ class LLMExtractionStrategy(ExtractionStrategy):
         await self._initialize()
         
         if not self.llm:
-            # Fallback to NLP extraction
-            nlp_strategy = NLPExtractionStrategy()
-            result = await nlp_strategy.extract(content, document_type)
-            result.strategy_used = "llm_fallback_to_nlp"
-            return result
+            # No fallback - return empty result if LLM not available
+            logger.warning("LLM not available and no fallback configured")
+            return ExtractionResult(
+                entities=[],
+                confidence_score=0.0,
+                processing_time=time.time() - start_time,
+                strategy_used="llm_unavailable",
+                quality_metrics={'error': 'LLM not available'}
+            )
         
         # Chunk content for LLM processing
         chunks = self._chunk_content(content, 2000)
@@ -424,8 +264,8 @@ class UnifiedKnowledgeEngine:
     Automatically selects the best extraction strategy based on content and performance requirements.
     """
     
-    def __init__(self, config: Optional[AIConfig] = None):
-        self.config = config or AIConfig()
+    def __init__(self, config: Optional[UnifiedConfig] = None):
+        self.config = config or UnifiedConfig()
         self.strategies = {}
         self.cache = {}
         self.cache_lock = asyncio.Lock()
@@ -439,19 +279,17 @@ class UnifiedKnowledgeEngine:
         self._initialize_strategies()
     
     def _initialize_strategies(self):
-        """Initialize all available extraction strategies"""
-        # Always available
-        self.strategies['pattern'] = PatternExtractionStrategy()
-        
-        # NLP strategy (if spaCy available)
-        if SPACY_AVAILABLE:
-            self.strategies['nlp'] = NLPExtractionStrategy(self.config.spacy_model)
-        
-        # LLM strategy (if available and configured)
-        if LLAMA_AVAILABLE and hasattr(self.config, 'llm_path'):
-            llm_path = getattr(self.config, 'llm_path', None)
-            if llm_path:
-                self.strategies['llm'] = LLMExtractionStrategy(llm_path)
+        """Initialize only LLM extraction strategy"""
+        # Only LLM strategy - check if available
+        if LLAMA_AVAILABLE:
+            # Default LLM path if not configured
+            llm_path = getattr(self.config, 'llm_path', 'models/llm/Mistral-7B-Instruct-v0.2-GGUF')
+            self.strategies['llm'] = LLMExtractionStrategy(llm_path)
+            logger.info("Initialized LLM extraction strategy")
+        else:
+            logger.error("LLM not available - cannot initialize any strategies")
+            # Create a minimal fallback
+            self.strategies['minimal'] = BasicExtractionStrategy()
         
         logger.info(f"Initialized {len(self.strategies)} extraction strategies: {list(self.strategies.keys())}")
     
@@ -518,26 +356,16 @@ class UnifiedKnowledgeEngine:
         return result
     
     def _select_best_strategy(self, content: str, document_type: str, quality_threshold: float) -> ExtractionStrategy:
-        """Select the best extraction strategy based on content and requirements"""
-        content_length = len(content)
-        
-        # For high quality requirements and sufficient content, prefer LLM
-        if quality_threshold >= 0.8 and content_length > 1000 and 'llm' in self.strategies:
+        """Select extraction strategy - always use LLM if available"""
+        # Always prefer LLM if available
+        if 'llm' in self.strategies:
             return self.strategies['llm']
         
-        # For medium quality and moderate content, prefer NLP
-        if quality_threshold >= 0.6 and content_length > 500 and 'nlp' in self.strategies:
-            return self.strategies['nlp']
-        
-        # Default to pattern extraction for speed
-        return self.strategies['pattern']
+        # Fallback to minimal if LLM not available
+        return self.strategies['minimal']
     
     def _get_fallback_strategy(self, current_strategy: ExtractionStrategy) -> Optional[ExtractionStrategy]:
-        """Get fallback strategy when current strategy quality is insufficient"""
-        if isinstance(current_strategy, LLMExtractionStrategy) and 'nlp' in self.strategies:
-            return self.strategies['nlp']
-        elif isinstance(current_strategy, NLPExtractionStrategy) and 'pattern' in self.strategies:
-            return self.strategies['pattern']
+        """No fallback - use only LLM"""
         return None
     
     def get_performance_stats(self) -> Dict[str, Any]:
@@ -560,6 +388,6 @@ KnowledgeExtractor = UnifiedKnowledgeEngine
 
 
 # Factory function for easy instantiation
-def create_knowledge_engine(config: Optional[AIConfig] = None) -> UnifiedKnowledgeEngine:
+def create_knowledge_engine(config: Optional[UnifiedConfig] = None) -> UnifiedKnowledgeEngine:
     """Create a new knowledge extraction engine with the given configuration"""
     return UnifiedKnowledgeEngine(config)
