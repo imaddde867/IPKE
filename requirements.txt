@@ -1,16 +1,13 @@
-# Core dependencies for Explainium Optimized Processor
-# Updated for Python 3.12 on Puhti
-# ----------------------------------
+# Explainium 2.0 - Core Dependencies
+# Clean architecture with minimal required packages
 
 # Web Framework
 fastapi>=0.104.0
 python-multipart>=0.0.20
 uvicorn>=0.24.0
 
-# Database
+# Database (optional - for data persistence)
 sqlalchemy>=2.0.0
-alembic>=1.12.0
-psycopg2-binary>=2.9.0
 
 # HTTP requests
 requests>=2.31.0
@@ -35,9 +32,8 @@ spacy>=3.7.0
 sentence-transformers>=2.7.0
 transformers>=4.41.0
 huggingface-hub>=0.33.0
-packaging>=23.0
 
-# LLM Backends (optional - for local LLM processing)
+# LLM Backends (optional)
 llama-cpp-python>=0.2.80
 
 # Audio/Video Processing (optional)
@@ -47,11 +43,4 @@ openai-whisper>=20240930
 pytest>=7.4.0
 pytest-asyncio>=0.23.0
 
-############################################################
-# POST-INSTALL TASKS
-############################################################
-# 1. Download spaCy model:
-#    python -m spacy download en_core_web_sm
-# 2. For Metal build of llama-cpp-python (macOS):
-#    CMAKE_ARGS="-DLLAMA_METAL=on" pip install --force-reinstall --no-binary :all: llama-cpp-python
-############################################################
+# Post-install: python -m spacy download en_core_web_sm
