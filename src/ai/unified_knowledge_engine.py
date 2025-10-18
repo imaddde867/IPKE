@@ -183,16 +183,21 @@ Return ONLY a JSON array in this exact format:
 ]
 [/INST]"""
         
+        loop = asyncio.get_running_loop()
+        
         try:
-            response = self.llm(
-                prompt,
-                max_tokens=512,
-                temperature=0.1,
-                top_p=0.9,
-                repeat_penalty=1.1,
-                stop=["</s>", "[/INST]"]
+            response = await loop.run_in_executor(
+                None,
+                lambda: self.llm(
+                    prompt,
+                    max_tokens=512,
+                    temperature=0.1,
+                    top_p=0.9,
+                    repeat_penalty=1.1,
+                    stop=["</s>", "[/INST]"]
+                )
             )
-            
+        
             return self._parse_llm_response(response['choices'][0]['text'], chunk)
         except Exception as e:
             logger.warning(f"LLM processing failed: {e}")
