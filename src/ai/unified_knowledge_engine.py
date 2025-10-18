@@ -1,28 +1,11 @@
-"""
-EXPLAINIUM - Unified Knowledge Extraction Engine
-
-A single, consolidated engine that replaces the 4 separate AI engines with a clean,
-pluggable architecture based on extraction strategies and dependency injection.
-
-CONSOLIDATES:
-- AdvancedKnowledgeEngine (1,083 lines)
-- LLMProcessingEngine (844 lines) 
-- EnhancedExtractionEngine (573 lines)
-- KnowledgeCategorizationEngine (1,439 lines)
-
-TOTAL REDUCTION: ~3,939 lines → ~800 lines (80% reduction)
-"""
+"""LLM-driven knowledge extraction engine."""
 
 import asyncio
-import logging
 from abc import ABC, abstractmethod
-from typing import Dict, Any, List, Optional, Protocol, Union
+from typing import Dict, Any, List, Optional
 from dataclasses import dataclass, field
-from enum import Enum
-from datetime import datetime
 import hashlib
 import json
-import re
 import time
 
 # External dependencies (lazy loading)
@@ -65,26 +48,23 @@ class ExtractionResult:
 
 
 class ExtractionStrategy(ABC):
-    """Abstract base class for extraction strategies"""
-    
     @abstractmethod
     async def extract(self, content: str, document_type: str = "unknown") -> ExtractionResult:
-        """Extract entities from content"""
         pass
     
     @abstractmethod
     def get_confidence_threshold(self) -> float:
-        """Get minimum confidence threshold for this strategy"""
         pass
     
     @abstractmethod
     def get_strategy_name(self) -> str:
-        """Get human-readable strategy name"""
         pass
 
 
 class LLMExtractionStrategy(ExtractionStrategy):
-    """LLM-powered extraction for complex understanding"""
+    """LLM-powered extraction for complex understanding."""
+    
+    MAX_CHUNKS = 5
     
     def __init__(self, model_path: Optional[str] = None):
         self.model_path = model_path
@@ -93,18 +73,15 @@ class LLMExtractionStrategy(ExtractionStrategy):
         self._initialized = False
     
     async def _initialize(self):
-        """Lazy load LLM model"""
         if self._initialized:
             return
-        
+
+        self._initialized = True
         if not LLAMA_AVAILABLE:
-            self._initialized = True
             raise RuntimeError("llama_cpp backend not available during model load.")
-        
         if not self.model_path:
-            self._initialized = True
             raise RuntimeError("LLM model path is not configured.")
-        
+
         try:
             self.llm = Llama(
                 model_path=self.model_path,
@@ -117,28 +94,25 @@ class LLMExtractionStrategy(ExtractionStrategy):
             self._initialized = True
             logger.info(f"Loaded LLM model: {self.model_path}")
         except Exception as e:
-            self._initialized = True
             raise RuntimeError(f"Failed to load LLM model: {e}") from e
     
     async def extract(self, content: str, document_type: str = "unknown") -> ExtractionResult:
-        """LLM-powered extraction"""
         start_time = time.time()
         await self._initialize()
-        
+
         if not self.llm:
             raise RuntimeError("LLM model failed to load.")
-        
-        # Chunk content for LLM processing
-        chunks = self._chunk_content(content, 2000)
+
+        chunks = list(self._iter_chunks(content, 2000))
         all_entities = []
-        
-        for chunk in chunks[:5]:  # Limit to 5 chunks for performance
+
+        for chunk in chunks:
             entities = await self._process_chunk_with_llm(chunk, document_type)
             all_entities.extend(entities)
-        
+
         processing_time = time.time() - start_time
         confidence_score = sum(e.confidence for e in all_entities) / len(all_entities) if all_entities else 0.0
-        
+
         return ExtractionResult(
             entities=all_entities,
             confidence_score=confidence_score,
@@ -147,25 +121,23 @@ class LLMExtractionStrategy(ExtractionStrategy):
             quality_metrics={
                 'entity_count': len(all_entities),
                 'avg_confidence': confidence_score,
-                'chunks_processed': len(chunks[:5])
+                'chunks_processed': len(chunks)
             }
         )
     
-    def _chunk_content(self, content: str, chunk_size: int) -> List[str]:
-        """Split content into manageable chunks"""
-        chunks = []
-        for i in range(0, len(content), chunk_size):
-            chunk = content[i:i + chunk_size]
-            # Try to break at sentence boundaries
-            if i + chunk_size < len(content):
+    def _iter_chunks(self, content: str, chunk_size: int):
+        """Yield limited chunks, biased toward sentence boundaries."""
+        for index, start in enumerate(range(0, len(content), chunk_size)):
+            if index >= self.MAX_CHUNKS:
+                break
+            chunk = content[start:start + chunk_size]
+            if start + chunk_size < len(content):
                 last_period = chunk.rfind('.')
-                if last_period > chunk_size * 0.8:  # Only if we don't lose too much
+                if last_period > chunk_size * 0.8:
                     chunk = chunk[:last_period + 1]
-            chunks.append(chunk)
-        return chunks
+            yield chunk
     
     async def _process_chunk_with_llm(self, chunk: str, document_type: str) -> List[ExtractedEntity]:
-        """Process a single chunk with LLM"""
         prompt = f"""[INST] Extract key information from this {document_type} document text and return ONLY a valid JSON array.
 
 Analyze this text and identify:
@@ -204,8 +176,6 @@ Return ONLY a JSON array in this exact format:
             return []
     
     def _parse_llm_response(self, response: str, chunk: str) -> List[ExtractedEntity]:
-        """Parse LLM JSON response into entities"""
-        entities = []
         try:
             # Extract JSON from response
             json_start = response.find('[')
@@ -213,22 +183,23 @@ Return ONLY a JSON array in this exact format:
             if json_start >= 0 and json_end > json_start:
                 json_str = response[json_start:json_end]
                 data = json.loads(json_str)
-                
-                for item in data:
-                    if isinstance(item, dict) and 'content' in item:
-                        entity = ExtractedEntity(
-                            content=item['content'],
-                            entity_type=item.get('type', 'unknown'),
-                            category=item.get('category', 'general'),
-                            confidence=float(item.get('confidence', self.confidence_threshold)),
-                            context=chunk[:200] + "...",
-                            metadata={'llm_extracted': True, 'source': 'llama'}
-                        )
-                        entities.append(entity)
+
+                return [
+                    ExtractedEntity(
+                        content=item['content'],
+                        entity_type=item.get('type', 'unknown'),
+                        category=item.get('category', 'general'),
+                        confidence=float(item.get('confidence', self.confidence_threshold)),
+                        context=chunk[:200] + "...",
+                        metadata={'llm_extracted': True, 'source': 'llama'}
+                    )
+                    for item in data
+                    if isinstance(item, dict) and 'content' in item
+                ]
         except (json.JSONDecodeError, KeyError, ValueError) as e:
             logger.warning(f"Failed to parse LLM response: {e}")
-        
-        return entities
+
+        return []
     
     def get_confidence_threshold(self) -> float:
         return self.confidence_threshold
@@ -238,11 +209,7 @@ Return ONLY a JSON array in this exact format:
 
 
 class UnifiedKnowledgeEngine:
-    """
-    Unified Knowledge Extraction Engine
-    
-    Dedicated LLM-based extraction pipeline powered by a single llama.cpp-backed model.
-    """
+    """LLM-only knowledge extraction pipeline."""
     
     def __init__(self, config: Optional[UnifiedConfig] = None):
         self.config = config or get_config()
@@ -259,17 +226,11 @@ class UnifiedKnowledgeEngine:
         self._initialize_strategies()
     
     def _initialize_strategies(self):
-        """Initialize only LLM extraction strategy"""
-        # Only LLM strategy - check if available
         if not LLAMA_AVAILABLE:
             raise RuntimeError("llama_cpp backend not available; LLM-only extraction cannot proceed.")
-        
-        # Use the Mistral model path from config
         llm_path = getattr(self.config, 'llm_model_path', 'models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf')
         self.strategies['llm'] = LLMExtractionStrategy(llm_path)
-        logger.info("Initialized LLM extraction strategy")
-        
-        logger.info(f"Initialized {len(self.strategies)} extraction strategies: {list(self.strategies.keys())}")
+        logger.info("LLM extraction strategy ready: %s", llm_path)
     
     async def extract_knowledge(
         self, 
@@ -277,31 +238,16 @@ class UnifiedKnowledgeEngine:
         document_type: str = "unknown",
         quality_threshold: float = 0.7
     ) -> ExtractionResult:
-        """
-        Extract knowledge using the best available strategy
-        
-        Args:
-            content: Document content to process
-            document_type: Type of document for context
-            quality_threshold: Minimum quality threshold for results
-        """
-        # Check cache first
         content_hash = hashlib.md5(content.encode()).hexdigest()
         cache_key = f"{content_hash}_{document_type}_{quality_threshold}"
-        
+
         async with self.cache_lock:
             if cache_key in self.cache:
                 self.performance_stats['cache_hits'] += 1
                 return self.cache[cache_key]
-        
-        # Select strategy (LLM-only)
-        strategy = self._select_best_strategy(content, document_type, quality_threshold)
-        
-        # Extract knowledge
-        start_time = time.time()
-        result = await strategy.extract(content, document_type)
-        
-        # Validate quality
+
+        result = await self.strategies['llm'].extract(content, document_type)
+
         if result.confidence_score < quality_threshold:
             logger.warning(
                 "Extraction confidence below threshold",
@@ -310,37 +256,33 @@ class UnifiedKnowledgeEngine:
                     "quality_threshold": quality_threshold
                 }
             )
-        
-        # Update statistics
-        self.performance_stats['total_extractions'] += 1
-        strategy_name = result.strategy_used
-        self.performance_stats['strategy_usage'][strategy_name] = \
-            self.performance_stats['strategy_usage'].get(strategy_name, 0) + 1
-        
-        # Cache result
+
+        stats = self.performance_stats
+        total_before = stats['total_extractions']
+        stats['total_extractions'] = total_before + 1
+        stats['avg_processing_time'] = (
+            (stats['avg_processing_time'] * total_before + result.processing_time)
+            / stats['total_extractions']
+        )
+        strategy_usage = stats['strategy_usage']
+        strategy_usage[result.strategy_used] = strategy_usage.get(result.strategy_used, 0) + 1
+
         async with self.cache_lock:
             if len(self.cache) < 1000:  # Limit cache size
                 self.cache[cache_key] = result
-        
+
         logger.info(f"Extracted {len(result.entities)} entities using {result.strategy_used} "
                    f"in {result.processing_time:.2f}s (confidence: {result.confidence_score:.2f})")
         
         return result
     
-    def _select_best_strategy(self, content: str, document_type: str, quality_threshold: float) -> ExtractionStrategy:
-        """Select extraction strategy - always use LLM"""
-        return self.strategies['llm']
-    
     def get_performance_stats(self) -> Dict[str, Any]:
-        """Get engine performance statistics"""
         return self.performance_stats.copy()
     
     def clear_cache(self):
-        """Clear the extraction cache"""
         asyncio.create_task(self._clear_cache_async())
     
     async def _clear_cache_async(self):
-        """Async cache clearing"""
         async with self.cache_lock:
             self.cache.clear()
             logger.info("Extraction cache cleared")
