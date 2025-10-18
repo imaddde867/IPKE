@@ -16,11 +16,11 @@ sys.path.insert(0, str(project_root))
 
 import uvicorn
 from src.api.simplified_app import app
-from src.core.unified_config import UnifiedConfig
+from src.core.unified_config import get_config
 
 def check_model_availability():
     """Check if the Mistral model is available"""
-    config = UnifiedConfig()
+    config = get_config()
     model_path = config.llm_model_path
     
     if not os.path.exists(model_path):
@@ -44,7 +44,7 @@ def main():
         print("\nERROR: Cannot start server without Mistral model")
         return 1
     
-    config = UnifiedConfig()
+    config = get_config()
     
     print(f"\nStarting API server...")
     print(f"   Host: {config.api_host}")

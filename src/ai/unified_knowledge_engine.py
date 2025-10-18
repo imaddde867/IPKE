@@ -34,7 +34,7 @@ except ImportError:
     Llama = None
 
 from src.logging_config import get_logger
-from src.core.unified_config import UnifiedConfig
+from src.core.unified_config import UnifiedConfig, get_config
 
 logger = get_logger(__name__)
 
@@ -83,44 +83,6 @@ class ExtractionStrategy(ABC):
         pass
 
 
-class BasicExtractionStrategy(ExtractionStrategy):
-    """Minimal fallback extraction when LLM not available"""
-    
-    async def extract(self, content: str, document_type: str = "unknown") -> ExtractionResult:
-        """Basic text analysis fallback"""
-        start_time = time.time()
-        entities = []
-        
-        # Very basic entity detection
-        words = content.split()
-        if 'CNC' in content or 'mill' in content:
-            entities.append(ExtractedEntity(
-                content="CNC mill operation",
-                entity_type="equipment",
-                category="technical",
-                confidence=0.5,
-                context=content[:200],
-                metadata={'fallback': True}
-            ))
-        
-        processing_time = time.time() - start_time
-        confidence_score = 0.5 if entities else 0.0
-        
-        return ExtractionResult(
-            entities=entities,
-            confidence_score=confidence_score,
-            processing_time=processing_time,
-            strategy_used="basic_fallback",
-            quality_metrics={'entity_count': len(entities)}
-        )
-    
-    def get_confidence_threshold(self) -> float:
-        return 0.5
-    
-    def get_strategy_name(self) -> str:
-        return "Basic Fallback Extraction"
-
-
 class LLMExtractionStrategy(ExtractionStrategy):
     """LLM-powered extraction for complex understanding"""
     
@@ -132,22 +94,31 @@ class LLMExtractionStrategy(ExtractionStrategy):
     
     async def _initialize(self):
         """Lazy load LLM model"""
-        if not self._initialized and LLAMA_AVAILABLE and self.model_path:
-            try:
-                self.llm = Llama(
-                    model_path=self.model_path,
-                    n_ctx=8192,  # Larger context for Mistral
-                    n_threads=4,
-                    n_gpu_layers=0,  # CPU only for compatibility
-                    verbose=False,
-                    f16_kv=True  # Use f16 for key-value cache
-                )
-                self._initialized = True
-                logger.info(f"Loaded LLM model: {self.model_path}")
-            except Exception as e:
-                logger.warning(f"Failed to load LLM model: {e}")
-                self.llm = None
-                self._initialized = True
+        if self._initialized:
+            return
+        
+        if not LLAMA_AVAILABLE:
+            self._initialized = True
+            raise RuntimeError("llama_cpp backend not available during model load.")
+        
+        if not self.model_path:
+            self._initialized = True
+            raise RuntimeError("LLM model path is not configured.")
+        
+        try:
+            self.llm = Llama(
+                model_path=self.model_path,
+                n_ctx=8192,  # Larger context for Mistral
+                n_threads=4,
+                n_gpu_layers=0,  # CPU only for compatibility
+                verbose=False,
+                f16_kv=True  # Use f16 for key-value cache
+            )
+            self._initialized = True
+            logger.info(f"Loaded LLM model: {self.model_path}")
+        except Exception as e:
+            self._initialized = True
+            raise RuntimeError(f"Failed to load LLM model: {e}") from e
     
     async def extract(self, content: str, document_type: str = "unknown") -> ExtractionResult:
         """LLM-powered extraction"""
@@ -155,15 +126,7 @@ class LLMExtractionStrategy(ExtractionStrategy):
         await self._initialize()
         
         if not self.llm:
-            # No fallback - return empty result if LLM not available
-            logger.warning("LLM not available and no fallback configured")
-            return ExtractionResult(
-                entities=[],
-                confidence_score=0.0,
-                processing_time=time.time() - start_time,
-                strategy_used="llm_unavailable",
-                quality_metrics={'error': 'LLM not available'}
-            )
+            raise RuntimeError("LLM model failed to load.")
         
         # Chunk content for LLM processing
         chunks = self._chunk_content(content, 2000)
@@ -273,12 +236,11 @@ class UnifiedKnowledgeEngine:
     """
     Unified Knowledge Extraction Engine
     
-    Replaces 4 separate engines with a single, configurable engine using strategy pattern.
-    Automatically selects the best extraction strategy based on content and performance requirements.
+    Dedicated LLM-based extraction pipeline powered by a single llama.cpp-backed model.
     """
     
     def __init__(self, config: Optional[UnifiedConfig] = None):
-        self.config = config or UnifiedConfig()
+        self.config = config or get_config()
         self.strategies = {}
         self.cache = {}
         self.cache_lock = asyncio.Lock()
@@ -294,15 +256,13 @@ class UnifiedKnowledgeEngine:
     def _initialize_strategies(self):
         """Initialize only LLM extraction strategy"""
         # Only LLM strategy - check if available
-        if LLAMA_AVAILABLE:
-            # Use the Mistral model path from config
-            llm_path = getattr(self.config, 'llm_model_path', 'models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf')
-            self.strategies['llm'] = LLMExtractionStrategy(llm_path)
-            logger.info("Initialized LLM extraction strategy")
-        else:
-            logger.error("LLM not available - cannot initialize any strategies")
-            # Create a minimal fallback
-            self.strategies['minimal'] = BasicExtractionStrategy()
+        if not LLAMA_AVAILABLE:
+            raise RuntimeError("llama_cpp backend not available; LLM-only extraction cannot proceed.")
+        
+        # Use the Mistral model path from config
+        llm_path = getattr(self.config, 'llm_model_path', 'models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf')
+        self.strategies['llm'] = LLMExtractionStrategy(llm_path)
+        logger.info("Initialized LLM extraction strategy")
         
         logger.info(f"Initialized {len(self.strategies)} extraction strategies: {list(self.strategies.keys())}")
     
@@ -310,7 +270,6 @@ class UnifiedKnowledgeEngine:
         self, 
         content: str, 
         document_type: str = "unknown",
-        strategy_preference: Optional[str] = None,
         quality_threshold: float = 0.7
     ) -> ExtractionResult:
         """
@@ -319,23 +278,19 @@ class UnifiedKnowledgeEngine:
         Args:
             content: Document content to process
             document_type: Type of document for context
-            strategy_preference: Force specific strategy ('pattern', 'nlp', 'llm')
             quality_threshold: Minimum quality threshold for results
         """
         # Check cache first
         content_hash = hashlib.md5(content.encode()).hexdigest()
-        cache_key = f"{content_hash}_{document_type}_{strategy_preference}_{quality_threshold}"
+        cache_key = f"{content_hash}_{document_type}_{quality_threshold}"
         
         async with self.cache_lock:
             if cache_key in self.cache:
                 self.performance_stats['cache_hits'] += 1
                 return self.cache[cache_key]
         
-        # Select strategy
-        if strategy_preference and strategy_preference in self.strategies:
-            strategy = self.strategies[strategy_preference]
-        else:
-            strategy = self._select_best_strategy(content, document_type, quality_threshold)
+        # Select strategy (LLM-only)
+        strategy = self._select_best_strategy(content, document_type, quality_threshold)
         
         # Extract knowledge
         start_time = time.time()
@@ -343,14 +298,13 @@ class UnifiedKnowledgeEngine:
         
         # Validate quality
         if result.confidence_score < quality_threshold:
-            # Try fallback strategy
-            fallback_strategy = self._get_fallback_strategy(strategy)
-            if fallback_strategy and fallback_strategy != strategy:
-                logger.info(f"Quality below threshold ({result.confidence_score:.2f} < {quality_threshold:.2f}), trying fallback")
-                fallback_result = await fallback_strategy.extract(content, document_type)
-                if fallback_result.confidence_score > result.confidence_score:
-                    result = fallback_result
-                    result.strategy_used += "_with_fallback"
+            logger.warning(
+                "Extraction confidence below threshold",
+                extra={
+                    "confidence_score": result.confidence_score,
+                    "quality_threshold": quality_threshold
+                }
+            )
         
         # Update statistics
         self.performance_stats['total_extractions'] += 1
@@ -369,17 +323,8 @@ class UnifiedKnowledgeEngine:
         return result
     
     def _select_best_strategy(self, content: str, document_type: str, quality_threshold: float) -> ExtractionStrategy:
-        """Select extraction strategy - always use LLM if available"""
-        # Always prefer LLM if available
-        if 'llm' in self.strategies:
-            return self.strategies['llm']
-        
-        # Fallback to minimal if LLM not available
-        return self.strategies['minimal']
-    
-    def _get_fallback_strategy(self, current_strategy: ExtractionStrategy) -> Optional[ExtractionStrategy]:
-        """No fallback - use only LLM"""
-        return None
+        """Select extraction strategy - always use LLM"""
+        return self.strategies['llm']
     
     def get_performance_stats(self) -> Dict[str, Any]:
         """Get engine performance statistics"""

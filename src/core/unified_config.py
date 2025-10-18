@@ -21,6 +21,14 @@ class Environment(Enum):
     PRODUCTION = "production"
 
 
+def _get_env_value(*keys: str, default: Optional[str] = None) -> Optional[str]:
+    """Return the first non-empty environment variable value from the provided keys."""
+    for key in keys:
+        value = os.getenv(key)
+        if value is not None:
+            return value
+    return default
+
 @dataclass
 class UnifiedConfig:
     """
@@ -45,7 +53,7 @@ class UnifiedConfig:
         '.pdf', '.doc', '.docx', '.txt', '.rtf',
         '.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff',
         '.xls', '.xlsx', '.csv', '.ppt', '.pptx',
-        '.mp3', '.wav', '.flac', '.aac', '.mp4', '.avi', '.mov'
+        '.mp3', '.wav', '.flac', '.aac'
     ])
     
     # AI Models
@@ -104,7 +112,12 @@ class UnifiedConfig:
         """Load configuration from environment variables"""
         
         # Detect environment
-        env_name = os.getenv('EXPLAINIUM_ENV', 'development').lower()
+        env_name = _get_env_value(
+            'EXPLAINIUM_ENV',
+            'EXPLAINIUM_ENVIRONMENT',
+            'ENVIRONMENT',
+            default='development'
+        ).lower()
         try:
             environment = Environment(env_name)
         except ValueError:
@@ -121,23 +134,49 @@ class UnifiedConfig:
     @classmethod
     def _development_config(cls) -> 'UnifiedConfig':
         """Development environment configuration"""
+        max_file_size = int(_get_env_value(
+            'MAX_FILE_SIZE_MB',
+            'EXPLAINIUM_MAX_FILE_SIZE_MB',
+            'EXPLAINIUM_MAX_FILE_SIZE',
+            default='50'
+        ))
+        processing_timeout = int(_get_env_value(
+            'PROCESSING_TIMEOUT',
+            'EXPLAINIUM_PROCESSING_TIMEOUT',
+            default='180'
+        ))
+        api_host = _get_env_value('API_HOST', 'EXPLAINIUM_API_HOST', default='127.0.0.1')
+        database_url = _get_env_value(
+            'DATABASE_URL',
+            'EXPLAINIUM_DATABASE_URL',
+            default='postgresql://postgres:password@localhost:5432/explainium_dev'
+        )
         return cls(
             environment=Environment.DEVELOPMENT,
             debug=True,
             database_echo=True,
             log_level="DEBUG",
             enable_auth=False,
-            max_file_size_mb=int(os.getenv('MAX_FILE_SIZE_MB', '50')),
+            max_file_size_mb=max_file_size,
             confidence_threshold=0.6,  # Lower for testing
-            processing_timeout=int(os.getenv('PROCESSING_TIMEOUT', '180')),
-            api_host=os.getenv('API_HOST', '127.0.0.1'),
-            database_url=os.getenv('DATABASE_URL', 
-                'postgresql://postgres:password@localhost:5432/explainium_dev')
+            processing_timeout=processing_timeout,
+            api_host=api_host,
+            database_url=database_url
         )
     
     @classmethod
     def _testing_config(cls) -> 'UnifiedConfig':
         """Testing environment configuration"""
+        max_file_size = int(_get_env_value(
+            'TEST_MAX_FILE_SIZE_MB',
+            'EXPLAINIUM_TEST_MAX_FILE_SIZE_MB',
+            default='10'
+        ))
+        database_url = _get_env_value(
+            'TEST_DATABASE_URL',
+            'EXPLAINIUM_TEST_DATABASE_URL',
+            default='postgresql://postgres:password@localhost:5432/explainium_test'
+        )
         return cls(
             environment=Environment.TESTING,
             debug=False,
@@ -146,31 +185,60 @@ class UnifiedConfig:
             enable_auth=False,
             enable_llm_processing=False,  # Faster tests
             enable_audio_processing=False,
-            max_file_size_mb=10,  # Smaller for tests
+            max_file_size_mb=max_file_size,  # Smaller for tests
             confidence_threshold=0.5,
             cache_size=100,
-            database_url=os.getenv('TEST_DATABASE_URL', 
-                'postgresql://postgres:password@localhost:5432/explainium_test')
+            database_url=database_url
         )
     
     @classmethod
     def _production_config(cls) -> 'UnifiedConfig':
         """Production environment configuration"""
+        log_level = _get_env_value('LOG_LEVEL', 'EXPLAINIUM_LOG_LEVEL', default='INFO')
+        max_file_size = int(_get_env_value(
+            'MAX_FILE_SIZE_MB',
+            'EXPLAINIUM_MAX_FILE_SIZE_MB',
+            'EXPLAINIUM_MAX_FILE_SIZE',
+            default='200'
+        ))
+        confidence_threshold = float(_get_env_value(
+            'CONFIDENCE_THRESHOLD',
+            'EXPLAINIUM_CONFIDENCE_THRESHOLD',
+            default='0.8'
+        ))
+        quality_threshold = float(_get_env_value(
+            'QUALITY_THRESHOLD',
+            'EXPLAINIUM_QUALITY_THRESHOLD',
+            default='0.85'
+        ))
+        processing_timeout = int(_get_env_value(
+            'PROCESSING_TIMEOUT',
+            'EXPLAINIUM_PROCESSING_TIMEOUT',
+            default='600'
+        ))
+        secret_key = _get_env_value('SECRET_KEY', 'EXPLAINIUM_SECRET_KEY', default='CHANGE-THIS-IN-PRODUCTION')
+        database_url = _get_env_value(
+            'DATABASE_URL',
+            'EXPLAINIUM_DATABASE_URL',
+            default='postgresql://postgres:password@localhost:5432/explainium'
+        )
+        api_host = _get_env_value('API_HOST', 'EXPLAINIUM_API_HOST', default='0.0.0.0')
+        cors_origins_raw = _get_env_value('CORS_ORIGINS', 'EXPLAINIUM_CORS_ORIGINS', default='')
+        cors_origins = cors_origins_raw.split(',') if cors_origins_raw else []
         return cls(
             environment=Environment.PRODUCTION,
             debug=False,
             database_echo=False,
-            log_level=os.getenv('LOG_LEVEL', 'INFO'),
+            log_level=log_level,
             enable_auth=True,
-            max_file_size_mb=int(os.getenv('MAX_FILE_SIZE_MB', '200')),
-            confidence_threshold=0.8,
-            quality_threshold=0.85,
-            processing_timeout=int(os.getenv('PROCESSING_TIMEOUT', '600')),
-            secret_key=os.getenv('SECRET_KEY', 'CHANGE-THIS-IN-PRODUCTION'),
-            database_url=os.getenv('DATABASE_URL', 
-                'postgresql://postgres:password@localhost:5432/explainium'),
-            api_host=os.getenv('API_HOST', '0.0.0.0'),
-            cors_origins=os.getenv('CORS_ORIGINS', '').split(',') if os.getenv('CORS_ORIGINS') else []
+            max_file_size_mb=max_file_size,
+            confidence_threshold=confidence_threshold,
+            quality_threshold=quality_threshold,
+            processing_timeout=processing_timeout,
+            secret_key=secret_key,
+            database_url=database_url,
+            api_host=api_host,
+            cors_origins=cors_origins
         )
     
     # Utility methods for backward compatibility

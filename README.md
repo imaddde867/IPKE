@@ -10,11 +10,11 @@ Explainium converts unstructured technical, safety, compliance and operational d
 
 **Explainium 2.0** transforms complex documents into structured knowledge using a modern, streamlined architecture:
 
-- **Unified AI Engine**: Single engine with pluggable extraction strategies (Pattern, NLP, LLM)
-- **Async Processing**: High-performance document processing with concurrent operations
-- **Multi-Format Support**: PDF, DOCX, TXT, images (OCR), audio, video (23+ formats)
-- **Quality Assurance**: Confidence scoring, validation gates, and fallback mechanisms
-- **Production Ready**: Environment-based configuration with health monitoring
+- **LLM-Only Engine**: Mistral-7B (via llama.cpp) powers every extraction step
+- **Async Processing**: High-performance document handling with concurrent operations
+- **Document Coverage**: PDF, DOCX, TXT plus OCR for common images and Whisper-backed audio transcription
+- **Quality Assurance**: Confidence scoring with configurable quality thresholds
+- **Operational Readiness**: Environment-based configuration with health monitoring
 
 ## Architecture
 
@@ -29,17 +29,15 @@ src/
 │   └── unified_config.py              # Environment-based configuration
 ├── processors/
 │   └── streamlined_processor.py       # Async document processing
-├── database/                          # SQLAlchemy models & operations
 ├── middleware.py                      # Request logging & tracking
 ├── logging_config.py                  # Structured logging
 └── exceptions.py                      # Custom exceptions
 ```
 
-### Processing Pipeline
-1. **Pattern Extraction**: Fast regex-based entity detection
-2. **NLP Enhancement**: spaCy + embeddings for context understanding  
-3. **LLM Analysis**: Mistral-7B for complex semantic extraction
-4. **Auto-Selection**: Optimal strategy chosen based on document complexity
+### Extraction Flow
+1. **Content Extraction**: Format-specific loaders turn PDFs, Office docs, spreadsheets, images, and audio into text
+2. **LLM Analysis**: The Mistral-7B model generates structured entities from extracted text
+3. **Validation & Scoring**: Results are filtered using configurable confidence thresholds
 
 ## Quick Start
 
@@ -53,7 +51,7 @@ python -m spacy download en_core_web_sm
 
 ### Start the API Server
 ```bash
-python -m uvicorn src.api.simplified_app:app --host 0.0.0.0 --port 8000 --reload
+python -m uvicorn src.api.simplified_app:app --host 127.0.0.1 --port 8000 --reload
 ```
 
 ### Access Points
@@ -93,18 +91,25 @@ curl -X POST "http://localhost:8000/extract" \
 **Response:**
 ```json
 {
-  "status": "success",
+  "document_id": "8f1cba23b4d1e5ab",
+  "document_type": "manual",
   "entities": [
     {
-      "type": "PROCEDURE",
       "content": "Safety inspection protocol",
+      "entity_type": "procedure",
+      "category": "process",
       "confidence": 0.92,
-      "category": "process"
+      "context": "Page 3 paragraph discussing inspection cadence..."
     }
   ],
   "confidence_score": 0.87,
   "processing_time": 2.34,
-  "extraction_method": "nlp_extraction"
+  "strategy_used": "llm_extraction",
+  "metadata": {
+    "file_format": ".pdf",
+    "file_name": "document.pdf",
+    "entities_extracted": 1
+  }
 }
 ```
 
@@ -113,17 +118,18 @@ curl -X POST "http://localhost:8000/extract" \
 ### Environment Variables
 ```bash
 # Optional - override defaults
-export EXPLAINIUM_ENVIRONMENT=production
+export EXPLAINIUM_ENV=production
 export EXPLAINIUM_LOG_LEVEL=INFO
-export EXPLAINIUM_MAX_FILE_SIZE=52428800  # 50MB
+export EXPLAINIUM_MAX_FILE_SIZE_MB=50
+export EXPLAINIUM_DATABASE_URL="postgresql://postgres:password@localhost:5432/explainium"
 ```
 
 ### Supported Formats
-- **Documents**: PDF, DOCX, TXT, RTF, ODT
-- **Images**: PNG, JPG, TIFF (with OCR)  
-- **Audio**: WAV, MP3, M4A (with transcription)
-- **Video**: MP4, AVI, MOV (audio extraction)
-- **Archives**: ZIP (extract and process contents)
+- **Documents**: PDF, DOC, DOCX, TXT, RTF
+- **Images**: PNG, JPG, JPEG, GIF, BMP, TIFF (OCR required)
+- **Spreadsheets**: CSV, XLS, XLSX
+- **Presentations**: PPT, PPTX
+- **Audio**: WAV, MP3, FLAC, AAC (Whisper transcription)
 
 ## Knowledge Categories
 

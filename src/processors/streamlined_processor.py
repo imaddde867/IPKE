@@ -43,7 +43,7 @@ except ImportError:
     easyocr = None
 
 from src.logging_config import get_logger
-from src.core.unified_config import UnifiedConfig
+from src.core.unified_config import UnifiedConfig, get_config
 from src.ai.unified_knowledge_engine import UnifiedKnowledgeEngine, ExtractionResult
 from src.exceptions import ProcessingError
 
@@ -73,7 +73,7 @@ class StreamlinedDocumentProcessor:
     """
     
     def __init__(self, config: Optional[UnifiedConfig] = None):
-        self.config = config or UnifiedConfig()
+        self.config = config or get_config()
         self.knowledge_engine = UnifiedKnowledgeEngine()
         self.executor = ThreadPoolExecutor(max_workers=4)
         
@@ -97,8 +97,7 @@ class StreamlinedDocumentProcessor:
     async def process_document(
         self, 
         file_path: str, 
-        document_id: Optional[str] = None,
-        strategy_preference: Optional[str] = None
+        document_id: Optional[str] = None
     ) -> ProcessingResult:
         """
         Process a document and extract knowledge
@@ -106,7 +105,6 @@ class StreamlinedDocumentProcessor:
         Args:
             file_path: Path to the document file
             document_id: Optional document identifier
-            strategy_preference: Optional extraction strategy ('pattern', 'nlp', 'llm')
         """
         start_time = time.time()
         file_path = Path(file_path)
@@ -132,8 +130,7 @@ class StreamlinedDocumentProcessor:
             extraction_result = await self.knowledge_engine.extract_knowledge(
                 content=content,
                 document_type=document_type,
-                strategy_preference=strategy_preference,
-                quality_threshold=0.7
+                quality_threshold=self.config.quality_threshold
             )
             
             processing_time = time.time() - start_time
