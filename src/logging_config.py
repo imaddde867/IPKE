@@ -8,7 +8,7 @@ import logging.config
 import json
 import os
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Any, Optional
 import uuid
 from contextvars import ContextVar
@@ -30,7 +30,7 @@ class JSONFormatter(logging.Formatter):
     
     def format(self, record):
         log_entry = {
-            'timestamp': datetime.now(UTC).isoformat() + 'Z',
+            'timestamp': datetime.now(timezone.utc).isoformat() + 'Z',
             'level': record.levelname,
             'logger': record.name,
             'message': record.getMessage(),

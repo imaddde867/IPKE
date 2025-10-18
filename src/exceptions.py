@@ -5,7 +5,7 @@ Provides structured error handling across different system components.
 
 from typing import Optional, Dict, Any
 import traceback
-from datetime import datetime
+from datetime import datetime, timezone
 
 
 class BaseKnowledgeExtractionError(Exception):
@@ -23,7 +23,7 @@ class BaseKnowledgeExtractionError(Exception):
         self.error_code = error_code or self.__class__.__name__
         self.details = details or {}
         self.correlation_id = correlation_id
-        self.timestamp = datetime.now(UTC)
+        self.timestamp = datetime.now(timezone.utc)
         self.traceback = traceback.format_exc()
     
     def to_dict(self) -> Dict[str, Any]:
