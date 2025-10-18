@@ -23,7 +23,7 @@ class BaseKnowledgeExtractionError(Exception):
         self.error_code = error_code or self.__class__.__name__
         self.details = details or {}
         self.correlation_id = correlation_id
-        self.timestamp = datetime.utcnow()
+        self.timestamp = datetime.now(UTC)
         self.traceback = traceback.format_exc()
     
     def to_dict(self) -> Dict[str, Any]:
