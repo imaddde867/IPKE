@@ -10,13 +10,13 @@ SIMPLIFIES: Single extraction endpoint, consistent error handling, clean async p
 
 import asyncio
 import logging
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 from datetime import datetime
 import tempfile
 import os
 from pathlib import Path
 
-from fastapi import FastAPI, UploadFile, File, HTTPException, Depends, BackgroundTasks
+from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -127,17 +127,13 @@ async def health_check():
 
 @app.post("/extract", response_model=ExtractionResponse)
 async def extract_knowledge(
-    file: UploadFile = File(...),
-    strategy: Optional[str] = None,
-    quality_threshold: Optional[float] = None
+    file: UploadFile = File(...)
 ):
     """
     Extract knowledge from an uploaded document
     
     Args:
         file: Document file to process
-        strategy: Extraction strategy ('pattern', 'nlp', 'llm')
-        quality_threshold: Minimum quality threshold (0.0-1.0)
     """
     
     # Validate file
@@ -170,8 +166,7 @@ async def extract_knowledge(
     try:
         # Process document
         result = await processor.process_document(
-            file_path=tmp_file_path,
-            strategy_preference=strategy
+            file_path=tmp_file_path
         )
         
         # Convert entities to response format
