@@ -30,7 +30,7 @@ class JSONFormatter(logging.Formatter):
     
     def format(self, record):
         log_entry = {
-            'timestamp': datetime.utcnow().isoformat() + 'Z',
+            'timestamp': datetime.now(UTC).isoformat() + 'Z',
             'level': record.levelname,
             'logger': record.name,
             'message': record.getMessage(),
