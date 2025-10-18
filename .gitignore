@@ -48,10 +48,12 @@ logs/
 ehthumbs.db
 Thumbs.db
 
-# Test files
+# Tests
 test*.txt
 test*.py
 debug*.py
+.pytest_cache
+tests
 
 # Temporary files
 *.tmp
@@ -65,6 +67,3 @@ models/llm/*.gguf
 # Uploaded files
 uploaded_files/*
 !uploaded_files/.gitkeep
-
-# tests
-tests
