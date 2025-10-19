@@ -114,7 +114,7 @@ curl -X POST "http://localhost:8000/extract" \
   ],
   "confidence_score": 0.87,
   "processing_time": 2.34,
-  "strategy_used": "llm_extraction",
+  "strategy_used": "llm_default",
   "metadata": {
     "file_format": ".pdf",
     "file_name": "document.pdf",
