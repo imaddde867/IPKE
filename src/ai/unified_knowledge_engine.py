@@ -219,7 +219,7 @@ class LLMExtractionStrategy(ExtractionStrategy):
             entities=all_entities,
             confidence_score=confidence_score,
             processing_time=processing_time,
-            strategy_used="llm_extraction",
+            strategy_used="llm_default",
             quality_metrics={
                 'entity_count': len(all_entities),
                 'avg_confidence': confidence_score,

@@ -96,7 +96,7 @@ class TestAPI:
                     entities=[],
                     confidence_score=0.0,
                     processing_time=0.01,
-                    strategy_used="llm_extraction"
+                    strategy_used="llm_default"
                 ),
                 processing_time=0.01,
                 file_size=10,
