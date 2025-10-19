@@ -59,6 +59,8 @@ python -m uvicorn src.api.app:app --host 127.0.0.1 --port 8000 --reload
 streamlit run streamlit_app.py
 ```
 
+![Explainium Streamlit UI](documents_samples/UI_Frontend_screenshot.png)
+
 ### Access Points
 - **API Server**: http://localhost:8000
 - **Interactive Docs**: http://localhost:8000/docs
