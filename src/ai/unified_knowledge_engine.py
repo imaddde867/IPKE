@@ -169,7 +169,8 @@ Return ONLY a JSON array in this exact format:
                     stop=["</s>", "[/INST]"]
                 )
             )
-        
+            
+            logger.debug("LLM raw response: %s", response['choices'][0]['text'])
             return self._parse_llm_response(response['choices'][0]['text'], chunk)
         except Exception as e:
             logger.warning(f"LLM processing failed: {e}")
