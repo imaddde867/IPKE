@@ -3,18 +3,14 @@ EXPLAINIUM - Document Processor
 """
 
 import asyncio
-import logging
 import time
 import hashlib
 from typing import Dict, List, Any, Optional
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
-import tempfile
-import os
 
 # Document processing libraries
-from PIL import Image
 import pandas as pd
 from pptx import Presentation
 import PyPDF2
@@ -70,7 +66,7 @@ class StreamlinedDocumentProcessor:
     def __init__(self, config: Optional[UnifiedConfig] = None):
         self.config = config or get_config()
         self.knowledge_engine = UnifiedKnowledgeEngine()
-        self.executor = ThreadPoolExecutor(max_workers=4)
+        self.executor = ThreadPoolExecutor(max_workers=self.config.max_workers)
         
         # Performance tracking
         self.stats = {

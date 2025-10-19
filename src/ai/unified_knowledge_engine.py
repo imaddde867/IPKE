@@ -394,13 +394,3 @@ class UnifiedKnowledgeEngine:
         async with self.cache_lock:
             self.cache.clear()
             logger.info("Extraction cache cleared")
-
-
-# Backward compatibility: Export the main interface
-KnowledgeExtractor = UnifiedKnowledgeEngine
-
-
-# Factory function for easy instantiation
-def create_knowledge_engine(config: Optional[UnifiedConfig] = None) -> UnifiedKnowledgeEngine:
-    """Create a new knowledge extraction engine with the given configuration"""
-    return UnifiedKnowledgeEngine(config)
