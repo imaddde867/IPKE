@@ -3,7 +3,7 @@ Test configuration system
 """
 import pytest
 import os
-from src.core.unified_config import UnifiedConfig, get_config, Environment
+from src.core.unified_config import UnifiedConfig, get_config, reload_config, Environment
 
 
 class TestUnifiedConfig:
@@ -62,6 +62,24 @@ class TestUnifiedConfig:
         assert 'max_file_size_mb' in proc_config
         assert 'supported_formats' in proc_config
         assert 'processing_timeout' in proc_config
+
+    def test_gpu_env_overrides(self, monkeypatch):
+        """GPU-related env vars should override config values."""
+        monkeypatch.setenv('LLM_GPU_LAYERS', '10')
+        monkeypatch.setenv('GPU_MEMORY_FRACTION', '0.5')
+        monkeypatch.setenv('ENABLE_GPU', 'true')
+        try:
+            reload_config()
+            config = get_config()
+            llm_config = config.get_llm_config()
+            assert llm_config['n_gpu_layers'] == 10
+            assert abs(llm_config['gpu_memory_fraction'] - 0.5) < 1e-6
+            assert llm_config['enable_gpu'] is True
+        finally:
+            monkeypatch.delenv('LLM_GPU_LAYERS', raising=False)
+            monkeypatch.delenv('GPU_MEMORY_FRACTION', raising=False)
+            monkeypatch.delenv('ENABLE_GPU', raising=False)
+            reload_config()
 
 
 if __name__ == "__main__":

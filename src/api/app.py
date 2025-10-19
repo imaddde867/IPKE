@@ -7,6 +7,7 @@ from datetime import datetime
 import tempfile
 import os
 from pathlib import Path
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -58,6 +59,23 @@ class ExtractionResponse(BaseModel):
 
 
 # Create FastAPI app
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Lifecycle hooks replacing deprecated on_event handlers."""
+    cfg = get_config()
+    logger.info(f"Explainium API starting up in {cfg.environment.value} environment")
+    logger.info(f"Upload directory: {cfg.upload_directory}")
+    logger.info(f"Max file size: {cfg.max_file_size_mb}MB")
+    logger.info(f"Supported formats: {len(cfg.supported_formats)} types")
+
+    upload_dir_path = Path(cfg.upload_directory)
+    upload_dir_path.mkdir(exist_ok=True)
+    try:
+        yield
+    finally:
+        logger.info("Explainium API shutting down")
+
+
 def create_app() -> FastAPI:
     """Create and configure the FastAPI application"""
     config = get_config()
@@ -66,7 +84,8 @@ def create_app() -> FastAPI:
         title="Explainium Knowledge Extraction API",
         description="Simplified, high-performance knowledge extraction from documents",
         version="2.0",
-        debug=config.is_development()
+        debug=config.is_development(),
+        lifespan=lifespan
     )
     
     # Add middleware
@@ -88,10 +107,6 @@ config = get_config()
 
 # Initialize processor
 processor = StreamlinedDocumentProcessor()
-
-# Ensure upload directory exists
-upload_dir = Path(config.upload_directory)
-upload_dir.mkdir(exist_ok=True)
 
 
 @app.get("/", response_model=HealthResponse)
@@ -265,21 +280,6 @@ async def general_exception_handler(request, exc: Exception):
         status_code=500,
         content={"error": "Internal Server Error", "detail": "An unexpected error occurred"}
     )
-
-
-# Startup event
-@app.on_event("startup")
-async def startup_event():
-    logger.info(f"Explainium API starting up in {config.environment.value} environment")
-    logger.info(f"Upload directory: {config.upload_directory}")
-    logger.info(f"Max file size: {config.max_file_size_mb}MB")
-    logger.info(f"Supported formats: {len(config.supported_formats)} types")
-
-
-# Shutdown event
-@app.on_event("shutdown")
-async def shutdown_event():
-    logger.info("Explainium API shutting down")
 
 
 if __name__ == "__main__":
