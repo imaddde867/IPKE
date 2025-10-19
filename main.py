@@ -15,7 +15,7 @@ project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
 
 import uvicorn
-from src.api.simplified_app import app
+from src.api.app import app
 from src.core.unified_config import get_config
 
 def check_model_availability():

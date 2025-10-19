@@ -22,9 +22,9 @@ Explainium converts unstructured technical, safety, compliance and operational d
 ```
 src/
 ├── ai/
-│   └── unified_knowledge_engine.py    # Strategy pattern AI engine
+│   └── unified_knowledge_engine.py    # AI engine
 ├── api/
-│   └── simplified_app.py              # Clean FastAPI application
+│   └── app.py                         # FastAPI application
 ├── core/
 │   └── unified_config.py              # Environment-based configuration
 ├── processors/
@@ -51,7 +51,7 @@ python -m spacy download en_core_web_sm
 
 ### Start the API Server
 ```bash
-python -m uvicorn src.api.simplified_app:app --host 127.0.0.1 --port 8000 --reload
+python -m uvicorn src.api.app:app --host 127.0.0.1 --port 8000 --reload
 ```
 
 ### Access Points
