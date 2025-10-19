@@ -180,7 +180,6 @@ Extract EVERY technical detail, measurement, part number, grade, timing, distanc
                 )
             )
             
-            logger.debug("LLM raw response: %s", response['choices'][0]['text'])
             return self._parse_llm_response(response['choices'][0]['text'], chunk)
         except Exception as e:
             logger.warning(f"LLM processing failed: {e}")

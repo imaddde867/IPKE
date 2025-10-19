@@ -1,11 +1,5 @@
 """
 EXPLAINIUM - Unified Configuration System
-
-A single, clean configuration system that consolidates all configuration
-scattered throughout the codebase into environment-based settings.
-
-REPLACES: Multiple config files and hardcoded values
-REDUCES: Configuration complexity by 70%
 """
 
 import os

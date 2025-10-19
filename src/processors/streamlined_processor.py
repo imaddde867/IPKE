@@ -1,10 +1,5 @@
 """
-EXPLAINIUM - Simplified Document Processor
-
-A clean, streamlined document processor that uses the unified knowledge engine
-and eliminates complexity from the original 1,508-line processor.
-
-REDUCES: 1,508 lines → ~400 lines (75% reduction)
+EXPLAINIUM - Document Processor
 """
 
 import asyncio
