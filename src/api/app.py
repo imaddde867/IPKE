@@ -2,8 +2,6 @@
 EXPLAINIUM - Streamlined FastAPI app
 """
 
-import asyncio
-import logging
 from typing import Dict, Any, List
 from datetime import datetime
 import tempfile
@@ -16,9 +14,8 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 
 # Internal imports
-from src.core.unified_config import get_config, UnifiedConfig
+from src.core.unified_config import get_config
 from src.processors.streamlined_processor import StreamlinedDocumentProcessor
-from src.ai.unified_knowledge_engine import ExtractionResult
 from src.logging_config import get_logger
 from src.exceptions import ProcessingError
 from src.middleware import RequestLoggingMiddleware, ErrorHandlingMiddleware

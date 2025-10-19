@@ -9,16 +9,11 @@ uvicorn>=0.24.0
 # Environment
 python-dotenv>=1.0.0
 
-# HTTP requests
-requests>=2.31.0
-
 # Computer Vision and Image Processing
-Pillow>=10.0.0
 easyocr>=1.7.0
 
 # Data Processing
 pandas>=2.0.0
-numpy>=1.24.0
 
 # Document Processing
 python-pptx>=0.6.23
