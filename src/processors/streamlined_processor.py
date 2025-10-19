@@ -13,7 +13,6 @@ from concurrent.futures import ThreadPoolExecutor
 # Document processing libraries
 import pandas as pd
 from pptx import Presentation
-import PyPDF2
 import fitz  # PyMuPDF
 from docx import Document as DocxDocument
 
@@ -185,25 +184,15 @@ class StreamlinedDocumentProcessor:
         """Extract text from PDF files"""
         def extract_pdf():
             try:
-                # Try PyMuPDF first (faster and more accurate)
                 doc = fitz.open(str(file_path))
                 text = ""
                 for page in doc:
                     text += page.get_text()
                 doc.close()
                 return text
-            except Exception:
-                # Fallback to PyPDF2
-                try:
-                    with open(file_path, 'rb') as file:
-                        reader = PyPDF2.PdfReader(file)
-                        text = ""
-                        for page in reader.pages:
-                            text += page.extract_text()
-                        return text
-                except Exception as e:
-                    logger.warning(f"PDF extraction failed: {e}")
-                    return ""
+            except Exception as e:
+                logger.warning(f"PDF extraction failed: {e}")
+                return ""
         
         return await asyncio.get_event_loop().run_in_executor(self.executor, extract_pdf)
     
