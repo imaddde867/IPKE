@@ -6,6 +6,9 @@ Explainium converts unstructured technical, safety, compliance and operational d
 [![FastAPI](https://img.shields.io/badge/API-FastAPI-00a86b.svg)](https://fastapi.tiangolo.com)
 [![Offline](https://img.shields.io/badge/processing-offline-success.svg)](https://github.com)
 
+
+#  **_FIX CONFLICT BETWEEN THE ENGINE AND CENTRAL CONFIG SETTS._** 
+
 ## Overview
 
 **Explainium 2.0** transforms complex documents into structured knowledge using a modern, streamlined architecture:
