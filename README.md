@@ -186,20 +186,15 @@ The system automatically downloads required models on first use:
 - **spaCy**: NLP processing
 - **Mistral-7B**: Large language model 
 
-### Processing Performance
-- **Small Documents** (< 20 pages): ~2-5 seconds
-- **Medium Documents** (20-100 pages): ~10-60 seconds  
-- **Large Documents** (100+ pages): ~1-3 minutes
-- **Confidence Scores**: Typically 0.70-0.95 depending on content
-
 ## System Requirements
 
-### Minimum
-- **Python**: 3.12+
-- **RAM**: 4GB (basic processing)
-- **Storage**: 2GB (for models)
-
 ### Recommended  
-- **RAM**: 8GB+ (for LLM processing)
-- **CPU**: Multi-core for parallel processing
-- **GPU**: Optional (Metal/CUDA acceleration)
+- **Python**: 3.12+
+- **RAM**: 8GB+
+- **GPU**: Metal/CUDA acceleration
+
+## To experiment with 
+
+- Drop chunk_size from 2000 to 512–1024 so small files don’t produce fat context blocks. Fewer characters means less to reason about and fewer tokens in the reply.
+- Consider zero temperature (llm_temperature = 0.0) or add a stronger system prompt ending in “Respond with ONLY a JSON array.” That reduces chatter and makes the parser happier.
+- If you we to keep the friendly prompt, catch JSONDecodeError and fall back to a JSON repair step (e.g., use llama_cpp’sstructured_output or run the response back through json.loads after trimming to the last ]).
