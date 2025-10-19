@@ -49,12 +49,7 @@ pip install -r requirements.txt
 python -m spacy download en_core_web_sm
 ```
 
-### Start the API Server
-```bash
-python -m uvicorn src.api.app:app --host 127.0.0.1 --port 8000 --reload
-```
-
-### Launch the Streamlit Workbench
+### Launch Streamlit
 ```bash
 streamlit run streamlit_app.py
 ```
