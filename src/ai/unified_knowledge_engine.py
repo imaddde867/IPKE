@@ -115,17 +115,25 @@ class LLMExtractionStrategy(ExtractionStrategy):
             )
             self._initialized = True
             
-            gpu_info = "GPU" if final_params.get('n_gpu_layers', 0) > 0 else "CPU"
-            if gpu_info == "GPU":
-                backend = final_params.get('backend', 'unknown')
-                layers = final_params.get('n_gpu_layers', 0)
-                logger.info(f"Loaded LLM model on {gpu_info} ({backend}, {layers} layers): {self.model_path}")
+            backend = final_params.get('backend', 'unknown')
+            layers = final_params.get('n_gpu_layers', 0)
+            try:
+                layers_int = int(layers)
+            except (TypeError, ValueError):
+                layers_int = 0
+            if layers_int != 0:
+                logger.info(f"Loaded LLM model on GPU ({backend}, {layers_int} layers): {self.model_path}")
             else:
-                logger.info(f"Loaded LLM model on {gpu_info}: {self.model_path}")
+                logger.info(f"Loaded LLM model on CPU ({backend}): {self.model_path}")
                 
         except Exception as e:
             # Fallback to CPU if GPU initialization fails
-            if self.enable_gpu and final_params.get('n_gpu_layers', 0) > 0:
+            layers = final_params.get('n_gpu_layers', 0)
+            try:
+                layers_int = int(layers)
+            except (TypeError, ValueError):
+                layers_int = 0
+            if self.enable_gpu and layers_int != 0:
                 logger.warning(f"GPU initialization failed, falling back to CPU: {e}")
                 fallback_params = {**self.llm_params, 'n_gpu_layers': 0}
                 try:
@@ -146,6 +154,7 @@ class LLMExtractionStrategy(ExtractionStrategy):
         
         if not self.enable_gpu or self.gpu_backend == "cpu":
             gpu_params['n_gpu_layers'] = 0
+            gpu_params['backend'] = 'cpu'
             return gpu_params
         
         import platform
@@ -184,6 +193,8 @@ class LLMExtractionStrategy(ExtractionStrategy):
         else:
             gpu_params['n_gpu_layers'] = 0
             logger.info("Using CPU backend")
+        
+        gpu_params['backend'] = detected_backend
         
         return gpu_params
     

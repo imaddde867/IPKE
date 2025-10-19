@@ -6,6 +6,9 @@ fastapi>=0.104.0
 python-multipart>=0.0.20
 uvicorn>=0.24.0
 
+# Environment
+python-dotenv>=1.0.0
+
 # HTTP requests
 requests>=2.31.0
 
