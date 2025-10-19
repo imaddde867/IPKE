@@ -1,10 +1,11 @@
-# Explainium 2.0 - Core Dependencies
+# Explainium - Core Dependencies
 # Clean architecture with minimal required packages
 
 # Web Framework
 fastapi>=0.104.0
 python-multipart>=0.0.20
 uvicorn>=0.24.0
+streamlit>=1.38.0
 
 # Environment
 python-dotenv>=1.0.0
