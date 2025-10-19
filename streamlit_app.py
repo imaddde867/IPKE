@@ -12,8 +12,8 @@ from src.processors.streamlined_processor import StreamlinedDocumentProcessor
 from src.exceptions import ProcessingError
 
 st.set_page_config(
-    page_title="Explainium 2.0",
-    page_icon="📄",
+    page_title="Explainium",
+    page_icon="🐴",
     layout="wide",
 )
 
@@ -30,7 +30,7 @@ def _ensure_session_defaults() -> None:
         "enable_gpu": config.enable_gpu,
     }
     if "settings" not in st.session_state:
-        st.session_state["settings"] = defaults
+        st.session_state["settings"] = defaults.copy()
     else:
         for key, value in defaults.items():
             st.session_state["settings"].setdefault(key, value)
@@ -43,7 +43,7 @@ def _apply_settings(new_values: Dict[str, Any]) -> None:
     config = get_config()
     for key, value in new_values.items():
         setattr(config, key, value)
-    st.session_state["settings"] = new_values
+    st.session_state["settings"] = new_values.copy()
     st.session_state["processor"] = None  # rebuild with fresh config
 
 
@@ -119,7 +119,7 @@ def _render_sidebar() -> None:
             value=int(current["max_workers"]),
         )
         enable_gpu = st.checkbox(
-            "Enable GPU Acceleration",
+            "Enable GPU",
             value=bool(current["enable_gpu"]),
             help="Disable if running on CPU-only hardware.",
         )
@@ -182,7 +182,7 @@ def main() -> None:
     _ensure_session_defaults()
     _render_sidebar()
 
-    st.title("Explainium 2.0 Knowledge Workbench")
+    st.title("Explainium - Information Extraction")
     st.write("Upload a document, tune extraction parameters, and review structured results.")
 
     config = get_config()

@@ -1,4 +1,4 @@
-# Explainium 2.0 - Intelligent Document Knowledge Extraction
+# Explainium - Intelligent Document Knowledge Extraction
 
 Explainium converts unstructured technical, safety, compliance and operational documents into structured, validated knowledge. Runs fully locally with offline AI models and produces database-ready entities with confidence scoring.
 
@@ -8,7 +8,7 @@ Explainium converts unstructured technical, safety, compliance and operational d
 
 ## Overview
 
-**Explainium 2.0** transforms complex documents into structured knowledge using a modern, streamlined architecture:
+**Explainium** transforms complex documents into structured knowledge using a modern, streamlined architecture:
 
 - **LLM-Only Engine**: Mistral-7B (via llama.cpp) powers every extraction step
 - **Async Processing**: High-performance document handling with concurrent operations
@@ -52,6 +52,11 @@ python -m spacy download en_core_web_sm
 ### Start the API Server
 ```bash
 python -m uvicorn src.api.app:app --host 127.0.0.1 --port 8000 --reload
+```
+
+### Launch the Streamlit Workbench
+```bash
+streamlit run streamlit_app.py
 ```
 
 ### Access Points
@@ -119,7 +124,7 @@ curl -X POST "http://localhost:8000/extract" \
 ## Configuration
 
 ### GPU Acceleration (Recommended)
-Explainium 2.0 uses GPU-accelerated LLMs by default for optimal performance:
+Explainium uses GPU-accelerated LLMs by default for optimal performance:
 
 ```bash
 # GPU Configuration (Auto-detected by default)

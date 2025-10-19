@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Explainium 2.0 - Knowledge Extraction API Server
+Explainium - Knowledge Extraction API Server
 
 A streamlined knowledge extraction system powered by Mistral-7B LLM.
 Extracts structured information from technical documents.
@@ -36,7 +36,7 @@ def check_model_availability():
 def main():
     """Run the Explainium API server"""
     print("=" * 60)
-    print("EXPLAINIUM 2.0 - Knowledge Extraction API")
+    print("Explainium - Knowledge Extraction API")
     print("=" * 60)
     
     # Check model availability
