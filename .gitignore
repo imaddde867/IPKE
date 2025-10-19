@@ -1,6 +1,6 @@
 # Python
 .venv/
-__pycache__/
+**/__pycache__/
 *.py[cod]
 *$py.class
 *.so
@@ -53,10 +53,13 @@ Thumbs.db
 
 # Tests
 test*.txt
-test*.py
 debug*.py
 .pytest_cache
-tests
+tests/temp_files/
+tests/**/*.log
+tests/outputs/
+.pytest_cache/
+.coverage
 
 # Temporary files
 *.tmp
