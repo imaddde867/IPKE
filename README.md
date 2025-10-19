@@ -59,6 +59,7 @@ python -m uvicorn src.api.app:app --host 127.0.0.1 --port 8000 --reload
 - **Interactive Docs**: http://localhost:8000/docs
 - **Health Check**: http://localhost:8000/health
 - **System Config**: http://localhost:8000/config
+- **Sample Inputs**: `documents_samples/` and `test_sample.txt` (optional, for manual experiments only)
 
 ### Basic Usage
 ```python
