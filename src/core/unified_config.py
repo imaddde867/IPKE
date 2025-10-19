@@ -8,6 +8,14 @@ from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
 
+try:
+    from dotenv import load_dotenv
+except ImportError:  # pragma: no cover - fallback if dependency missing at runtime
+    load_dotenv = None
+
+if load_dotenv:
+    load_dotenv()
+
 # Environment-based configuration
 class Environment(Enum):
     DEVELOPMENT = "development"
@@ -172,6 +180,27 @@ class UnifiedConfig:
             'EXPLAINIUM_ENABLE_GPU',
             default='true'
         ).lower() == 'true'
+        llm_gpu_layers_raw = _get_env_value(
+            'LLM_GPU_LAYERS',
+            'EXPLAINIUM_LLM_GPU_LAYERS',
+            default='-1'
+        )
+        try:
+            llm_n_gpu_layers = int(llm_gpu_layers_raw)
+        except (TypeError, ValueError):
+            llm_n_gpu_layers = -1
+        gpu_memory_fraction_raw = _get_env_value(
+            'GPU_MEMORY_FRACTION',
+            'EXPLAINIUM_GPU_MEMORY_FRACTION',
+            default='0.8'
+        )
+        try:
+            gpu_memory_fraction = float(gpu_memory_fraction_raw)
+        except (TypeError, ValueError):
+            gpu_memory_fraction = 0.8
+        else:
+            if gpu_memory_fraction <= 0 or gpu_memory_fraction > 1:
+                gpu_memory_fraction = 0.8
         
         return cls(
             environment=Environment.DEVELOPMENT,
@@ -185,7 +214,9 @@ class UnifiedConfig:
             api_host=api_host,
             database_url=database_url,
             gpu_backend=gpu_backend,
-            enable_gpu=enable_gpu
+            enable_gpu=enable_gpu,
+            llm_n_gpu_layers=llm_n_gpu_layers,
+            gpu_memory_fraction=gpu_memory_fraction
         )
     
     @classmethod
