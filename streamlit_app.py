@@ -28,6 +28,9 @@ def _ensure_session_defaults() -> None:
         "llm_max_tokens": config.llm_max_tokens,
         "max_workers": config.max_workers,
         "enable_gpu": config.enable_gpu,
+        "gpu_backend": config.gpu_backend,
+        "llm_n_gpu_layers": config.llm_n_gpu_layers,
+        "gpu_memory_fraction": config.gpu_memory_fraction,
     }
     if "settings" not in st.session_state:
         st.session_state["settings"] = defaults.copy()
@@ -97,11 +100,11 @@ def _render_sidebar() -> None:
             step=128,
             value=int(current["chunk_size"]),
         )
-        llm_temperature = st.number_input(
+        llm_temperature = st.slider(
             "LLM Temperature",
             min_value=0.0,
             max_value=1.0,
-            step=0.05,
+            step=0.01,
             value=float(current["llm_temperature"]),
         )
         llm_max_tokens = st.number_input(
@@ -118,10 +121,28 @@ def _render_sidebar() -> None:
             step=1,
             value=int(current["max_workers"]),
         )
-        enable_gpu = st.checkbox(
-            "Enable GPU",
-            value=bool(current["enable_gpu"]),
-            help="Disable if running on CPU-only hardware.",
+        gpu_backend_options = ["auto", "metal", "cuda", "cpu"]
+        gpu_backend = st.selectbox(
+            "GPU Backend",
+            options=gpu_backend_options,
+            index=gpu_backend_options.index(str(current["gpu_backend"]).lower()) if str(current["gpu_backend"]).lower() in gpu_backend_options else 0,
+            help="Choose the inference backend. Use 'auto' to detect automatically."
+        )
+        llm_n_gpu_layers = st.number_input(
+            "LLM GPU Layers",
+            min_value=-1,
+            max_value=80,
+            step=1,
+            value=int(current["llm_n_gpu_layers"]),
+            help="-1 loads all layers on the GPU; set a concrete number to cap GPU usage."
+        )
+        gpu_memory_fraction = st.slider(
+            "GPU Memory Fraction",
+            min_value=0.1,
+            max_value=1.0,
+            step=0.05,
+            value=float(current["gpu_memory_fraction"]),
+            help="Fraction of total GPU memory the model may reserve."
         )
 
         submitted = st.form_submit_button("Apply Settings")
@@ -134,7 +155,10 @@ def _render_sidebar() -> None:
             "llm_temperature": float(llm_temperature),
             "llm_max_tokens": int(llm_max_tokens),
             "max_workers": int(max_workers),
-            "enable_gpu": bool(enable_gpu),
+            "enable_gpu": str(gpu_backend).lower() != "cpu",
+            "gpu_backend": str(gpu_backend),
+            "llm_n_gpu_layers": int(llm_n_gpu_layers),
+            "gpu_memory_fraction": float(gpu_memory_fraction),
         }
         _apply_settings(new_values)
         st.sidebar.success("Settings updated. Next run will use the new values.")
@@ -142,7 +166,8 @@ def _render_sidebar() -> None:
     st.sidebar.markdown("---")
     st.sidebar.caption(
         f"Environment: **{config.environment.value.capitalize()}** · "
-        f"Model: `{config.llm_model_path}`"
+        f"Backend: `{config.gpu_backend}` · "
+        f"GPU Layers: {config.llm_n_gpu_layers}"
     )
 
 
