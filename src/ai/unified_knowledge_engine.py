@@ -64,7 +64,7 @@ class ExtractionStrategy(ABC):
 class LLMExtractionStrategy(ExtractionStrategy):
     """LLM-powered extraction for complex understanding."""
     
-    MAX_CHUNKS = 5
+    MAX_CHUNKS = 10  # Increased for comprehensive extraction
     
     def __init__(self, model_path: Optional[str] = None):
         self.model_path = model_path
@@ -138,20 +138,30 @@ class LLMExtractionStrategy(ExtractionStrategy):
             yield chunk
     
     async def _process_chunk_with_llm(self, chunk: str, document_type: str) -> List[ExtractedEntity]:
-        prompt = f"""[INST] Extract key information from this {document_type} document text and return ONLY a valid JSON array.
+        prompt = f"""[INST] Extract ALL key information from this {document_type} document text. Return one array element per distinct item you identify. If you find many items, list them ALL individually.
 
-Analyze this text and identify:
-- procedures (steps or actions)
-- requirements (conditions or constraints)  
-- equipment (tools or machines)
-- personnel roles (people or responsibilities)
-- safety measures (safety conditions or rules)
+Comprehensively analyze this text and identify EVERY:
+- procedure_step (individual action or step in a process)
+- safety_requirement (PPE, protection, hazard warnings)
+- equipment_tool (specific tools, machines, products with model numbers)
+- specification (measurements, grades, settings, parameters, distances, speeds, pressures)
+- material_product (consumables, chemicals, supplies with part numbers)
+- requirement_condition (prerequisites, constraints, standards)
+- time_duration (timing, curing times, intervals, waiting periods)
+- measurement_value (distances, dimensions, percentages, temperatures, RPM, grades)
+- contact_info (addresses, phone numbers, emails, websites)
+- warning_caution (disclaimers, limitations, important notices)
+- quality_standard (grades, ratings, performance criteria)
+- maintenance_instruction (cleaning, preparation, finishing steps)
+- process_sequence (numbered steps, workflows, procedures)
 
 Text: {chunk}
 
-Return ONLY a JSON array in this exact format:
+Extract EVERY technical detail, measurement, part number, grade, timing, distance, speed, and procedure. Be extremely granular:
 [
-  {{"content": "extracted text", "type": "procedure|requirement|equipment|personnel|safety", "category": "descriptive category", "confidence": 0.85}}
+  {{"content": "Hold spray gun 15cm-20cm from the surface", "type": "specification", "category": "distance_requirement", "confidence": 0.95}},
+  {{"content": "Use rotary polisher at 1400-1800 rpm", "type": "specification", "category": "speed_setting", "confidence": 0.95}},
+  {{"content": "3M Hookit 775L Cubitron II abrasive discs, grade 80+", "type": "material_product", "category": "abrasive", "confidence": 0.95}}
 ]
 [/INST]"""
         
@@ -162,7 +172,7 @@ Return ONLY a JSON array in this exact format:
                 None,
                 lambda: self.llm(
                     prompt,
-                    max_tokens=512,
+                    max_tokens=1536,  # Increased further for comprehensive extraction
                     temperature=0.1,
                     top_p=0.9,
                     repeat_penalty=1.1,
