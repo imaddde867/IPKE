@@ -64,37 +64,128 @@ class ExtractionStrategy(ABC):
 class LLMExtractionStrategy(ExtractionStrategy):
     """LLM-powered extraction for complex understanding."""
     
-    MAX_CHUNKS = 10  # Increased for comprehensive extraction
-    
-    def __init__(self, model_path: Optional[str] = None):
-        self.model_path = model_path
+    def __init__(self, config: Optional[UnifiedConfig] = None):
+        self.config = config or get_config()
+        llm_config = self.config.get_llm_config()
+        
+        self.model_path = llm_config['model_path']
+        self.max_chunks = llm_config['max_chunks']
+        
+        # GPU-optimized LLM parameters
+        self.llm_params = {
+            'n_ctx': llm_config['n_ctx'],
+            'n_threads': llm_config['n_threads'],
+            'n_gpu_layers': llm_config['n_gpu_layers'],
+            'f16_kv': llm_config['f16_kv'],
+            'use_mlock': llm_config['use_mlock'],
+            'use_mmap': llm_config['use_mmap'],
+            'verbose': llm_config['verbose']
+        }
+        
+        self.generation_params = {
+            'max_tokens': llm_config['max_tokens'],
+            'temperature': llm_config['temperature'],
+            'top_p': llm_config['top_p'],
+            'repeat_penalty': llm_config['repeat_penalty']
+        }
+        
+        self.confidence_threshold = llm_config['confidence_threshold']
+        self.enable_gpu = llm_config['enable_gpu']
+        self.gpu_backend = llm_config['gpu_backend']
         self.llm = None
-        self.confidence_threshold = 0.8
         self._initialized = False
     
     async def _initialize(self):
         if self._initialized:
             return
 
-        self._initialized = True
         if not LLAMA_AVAILABLE:
             raise RuntimeError("llama_cpp backend not available during model load.")
         if not self.model_path:
             raise RuntimeError("LLM model path is not configured.")
 
+        # Auto-detect and configure GPU backend
+        gpu_params = self._configure_gpu()
+        final_params = {**self.llm_params, **gpu_params}
+
         try:
             self.llm = Llama(
                 model_path=self.model_path,
-                n_ctx=8192,  # Larger context for Mistral
-                n_threads=4,
-                n_gpu_layers=0,  # CPU only for compatibility
-                verbose=False,
-                f16_kv=True  # Use f16 for key-value cache
+                **final_params
             )
             self._initialized = True
-            logger.info(f"Loaded LLM model: {self.model_path}")
+            
+            gpu_info = "GPU" if final_params.get('n_gpu_layers', 0) > 0 else "CPU"
+            if gpu_info == "GPU":
+                backend = final_params.get('backend', 'unknown')
+                layers = final_params.get('n_gpu_layers', 0)
+                logger.info(f"Loaded LLM model on {gpu_info} ({backend}, {layers} layers): {self.model_path}")
+            else:
+                logger.info(f"Loaded LLM model on {gpu_info}: {self.model_path}")
+                
         except Exception as e:
-            raise RuntimeError(f"Failed to load LLM model: {e}") from e
+            # Fallback to CPU if GPU initialization fails
+            if self.enable_gpu and final_params.get('n_gpu_layers', 0) > 0:
+                logger.warning(f"GPU initialization failed, falling back to CPU: {e}")
+                fallback_params = {**self.llm_params, 'n_gpu_layers': 0}
+                try:
+                    self.llm = Llama(
+                        model_path=self.model_path,
+                        **fallback_params
+                    )
+                    self._initialized = True
+                    logger.info(f"Loaded LLM model on CPU (fallback): {self.model_path}")
+                except Exception as fallback_error:
+                    raise RuntimeError(f"Failed to load LLM model on both GPU and CPU: {fallback_error}") from fallback_error
+            else:
+                raise RuntimeError(f"Failed to load LLM model: {e}") from e
+    
+    def _configure_gpu(self) -> Dict[str, Any]:
+        """Configure GPU parameters based on backend detection"""
+        gpu_params = {}
+        
+        if not self.enable_gpu or self.gpu_backend == "cpu":
+            gpu_params['n_gpu_layers'] = 0
+            return gpu_params
+        
+        import platform
+        
+        # Auto-detect GPU backend
+        if self.gpu_backend == "auto":
+            system = platform.system()
+            if system == "Darwin":  # macOS
+                # Check for Apple Silicon
+                machine = platform.machine()
+                if machine in ["arm64", "aarch64"]:
+                    detected_backend = "metal"
+                else:
+                    detected_backend = "cpu"  # Intel Mac
+            else:
+                # Check for NVIDIA GPU on Linux/Windows
+                try:
+                    import subprocess
+                    result = subprocess.run(['nvidia-smi'], capture_output=True, text=True, timeout=5)
+                    if result.returncode == 0:
+                        detected_backend = "cuda"
+                    else:
+                        detected_backend = "cpu"
+                except (subprocess.TimeoutExpired, FileNotFoundError):
+                    detected_backend = "cpu"
+        else:
+            detected_backend = self.gpu_backend
+        
+        # Set GPU parameters based on detected backend
+        if detected_backend == "metal":
+            gpu_params['n_gpu_layers'] = self.llm_params['n_gpu_layers']
+            logger.info("Using Metal GPU backend for Apple Silicon")
+        elif detected_backend == "cuda":
+            gpu_params['n_gpu_layers'] = self.llm_params['n_gpu_layers'] 
+            logger.info("Using CUDA GPU backend for NVIDIA")
+        else:
+            gpu_params['n_gpu_layers'] = 0
+            logger.info("Using CPU backend")
+        
+        return gpu_params
     
     async def extract(self, content: str, document_type: str = "unknown") -> ExtractionResult:
         start_time = time.time()
@@ -103,7 +194,7 @@ class LLMExtractionStrategy(ExtractionStrategy):
         if not self.llm:
             raise RuntimeError("LLM model failed to load.")
 
-        chunks = list(self._iter_chunks(content, 2000))
+        chunks = list(self._iter_chunks(content, self.config.chunk_size))
         all_entities = []
 
         for chunk in chunks:
@@ -128,7 +219,7 @@ class LLMExtractionStrategy(ExtractionStrategy):
     def _iter_chunks(self, content: str, chunk_size: int):
         """Yield limited chunks, biased toward sentence boundaries."""
         for index, start in enumerate(range(0, len(content), chunk_size)):
-            if index >= self.MAX_CHUNKS:
+            if index >= self.max_chunks:
                 break
             chunk = content[start:start + chunk_size]
             if start + chunk_size < len(content):
@@ -172,11 +263,8 @@ Extract EVERY technical detail, measurement, part number, grade, timing, distanc
                 None,
                 lambda: self.llm(
                     prompt,
-                    max_tokens=1536,  # Increased further for comprehensive extraction
-                    temperature=0.1,
-                    top_p=0.9,
-                    repeat_penalty=1.1,
-                    stop=["</s>", "[/INST]"]
+                    stop=["</s>", "[/INST]"],
+                    **self.generation_params  # Use config-driven parameters
                 )
             )
             
@@ -238,9 +326,8 @@ class UnifiedKnowledgeEngine:
     def _initialize_strategies(self):
         if not LLAMA_AVAILABLE:
             raise RuntimeError("llama_cpp backend not available; LLM-only extraction cannot proceed.")
-        llm_path = getattr(self.config, 'llm_model_path', 'models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf')
-        self.strategies['llm'] = LLMExtractionStrategy(llm_path)
-        logger.info("LLM extraction strategy ready: %s", llm_path)
+        self.strategies['llm'] = LLMExtractionStrategy(self.config)
+        logger.info("LLM extraction strategy ready: %s", self.config.llm_model_path)
     
     async def extract_knowledge(
         self, 
@@ -278,7 +365,7 @@ class UnifiedKnowledgeEngine:
         strategy_usage[result.strategy_used] = strategy_usage.get(result.strategy_used, 0) + 1
 
         async with self.cache_lock:
-            if len(self.cache) < 1000:  # Limit cache size
+            if len(self.cache) < self.config.cache_size:  # Use config-driven cache size
                 self.cache[cache_key] = result
 
         logger.info(f"Extracted {len(result.entities)} entities using {result.strategy_used} "

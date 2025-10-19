@@ -1,11 +1,5 @@
 """
-EXPLAINIUM - Simplified API
-
-A streamlined FastAPI application that uses the new unified architecture
-and eliminates complexity from the original 312-line API.
-
-REDUCES: 312 lines → ~150 lines (50% reduction)
-SIMPLIFIES: Single extraction endpoint, consistent error handling, clean async patterns
+EXPLAINIUM - Streamlined FastAPI app
 """
 
 import asyncio
@@ -123,6 +117,24 @@ async def health_check():
         version="2.0",
         environment=config.environment.value
     )
+
+
+@app.get("/config")
+async def get_config_info():
+    """Get system configuration information"""
+    config = get_config()
+    llm_config = config.get_llm_config()
+    
+    return {
+        "gpu_enabled": llm_config['enable_gpu'],
+        "gpu_backend": llm_config['gpu_backend'],
+        "detected_backend": config.detect_gpu_backend(),
+        "gpu_layers": llm_config['n_gpu_layers'],
+        "model_path": llm_config['model_path'],
+        "max_chunks": llm_config['max_chunks'],
+        "max_tokens": llm_config['max_tokens'],
+        "confidence_threshold": llm_config['confidence_threshold']
+    }
 
 
 @app.post("/extract", response_model=ExtractionResponse)
