@@ -6,9 +6,6 @@ Explainium converts unstructured technical, safety, compliance and operational d
 [![FastAPI](https://img.shields.io/badge/API-FastAPI-00a86b.svg)](https://fastapi.tiangolo.com)
 [![Offline](https://img.shields.io/badge/processing-offline-success.svg)](https://github.com)
 
-
-#  **_FIX CONFLICT BETWEEN THE ENGINE AND CENTRAL CONFIG SETTS._** 
-
 ## Overview
 
 **Explainium 2.0** transforms complex documents into structured knowledge using a modern, streamlined architecture:
@@ -61,6 +58,7 @@ python -m uvicorn src.api.simplified_app:app --host 127.0.0.1 --port 8000 --relo
 - **API Server**: http://localhost:8000
 - **Interactive Docs**: http://localhost:8000/docs
 - **Health Check**: http://localhost:8000/health
+- **System Config**: http://localhost:8000/config
 
 ### Basic Usage
 ```python
@@ -81,6 +79,7 @@ print(f"Confidence: {result['confidence_score']:.2f}")
 |----------|--------|-------------|
 | `/` | GET | Welcome message and system info |
 | `/health` | GET | System health status |
+| `/config` | GET | System configuration and GPU status |
 | `/extract` | POST | Process document and extract knowledge |
 | `/docs` | GET | Interactive API documentation |
 
@@ -118,13 +117,33 @@ curl -X POST "http://localhost:8000/extract" \
 
 ## Configuration
 
+### GPU Acceleration (Recommended)
+Explainium 2.0 uses GPU-accelerated LLMs by default for optimal performance:
+
+```bash
+# GPU Configuration (Auto-detected by default)
+export ENABLE_GPU=true
+export GPU_BACKEND=auto  # auto, metal (Apple Silicon), cuda (NVIDIA), cpu
+export LLM_GPU_LAYERS=-1  # -1 = all GPU layers, 0 = CPU only
+export GPU_MEMORY_FRACTION=0.8  # Use 80% of available GPU memory
+```
+
+**Supported Hardware:**
+- **Apple Silicon** (M1/M2/M3/M4): Metal backend (auto-detected)
+- **NVIDIA GPUs**: CUDA backend (auto-detected)  
+- **CPU Fallback**: Automatic fallback if GPU unavailable
+
 ### Environment Variables
 ```bash
-# Optional - override defaults
+# Core Settings
 export EXPLAINIUM_ENV=production
 export EXPLAINIUM_LOG_LEVEL=INFO
-export EXPLAINIUM_MAX_FILE_SIZE_MB=50
-export EXPLAINIUM_DATABASE_URL="postgresql://postgres:password@localhost:5432/explainium"
+export MAX_FILE_SIZE_MB=50
+
+# Quality Thresholds
+export CONFIDENCE_THRESHOLD=0.8
+export QUALITY_THRESHOLD=0.7
+
 ```
 
 ### Supported Formats

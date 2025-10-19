@@ -56,16 +56,33 @@ class UnifiedConfig:
     embedding_model: str = "models/embeddings/bge-small-en-v1.5"
     whisper_model: str = "base"
     
-    # Quality Thresholds
-    confidence_threshold: float = 0.7
-    quality_threshold: float = 0.8
+    # LLM Configuration (GPU-Optimized for comprehensive extraction)
+    llm_n_ctx: int = 8192  # Larger context for Mistral
+    llm_n_threads: int = 4  # CPU threads for processing (fallback)
+    llm_n_gpu_layers: int = -1  # Use all GPU layers (-1 = all layers on GPU)
+    llm_max_tokens: int = 1536  # Increased for comprehensive extraction
+    llm_temperature: float = 0.1  # Low for deterministic extraction
+    llm_top_p: float = 0.9
+    llm_repeat_penalty: float = 1.1
+    llm_max_chunks: int = 10  # Increased for comprehensive extraction
+    llm_f16_kv: bool = True  # Use f16 for key-value cache
+    llm_use_mlock: bool = True  # Lock model in memory for better performance
+    llm_use_mmap: bool = True  # Memory map model files
+    
+    # GPU Configuration
+    gpu_backend: str = "auto"  # "metal", "cuda", "auto", or "cpu"
+    enable_gpu: bool = True  # Enable GPU acceleration by default
+    gpu_memory_fraction: float = 0.8  # Use 80% of available GPU memory
+    
+    # Quality Thresholds (Optimized for LLM extraction performance)
+    confidence_threshold: float = 0.8  # Matches knowledge engine setting
+    quality_threshold: float = 0.7   # Default extraction threshold
     production_threshold: float = 0.85
     
-    # Performance
-    enable_gpu: bool = False
+    # Performance (GPU-Optimized for LLM extraction)
     max_workers: int = 4
-    chunk_size: int = 2000
-    cache_size: int = 1000
+    chunk_size: int = 2000  # Matches knowledge engine chunk size
+    cache_size: int = 1000  # Matches knowledge engine cache limit
     processing_timeout: int = 300  # 5 minutes
     
     # Database
@@ -145,17 +162,30 @@ class UnifiedConfig:
             'EXPLAINIUM_DATABASE_URL',
             default='postgresql://postgres:password@localhost:5432/explainium_dev'
         )
+        gpu_backend = _get_env_value(
+            'GPU_BACKEND',
+            'EXPLAINIUM_GPU_BACKEND',
+            default='auto'
+        )
+        enable_gpu = _get_env_value(
+            'ENABLE_GPU',
+            'EXPLAINIUM_ENABLE_GPU',
+            default='true'
+        ).lower() == 'true'
+        
         return cls(
             environment=Environment.DEVELOPMENT,
             debug=True,
             database_echo=True,
-            log_level="DEBUG",
+            log_level="INFO",  # Changed from DEBUG to match production settings
             enable_auth=False,
             max_file_size_mb=max_file_size,
-            confidence_threshold=0.6,  # Lower for testing
+            confidence_threshold=0.8,  # Optimized setting from knowledge engine
             processing_timeout=processing_timeout,
             api_host=api_host,
-            database_url=database_url
+            database_url=database_url,
+            gpu_backend=gpu_backend,
+            enable_gpu=enable_gpu
         )
     
     @classmethod
@@ -179,6 +209,9 @@ class UnifiedConfig:
             enable_auth=False,
             enable_llm_processing=False,  # Faster tests
             enable_audio_processing=False,
+            enable_gpu=False,  # Disable GPU for tests to avoid conflicts
+            llm_n_gpu_layers=0,  # CPU-only for tests
+            gpu_backend="cpu",  # Force CPU for reliable testing
             max_file_size_mb=max_file_size,  # Smaller for tests
             confidence_threshold=0.5,
             cache_size=100,
@@ -219,6 +252,29 @@ class UnifiedConfig:
         api_host = _get_env_value('API_HOST', 'EXPLAINIUM_API_HOST', default='0.0.0.0')
         cors_origins_raw = _get_env_value('CORS_ORIGINS', 'EXPLAINIUM_CORS_ORIGINS', default='')
         cors_origins = cors_origins_raw.split(',') if cors_origins_raw else []
+        
+        # GPU Configuration for Production
+        gpu_backend = _get_env_value(
+            'GPU_BACKEND',
+            'EXPLAINIUM_GPU_BACKEND',
+            default='auto'
+        )
+        enable_gpu = _get_env_value(
+            'ENABLE_GPU',
+            'EXPLAINIUM_ENABLE_GPU',
+            default='true'
+        ).lower() == 'true'
+        llm_n_gpu_layers = int(_get_env_value(
+            'LLM_GPU_LAYERS',
+            'EXPLAINIUM_LLM_GPU_LAYERS',
+            default='-1'  # Use all GPU layers by default
+        ))
+        gpu_memory_fraction = float(_get_env_value(
+            'GPU_MEMORY_FRACTION',
+            'EXPLAINIUM_GPU_MEMORY_FRACTION',
+            default='0.8'
+        ))
+        
         return cls(
             environment=Environment.PRODUCTION,
             debug=False,
@@ -232,7 +288,11 @@ class UnifiedConfig:
             secret_key=secret_key,
             database_url=database_url,
             api_host=api_host,
-            cors_origins=cors_origins
+            cors_origins=cors_origins,
+            gpu_backend=gpu_backend,
+            enable_gpu=enable_gpu,
+            llm_n_gpu_layers=llm_n_gpu_layers,
+            gpu_memory_fraction=gpu_memory_fraction
         )
     
     # Utility methods for backward compatibility
@@ -271,7 +331,57 @@ class UnifiedConfig:
             'whisper_model': self.whisper_model,
             'confidence_threshold': self.confidence_threshold,
             'enable_gpu': self.enable_gpu,
+            'gpu_backend': self.gpu_backend,
+            'gpu_memory_fraction': self.gpu_memory_fraction,
             'enable_llm_processing': self.enable_llm_processing
+        }
+    
+    def detect_gpu_backend(self) -> str:
+        """Detect the best available GPU backend"""
+        import platform
+        
+        if not self.enable_gpu:
+            return "cpu"
+        
+        system = platform.system()
+        if system == "Darwin":  # macOS
+            machine = platform.machine()
+            if machine in ["arm64", "aarch64"]:
+                return "metal"  # Apple Silicon
+            else:
+                return "cpu"  # Intel Mac
+        else:
+            # Check for NVIDIA GPU on Linux/Windows
+            try:
+                import subprocess
+                result = subprocess.run(['nvidia-smi'], capture_output=True, text=True, timeout=5)
+                if result.returncode == 0:
+                    return "cuda"
+                else:
+                    return "cpu"
+            except (subprocess.TimeoutExpired, FileNotFoundError):
+                return "cpu"
+    
+    def get_llm_config(self) -> Dict[str, Any]:
+        """Get LLM-specific configuration optimized for GPU-accelerated comprehensive extraction"""
+        return {
+            'model_path': self.llm_model_path,
+            'n_ctx': self.llm_n_ctx,
+            'n_threads': self.llm_n_threads,
+            'n_gpu_layers': self.llm_n_gpu_layers,
+            'max_tokens': self.llm_max_tokens,
+            'temperature': self.llm_temperature,
+            'top_p': self.llm_top_p,
+            'repeat_penalty': self.llm_repeat_penalty,
+            'max_chunks': self.llm_max_chunks,
+            'f16_kv': self.llm_f16_kv,
+            'use_mlock': self.llm_use_mlock,
+            'use_mmap': self.llm_use_mmap,
+            'confidence_threshold': self.confidence_threshold,
+            'gpu_backend': self.gpu_backend,
+            'enable_gpu': self.enable_gpu,
+            'gpu_memory_fraction': self.gpu_memory_fraction,
+            'verbose': False  # Disable verbose output for cleaner logs
         }
     
     def get_processing_config(self) -> Dict[str, Any]:
