@@ -73,3 +73,6 @@ models/llm/*.gguf
 # Uploaded files
 uploaded_files/*
 !uploaded_files/.gitkeep
+
+# Extras 
+thesis/

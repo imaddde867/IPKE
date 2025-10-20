@@ -142,10 +142,12 @@ async def get_config_info():
         "gpu_backend": llm_config['gpu_backend'],
         "detected_backend": config.detect_gpu_backend(),
         "gpu_layers": llm_config['n_gpu_layers'],
+        "n_ctx": llm_config['n_ctx'],
         "model_path": llm_config['model_path'],
         "max_chunks": llm_config['max_chunks'],
         "max_tokens": llm_config['max_tokens'],
-        "confidence_threshold": llm_config['confidence_threshold']
+        "confidence_threshold": llm_config['confidence_threshold'],
+        "chunk_size": config.chunk_size
     }
 
 
