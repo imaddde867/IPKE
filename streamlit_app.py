@@ -24,6 +24,7 @@ def _ensure_session_defaults() -> None:
         "quality_threshold": config.quality_threshold,
         "confidence_threshold": config.confidence_threshold,
         "chunk_size": config.chunk_size,
+        "llm_n_ctx": config.llm_n_ctx,
         "llm_temperature": config.llm_temperature,
         "llm_max_tokens": config.llm_max_tokens,
         "max_workers": config.max_workers,
@@ -100,6 +101,14 @@ def _render_sidebar() -> None:
             step=128,
             value=int(current["chunk_size"]),
         )
+        llm_n_ctx = st.number_input(
+            "LLM Context Window (n_ctx)",
+            min_value=1024,
+            max_value=32768,
+            step=256,
+            value=int(current["llm_n_ctx"]),
+            help="Total context window tokens allowed by the model (input + output)."
+        )
         llm_temperature = st.slider(
             "LLM Temperature",
             min_value=0.0,
@@ -113,6 +122,7 @@ def _render_sidebar() -> None:
             max_value=4096,
             step=128,
             value=int(current["llm_max_tokens"]),
+            help="Maximum tokens to generate in the response (budget for output)."
         )
         max_workers = st.number_input(
             "Max Workers",
@@ -152,6 +162,7 @@ def _render_sidebar() -> None:
             "quality_threshold": float(quality_threshold),
             "confidence_threshold": float(confidence_threshold),
             "chunk_size": int(chunk_size),
+            "llm_n_ctx": int(llm_n_ctx),
             "llm_temperature": float(llm_temperature),
             "llm_max_tokens": int(llm_max_tokens),
             "max_workers": int(max_workers),
@@ -164,10 +175,23 @@ def _render_sidebar() -> None:
         st.sidebar.success("Settings updated. Next run will use the new values.")
 
     st.sidebar.markdown("---")
+    # Heuristic guidance: ~4 chars per token for English text
+    try:
+        approx_input_tokens = max(1, int(int(current["chunk_size"]) / 4))
+        approx_total = approx_input_tokens + int(current["llm_max_tokens"])
+        n_ctx_val = int(current.get("llm_n_ctx", config.llm_n_ctx))
+        if approx_total > n_ctx_val:
+            st.sidebar.warning(
+                f"Estimated tokens (input≈{approx_input_tokens} + output={int(current['llm_max_tokens'])} = {approx_total}) exceed n_ctx={n_ctx_val}. Consider reducing chunk size or max tokens."
+            )
+    except Exception:
+        pass
+
     st.sidebar.caption(
         f"Environment: **{config.environment.value.capitalize()}** · "
         f"Backend: `{config.gpu_backend}` · "
-        f"GPU Layers: {config.llm_n_gpu_layers}"
+        f"GPU Layers: {config.llm_n_gpu_layers} · "
+        f"n_ctx: {int(current.get('llm_n_ctx', config.llm_n_ctx))}"
     )
 
 
