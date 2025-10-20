@@ -39,6 +39,12 @@ src/
 2. **LLM Analysis**: The Mistral-7B model generates structured entities from extracted text
 3. **Validation & Scoring**: Results are filtered using configurable confidence thresholds
 
+### Confidence Scoring
+- Every extracted entity carries the `confidence` value returned by the LLM (expressed between 0 and 1).
+- If the LLM omits a confidence, the parser substitutes the configured default (0.8 by default from `CONFIDENCE_THRESHOLD`).
+- The response-level `confidence_score` is the simple average of all entity confidences collected during extraction.
+- Downstream services can adjust acceptance criteria by comparing the aggregate score with their desired threshold.
+
 ## Quick Start
 
 ### Installation
