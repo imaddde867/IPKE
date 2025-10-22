@@ -80,13 +80,6 @@ def _render_sidebar() -> None:
 
     with st.sidebar.form("settings_form"):
         st.subheader("Extraction Settings")
-        quality_threshold = st.slider(
-            "Quality Threshold",
-            min_value=0.0,
-            max_value=1.0,
-            step=0.01,
-            value=float(current["quality_threshold"]),
-        )
         confidence_threshold = st.slider(
             "Confidence Threshold",
             min_value=0.0,
@@ -94,36 +87,48 @@ def _render_sidebar() -> None:
             step=0.01,
             value=float(current["confidence_threshold"]),
         )
-        chunk_size = st.number_input(
-            "Chunk Size",
-            min_value=256,
-            max_value=4096,
-            step=128,
-            value=int(current["chunk_size"]),
-        )
-        llm_n_ctx = st.number_input(
-            "LLM Context Window (n_ctx)",
-            min_value=1024,
-            max_value=32768,
-            step=256,
-            value=int(current["llm_n_ctx"]),
-            help="Total context window tokens allowed by the model (input + output)."
-        )
-        llm_temperature = st.slider(
-            "LLM Temperature",
+        quality_threshold = st.slider(
+            "Quality Threshold",
             min_value=0.0,
             max_value=1.0,
             step=0.01,
-            value=float(current["llm_temperature"]),
+            value=float(current["quality_threshold"]),
         )
-        llm_max_tokens = st.number_input(
-            "LLM Max Tokens",
-            min_value=256,
-            max_value=4096,
-            step=128,
-            value=int(current["llm_max_tokens"]),
-            help="Maximum tokens to generate in the response (budget for output)."
-        )
+        st.subheader("Throughput")
+        col_left, col_right = st.columns(2)
+        with col_left:
+            chunk_size = st.number_input(
+                "Chunk Size",
+                min_value=256,
+                max_value=4096,
+                step=128,
+                value=int(current["chunk_size"]),
+            )
+            llm_temperature = st.slider(
+                "LLM Temperature",
+                min_value=0.0,
+                max_value=1.0,
+                step=0.01,
+                value=float(current["llm_temperature"]),
+            )
+        with col_right:
+            llm_n_ctx = st.number_input(
+                "Context Window",
+                min_value=1024,
+                max_value=32768,
+                step=256,
+                value=int(current["llm_n_ctx"]),
+                help="n_ctx : Total context budget (input + output tokens)."
+            )
+            llm_max_tokens = st.number_input(
+                "LLM Max Tokens",
+                min_value=256,
+                max_value=4096,
+                step=128,
+                value=int(current["llm_max_tokens"]),
+                help="Generation budget for model outputs."
+            )
+        st.subheader("Performance")
         max_workers = st.number_input(
             "Max Workers",
             min_value=1,
@@ -131,29 +136,30 @@ def _render_sidebar() -> None:
             step=1,
             value=int(current["max_workers"]),
         )
-        gpu_backend_options = ["auto", "metal", "cuda", "cpu"]
-        gpu_backend = st.selectbox(
-            "GPU Backend",
-            options=gpu_backend_options,
-            index=gpu_backend_options.index(str(current["gpu_backend"]).lower()) if str(current["gpu_backend"]).lower() in gpu_backend_options else 0,
-            help="Choose the inference backend. Use 'auto' to detect automatically."
-        )
-        llm_n_gpu_layers = st.number_input(
-            "LLM GPU Layers",
-            min_value=-1,
-            max_value=80,
-            step=1,
-            value=int(current["llm_n_gpu_layers"]),
-            help="-1 loads all layers on the GPU; set a concrete number to cap GPU usage."
-        )
-        gpu_memory_fraction = st.slider(
-            "GPU Memory Fraction",
-            min_value=0.1,
-            max_value=1.0,
-            step=0.05,
-            value=float(current["gpu_memory_fraction"]),
-            help="Fraction of total GPU memory the model may reserve."
-        )
+        with st.expander("GPU Controls", expanded=False):
+            gpu_backend_options = ["auto", "metal", "cuda", "cpu"]
+            gpu_backend = st.selectbox(
+                "GPU Backend",
+                options=gpu_backend_options,
+                index=gpu_backend_options.index(str(current["gpu_backend"]).lower()) if str(current["gpu_backend"]).lower() in gpu_backend_options else 0,
+                help="Choose the inference backend. Use 'auto' to detect automatically."
+            )
+            llm_n_gpu_layers = st.number_input(
+                "LLM GPU Layers",
+                min_value=-1,
+                max_value=80,
+                step=1,
+                value=int(current["llm_n_gpu_layers"]),
+                help="-1 loads all layers on the GPU; set a concrete number to cap GPU usage."
+            )
+            gpu_memory_fraction = st.slider(
+                "GPU Memory Fraction",
+                min_value=0.1,
+                max_value=1.0,
+                step=0.05,
+                value=float(current["gpu_memory_fraction"]),
+                help="Fraction of total GPU memory the model may reserve."
+            )
 
         submitted = st.form_submit_button("Apply Settings")
 
