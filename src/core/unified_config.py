@@ -34,9 +34,7 @@ def _get_env_value(*keys: str, default: Optional[str] = None) -> Optional[str]:
 @dataclass
 class UnifiedConfig:
     """
-    Unified configuration for the entire Explainium system
-    
-    All configuration is centralized here and loaded from environment variables
+    Unified configuration for the entire Explainium system all settings are centralized here and loaded from environment variables
     with sensible defaults for each environment.
     """
     
@@ -89,7 +87,7 @@ class UnifiedConfig:
     production_threshold: float = 0.85
     
     # Performance (GPU-Optimized for LLM extraction)
-    max_workers: int = 4
+    max_workers: int = 8
     chunk_size: int = 2000  # Matches knowledge engine chunk size
     cache_size: int = 1000  # Matches knowledge engine cache limit
     processing_timeout: int = 300  # 5 minutes
@@ -172,13 +170,85 @@ class UnifiedConfig:
         else:
             if gpu_memory_fraction <= 0 or gpu_memory_fraction > 1:
                 gpu_memory_fraction = 0.8
+        confidence_threshold_raw = _get_env_value(
+            'CONFIDENCE_THRESHOLD',
+            'EXPLAINIUM_CONFIDENCE_THRESHOLD',
+            default='0.8'
+        )
+        try:
+            confidence_threshold = float(confidence_threshold_raw)
+        except (TypeError, ValueError):
+            confidence_threshold = 0.8
+        quality_threshold_raw = _get_env_value(
+            'QUALITY_THRESHOLD',
+            'EXPLAINIUM_QUALITY_THRESHOLD',
+            default='0.7'
+        )
+        try:
+            quality_threshold = float(quality_threshold_raw)
+        except (TypeError, ValueError):
+            quality_threshold = 0.7
+        chunk_size_raw = _get_env_value(
+            'CHUNK_SIZE',
+            'EXPLAINIUM_CHUNK_SIZE',
+            default='2000'
+        )
+        try:
+            chunk_size = int(chunk_size_raw)
+        except (TypeError, ValueError):
+            chunk_size = 2000
+        llm_n_ctx_raw = _get_env_value(
+            'LLM_N_CTX',
+            'EXPLAINIUM_LLM_N_CTX',
+            default=str(cls.llm_n_ctx)
+        )
+        try:
+            llm_n_ctx = int(llm_n_ctx_raw)
+        except (TypeError, ValueError):
+            llm_n_ctx = cls.llm_n_ctx
+        llm_temperature_raw = _get_env_value(
+            'LLM_TEMPERATURE',
+            'EXPLAINIUM_LLM_TEMPERATURE',
+            default=str(cls.llm_temperature)
+        )
+        try:
+            llm_temperature = float(llm_temperature_raw)
+        except (TypeError, ValueError):
+            llm_temperature = cls.llm_temperature
+        llm_max_tokens_raw = _get_env_value(
+            'LLM_MAX_TOKENS',
+            'EXPLAINIUM_LLM_MAX_TOKENS',
+            default=str(cls.llm_max_tokens)
+        )
+        try:
+            llm_max_tokens = int(llm_max_tokens_raw)
+        except (TypeError, ValueError):
+            llm_max_tokens = cls.llm_max_tokens
+        max_workers_raw = _get_env_value(
+            'MAX_WORKERS',
+            'EXPLAINIUM_MAX_WORKERS',
+            default=str(cls.max_workers)
+        )
+        try:
+            max_workers = int(max_workers_raw)
+        except (TypeError, ValueError):
+            max_workers = cls.max_workers
+        else:
+            if max_workers < 1:
+                max_workers = cls.max_workers
         
         return cls(
             environment=Environment.DEVELOPMENT,
             debug=True,
             log_level="INFO",  # Changed from DEBUG to match production settings
             max_file_size_mb=max_file_size,
-            confidence_threshold=0.8,  # Optimized setting from knowledge engine
+            confidence_threshold=confidence_threshold,  # Optimized setting from knowledge engine
+            quality_threshold=quality_threshold,
+            chunk_size=chunk_size,
+            llm_n_ctx=llm_n_ctx,
+            llm_temperature=llm_temperature,
+            llm_max_tokens=llm_max_tokens,
+            max_workers=max_workers,
             processing_timeout=processing_timeout,
             api_host=api_host,
             gpu_backend=gpu_backend,
