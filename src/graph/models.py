@@ -1,7 +1,5 @@
 """
-Procedural Graph Models
-
-Pydantic models to represent a structured procedural knowledge graph used by the
+Procedural Graph Models : Pydantic models to represent a structured procedural knowledge graph used by the
 thesis pipeline. This mirrors the JSON schema in `src/graph/schema.json`.
 
 Core concepts
@@ -22,8 +20,7 @@ from pydantic import BaseModel, Field
 
 
 def normalize_text(s: Optional[str]) -> str:
-    """Lightweight normalization for string comparison in evaluation.
-
+    """Lightweight simple initial normalization for string comparison in evaluation :
     - Lowercase
     - Strip whitespace
     - Collapse multiple spaces
