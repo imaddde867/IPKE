@@ -2,7 +2,7 @@
 Test knowledge extraction engine
 """
 import pytest
-from src.ai.unified_knowledge_engine import UnifiedKnowledgeEngine, ExtractedEntity, ExtractionResult
+from src.ai.knowledge_engine import UnifiedKnowledgeEngine, ExtractedEntity, ExtractionResult
 
 
 class TestKnowledgeEngine:

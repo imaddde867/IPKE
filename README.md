@@ -22,7 +22,7 @@ Explainium converts unstructured technical, safety, compliance and operational d
 ```
 src/
 ├── ai/
-│   └── unified_knowledge_engine.py    # AI engine
+│   └── knowledge_engine.py            # AI engine
 ├── api/
 │   └── app.py                         # FastAPI application
 ├── core/
@@ -184,7 +184,7 @@ pip install -e .
 pytest
 
 # Check code quality
-python -c "from src.ai.unified_knowledge_engine import UnifiedKnowledgeEngine; print('Engine OK')"
+python -c "from src.ai.knowledge_engine import UnifiedKnowledgeEngine; print('Engine OK')"
 ```
 
 ### Model Management
