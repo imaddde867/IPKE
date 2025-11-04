@@ -8,3 +8,7 @@ hf_hub_download(
     local_dir="models/llm",
     local_dir_use_symlinks=False
 )
+
+#module load cuda
+#export CUDA_HOME=/appl/spack/v017/install-tree/gcc-11.2.0/cuda-11.5.0-mg4ztb
+#export LD_LIBRARY_PATH="$CUDA_HOME/lib64:$CUDA_HOME/lib64/stubs:$LD_LIBRARY_PATH"
