@@ -1,96 +1,105 @@
 {
   "doc_id": "op_firesafety_guideline",
   "procedure": {
-    "title": "Fire Safety Procedures for Working Machines",
-    "goal": "To outline the required maintenance, inspection, and emergency actions to prevent and manage fires in working machines."
+    "title": "Working Machine Fire Safety: Maintenance and Emergency Response",
+    "goal": "To prevent working machine fires through regular maintenance and to provide clear steps for responding to a fire emergency."
   },
   "steps": [
     {
       "id": "s1",
-      "action": "clean engine compartment and surroundings",
+      "action": "inspect and clean engine compartment",
+      "object": "working machine",
       "tools": ["compressed air"],
-      "note": "Perform daily in dusty/fire-hazard conditions, otherwise weekly. Clean after a shift."
+      "note": "Section: Routine Maintenance. Prevents ignition and improves cooling."
     },
     {
       "id": "s2",
-      "action": "inspect for liquid leaks",
+      "action": "inspect and repair fluid leaks",
       "object": "fuel, oil, and hydraulic systems",
-      "note": "Check joints, hoses, and engine compartment. Perform after cleaning."
+      "note": "Check hoses, pipes, and joints. Repair any leaks immediately."
     },
     {
       "id": "s3",
-      "action": "repair leaks",
-      "conditions": ["if any leaks are found"],
-      "note": "Must be done immediately."
+      "action": "perform annual inspection of electrical systems",
+      "object": "electrical systems",
+      "tools": ["multimeter", "thermal imaging camera"],
+      "note": "Check for voltage drops, anomalies, and damage. Document inspections."
     },
     {
       "id": "s4",
-      "action": "inspect electrical systems",
-      "tools": ["multimeter", "thermal imaging camera"],
-      "note": "Perform visual inspection at least annually and document it. Check non-fused cables (battery, alternator, starter) several times a year."
+      "action": "inspect key electrical components",
+      "object": "main switch, battery, cables, alternator",
+      "note": "Ensure components are secure, clean, and have terminal covers."
     },
     {
       "id": "s5",
-      "action": "check main power switch",
-      "note": "Ensure it cuts power correctly and terminal covers are in place."
+      "action": "inspect exhaust system",
+      "object": "exhaust pipe and thermal shields",
+      "note": "Check for leaks and ensure all heat shields are in place."
     },
     {
       "id": "s6",
-      "action": "check auxiliary heater",
-      "conditions": ["before winter"],
-      "note": "Inspect cleanliness of heater and compartment, check for fuel leaks, and test under supervision."
+      "action": "inspect and service first-aid extinguishing equipment",
+      "object": "hand-held extinguishers and fixed systems",
+      "note": "Ensure equipment is available, marked, and serviced annually."
     },
     {
       "id": "s7",
-      "action": "perform DPF regeneration",
-      "conditions": ["when indicated by the machine"],
-      "note": "Must be done in a safe outdoor area away from flammable materials. Never leave the machine unattended."
+      "action": "inspect and test auxiliary heater",
+      "object": "auxiliary heater system",
+      "conditions": ["before winter use"],
+      "note": "Section: Special Operations. Check cleanliness, wiring, and exhaust."
     },
     {
       "id": "s8",
-      "action": "service fire extinguishing equipment",
-      "note": "Service hand-held extinguishers and any fixed systems at least annually."
+      "action": "manage DPF regeneration process",
+      "object": "diesel particulate filter",
+      "conditions": ["when indicated by machine"],
+      "note": "This is a high-temperature combustion process requiring supervision."
     },
     {
       "id": "s9",
-      "action": "respond to an engine fire",
-      "note": "This is the emergency procedure."
+      "action": "move machine to safe location",
+      "object": "working machine",
+      "conditions": ["in case of fire, if machine is indoors or near flammable material"],
+      "note": "Section: Emergency Engine Fire Response. This step must precede engine shutdown."
     },
     {
       "id": "s10",
-      "action": "move machine to a safe location",
-      "conditions": ["if possible and safe"],
-      "note": "Move outdoors or away from flammable materials before shutting down."
+      "action": "shut down engine",
+      "object": "engine"
     },
     {
       "id": "s11",
-      "action": "shut down engine and cut power",
-      "tools": ["main power switch"]
+      "action": "cut electricity",
+      "object": "main power switch"
     },
     {
       "id": "s12",
       "action": "call for help",
-      "note": "Use emergency number 112."
+      "object": "emergency services (112)",
+      "tools": ["phone", "112 app"]
     },
     {
       "id": "s13",
       "action": "perform first-aid fire extinguishing",
+      "object": "fire",
       "tools": ["hand-held fire extinguisher"]
     },
     {
       "id": "s14",
       "action": "wait for fire department confirmation",
-      "note": "Do not assume the fire is out, even if it appears to be."
+      "object": "fire scene",
+      "note": "Do not assume the fire is out, even if it appears controlled."
     },
     {
       "id": "s15",
-      "action": "report incident",
-      "note": "Inform supervisor, site manager, and insurance company."
+      "action": "report the incident",
+      "object": "supervisors and insurance company"
     }
   ],
   "relations": [
     { "type": "NEXT", "from": "s1", "to": "s2" },
-    { "type": "NEXT", "from": "s2", "to": "s3" },
     { "type": "NEXT", "from": "s9", "to": "s10" },
     { "type": "NEXT", "from": "s10", "to": "s11" },
     { "type": "NEXT", "from": "s11", "to": "s12" },
@@ -101,33 +110,63 @@
   "constraints": [
     {
       "id": "c1",
-      "category": "equipment",
-      "text": "Use authentic replacement parts from known manufacturers."
+      "category": "timing",
+      "text": "Clean daily in dusty or fire-hazard conditions; otherwise, clean at least weekly.",
+      "applies_to": ["s1"]
     },
     {
       "id": "c2",
-      "category": "equipment",
-      "text": "Machines over 3,000 kg must have at least two 34A233B hand-held fire extinguishers."
+      "category": "quality",
+      "text": "Always use authentic replacement parts from known manufacturers.",
+      "applies_to": ["s2"]
     },
     {
       "id": "c3",
-      "category": "equipment",
-      "text": "Machines in high-risk environments (e.g., timber, peat processing) must have a fixed, automatic fire extinguishing system."
+      "category": "safety",
+      "text": "Shut down the engine before inspecting for fuel leaks.",
+      "applies_to": ["s2"]
     },
     {
       "id": "c4",
-      "category": "safety",
-      "text": "Operators must be trained in the use of fire extinguishers."
+      "category": "quality",
+      "text": "Cables in the engine compartment must have fastening brackets no more than 150 mm apart.",
+      "applies_to": ["s4"]
     },
     {
       "id": "c5",
-      "category": "safety",
-      "text": "Operating manuals must be available in the machine in a language the operator understands."
+      "category": "precondition",
+      "text": "Machines in hazardous environments (e.g., timber, peat) must have a fixed, automatic fire extinguishing system.",
+      "applies_to": ["s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8"]
     },
     {
       "id": "c6",
+      "category": "precondition",
+      "text": "Operators must be trained in the use of fire extinguishers.",
+      "applies_to": ["s6", "s13"]
+    },
+    {
+      "id": "c7",
+      "category": "environment",
+      "text": "Ensure regeneration occurs in a safe outdoor environment away from flammable materials.",
+      "applies_to": ["s8"]
+    },
+    {
+      "id": "c8",
       "category": "safety",
-      "text": "Delay DPF regeneration if the machine is in a fire-hazard environment (e.g., indoors, underground)."
+      "text": "Never leave the machine unattended during regeneration.",
+      "applies_to": ["s8"]
+    },
+    {
+      "id": "c9",
+      "category": "timing",
+      "text": "If a fire occurs in a hazardous location, move the machine *before* shutting down the engine.",
+      "applies_to": ["s9", "s10"]
+    },
+    {
+      "id": "c10",
+      "category": "safety",
+      "text": "Remain calm during an emergency.",
+      "applies_to": ["s9", "s10", "s11", "s12", "s13"]
     }
   ]
 }
