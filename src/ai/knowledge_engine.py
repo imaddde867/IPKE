@@ -118,45 +118,90 @@ class LLMExtractionStrategy(ExtractionStrategy):
         gpu_params = self._configure_gpu()
         final_params = {**self.llm_params, **gpu_params}
 
-        try:
-            self.llm = Llama(
-                model_path=self.model_path,
-                **final_params
-            )
-            self._initialized = True
-            
-            backend = final_params.get('backend', 'unknown')
-            layers = final_params.get('n_gpu_layers', 0)
-            try:
-                layers_int = int(layers)
-            except (TypeError, ValueError):
-                layers_int = 0
-            if layers_int != 0:
-                logger.info(f"Loaded LLM model on GPU ({backend}, {layers_int} layers): {self.model_path}")
-            else:
-                logger.info(f"Loaded LLM model on CPU ({backend}): {self.model_path}")
-                
-        except Exception as e:
-            # Fallback to CPU if GPU initialization fails
-            layers = final_params.get('n_gpu_layers', 0)
-            try:
-                layers_int = int(layers)
-            except (TypeError, ValueError):
-                layers_int = 0
-            if self.enable_gpu and layers_int != 0:
-                logger.warning(f"GPU initialization failed, falling back to CPU: {e}")
-                fallback_params = {**self.llm_params, 'n_gpu_layers': 0}
+        backend = final_params.get('backend', 'unknown')
+        requested_layers = final_params.get('n_gpu_layers', 0)
+        gpu_attempted = False
+        last_gpu_error: Optional[Exception] = None
+
+        if self.enable_gpu and requested_layers not in (0, None):
+            gpu_attempted = True
+            for layers in self._generate_gpu_layer_candidates(requested_layers):
+                candidate_params = {**final_params, 'n_gpu_layers': layers}
                 try:
                     self.llm = Llama(
                         model_path=self.model_path,
-                        **fallback_params
+                        **candidate_params
                     )
                     self._initialized = True
-                    logger.info(f"Loaded LLM model on CPU (fallback): {self.model_path}")
-                except Exception as fallback_error:
-                    raise RuntimeError(f"Failed to load LLM model on both GPU and CPU: {fallback_error}") from fallback_error
-            else:
-                raise RuntimeError(f"Failed to load LLM model: {e}") from e
+                    logger.info(
+                        "Loaded LLM model on GPU (%s, %s layers): %s",
+                        candidate_params.get('backend', backend),
+                        "all" if layers == -1 else layers,
+                        self.model_path
+                    )
+                    return
+                except Exception as gpu_error:
+                    last_gpu_error = gpu_error
+                    logger.warning(
+                        "GPU initialization attempt failed (backend=%s, layers=%s): %s",
+                        candidate_params.get('backend', backend),
+                        layers,
+                        gpu_error
+                    )
+
+        # Fallback to CPU if GPU attempts failed or were not allowed
+        fallback_params = {**self.llm_params}
+        fallback_params['n_gpu_layers'] = 0
+        fallback_params['backend'] = 'cpu'
+        fallback_params['use_mlock'] = False  # avoid mlock on restricted environments
+        fallback_params['use_mmap'] = False   # mmap can fail on network filesystems
+
+        try:
+            self.llm = Llama(
+                model_path=self.model_path,
+                **fallback_params
+            )
+            self._initialized = True
+            logger.info("Loaded LLM model on CPU (fallback): %s", self.model_path)
+        except Exception as fallback_error:
+            if gpu_attempted and last_gpu_error:
+                raise RuntimeError(
+                    f"Failed to load LLM model on GPU (last error: {last_gpu_error}) "
+                    f"and CPU fallback: {fallback_error}"
+                ) from fallback_error
+            raise RuntimeError(f"Failed to load LLM model: {fallback_error}") from fallback_error
+
+    def _generate_gpu_layer_candidates(self, requested_layers: Any) -> List[int]:
+        """Yield progressively smaller GPU layer counts for constrained devices."""
+        try:
+            layers = int(requested_layers)
+        except (TypeError, ValueError):
+            layers = -1
+
+        if layers == 0:
+            return []
+
+        candidates: List[int] = []
+        if layers == -1:
+            candidates = [-1, 80, 64, 48, 40, 32, 24, 16, 12, 8, 4, 2]
+        else:
+            current = max(layers, 1)
+            while current > 0:
+                candidates.append(current)
+                if current == 1:
+                    break
+                current = max(current // 2, 1)
+            if -1 not in candidates and layers > 0:
+                candidates.insert(0, layers)
+
+        # Ensure unique ordering
+        seen = set()
+        unique_candidates = []
+        for value in candidates:
+            if value not in seen:
+                unique_candidates.append(value)
+                seen.add(value)
+        return unique_candidates
     
     def _configure_gpu(self) -> Dict[str, Any]:
         """Configure GPU parameters based on backend detection"""
