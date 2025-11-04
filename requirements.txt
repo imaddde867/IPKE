@@ -1,6 +1,15 @@
 # Explainium - Core Dependencies
 # Clean architecture with minimal required packages
 
+# Numerics + NLP (baseline evaluation + embeddings)
+numpy>=1.24.4
+scipy>=1.11.3
+networkx>=3.1
+tqdm>=4.66.1
+spacy>=3.7.2
+sentence-transformers>=2.2.2
+torch>=2.1.0
+
 # Web Framework
 fastapi>=0.104.0
 python-multipart>=0.0.20
@@ -10,22 +19,18 @@ streamlit>=1.38.0
 # Environment
 python-dotenv>=1.0.0
 
-# Computer Vision and Image Processing
-easyocr>=1.7.0
-
-# Data Processing
+# Data & document processing
 pandas>=2.0.0
-
-# Document Processing
 python-pptx>=0.6.23
 PyMuPDF>=1.23.0
 python-docx>=0.8.11
 
-# LLM Backends (optional)
-llama-cpp-python==0.2.80
+# Vision / audio (optional extras)
+easyocr>=1.7.0
+openai-whisper>=20231117
 
-# Audio/Video Processing (optional)
-openai-whisper>=20240930
+# LLM backend (optional for baseline if cached outputs unavailable)
+llama-cpp-python==0.2.80
 
 # Testing
 pytest>=7.4.0
