@@ -851,6 +851,12 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser.add_argument("--seed", type=int, default=13, help="Random seed used when sampling a subset.")
     parser.add_argument("--out_file", type=str, default="evaluation_report.json", help="Path to save JSON report.")
     parser.add_argument("--spacy_model", type=str, default="en_core_web_sm", help="spaCy model name for lemmatization.")
+    parser.add_argument(
+        "--embedding_model",
+        type=str,
+        default="all-mpnet-base-v2",
+        help="SentenceTransformer model to use for semantic alignment.",
+    )
     parser.add_argument("--device", type=str, default=None, help="SentenceTransformer device override.")
     return parser.parse_args(argv)
 
@@ -864,7 +870,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         return 1
 
     preprocessor = TextPreprocessor(args.spacy_model)
-    embedder = EmbeddingCache(device=args.device)
+    embedder = EmbeddingCache(model_name=args.embedding_model, device=args.device)
 
     doc_results: Dict[str, Dict[str, Optional[float]]] = {}
     tiers = {"A", "B"} if args.tier == "both" else {args.tier}

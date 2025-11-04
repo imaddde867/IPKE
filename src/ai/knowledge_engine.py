@@ -2,7 +2,7 @@
 
 import asyncio
 from abc import ABC, abstractmethod
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Tuple
 from dataclasses import dataclass, field
 import hashlib
 import json
@@ -40,11 +40,21 @@ class ExtractedEntity:
 class ExtractionResult:
     """Unified extraction result with quality metrics"""
     entities: List[ExtractedEntity]
+    steps: List[Dict[str, Any]] = field(default_factory=list)
+    constraints: List[Dict[str, Any]] = field(default_factory=list)
     confidence_score: float
     processing_time: float
     strategy_used: str
     quality_metrics: Dict[str, float] = field(default_factory=dict)
     metadata: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class ChunkExtraction:
+    """Intermediate structure returned per LLM chunk."""
+    entities: List[ExtractedEntity] = field(default_factory=list)
+    steps: List[Dict[str, Any]] = field(default_factory=list)
+    constraints: List[Dict[str, Any]] = field(default_factory=list)
 
 
 class ExtractionStrategy(ABC):
@@ -206,24 +216,48 @@ class LLMExtractionStrategy(ExtractionStrategy):
             raise RuntimeError("LLM model failed to load.")
 
         chunks = list(self._iter_chunks(content, self.config.chunk_size))
-        all_entities = []
+        chunk_results: List[ChunkExtraction] = []
 
         for chunk in chunks:
-            entities = await self._process_chunk_with_llm(chunk, document_type)
-            all_entities.extend(entities)
+            chunk_result = await self._process_chunk_with_llm(chunk, document_type)
+            chunk_results.append(chunk_result)
+
+        all_entities: List[ExtractedEntity] = []
+        raw_steps: List[Dict[str, Any]] = []
+        raw_constraints: List[Dict[str, Any]] = []
+
+        for chunk_result in chunk_results:
+            all_entities.extend(chunk_result.entities)
+            raw_steps.extend(chunk_result.steps)
+            raw_constraints.extend(chunk_result.constraints)
+
+        normalized_steps, step_id_map = self._normalize_steps(raw_steps)
+        if not normalized_steps:
+            normalized_steps, step_id_map = self._steps_from_entities(all_entities)
+
+        normalized_constraints = self._normalize_constraints(raw_constraints, step_id_map)
+
+        if not all_entities and normalized_steps:
+            all_entities.extend(
+                self._entities_from_structured_steps(normalized_steps, content)
+            )
 
         processing_time = time.time() - start_time
         confidence_score = sum(e.confidence for e in all_entities) / len(all_entities) if all_entities else 0.0
 
         return ExtractionResult(
             entities=all_entities,
+            steps=normalized_steps,
+            constraints=normalized_constraints,
             confidence_score=confidence_score,
             processing_time=processing_time,
             strategy_used="llm_default",
             quality_metrics={
                 'entity_count': len(all_entities),
                 'avg_confidence': confidence_score,
-                'chunks_processed': len(chunks)
+                'chunks_processed': len(chunks),
+                'step_count': len(normalized_steps),
+                'constraint_count': len(normalized_constraints),
             }
         )
     
@@ -239,32 +273,34 @@ class LLMExtractionStrategy(ExtractionStrategy):
                     chunk = chunk[:last_period + 1]
             yield chunk
     
-    async def _process_chunk_with_llm(self, chunk: str, document_type: str) -> List[ExtractedEntity]:
-        prompt = f"""[INST] Extract ALL key information from this {document_type} document text. Return one array element per distinct item you identify. If you find many items, list them ALL individually.
+    async def _process_chunk_with_llm(self, chunk: str, document_type: str) -> ChunkExtraction:
+        prompt = f"""[INST] You produce lightweight procedural structure from {document_type} documents.
 
-Comprehensively analyze this text and identify EVERY:
-- procedure_step (individual action or step in a process)
-- safety_requirement (PPE, protection, hazard warnings)
-- equipment_tool (specific tools, machines, products with model numbers)
-- specification (measurements, grades, settings, parameters, distances, speeds, pressures)
-- material_product (consumables, chemicals, supplies with part numbers)
-- requirement_condition (prerequisites, constraints, standards)
-- time_duration (timing, curing times, intervals, waiting periods)
-- measurement_value (distances, dimensions, percentages, temperatures, RPM, grades)
-- contact_info (addresses, phone numbers, emails, websites)
-- warning_caution (disclaimers, limitations, important notices)
-- quality_standard (grades, ratings, performance criteria)
-- maintenance_instruction (cleaning, preparation, finishing steps)
-- process_sequence (numbered steps, workflows, procedures)
+Read the provided text and return a SINGLE JSON object with concise fields:
+{{
+  "steps": [
+    {{"id": "S1", "text": "Action statement written as an imperative.", "type": "procedure_step", "confidence": 0.9}},
+    {{"id": "S2", "text": "Next ordered action.", "type": "procedure_step", "confidence": 0.88}}
+  ],
+  "constraints": [
+    {{"id": "C1", "text": "Condition, warning, or requirement.", "steps": ["S1"], "confidence": 0.85}}
+  ],
+  "entities": [
+    {{"content": "Supporting fact or measurement.", "type": "specification", "category": "distance_requirement", "confidence": 0.9}}
+  ]
+}}
 
-Text: {chunk}
+Guidance:
+- Keep IDs sequential (S1, S2, ..., C1, C2, ...).
+- Steps must be actual actions or instructions in execution order.
+- Constraints capture requirements, cautions, or prerequisites. Refer to step IDs when possible.
+- Include additional granular facts in `entities` when helpful (measurements, tools, materials).
+- Prefer short phrases; avoid restating large paragraphs.
 
-Extract EVERY technical detail, measurement, part number, grade, timing, distance, speed, and procedure. Be extremely granular:
-[
-  {{"content": "Hold spray gun 15cm-20cm from the surface", "type": "specification", "category": "distance_requirement", "confidence": 0.95}},
-  {{"content": "Use rotary polisher at 1400-1800 rpm", "type": "specification", "category": "speed_setting", "confidence": 0.95}},
-  {{"content": "3M Hookit 775L Cubitron II abrasive discs, grade 80+", "type": "material_product", "category": "abrasive", "confidence": 0.95}}
-]
+Text:
+\"\"\"{chunk}\"\"\"
+
+Return only the JSON object described above with no commentary.
 [/INST]"""
         
         loop = asyncio.get_running_loop()
@@ -282,39 +318,216 @@ Extract EVERY technical detail, measurement, part number, grade, timing, distanc
             return self._parse_llm_response(response['choices'][0]['text'], chunk)
         except Exception as e:
             logger.warning(f"LLM processing failed: {e}")
-            return []
+            return ChunkExtraction()
     
-    def _parse_llm_response(self, response: str, chunk: str) -> List[ExtractedEntity]:
+    def _parse_llm_response(self, response: str, chunk: str) -> ChunkExtraction:
+        extraction = ChunkExtraction()
         try:
             # Extract JSON from response
             json_start = response.find('[')
+            obj_start = response.find('{')
             json_end = response.rfind(']') + 1
-            if json_start >= 0 and json_end > json_start:
+            obj_end = response.rfind('}') + 1
+
+            json_str = None
+            if obj_start != -1 and obj_end > obj_start:
+                json_str = response[obj_start:obj_end]
+            elif json_start != -1 and json_end > json_start:
                 json_str = response[json_start:json_end]
+
+            if json_str:
                 data = json.loads(json_str)
 
-                return [
-                    ExtractedEntity(
-                        content=item['content'],
-                        entity_type=item.get('type', 'unknown'),
-                        category=item.get('category', 'general'),
-                        confidence=float(item.get('confidence', self.confidence_threshold)),
-                        context=chunk[:200] + "...",
-                        metadata={'llm_extracted': True, 'source': 'llama'}
+                if isinstance(data, dict):
+                    raw_steps = self._ensure_dict_list(data.get("steps"))
+                    raw_constraints = self._ensure_dict_list(data.get("constraints"))
+                    raw_entities = self._ensure_dict_list(data.get("entities"))
+
+                    entities = self._build_entities(raw_entities, chunk)
+                    extraction = ChunkExtraction(
+                        entities=entities,
+                        steps=raw_steps,
+                        constraints=raw_constraints,
                     )
-                    for item in data
-                    if isinstance(item, dict) and 'content' in item
-                ]
+                elif isinstance(data, list):
+                    entities = self._build_entities(data, chunk)
+                    step_candidates = [
+                        item for item in data
+                        if isinstance(item, dict) and item.get("type") in {"procedure_step", "process_sequence"}
+                    ]
+                    extraction = ChunkExtraction(
+                        entities=entities,
+                        steps=self._ensure_dict_list(step_candidates),
+                        constraints=[],
+                    )
         except (json.JSONDecodeError, KeyError, ValueError) as e:
             logger.warning(f"Failed to parse LLM response: {e}")
 
-        return []
+        return extraction
     
     def get_confidence_threshold(self) -> float:
         return self.confidence_threshold
     
     def get_strategy_name(self) -> str:
         return "LLM-Powered Extraction"
+
+    @staticmethod
+    def _ensure_dict_list(value: Any) -> List[Dict[str, Any]]:
+        if not value:
+            return []
+        if isinstance(value, dict):
+            return [value]
+        if isinstance(value, list):
+            return [item for item in value if isinstance(item, dict)]
+        return []
+
+    def _build_entities(self, items: List[Dict[str, Any]], chunk: str) -> List[ExtractedEntity]:
+        entities: List[ExtractedEntity] = []
+        for item in items:
+            content = (item.get("content") or item.get("text") or "").strip()
+            if not content:
+                continue
+            entity_type = item.get("type") or item.get("entity_type") or "unknown"
+            category = item.get("category") or item.get("type") or "general"
+            confidence = self._coerce_confidence(item.get("confidence"))
+            entities.append(
+                ExtractedEntity(
+                    content=content,
+                    entity_type=entity_type,
+                    category=category,
+                    confidence=confidence,
+                    context=chunk[:200] + "...",
+                    metadata={'llm_extracted': True, 'source': 'llama'}
+                )
+            )
+        return entities
+
+    def _entities_from_structured_steps(self, steps: List[Dict[str, Any]], document_text: str) -> List[ExtractedEntity]:
+        entities: List[ExtractedEntity] = []
+        for step in steps:
+            content = (step.get("text") or step.get("description") or "").strip()
+            if not content:
+                continue
+            confidence = self._coerce_confidence(step.get("confidence"))
+            entities.append(
+                ExtractedEntity(
+                    content=content,
+                    entity_type="procedure_step",
+                    category="procedure",
+                    confidence=confidence,
+                    context=document_text[:200] + "...",
+                    metadata={'llm_extracted': True, 'source': 'llama'}
+                )
+            )
+        return entities
+
+    def _coerce_confidence(self, value: Any) -> float:
+        try:
+            confidence = float(value)
+        except (TypeError, ValueError):
+            confidence = float(self.confidence_threshold)
+        return max(0.0, min(1.0, confidence))
+
+    def _normalize_steps(self, steps: List[Dict[str, Any]]) -> Tuple[List[Dict[str, Any]], Dict[str, str]]:
+        normalized: List[Dict[str, Any]] = []
+        id_map: Dict[str, str] = {}
+
+        for step in steps:
+            content = (step.get("text") or step.get("description") or step.get("summary") or step.get("content") or "").strip()
+            if not content:
+                continue
+            new_id = f"S{len(normalized) + 1}"
+            original_id = str(step.get("id") or new_id)
+            id_map[original_id] = new_id
+            id_map[new_id] = new_id
+
+            normalized_step = {
+                "id": new_id,
+                "text": content,
+                "order": len(normalized) + 1,
+                "confidence": self._coerce_confidence(step.get("confidence")),
+            }
+
+            if step.get("type"):
+                normalized_step["type"] = step["type"]
+            if step.get("inputs"):
+                normalized_step["inputs"] = step["inputs"]
+            if step.get("outputs"):
+                normalized_step["outputs"] = step["outputs"]
+
+            normalized.append(normalized_step)
+
+        return normalized, id_map
+
+    def _steps_from_entities(
+        self,
+        entities: List[ExtractedEntity],
+    ) -> Tuple[List[Dict[str, Any]], Dict[str, str]]:
+        steps: List[Dict[str, Any]] = []
+        id_map: Dict[str, str] = {}
+
+        for entity in entities:
+            if entity.entity_type not in {"procedure_step", "process_sequence", "maintenance_instruction"}:
+                continue
+            content = entity.content.strip()
+            if not content:
+                continue
+            new_id = f"S{len(steps) + 1}"
+            id_map[new_id] = new_id
+            steps.append(
+                {
+                    "id": new_id,
+                    "text": content,
+                    "order": len(steps) + 1,
+                    "confidence": self._coerce_confidence(entity.confidence),
+                    "type": "procedure_step",
+                }
+            )
+
+        return steps, id_map
+
+    def _normalize_constraints(
+        self,
+        constraints: List[Dict[str, Any]],
+        step_id_map: Dict[str, str],
+    ) -> List[Dict[str, Any]]:
+        normalized: List[Dict[str, Any]] = []
+
+        for constraint in constraints:
+            text = (constraint.get("text") or constraint.get("description") or "").strip()
+            if not text:
+                continue
+            new_id = f"C{len(normalized) + 1}"
+
+            raw_refs = constraint.get("steps") or constraint.get("attached_to") or constraint.get("scope") or []
+            if isinstance(raw_refs, str):
+                raw_refs = [raw_refs]
+            if isinstance(raw_refs, dict):
+                raw_refs = [raw_refs.get("id")] if raw_refs.get("id") else []
+
+            attached_steps: List[str] = []
+            for ref in raw_refs or []:
+                if not ref:
+                    continue
+                if isinstance(ref, dict):
+                    candidate = ref.get("id")
+                    if candidate and candidate in step_id_map:
+                        attached_steps.append(step_id_map[candidate])
+                elif isinstance(ref, str):
+                    candidate = ref.strip()
+                    if candidate in step_id_map:
+                        attached_steps.append(step_id_map[candidate])
+
+            normalized_constraint: Dict[str, Any] = {
+                "id": new_id,
+                "text": text,
+                "confidence": self._coerce_confidence(constraint.get("confidence")),
+            }
+            if attached_steps:
+                normalized_constraint["steps"] = attached_steps
+            normalized.append(normalized_constraint)
+
+        return normalized
 
 
 class UnifiedKnowledgeEngine:

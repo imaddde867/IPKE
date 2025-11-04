@@ -52,6 +52,8 @@ class ExtractionResponse(BaseModel):
     document_id: str
     document_type: str
     entities: List[EntityResponse]
+    steps: List[Dict[str, Any]]
+    constraints: List[Dict[str, Any]]
     confidence_score: float
     processing_time: float
     strategy_used: str
@@ -211,14 +213,18 @@ async def extract_knowledge(
             document_id=result.document_id,
             document_type=result.document_type,
             entities=entities,
+            steps=result.extraction_result.steps,
+            constraints=result.extraction_result.constraints,
             confidence_score=result.extraction_result.confidence_score,
             processing_time=result.processing_time,
             strategy_used=result.extraction_result.strategy_used,
             metadata=result.metadata
         )
         
-        logger.info(f"Successfully extracted {len(entities)} entities from {file.filename} "
-                   f"in {result.processing_time:.2f}s")
+        logger.info(
+            f"Successfully extracted {len(result.extraction_result.steps)} steps / "
+            f"{len(entities)} entities from {file.filename} in {result.processing_time:.2f}s"
+        )
         
         return response
         
