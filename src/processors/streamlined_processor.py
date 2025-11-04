@@ -140,12 +140,16 @@ class StreamlinedDocumentProcessor:
                     'file_format': file_format,
                     'file_name': file_path.name,
                     'content_length': len(content),
-                    'entities_extracted': len(extraction_result.entities)
+                    'entities_extracted': len(extraction_result.entities),
+                    'steps_extracted': len(extraction_result.steps),
+                    'constraints_extracted': len(extraction_result.constraints)
                 }
             )
             
-            logger.info(f"Processed {file_path.name} in {processing_time:.2f}s: "
-                       f"{len(extraction_result.entities)} entities extracted")
+            logger.info(
+                f"Processed {file_path.name} in {processing_time:.2f}s: "
+                f"{len(extraction_result.steps)} steps, {len(extraction_result.entities)} entities extracted"
+            )
             
             return result
             
