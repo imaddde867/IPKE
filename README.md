@@ -141,7 +141,7 @@ Response shape
 
 ### Streamlit UI
 ```bash
-streamlit run streamlit_app.py
+streamlit run app.py
 ```
 
 - Tune `chunk_size`, `n_ctx`, `llm_max_tokens`, temperature, GPU settings.
