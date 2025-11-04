@@ -45,7 +45,7 @@ PY
 
 # 2) Evaluate Tier A metrics against the manual gold references.
 python evaluate.py \
-  --gold_dir datasets/archive/manual_gold \
+  --gold_dir datasets/archive/gold_human \
   --pred_dir "${OUT_DIR}" \
   --tier A \
   --embedding_model models/embeddings/all-mpnet-base-v2 \

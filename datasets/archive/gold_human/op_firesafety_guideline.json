@@ -1,0 +1,133 @@
+{
+  "doc_id": "op_firesafety_guideline",
+  "procedure": {
+    "title": "Fire Safety Procedures for Working Machines",
+    "goal": "To outline the required maintenance, inspection, and emergency actions to prevent and manage fires in working machines."
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "action": "clean engine compartment and surroundings",
+      "tools": ["compressed air"],
+      "note": "Perform daily in dusty/fire-hazard conditions, otherwise weekly. Clean after a shift."
+    },
+    {
+      "id": "s2",
+      "action": "inspect for liquid leaks",
+      "object": "fuel, oil, and hydraulic systems",
+      "note": "Check joints, hoses, and engine compartment. Perform after cleaning."
+    },
+    {
+      "id": "s3",
+      "action": "repair leaks",
+      "conditions": ["if any leaks are found"],
+      "note": "Must be done immediately."
+    },
+    {
+      "id": "s4",
+      "action": "inspect electrical systems",
+      "tools": ["multimeter", "thermal imaging camera"],
+      "note": "Perform visual inspection at least annually and document it. Check non-fused cables (battery, alternator, starter) several times a year."
+    },
+    {
+      "id": "s5",
+      "action": "check main power switch",
+      "note": "Ensure it cuts power correctly and terminal covers are in place."
+    },
+    {
+      "id": "s6",
+      "action": "check auxiliary heater",
+      "conditions": ["before winter"],
+      "note": "Inspect cleanliness of heater and compartment, check for fuel leaks, and test under supervision."
+    },
+    {
+      "id": "s7",
+      "action": "perform DPF regeneration",
+      "conditions": ["when indicated by the machine"],
+      "note": "Must be done in a safe outdoor area away from flammable materials. Never leave the machine unattended."
+    },
+    {
+      "id": "s8",
+      "action": "service fire extinguishing equipment",
+      "note": "Service hand-held extinguishers and any fixed systems at least annually."
+    },
+    {
+      "id": "s9",
+      "action": "respond to an engine fire",
+      "note": "This is the emergency procedure."
+    },
+    {
+      "id": "s10",
+      "action": "move machine to a safe location",
+      "conditions": ["if possible and safe"],
+      "note": "Move outdoors or away from flammable materials before shutting down."
+    },
+    {
+      "id": "s11",
+      "action": "shut down engine and cut power",
+      "tools": ["main power switch"]
+    },
+    {
+      "id": "s12",
+      "action": "call for help",
+      "note": "Use emergency number 112."
+    },
+    {
+      "id": "s13",
+      "action": "perform first-aid fire extinguishing",
+      "tools": ["hand-held fire extinguisher"]
+    },
+    {
+      "id": "s14",
+      "action": "wait for fire department confirmation",
+      "note": "Do not assume the fire is out, even if it appears to be."
+    },
+    {
+      "id": "s15",
+      "action": "report incident",
+      "note": "Inform supervisor, site manager, and insurance company."
+    }
+  ],
+  "relations": [
+    { "type": "NEXT", "from": "s1", "to": "s2" },
+    { "type": "NEXT", "from": "s2", "to": "s3" },
+    { "type": "NEXT", "from": "s9", "to": "s10" },
+    { "type": "NEXT", "from": "s10", "to": "s11" },
+    { "type": "NEXT", "from": "s11", "to": "s12" },
+    { "type": "NEXT", "from": "s12", "to": "s13" },
+    { "type": "NEXT", "from": "s13", "to": "s14" },
+    { "type": "NEXT", "from": "s14", "to": "s15" }
+  ],
+  "constraints": [
+    {
+      "id": "c1",
+      "category": "equipment",
+      "text": "Use authentic replacement parts from known manufacturers."
+    },
+    {
+      "id": "c2",
+      "category": "equipment",
+      "text": "Machines over 3,000 kg must have at least two 34A233B hand-held fire extinguishers."
+    },
+    {
+      "id": "c3",
+      "category": "equipment",
+      "text": "Machines in high-risk environments (e.g., timber, peat processing) must have a fixed, automatic fire extinguishing system."
+    },
+    {
+      "id": "c4",
+      "category": "safety",
+      "text": "Operators must be trained in the use of fire extinguishers."
+    },
+    {
+      "id": "c5",
+      "category": "safety",
+      "text": "Operating manuals must be available in the machine in a language the operator understands."
+    },
+    {
+      "id": "c6",
+      "category": "safety",
+      "text": "Delay DPF regeneration if the machine is in a fire-hazard environment (e.g., indoors, underground)."
+    }
+  ]
+}

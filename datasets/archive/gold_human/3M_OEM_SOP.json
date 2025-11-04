@@ -1,0 +1,346 @@
+{
+  "doc_id": "3M_OEM_SOP",
+  "procedure": {
+    "title": "Standard Operating Procedures for Marine OEM Surface Finishing",
+    "goal": "To prepare, apply, and finish gelcoat, marine paint, and antifouling paint on marine composite surfaces."
+  },
+  "steps": [
+    {
+      "id": "gc1",
+      "action": "clean composite surface",
+      "materials": [
+        "approved cleaner"
+      ],
+      "note": "To remove all mold release materials from new surfaces."
+    },
+    {
+      "id": "gc2",
+      "action": "sand gelcoat",
+      "tools": [
+        "DA sander"
+      ],
+      "materials": [
+        "80+ grade abrasive disc"
+      ],
+      "note": "Use a dry guide coat and re-sand to ensure an even texture."
+    },
+    {
+      "id": "gc3",
+      "action": "apply blister repair filler",
+      "conditions": [
+        "if needed for repairs"
+      ],
+      "materials": [
+        "Marine Blister Repair Filler"
+      ],
+      "note": "Fill 85% of the cavity."
+    },
+    {
+      "id": "gc4",
+      "action": "wait for filler to cure",
+      "parameters": {
+        "duration": "30 minutes"
+      }
+    },
+    {
+      "id": "gc5",
+      "action": "feather sand the repair",
+      "materials": [
+        "80+ grade abrasive disc"
+      ]
+    },
+    {
+      "id": "gc6",
+      "action": "apply premium filler",
+      "conditions": [
+        "if needed for repairs"
+      ],
+      "materials": [
+        "Marine Premium Filler"
+      ]
+    },
+    {
+      "id": "gc7",
+      "action": "sand the final filler repair",
+      "materials": [
+        "120+ grade abrasive disc",
+        "220+ grade abrasive disc"
+      ],
+      "note": "Start with 120+ grade and finish with 220+ grade."
+    },
+    {
+      "id": "gc8",
+      "action": "mask areas not being sprayed",
+      "materials": [
+        "masking tape",
+        "masking film"
+      ]
+    },
+    {
+      "id": "gc9",
+      "action": "apply gelcoat",
+      "tools": [
+        "spray gun",
+        "disposable spray cup"
+      ],
+      "parameters": {
+        "distance": "15cm-20cm"
+      },
+      "note": "Mix in a disposable spray cup with the lid filter removed."
+    },
+    {
+      "id": "gc10",
+      "action": "clean the new gelcoat surface"
+    },
+    {
+      "id": "gc11",
+      "action": "perform sanding refinement",
+      "conditions": [
+        "if needed"
+      ],
+      "materials": [
+        "320+ and 400+ grade abrasives",
+        "P800 grade flexible abrasive foam discs"
+      ],
+      "note": "If surface is in good condition, start with P800 grade."
+    },
+    {
+      "id": "gc12",
+      "action": "refine sand scratches",
+      "materials": [
+        "P1200 grade flexible abrasive foam discs"
+      ]
+    },
+    {
+      "id": "gc13",
+      "action": "compound the surface",
+      "tools": [
+        "rotary polisher"
+      ],
+      "materials": [
+        "wool compounding pad"
+      ],
+      "parameters": {
+        "speed": "1400-1800 rpm"
+      },
+      "note": "For a 6-step process, use Heavy Cutting Compound. For a 5-step process, use a combined Compound + Polish."
+    },
+    {
+      "id": "gc14",
+      "action": "polish the surface",
+      "conditions": [
+        "if performing the 6-step process"
+      ],
+      "tools": [
+        "rotary polisher"
+      ],
+      "parameters": {
+        "speed": "1400-1800 rpm"
+      }
+    },
+    {
+      "id": "gc15",
+      "action": "apply wax for protection",
+      "materials": [
+        "boat wax"
+      ],
+      "note": "Wipe clean before it dries."
+    },
+    {
+      "id": "mp1",
+      "action": "clean the surface",
+      "materials": [
+        "approved cleaner"
+      ]
+    },
+    {
+      "id": "mp2",
+      "action": "sand the surface",
+      "tools": [
+        "DA sander"
+      ],
+      "materials": [
+        "80+ grade abrasive discs"
+      ]
+    },
+    {
+      "id": "mp3",
+      "action": "apply and sand filler",
+      "conditions": [
+        "if needed"
+      ],
+      "materials": [
+        "Marine Premium Filler",
+        "120+ grade abrasive",
+        "220+ grade abrasive"
+      ],
+      "note": "After filler sets, sand with 120+ then finish with 220+ grade."
+    },
+    {
+      "id": "mp4",
+      "action": "mask the area",
+      "materials": [
+        "masking tape",
+        "masking film"
+      ]
+    },
+    {
+      "id": "mp5",
+      "action": "apply primer",
+      "tools": [
+        "spray gun"
+      ],
+      "parameters": {
+        "distance": "15cm-20cm"
+      }
+    },
+    {
+      "id": "mp6",
+      "action": "sand the primer",
+      "materials": [
+        "dry guide coat",
+        "320+ grade abrasive",
+        "400+ grade abrasive"
+      ],
+      "note": "Use guide coat, sand with 320+, then repeat with 400+."
+    },
+    {
+      "id": "mp7",
+      "action": "apply marine paint",
+      "tools": [
+        "spray gun"
+      ]
+    },
+    {
+      "id": "mp8",
+      "action": "sand the paint finish",
+      "note": "Choose either the dry or wet sanding option. Dry: P1200/1500 grade film. Wet: 1500 grade disc with water."
+    },
+    {
+      "id": "mp9",
+      "action": "refine sand scratches",
+      "note": "Choose either the dry or wet option. Dry: P2000 grade foam disc. Wet: 3000 grade disc with water."
+    },
+    {
+      "id": "mp10",
+      "action": "compound the surface",
+      "tools": [
+        "rotary polisher"
+      ],
+      "materials": [
+        "compounding pad"
+      ],
+      "parameters": {
+        "speed": "1400-1800 rpm"
+      }
+    },
+    {
+      "id": "mp11",
+      "action": "polish the surface",
+      "tools": [
+        "rotary polisher"
+      ],
+      "materials": [
+        "polishing pad"
+      ],
+      "parameters": {
+        "speed": "1400-1800 rpm"
+      }
+    },
+    {
+      "id": "mp12",
+      "action": "apply wax for protection",
+      "materials": [
+        "boat wax"
+      ]
+    },
+    {
+      "id": "bp1",
+      "action": "clean the surface",
+      "materials": [
+        "approved cleaner"
+      ]
+    },
+    {
+      "id": "bp2",
+      "action": "sand the bottom surface",
+      "tools": [
+        "dual-action sander"
+      ],
+      "materials": [
+        "220+ grade abrasive"
+      ]
+    },
+    {
+      "id": "bp3",
+      "action": "apply and sand filler",
+      "conditions": [
+        "if needed"
+      ],
+      "materials": [
+        "Marine Premium Filler",
+        "120+ grade abrasive",
+        "220+ grade abrasive"
+      ],
+      "note": "After filler cures, sand with 120+ then finish with 220+."
+    },
+    {
+      "id": "bp4",
+      "action": "mask the area"
+    },
+    {
+      "id": "bp5",
+      "action": "apply bottom paint",
+      "tools": [
+        "spray gun"
+      ],
+      "parameters": {
+        "distance": "15cm-20cm"
+      },
+      "note": "Mix in a disposable spray cup with the lid filter removed."
+    }
+  ],
+  "relations": [
+    { "type": "NEXT", "from": "gc1", "to": "gc2" },
+    { "type": "NEXT", "from": "gc2", "to": "gc3" },
+    { "type": "NEXT", "from": "gc3", "to": "gc4" },
+    { "type": "NEXT", "from": "gc4", "to": "gc5" },
+    { "type": "NEXT", "from": "gc5", "to": "gc6" },
+    { "type": "NEXT", "from": "gc6", "to": "gc7" },
+    { "type": "NEXT", "from": "gc7", "to": "gc8" },
+    { "type": "NEXT", "from": "gc8", "to": "gc9" },
+    { "type": "NEXT", "from": "gc9", "to": "gc10" },
+    { "type": "NEXT", "from": "gc10", "to": "gc11" },
+    { "type": "NEXT", "from": "gc11", "to": "gc12" },
+    { "type": "NEXT", "from": "gc12", "to": "gc13" },
+    { "type": "NEXT", "from": "gc13", "to": "gc14" },
+    { "type": "NEXT", "from": "gc14", "to": "gc15" },
+    { "type": "NEXT", "from": "mp1", "to": "mp2" },
+    { "type": "NEXT", "from": "mp2", "to": "mp3" },
+    { "type": "NEXT", "from": "mp3", "to": "mp4" },
+    { "type": "NEXT", "from": "mp4", "to": "mp5" },
+    { "type": "NEXT", "from": "mp5", "to": "mp6" },
+    { "type": "NEXT", "from": "mp6", "to": "mp7" },
+    { "type": "NEXT", "from": "mp7", "to": "mp8" },
+    { "type": "NEXT", "from": "mp8", "to": "mp9" },
+    { "type": "NEXT", "from": "mp9", "to": "mp10" },
+    { "type": "NEXT", "from": "mp10", "to": "mp11" },
+    { "type": "NEXT", "from": "mp11", "to": "mp12" },
+    { "type": "NEXT", "from": "bp1", "to": "bp2" },
+    { "type": "NEXT", "from": "bp2", "to": "bp3" },
+    { "type": "NEXT", "from": "bp3", "to": "bp4" },
+    { "type": "NEXT", "from": "bp4", "to": "bp5" }
+  ],
+  "constraints": [
+    {
+      "id": "c1",
+      "category": "safety",
+      "text": "Wear appropriate Personal Protective Equipment (PPE), including eyewear, gloves, hearing protection, and respirator, based on job and exposure assessment."
+    },
+    {
+      "id": "c2",
+      "category": "quality",
+      "text": "3M industrial products are intended for trained industrial and occupational customers for workplace use and must be used in compliance with health and safety regulations."
+    }
+  ]
+}

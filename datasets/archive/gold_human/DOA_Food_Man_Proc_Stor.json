@@ -1,0 +1,239 @@
+{
+  "doc_id": "DOA_Food_Man_Proc_Stor",
+  "procedure": {
+    "title": "Pest Management in Food Manufacturing, Processing, and Storage Facilities",
+    "goal": "To establish and execute an Integrated Pest Management (IPM) program to control pests in food-related facilities while minimizing health, economic, and environmental hazards."
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "action": "Establish a preventive pest management program",
+      "note": "This involves integrating building design, grounds maintenance, and sanitation."
+    },
+    {
+      "id": "s2",
+      "action": "Maintain facility grounds",
+      "note": "Eliminate litter, keep grass short, ensure proper drainage, and position lighting away from buildings to reduce pest harborage."
+    },
+    {
+      "id": "s3",
+      "action": "Pest-proof the building structure",
+      "note": "Seal cracks, screen windows, use tight-fitting doors, and eliminate voids where pests can live."
+    },
+    {
+      "id": "s4",
+      "action": "Establish an in-plant sanitation inspection program",
+      "note": "Requires forming a committee, setting goals, and getting support from all personnel."
+    },
+    {
+      "id": "s5",
+      "action": "Conduct thorough and routine inspections",
+      "object": "facility, equipment, and materials",
+      "tools": [
+        "flashlight",
+        "scraper"
+      ],
+      "note": "Focus on obscure places, incoming materials, and warehouse storage. Record all defects."
+    },
+    {
+      "id": "s6",
+      "action": "Document and correct identified deficiencies",
+      "note": "Assign realistic correction dates and follow up to ensure completion."
+    },
+    {
+      "id": "s7",
+      "action": "Implement a monitoring program",
+      "note": "This is a key component of IPM to detect pests early."
+    },
+    {
+      "id": "s8",
+      "action": "Deploy and monitor pest traps",
+      "object": "insects and rodents",
+      "tools": [
+        "pheromone traps",
+        "glue boards",
+        "mechanical traps"
+      ],
+      "note": "Place traps in a grid pattern or in high-risk areas and map their locations."
+    },
+    {
+      "id": "s9",
+      "action": "Analyze trap catch data",
+      "note": "Look for trends and increases in pest numbers to pinpoint infestations and evaluate control measures."
+    },
+    {
+      "id": "s10",
+      "action": "Implement non-chemical control methods",
+      "conditions": [
+        "Whenever possible, before resorting to pesticides."
+      ],
+      "note": "Includes sanitation, physical exclusion, temperature manipulation, and mechanical trapping."
+    },
+    {
+      "id": "s11",
+      "action": "Select and apply pesticides",
+      "conditions": [
+        "When monitoring indicates they are necessary and non-chemical methods are insufficient."
+      ]
+    },
+    {
+      "id": "s12",
+      "action": "Determine the appropriate application type",
+      "note": "The type of application is strictly regulated based on whether it is in a food or non-food area."
+    },
+    {
+      "id": "s13",
+      "action": "Perform a crack and crevice treatment",
+      "materials": [
+        "residual insecticide"
+      ],
+      "conditions": [
+        "This is the only type of residual application permitted in food areas."
+      ],
+      "note": "Apply small amounts of insecticide into cracks, voids, and joints."
+    },
+    {
+      "id": "s14",
+      "action": "Perform a spot treatment",
+      "conditions": [
+        "In approved areas where insects are likely to occur but will not contact food or surfaces."
+      ],
+      "parameters": {
+        "area": "not to exceed two square feet"
+      }
+    },
+    {
+      "id": "s15",
+      "action": "Perform a general treatment",
+      "conditions": [
+        "Permitted only in non-food areas."
+      ],
+      "note": "Involves application to broad surfaces like walls and floors."
+    },
+    {
+      "id": "s16",
+      "action": "Perform space treatments",
+      "tools": [
+        "aerosol generator",
+        "fogger",
+        "ULD equipment"
+      ],
+      "note": "Used for quick knockdown of flying insects or for treating large, open areas like warehouses."
+    },
+    {
+      "id": "s17",
+      "action": "Implement a rodent control program",
+      "note": "Involves sanitation, exclusion, trapping, and baiting."
+    },
+    {
+      "id": "s18",
+      "action": "Place and maintain rodent bait stations",
+      "materials": [
+        "rodenticide bait blocks"
+      ],
+      "tools": [
+        "tamper-proof bait station"
+      ],
+      "note": "Place stations along walls and runways where rodent activity is observed."
+    },
+    {
+      "id": "s19",
+      "action": "Set rodent traps",
+      "tools": [
+        "snap traps",
+        "glue boards",
+        "live traps"
+      ],
+      "note": "Place traps along walls and in concealed areas. Use numerous traps for mice."
+    },
+    {
+      "id": "s20",
+      "action": "Inspect vehicles before loading/unloading",
+      "note": "Ensure carriers like trucks and boxcars are clean and free of infestation."
+    }
+  ],
+  "relations": [
+    {
+      "type": "NEXT",
+      "from": "s1",
+      "to": "s2"
+    },
+    {
+      "type": "NEXT",
+      "from": "s2",
+      "to": "s3"
+    },
+    {
+      "type": "NEXT",
+      "from": "s4",
+      "to": "s5"
+    },
+    {
+      "type": "NEXT",
+      "from": "s5",
+      "to": "s6"
+    },
+    {
+      "type": "NEXT",
+      "from": "s7",
+      "to": "s8"
+    },
+    {
+      "type": "NEXT",
+      "from": "s8",
+      "to": "s9"
+    },
+    {
+      "type": "NEXT",
+      "from": "s9",
+      "to": "s10"
+    },
+    {
+      "type": "NEXT",
+      "from": "s10",
+      "to": "s11"
+    },
+    {
+      "type": "NEXT",
+      "from": "s11",
+      "to": "s12"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "c1",
+      "category": "legal",
+      "text": "Always read and follow the pesticide label. Use of a pesticide in a manner inconsistent with its labeling is illegal."
+    },
+    {
+      "id": "c2",
+      "category": "best_practice",
+      "text": "Pesticides should be used as a last resort within an Integrated Pest Management (IPM) program."
+    },
+    {
+      "id": "c3",
+      "category": "safety",
+      "text": "Wear appropriate Personal Protective Equipment (PPE), including NIOSH-approved respirators, as specified by the label."
+    },
+    {
+      "id": "c4",
+      "category": "best_practice",
+      "text": "In warehouses, maintain an 18-inch space between pallets and walls to allow for inspection."
+    },
+    {
+      "id": "c5",
+      "category": "legal",
+      "text": "A food product containing an unapproved pesticide or a residue above the tolerance level is considered adulterated and must be destroyed."
+    },
+    {
+      "id": "c6",
+      "category": "best_practice",
+      "text": "For rodent-proofing, seal all openings larger than 1/4 inch for mice and 1/2 inch for rats."
+    },
+    {
+      "id": "c7",
+      "category": "legal",
+      "text": "In federally inspected meat plants, pesticides must be on a USDA-approved list."
+    }
+  ]
+}
