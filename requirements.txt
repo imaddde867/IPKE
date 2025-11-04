@@ -22,7 +22,7 @@ PyMuPDF>=1.23.0
 python-docx>=0.8.11
 
 # LLM Backends (optional)
-llama-cpp-python>=0.2.80
+llama-cpp-python==0.2.80
 
 # Audio/Video Processing (optional)
 openai-whisper>=20240930
