@@ -40,11 +40,11 @@ class ExtractedEntity:
 class ExtractionResult:
     """Unified extraction result with quality metrics"""
     entities: List[ExtractedEntity]
-    steps: List[Dict[str, Any]] = field(default_factory=list)
-    constraints: List[Dict[str, Any]] = field(default_factory=list)
     confidence_score: float
     processing_time: float
     strategy_used: str
+    steps: List[Dict[str, Any]] = field(default_factory=list)
+    constraints: List[Dict[str, Any]] = field(default_factory=list)
     quality_metrics: Dict[str, float] = field(default_factory=dict)
     metadata: Dict[str, Any] = field(default_factory=dict)
 
