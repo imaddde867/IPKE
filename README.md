@@ -71,6 +71,7 @@ The exact list is in the prompt in `src/ai/knowledge_engine.py:208`.
 ### Install
 ```bash
 pip install -r requirements.txt
+python -m spacy download en_core_web_sm
 ```
 
 Optional (only if you use these features):
@@ -147,27 +148,37 @@ streamlit run app.py
 - Tune `chunk_size`, `n_ctx`, `llm_max_tokens`, temperature, GPU settings.
 - Upload any supported file and inspect extracted entities in a table.
 
+## Baseline Experiment (Tier A)
+
+1. **Preflight checks**  
+   ```bash
+   python scripts/baseline_preflight.py
+   ```  
+   Confirms the Tier-A documents, gold annotations, embedding model, spaCy model, and local GGUF are present alongside required Python packages.
+
+2. **Run repeated baseline loops**  
+   ```bash
+   python run_baseline_loops.py --runs 3 --out logs/baseline_runs
+   ```  
+   Adjust `--runs` as needed. Each run writes predictions (`run_X/*.json`) and an `evaluation_report.json` inside the specified directory. A final `aggregate_metrics.json` summarises the per-document averages.
+
+3. **Single-run helper (optional)**  
+   ```bash
+   ./scripts/tierA_pipeline.sh
+   ```  
+   Uses the same pipeline utilities for a quick extract + evaluate cycle.
+
+Relevant utilities live in `src/pipelines/baseline.py`. The evaluator relies on `sentence-transformers` (`models/embeddings/all-mpnet-base-v2`) and spaCy (`en_core_web_sm`).
+
 ## Current Evaluation Method
 
-Baseline evaluation focuses on consistency, extract coverage, and safety via light-weight metrics and human review:
+`evaluate.py` scores predicted JSON against curated Tier-A gold files (`datasets/archive/gold_human`). `run_baseline_loops.py` invokes it after each extraction loop.
 
-- Document-level metrics
-  - Entity count and `confidence_score` (reported by the engine).
-  - Processing stats (chunks processed, average time) via `/stats`.
+- **Metrics reported** (see `HEADLINE_METRICS_ORDER` in `evaluate.py`): `StepF1`, `AdjacencyF1`, `Kendall`, `ConstraintCoverage`, `ConstraintAttachmentF1`, `A_score`, `GraphF1`, `NEXT_EdgeF1`, `Logic_EdgeF1`, `B_score`. Per-document and macro averages are recorded for every run and aggregated into `aggregate_metrics.json`.
+- **Confidence & timing**: Each payload already stores `confidence_score`, `processing_time`, and `strategy_used`. Comparing these across runs highlights stability and variance.
+- **Manual inspection**: Source documents for Tier-A live under `datasets/archive/test_data/text`. Reviewing `run_X/*.json` against the originals catches qualitative issues (missing steps, hallucinations, safety gaps).
 
-- Manual review on 3 seed documents
-  - `documents_samples/datasets/Good/extracted/3m_marine_oem_sop.txt`
-  - `documents_samples/datasets/Good/extracted/DOA_Food_Man_Proc_Stor.txt`
-  - `documents_samples/datasets/Good/extracted/op_firesafety_guideline.txt`
-  - Check for presence of key procedural steps, obvious misses/spurious items, and any safety‑critical mistakes.
-
-- What “confidence” means now
-  - It is model-supplied per entity; when absent, defaults to `CONFIDENCE_THRESHOLD` (configurable).
-  - The system logs a warning if the averaged `confidence_score` drops below `QUALITY_THRESHOLD`; results are not filtered.
-
-Structured evaluation for knowledge graphs is scaffolded (for future use):
-- Script: `tests/evaluation/evaluate_structured.py:193` compares predicted vs. gold graphs using macro entity F1, relation F1, and ordering F1 (NEXT adjacency) against the schema in `src/graph/schema.json`.
-- Use when the extractor outputs the procedural graph format (planned iteration).
+Graph-oriented scoring (`tests/evaluation/evaluate_structured.py`) remains available for future graph outputs.
 
 ## Roadmap (Evaluation & Extraction)
 

@@ -10,11 +10,34 @@ from dataclasses import dataclass
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 
-# Document processing libraries
-import pandas as pd
-from pptx import Presentation
-import fitz  # PyMuPDF
-from docx import Document as DocxDocument
+# Document processing libraries (optional)
+try:
+    import pandas as pd
+    PANDAS_AVAILABLE = True
+except ImportError:  # pragma: no cover
+    PANDAS_AVAILABLE = False
+    pd = None
+
+try:
+    from pptx import Presentation
+    PPTX_AVAILABLE = True
+except ImportError:  # pragma: no cover
+    PPTX_AVAILABLE = False
+    Presentation = None  # type: ignore[assignment]
+
+try:
+    import fitz  # PyMuPDF
+    FITZ_AVAILABLE = True
+except ImportError:  # pragma: no cover
+    FITZ_AVAILABLE = False
+    fitz = None  # type: ignore[assignment]
+
+try:
+    from docx import Document as DocxDocument
+    DOCX_AVAILABLE = True
+except ImportError:  # pragma: no cover
+    DOCX_AVAILABLE = False
+    DocxDocument = None  # type: ignore[assignment]
 
 # Audio processing
 try:
@@ -186,6 +209,10 @@ class StreamlinedDocumentProcessor:
     
     async def _extract_pdf_content(self, file_path: Path) -> str:
         """Extract text from PDF files"""
+        if not FITZ_AVAILABLE:
+            logger.warning("PyMuPDF not available. Install PyMuPDF to process PDFs.")
+            return ""
+
         def extract_pdf():
             try:
                 doc = fitz.open(str(file_path))
@@ -202,6 +229,10 @@ class StreamlinedDocumentProcessor:
     
     async def _extract_docx_content(self, file_path: Path) -> str:
         """Extract text from Word documents"""
+        if not DOCX_AVAILABLE:
+            logger.warning("python-docx not available. Install python-docx to process Word documents.")
+            return ""
+
         def extract_docx():
             try:
                 doc = DocxDocument(str(file_path))
@@ -235,6 +266,10 @@ class StreamlinedDocumentProcessor:
     
     async def _extract_spreadsheet_content(self, file_path: Path, file_format: str) -> str:
         """Extract content from spreadsheets"""
+        if not PANDAS_AVAILABLE:
+            logger.warning("pandas not available. Install pandas to process spreadsheet documents.")
+            return ""
+
         def extract_spreadsheet():
             try:
                 if file_format == '.csv':
@@ -254,6 +289,10 @@ class StreamlinedDocumentProcessor:
     
     async def _extract_presentation_content(self, file_path: Path) -> str:
         """Extract text from presentations"""
+        if not PPTX_AVAILABLE:
+            logger.warning("python-pptx not available. Install python-pptx to process PowerPoint files.")
+            return ""
+
         def extract_presentation():
             try:
                 prs = Presentation(str(file_path))
