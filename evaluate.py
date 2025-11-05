@@ -50,27 +50,39 @@ def compute_prf(tp: int, total_pred: int, total_gold: int) -> Tuple[float, float
 
 class TextPreprocessor:
     def __init__(self, model_name: str = "en_core_web_sm") -> None:
-        self._nlp = self._load(model_name)
+        self._nlp, self._use_lemma = self._load(model_name)
 
     @staticmethod
     def _load(model_name: str):
         try:
-            return spacy.load(model_name)
+            nlp = spacy.load(model_name)
+            use_lemma = "lemmatizer" in nlp.pipe_names
+            if not use_lemma:
+                logging.warning("spaCy model '%s' missing lemmatizer; defaulting to surface forms.", model_name)
+            return nlp, use_lemma
         except Exception:  # noqa: BLE001
             logging.warning("spaCy model '%s' unavailable; falling back to blank English model.", model_name)
             nlp = spacy.blank("en")
+            use_lemma = False
             if "lemmatizer" not in nlp.pipe_names:
                 try:
                     nlp.add_pipe("lemmatizer")
                     nlp.initialize()
+                    use_lemma = True
                 except Exception:  # noqa: BLE001
                     logging.warning("Failed to initialise spaCy lemmatizer; defaulting to surface forms.")
-            return nlp
+                    if "lemmatizer" in nlp.pipe_names:
+                        nlp.remove_pipe("lemmatizer")
+            return nlp, use_lemma
 
     def __call__(self, text: str) -> str:
         text = (text or "").lower()
         doc = self._nlp(text)
-        tokens = [token.lemma_ for token in doc if not token.is_space and not token.is_punct]
+        tokens = [
+            (token.lemma_ if self._use_lemma else token.text)
+            for token in doc
+            if not token.is_space and not token.is_punct
+        ]
         return " ".join(tokens) if tokens else ""
 
 
