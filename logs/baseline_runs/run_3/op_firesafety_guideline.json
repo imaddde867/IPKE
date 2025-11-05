@@ -1,0 +1,805 @@
+{
+  "document_id": "op_firesafety_guideline",
+  "document_type": "text",
+  "steps": [
+    {
+      "id": "S1",
+      "text": "Identify risks systematically.",
+      "order": 1,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S2",
+      "text": "Evaluate machine fire risk.",
+      "order": 2,
+      "confidence": 0.85,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S3",
+      "text": "Issue clear safety instructions.",
+      "order": 3,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S4",
+      "text": "Supervise compliance.",
+      "order": 4,
+      "confidence": 0.85,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S5",
+      "text": "Assess fire risks by considering impact on company's other risks, level of risk taken, employee actions in an accident, adequacy of preventive maintenance, and daily work management.",
+      "order": 5,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S6",
+      "text": "Begin fire timeline when machine is put into service.",
+      "order": 6,
+      "confidence": 0.85,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S7",
+      "text": "Perform scheduled maintenance according to manufacturer's instructions.",
+      "order": 7,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S8",
+      "text": "Use authentic replacement parts.",
+      "order": 8,
+      "confidence": 0.85,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S9",
+      "text": "Inspect and clean engine compartment and surroundings daily in dusty or fire-hazard conditions.",
+      "order": 9,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S10",
+      "text": "Inspect and clean engine compartment and surroundings weekly in other environments.",
+      "order": 10,
+      "confidence": 0.85,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S11",
+      "text": "Clean engine compartment using compressed air after each shift.",
+      "order": 11,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S12",
+      "text": "Inspect for leaks after cleaning.",
+      "order": 12,
+      "confidence": 0.85,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S13",
+      "text": "Shut down engine before inspecting for fuel leaks.",
+      "order": 13,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S14",
+      "text": "Check joints of hoses and pipes for fuel leaks.",
+      "order": 14,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S15",
+      "text": "Inspect electrical systems at least once a year.",
+      "order": 15,
+      "confidence": 0.85,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S16",
+      "text": "Service electrical systems daily on electric-powered and hybrid machines.",
+      "order": 16,
+      "confidence": 0.85,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S17",
+      "text": "Use multimeter to measure voltage drops in electrical systems.",
+      "order": 17,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S18",
+      "text": "Inspect alternators, cables, and earthing points with a thermal imaging camera.",
+      "order": 18,
+      "confidence": 0.85,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S19",
+      "text": "Locate and operate emergency kill switch before starting machine.",
+      "order": 19,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S20",
+      "text": "Repair any malfunction that required its use.",
+      "order": 20,
+      "confidence": 0.85,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S21",
+      "text": "Check battery for deviations and ensure cable terminals are intact.",
+      "order": 21,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S22",
+      "text": "Protect cables not protected by a fuse with rubber collars and check them several times a year.",
+      "order": 22,
+      "confidence": 0.85,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S23",
+      "text": "Ensure safe environment for diesel particulate filter regeneration.",
+      "order": 23,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S24",
+      "text": "Delay regeneration if machine is in a fire-hazard environment.",
+      "order": 24,
+      "confidence": 0.85,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S25",
+      "text": "Attend machine during regeneration.",
+      "order": 25,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S26",
+      "text": "Check electrical systems weekly.",
+      "order": 26,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S27",
+      "text": "Remove debris from electrical systems.",
+      "order": 27,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S28",
+      "text": "Ensure manuals are available and understood.",
+      "order": 28,
+      "confidence": 0.85,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S29",
+      "text": "Check auxiliary heater cleanliness and condition.",
+      "order": 29,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S30",
+      "text": "Inspect heater exhaust pipe.",
+      "order": 30,
+      "confidence": 0.88,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S31",
+      "text": "Test auxiliary heater under supervision.",
+      "order": 31,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S32",
+      "text": "Provide hand-held fire extinguishers as required.",
+      "order": 32,
+      "confidence": 0.85,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S33",
+      "text": "Install fixed fire extinguishing systems in autonomous machines.",
+      "order": 33,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S34",
+      "text": "Shut down engine as quickly as possible.",
+      "order": 34,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S35",
+      "text": "Move machine outdoors if indoors or away from flammable material.",
+      "order": 35,
+      "confidence": 0.85,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S36",
+      "text": "Cut electricity from the main power switch.",
+      "order": 36,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S37",
+      "text": "Call for help (emergency number 112).",
+      "order": 37,
+      "confidence": 0.95,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S38",
+      "text": "Perform first-aid fire extinguishing.",
+      "order": 38,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S39",
+      "text": "Have the fire department confirm the fire is out.",
+      "order": 39,
+      "confidence": 0.8,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S40",
+      "text": "Report all accidents and dangerous situations to a supervisor immediately.",
+      "order": 40,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S41",
+      "text": "Stop and leave the machine in place if possible.",
+      "order": 41,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S42",
+      "text": "Prevent further damage and minimize injuries.",
+      "order": 42,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S43",
+      "text": "Wear protective clothing and a helmet.",
+      "order": 43,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S44",
+      "text": "Use a hands-free device for phone calls.",
+      "order": 44,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S45",
+      "text": "Wear a safety belt.",
+      "order": 45,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S46",
+      "text": "Use stepladders and handrails, maintaining three points of contact when climbing.",
+      "order": 46,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S47",
+      "text": "Keep doors closed during operation.",
+      "order": 47,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S48",
+      "text": "Ensure tools are secure and emergency exits are marked.",
+      "order": 48,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S49",
+      "text": "Repair any malfunctions that could lead to an accident without delay.",
+      "order": 49,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S50",
+      "text": "Arrange practical training on accident and fire procedures.",
+      "order": 50,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "C1",
+      "text": "Consider machine's operating environment.",
+      "confidence": 0.9,
+      "steps": [
+        "S41"
+      ]
+    },
+    {
+      "id": "C2",
+      "text": "Ensure safety culture.",
+      "confidence": 0.8,
+      "steps": [
+        "S42",
+        "S43"
+      ]
+    },
+    {
+      "id": "C3",
+      "text": "Machines pose a fire risk when flammable liquids reach about 240\u00b0C.",
+      "confidence": 0.9,
+      "steps": [
+        "S42",
+        "S44",
+        "S45"
+      ]
+    },
+    {
+      "id": "C4",
+      "text": "Ensure engine is shut down before inspecting for fuel leaks.",
+      "confidence": 0.9,
+      "steps": [
+        "S40"
+      ]
+    },
+    {
+      "id": "C5",
+      "text": "Inspect electrical systems at least once a year.",
+      "confidence": 0.85,
+      "steps": [
+        "S42"
+      ]
+    },
+    {
+      "id": "C6",
+      "text": "Service electrical systems daily on electric-powered and hybrid machines.",
+      "confidence": 0.85,
+      "steps": [
+        "S43"
+      ]
+    },
+    {
+      "id": "C7",
+      "text": "Use multimeter to measure voltage drops exceeding 20W indicates an increased fire risk.",
+      "confidence": 0.9,
+      "steps": [
+        "S44"
+      ]
+    },
+    {
+      "id": "C8",
+      "text": "Locate and operate emergency kill switch before starting machine.",
+      "confidence": 0.9,
+      "steps": [
+        "S46"
+      ]
+    },
+    {
+      "id": "C9",
+      "text": "Regenerate diesel particulate filter in a safe outdoor environment.",
+      "confidence": 0.8,
+      "steps": [
+        "S40"
+      ]
+    },
+    {
+      "id": "C10",
+      "text": "Delay regeneration if machine is in a fire-hazard environment.",
+      "confidence": 0.9,
+      "steps": [
+        "S41"
+      ]
+    },
+    {
+      "id": "C11",
+      "text": "Machines > 3,000 kg require at least two hand-held extinguishers.",
+      "confidence": 0.9,
+      "steps": [
+        "S46"
+      ]
+    },
+    {
+      "id": "C12",
+      "text": "Autonomous machines need fixed fire extinguishing systems.",
+      "confidence": 0.95,
+      "steps": [
+        "S47"
+      ]
+    },
+    {
+      "id": "C13",
+      "text": "Confirm engine compartment has at least three litres of extinguishing agent per cubic meter.",
+      "confidence": 0.8
+    },
+    {
+      "id": "C14",
+      "text": "Ensure detection system covers entire engine compartment and is connected to non-fused cables.",
+      "confidence": 0.85
+    },
+    {
+      "id": "C15",
+      "text": "Obtain certificate for installation and ensure compliance with test report.",
+      "confidence": 0.9
+    },
+    {
+      "id": "C16",
+      "text": "Confirm system operation at start-up and repair any malfunctions by an authorized shop.",
+      "confidence": 0.85,
+      "steps": [
+        "S40"
+      ]
+    },
+    {
+      "id": "C17",
+      "text": "Service the system at least once a year.",
+      "confidence": 0.9
+    },
+    {
+      "id": "C18",
+      "text": "Clean engine compartments daily.",
+      "confidence": 0.85
+    },
+    {
+      "id": "C19",
+      "text": "Report all accidents and dangerous situations to a supervisor immediately.",
+      "confidence": 0.95,
+      "steps": [
+        "S40"
+      ]
+    },
+    {
+      "id": "C20",
+      "text": "Stop and leave the machine in place if possible.",
+      "confidence": 0.9,
+      "steps": [
+        "S41"
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "content": "Risk management is a natural part of daily operations.",
+      "entity_type": "information",
+      "category": "information",
+      "confidence": 0.9,
+      "context": "Pohjola Insurance\nFire safety guidelines for working machines\nValid as of 1 January 2021\n\n---\n\n### Page 1: Introduction\n\n**Risk management is more than just insurance**\n\n**Risk and risk management**\nA...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "A risk is a potentially harmful event.",
+      "entity_type": "definition",
+      "category": "definition",
+      "confidence": 0.95,
+      "context": "Pohjola Insurance\nFire safety guidelines for working machines\nValid as of 1 January 2021\n\n---\n\n### Page 1: Introduction\n\n**Risk management is more than just insurance**\n\n**Risk and risk management**\nA...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "Daily and weekly inspections and cleanings.",
+      "entity_type": "specification",
+      "category": "maintenance_schedule",
+      "confidence": 0.9,
+      "context": "us in underground and indoor sites.\n\n**Tools to help assess the risk of fire**\nTo assess fire risks, consider:\n* Impact on the company's other risks.\n* The level of risk the company is taking.\n* Emplo...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "Authentic replacement parts from known manufacturers.",
+      "entity_type": "specification",
+      "category": "replacement_parts",
+      "confidence": 0.9,
+      "context": "us in underground and indoor sites.\n\n**Tools to help assess the risk of fire**\nTo assess fire risks, consider:\n* Impact on the company's other risks.\n* The level of risk the company is taking.\n* Emplo...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "240\u00b0C as the temperature threshold for flammable liquids.",
+      "entity_type": "specification",
+      "category": "temperature_threshold",
+      "confidence": 0.85,
+      "context": "us in underground and indoor sites.\n\n**Tools to help assess the risk of fire**\nTo assess fire risks, consider:\n* Impact on the company's other risks.\n* The level of risk the company is taking.\n* Emplo...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "Fuel leaks",
+      "entity_type": "problem",
+      "category": "mechanical_issue",
+      "confidence": 0.9,
+      "context": "a leak can create a flammable oil mist.\n* **Fuel leaks:** Shut down the engine before inspecting for fuel leaks. Check joints of hoses and pipes.\n* **Oil and hydraulic oil leaks:** Check the engine co...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "Electrical fires",
+      "entity_type": "risk",
+      "category": "fire_hazard",
+      "confidence": 0.9,
+      "context": "a leak can create a flammable oil mist.\n* **Fuel leaks:** Shut down the engine before inspecting for fuel leaks. Check joints of hoses and pipes.\n* **Oil and hydraulic oil leaks:** Check the engine co...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "Engine compartment",
+      "entity_type": "location",
+      "category": "machine_component",
+      "confidence": 0.9,
+      "context": "a leak can create a flammable oil mist.\n* **Fuel leaks:** Shut down the engine before inspecting for fuel leaks. Check joints of hoses and pipes.\n* **Oil and hydraulic oil leaks:** Check the engine co...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "Thermal shields or tubes",
+      "entity_type": "protection_measure",
+      "category": "heat_management",
+      "confidence": 0.85,
+      "context": "a leak can create a flammable oil mist.\n* **Fuel leaks:** Shut down the engine before inspecting for fuel leaks. Check joints of hoses and pipes.\n* **Oil and hydraulic oil leaks:** Check the engine co...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "Main power switch",
+      "entity_type": "component",
+      "category": "electrical_component",
+      "confidence": 0.9,
+      "context": "a leak can create a flammable oil mist.\n* **Fuel leaks:** Shut down the engine before inspecting for fuel leaks. Check joints of hoses and pipes.\n* **Oil and hydraulic oil leaks:** Check the engine co...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "Emergency kill switch",
+      "entity_type": "safety_feature",
+      "category": "emergency_system",
+      "confidence": 0.9,
+      "context": "a leak can create a flammable oil mist.\n* **Fuel leaks:** Shut down the engine before inspecting for fuel leaks. Check joints of hoses and pipes.\n* **Oil and hydraulic oil leaks:** Check the engine co...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "Battery compartment",
+      "entity_type": "location",
+      "category": "machine_component",
+      "confidence": 0.9,
+      "context": "a leak can create a flammable oil mist.\n* **Fuel leaks:** Shut down the engine before inspecting for fuel leaks. Check joints of hoses and pipes.\n* **Oil and hydraulic oil leaks:** Check the engine co...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "Terminal covers",
+      "entity_type": "protection_measure",
+      "category": "electrical_safety",
+      "confidence": 0.85,
+      "context": "a leak can create a flammable oil mist.\n* **Fuel leaks:** Shut down the engine before inspecting for fuel leaks. Check joints of hoses and pipes.\n* **Oil and hydraulic oil leaks:** Check the engine co...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "Ventilation",
+      "entity_type": "requirement",
+      "category": "environmental_condition",
+      "confidence": 0.9,
+      "context": "a leak can create a flammable oil mist.\n* **Fuel leaks:** Shut down the engine before inspecting for fuel leaks. Check joints of hoses and pipes.\n* **Oil and hydraulic oil leaks:** Check the engine co...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "Operating manuals",
+      "entity_type": "specification",
+      "category": "document",
+      "confidence": 0.9,
+      "context": " electrical systems in it weekly. Remove any rocks or twigs immediately.\n\n**Operating manual**\n* Ensure all operating manuals are available in the machine in a language the operator understands.\n* Man...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "Auxiliary heater",
+      "entity_type": "equipment",
+      "category": "heating_system",
+      "confidence": 0.95,
+      "context": " electrical systems in it weekly. Remove any rocks or twigs immediately.\n\n**Operating manual**\n* Ensure all operating manuals are available in the machine in a language the operator understands.\n* Man...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "Three litres of extinguishing agent per cubic meter.",
+      "entity_type": "specification",
+      "category": "distance_requirement",
+      "confidence": 0.9,
+      "context": "system.\n* There must be at least three litres of extinguishing agent for each cubic meter of the engine or heater compartment.\n* The detection system must cover the entire engine compartment and be co...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "Detection system covers entire engine compartment and is connected to non-fused cables.",
+      "entity_type": "specification",
+      "category": "specification",
+      "confidence": 0.85,
+      "context": "system.\n* There must be at least three litres of extinguishing agent for each cubic meter of the engine or heater compartment.\n* The detection system must cover the entire engine compartment and be co...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "Pohjola Insurance Ltd",
+      "entity_type": "company_name",
+      "category": "company_name",
+      "confidence": 0.95,
+      "context": "fety officer, site manager, coworkers, and insurance company.\n\n**Other accident**\n* Report all accidents and dangerous situations to a supervisor immediately.\n* Stop and leave the machine in place if ...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "Business ID: 1458359-3",
+      "entity_type": "business_id",
+      "category": "business_id",
+      "confidence": 0.9,
+      "context": "fety officer, site manager, coworkers, and insurance company.\n\n**Other accident**\n* Report all accidents and dangerous situations to a supervisor immediately.\n* Stop and leave the machine in place if ...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "Helsinki, Gebhardinaukio 1, 00013 OP, Finland",
+      "entity_type": "address",
+      "category": "address",
+      "confidence": 0.9,
+      "context": "fety officer, site manager, coworkers, and insurance company.\n\n**Other accident**\n* Report all accidents and dangerous situations to a supervisor immediately.\n* Stop and leave the machine in place if ...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "Financial Supervisory Authority",
+      "entity_type": "regulatory_authority",
+      "category": "regulatory_authority",
+      "confidence": 0.9,
+      "context": "fety officer, site manager, coworkers, and insurance company.\n\n**Other accident**\n* Report all accidents and dangerous situations to a supervisor immediately.\n* Stop and leave the machine in place if ...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    }
+  ],
+  "confidence_score": 0.8977272727272727,
+  "processing_time": 236.92566394805908,
+  "strategy_used": "llm_default",
+  "metadata": {
+    "file_format": ".txt",
+    "file_name": "op_firesafety_guideline.txt",
+    "content_length": 13425,
+    "entities_extracted": 22,
+    "steps_extracted": 50,
+    "constraints_extracted": 20
+  }
+}

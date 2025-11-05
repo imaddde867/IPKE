@@ -33,7 +33,6 @@ venv.bak/
 .env
 
 # Logs
-logs/
 *.log
 
 # IDE
