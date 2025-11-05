@@ -1,0 +1,416 @@
+{
+  "document_id": "3M_OEM_SOP",
+  "document_type": "text",
+  "steps": [
+    {
+      "id": "S1",
+      "text": "Clean new external composite surface with approved cleaner.",
+      "order": 1,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S2",
+      "text": "Sand old or new gelcoat to remove imperfections.",
+      "order": 2,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S3",
+      "text": "Apply filler if needed and feather the repair.",
+      "order": 3,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S4",
+      "text": "Finish by sanding the repair area.",
+      "order": 4,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S5",
+      "text": "Ensure surface is dry.",
+      "order": 5,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S6",
+      "text": "Mask areas with 3M\u2122 Precision Masking Tape and back up with 3M\u2122 Performance Industrial Masking Tape or 3M Scotch\u00ae Performance Masking Tape.",
+      "order": 6,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S7",
+      "text": "Apply 3M\u2122 Purple Premium Plus Masking Film.",
+      "order": 7,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S8",
+      "text": "Mix gelcoat in a 3M\u2122 PPS\u2122 Series 2.0 disposable spray cup, adjust settings on 3M\u2122 Performance Spray Gun.",
+      "order": 8,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S9",
+      "text": "Apply gelcoat with a 15cm-20cm distance from the surface.",
+      "order": 9,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S10",
+      "text": "Refer to page 3 & 4 for gelcoat finishing process.",
+      "order": 10,
+      "confidence": 0.85,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S11",
+      "text": "Clean new external composite surface with approved cleaner.",
+      "order": 11,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S12",
+      "text": "Sand with 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II 320+ and then 400+ grade abrasives or start with P800 grade 3M\u2122 Hookit\u2122 Flexible Abrasive Foam Discs.",
+      "order": 12,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S13",
+      "text": "Refine sand scratch using P1200 grade 3M\u2122 Hookit\u2122 Flexible Abrasive Foam Discs.",
+      "order": 13,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S14",
+      "text": "Compound surface with 3M\u2122 Perfect-It\u2122 Gelcoat Heavy Cutting Compound and a Rotary Polishing machine at 1400-1800 rpm.",
+      "order": 14,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S15",
+      "text": "Polish with 3M\u2122 Perfect-It\u2122 Gelcoat Compound + Polish and a wool compounding pad at 1400-1800 rpm.",
+      "order": 15,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S16",
+      "text": "Apply 3M\u2122 Perfect-It\u2122 Boat Wax to a 10cm x 10cm area and wipe clean before it dries.",
+      "order": 16,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S17",
+      "text": "Clean the surface with approved cleaner.",
+      "order": 17,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S18",
+      "text": "Sand the surface with a DA sander and 3M Hookit 775L Cubitron II 80+ grade abrasive discs.",
+      "order": 18,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S19",
+      "text": "Apply 3M Marine Premium Filler.",
+      "order": 19,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S20",
+      "text": "Apply masking tapes and film.",
+      "order": 20,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S21",
+      "text": "Apply primer with a 3M Performance Spray Gun.",
+      "order": 21,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S22",
+      "text": "Sand the primer with dry guide coat and 320+ grade abrasive discs.",
+      "order": 22,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S23",
+      "text": "Apply marine paint with a 3M Performance Spray Gun.",
+      "order": 23,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S24",
+      "text": "Clean the surface.",
+      "order": 24,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S25",
+      "text": "Sand with a DA sander and 3M Hookit Purple Finishing Film Disc 260L+ P1200/1500 grade (dry option).",
+      "order": 25,
+      "confidence": 0.8,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S26",
+      "text": "Sand with a DA sander and 3M Trizact Hookit Clear Coat Sanding Disc grade 1500 (wet option).",
+      "order": 26,
+      "confidence": 0.8,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S27",
+      "text": "Refine P1200 scratches with a flexible abrasive foam disc P2000 grade.",
+      "order": 27,
+      "confidence": 0.8,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S28",
+      "text": "Clean the surface with an approved cleaner.",
+      "order": 28,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S29",
+      "text": "Sand the bottom surface using a dual-action sander with 3M\u2122 Hookit\u2122 775L Cubitron\u00b2 II 220+ grade abrasive.",
+      "order": 29,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S30",
+      "text": "Mix and apply 3M\u2122 Marine Premium Filler.",
+      "order": 30,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S31",
+      "text": "After it cures, sand with 120+ grade abrasive, then finish with 220+ grade.",
+      "order": 31,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S32",
+      "text": "Ensure the surface is dry.",
+      "order": 32,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S33",
+      "text": "Apply masking tapes and film as described in previous processes.",
+      "order": 33,
+      "confidence": 0.85,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S34",
+      "text": "Mix bottom paint in a 3M\u2122 PPS\u2122 Series 2.0 cup (remove lid filter).",
+      "order": 34,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S35",
+      "text": "Use a 3M\u2122 Performance Spray Gun, holding it 15cm-20cm from the surface to apply the paint.",
+      "order": 35,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S36",
+      "text": "Consult a safety professional or visit www.3M.com.",
+      "order": 36,
+      "confidence": 0.9,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S37",
+      "text": "Contact 3M UK plc for Automotive Aftermarket inquiries.",
+      "order": 37,
+      "confidence": 0.85,
+      "type": "procedure_step"
+    },
+    {
+      "id": "S38",
+      "text": "Contact 3M Ireland Limited for Automotive Aftermarket inquiries.",
+      "order": 38,
+      "confidence": 0.85,
+      "type": "procedure_step"
+    }
+  ],
+  "constraints": [],
+  "entities": [
+    {
+      "content": "Approved cleaner for removing mold release materials.",
+      "entity_type": "specification",
+      "category": "cleaner",
+      "confidence": 0.9,
+      "context": "Science. Applied to Life.\u2122\nStandard Operating Procedures for Marine OEM\n\n---\n\n### Page 2: Gelcoat Surface Preparation and Application Process\n\n**Health & Safety Recommendations:**\n* 3M E-A-R\u2122 Ultrafit...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "3M Hookit\u2122 775L Cubitron\u2122 II abrasive discs for sanding.",
+      "entity_type": "specification",
+      "category": "abrasive_discs",
+      "confidence": 0.9,
+      "context": "Science. Applied to Life.\u2122\nStandard Operating Procedures for Marine OEM\n\n---\n\n### Page 2: Gelcoat Surface Preparation and Application Process\n\n**Health & Safety Recommendations:**\n* 3M E-A-R\u2122 Ultrafit...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "3M Marine Blister Repair Filler and Marine Premium Filler.",
+      "entity_type": "specification",
+      "category": "fillers",
+      "confidence": 0.9,
+      "context": "Science. Applied to Life.\u2122\nStandard Operating Procedures for Marine OEM\n\n---\n\n### Page 2: Gelcoat Surface Preparation and Application Process\n\n**Health & Safety Recommendations:**\n* 3M E-A-R\u2122 Ultrafit...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "Approved cleaner for cleaning the surface.",
+      "entity_type": "specification",
+      "category": "cleaning_agent",
+      "confidence": 0.85,
+      "context": "er, 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II Abrasive Discs.\n\n5.  **Masking:**\n    * Ensure the surface is completely dry.\n    * Mask areas with 3M\u2122 Precision Masking Tape first, then back it up with 3M\u2122 Perform...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "3M\u2122 PPS\u2122 Series 2.0 disposable spray cup.",
+      "entity_type": "specification",
+      "category": "container",
+      "confidence": 0.9,
+      "context": "er, 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II Abrasive Discs.\n\n5.  **Masking:**\n    * Ensure the surface is completely dry.\n    * Mask areas with 3M\u2122 Precision Masking Tape first, then back it up with 3M\u2122 Perform...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "3M\u2122 Performance Spray Gun.",
+      "entity_type": "specification",
+      "category": "tool",
+      "confidence": 0.9,
+      "context": "er, 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II Abrasive Discs.\n\n5.  **Masking:**\n    * Ensure the surface is completely dry.\n    * Mask areas with 3M\u2122 Precision Masking Tape first, then back it up with 3M\u2122 Perform...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "3M\u2122 Performance Gravity HVLP Atomising Head.",
+      "entity_type": "specification",
+      "category": "tool",
+      "confidence": 0.85,
+      "context": "er, 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II Abrasive Discs.\n\n5.  **Masking:**\n    * Ensure the surface is completely dry.\n    * Mask areas with 3M\u2122 Precision Masking Tape first, then back it up with 3M\u2122 Perform...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "15cm-20cm distance from the surface for gelcoat application.",
+      "entity_type": "specification",
+      "category": "distance_requirement",
+      "confidence": 0.9,
+      "context": "er, 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II Abrasive Discs.\n\n5.  **Masking:**\n    * Ensure the surface is completely dry.\n    * Mask areas with 3M\u2122 Precision Masking Tape first, then back it up with 3M\u2122 Perform...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "3M United Kingdom plc, Automotive Aftermarket, Cain Road, Bracknell, RG12 8HT, +44 (0)161 237 6391, aadukenquiries@mmm.com, www.3M.co.uk/paintapplication",
+      "entity_type": "contact_information",
+      "category": "contact_information",
+      "confidence": 0.9,
+      "context": "r assistance, consult a safety professional or visit www.3M.com.\n\n**Contact Information:**\n\n**3M United Kingdom plc**\nAutomotive Aftermarket\n3M Centre, Cain Road,\nBracknell, RG12 8HT\nPhone: +44 (0)161...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    },
+    {
+      "content": "3M Ireland Limited, Automotive Aftermarket, The Iveagh Building, The Park, Carrickmines, Dublin 18, +353 12160301, aadukenquiries@mmm.com, www.3M.co.uk/paintapplication",
+      "entity_type": "contact_information",
+      "category": "contact_information",
+      "confidence": 0.9,
+      "context": "r assistance, consult a safety professional or visit www.3M.com.\n\n**Contact Information:**\n\n**3M United Kingdom plc**\nAutomotive Aftermarket\n3M Centre, Cain Road,\nBracknell, RG12 8HT\nPhone: +44 (0)161...",
+      "metadata": {
+        "llm_extracted": true,
+        "source": "llama"
+      },
+      "relationships": [],
+      "source_location": ""
+    }
+  ],
+  "confidence_score": 0.89,
+  "processing_time": 156.04977416992188,
+  "strategy_used": "llm_default",
+  "metadata": {
+    "file_format": ".txt",
+    "file_name": "3m_marine_oem_sop.txt",
+    "content_length": 8677,
+    "entities_extracted": 10,
+    "steps_extracted": 38,
+    "constraints_extracted": 0
+  }
+}
