@@ -35,7 +35,7 @@ Explainium ingests technical, safety, compliance, and operational documents and 
    - Code: `src/processors/streamlined_processor.py:92` → `_extract_*` functions.
 
 2. Chunking and prompting
-   - Text is split into chunks of `chunk_size` (default 2000 chars), up to `llm_max_chunks` (default 10), with a heuristic to break on sentence boundaries near the end of a chunk.
+  - Text is split into chunks of `chunk_size` (default 2000 chars); `llm_max_chunks` defaults to 0 (unlimited) so full documents flow through, with a heuristic to break on sentence boundaries near the end of a chunk.
    - Each chunk is sent to the LLM with an extraction prompt requesting a JSON array of items.
    - Code: `src/ai/knowledge_engine.py:186` → `_iter_chunks`, `src/ai/knowledge_engine.py:204` → `_process_chunk_with_llm`.
 
