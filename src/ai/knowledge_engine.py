@@ -79,7 +79,7 @@ class LLMExtractionStrategy(ExtractionStrategy):
         llm_config = self.config.get_llm_config()
         
         self.model_path = llm_config['model_path']
-        self.max_chunks = llm_config['max_chunks']
+        self.max_chunks = max(0, llm_config['max_chunks'])
         
         # GPU-optimized LLM parameters
         self.llm_params = {
@@ -309,7 +309,7 @@ class LLMExtractionStrategy(ExtractionStrategy):
     def _iter_chunks(self, content: str, chunk_size: int):
         """Yield limited chunks, biased toward sentence boundaries."""
         for index, start in enumerate(range(0, len(content), chunk_size)):
-            if index >= self.max_chunks:
+            if self.max_chunks and index >= self.max_chunks:
                 break
             chunk = content[start:start + chunk_size]
             if start + chunk_size < len(content):

@@ -31,6 +31,15 @@ def _get_env_value(*keys: str, default: Optional[str] = None) -> Optional[str]:
             return value
     return default
 
+
+def _safe_int(value: Optional[str], fallback: int) -> int:
+    """Safe integer conversion allowing non-negative values only."""
+    try:
+        result = int(value) if value is not None else fallback
+    except (TypeError, ValueError):
+        return fallback
+    return result if result >= 0 else 0
+
 @dataclass
 class UnifiedConfig:
     """
@@ -71,7 +80,7 @@ class UnifiedConfig:
     llm_temperature: float = 0.1  # Low for deterministic extraction
     llm_top_p: float = 0.9
     llm_repeat_penalty: float = 1.1
-    llm_max_chunks: int = 10  # Increased for comprehensive extraction
+    llm_max_chunks: int = 0  # 0 means unlimited chunks; still allow env overrides
     llm_f16_kv: bool = True  # Use f16 for key-value cache
     llm_use_mlock: bool = True  # Lock model in memory for better performance
     llm_use_mmap: bool = True  # Memory map model files
@@ -224,6 +233,18 @@ class UnifiedConfig:
             llm_max_tokens = int(llm_max_tokens_raw)
         except (TypeError, ValueError):
             llm_max_tokens = cls.llm_max_tokens
+        llm_max_chunks_raw = _get_env_value(
+            'LLM_MAX_CHUNKS',
+            'EXPLAINIUM_LLM_MAX_CHUNKS',
+            default=str(cls.llm_max_chunks)
+        )
+        try:
+            llm_max_chunks = int(llm_max_chunks_raw)
+        except (TypeError, ValueError):
+            llm_max_chunks = cls.llm_max_chunks
+        else:
+            if llm_max_chunks < 0:
+                llm_max_chunks = 0
         max_workers_raw = _get_env_value(
             'MAX_WORKERS',
             'EXPLAINIUM_MAX_WORKERS',
@@ -248,6 +269,7 @@ class UnifiedConfig:
             llm_n_ctx=llm_n_ctx,
             llm_temperature=llm_temperature,
             llm_max_tokens=llm_max_tokens,
+            llm_max_chunks=llm_max_chunks,
             max_workers=max_workers,
             processing_timeout=processing_timeout,
             api_host=api_host,
@@ -341,7 +363,15 @@ class UnifiedConfig:
             gpu_backend=gpu_backend,
             enable_gpu=enable_gpu,
             llm_n_gpu_layers=llm_n_gpu_layers,
-            gpu_memory_fraction=gpu_memory_fraction
+            gpu_memory_fraction=gpu_memory_fraction,
+            llm_max_chunks=_safe_int(
+                _get_env_value(
+                    'LLM_MAX_CHUNKS',
+                    'EXPLAINIUM_LLM_MAX_CHUNKS',
+                    default=str(cls.llm_max_chunks)
+                ),
+                fallback=cls.llm_max_chunks
+            )
         )
     
     # Utility methods for backward compatibility
