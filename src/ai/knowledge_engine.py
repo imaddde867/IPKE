@@ -105,12 +105,41 @@ class LLMExtractionStrategy(ExtractionStrategy):
         self.llm = None
         self._initialized = False
     
+    def _load_llm_model(self, params: Dict[str, Any]):
+        """Instantiate the llama.cpp model with shared parameters."""
+        if not LLAMA_AVAILABLE:
+            raise RuntimeError("llama_cpp backend not available during model load.")
+        return Llama(model_path=self.model_path, **params)
+    
+    def _try_load_gpu(self, base_params: Dict[str, Any], requested_layers: Any, default_backend: str):
+        """Attempt to load the model on GPU with progressive layer counts."""
+        last_error: Optional[Exception] = None
+        for layers in self._generate_gpu_layer_candidates(requested_layers):
+            candidate_params = {**base_params, 'n_gpu_layers': layers}
+            try:
+                self.llm = self._load_llm_model(candidate_params)
+                self._initialized = True
+                logger.info(
+                    "Loaded LLM model on GPU (%s, %s layers): %s",
+                    candidate_params.get('backend', default_backend),
+                    "all" if layers == -1 else layers,
+                    self.model_path
+                )
+                return True, None
+            except Exception as gpu_error:
+                last_error = gpu_error
+                logger.warning(
+                    "GPU initialization attempt failed (backend=%s, layers=%s): %s",
+                    candidate_params.get('backend', default_backend),
+                    layers,
+                    gpu_error
+                )
+        return False, last_error
+    
     async def _initialize(self):
         if self._initialized:
             return
 
-        if not LLAMA_AVAILABLE:
-            raise RuntimeError("llama_cpp backend not available during model load.")
         if not self.model_path:
             raise RuntimeError("LLM model path is not configured.")
 
@@ -125,29 +154,9 @@ class LLMExtractionStrategy(ExtractionStrategy):
 
         if self.enable_gpu and requested_layers not in (0, None):
             gpu_attempted = True
-            for layers in self._generate_gpu_layer_candidates(requested_layers):
-                candidate_params = {**final_params, 'n_gpu_layers': layers}
-                try:
-                    self.llm = Llama(
-                        model_path=self.model_path,
-                        **candidate_params
-                    )
-                    self._initialized = True
-                    logger.info(
-                        "Loaded LLM model on GPU (%s, %s layers): %s",
-                        candidate_params.get('backend', backend),
-                        "all" if layers == -1 else layers,
-                        self.model_path
-                    )
-                    return
-                except Exception as gpu_error:
-                    last_gpu_error = gpu_error
-                    logger.warning(
-                        "GPU initialization attempt failed (backend=%s, layers=%s): %s",
-                        candidate_params.get('backend', backend),
-                        layers,
-                        gpu_error
-                    )
+            loaded, last_gpu_error = self._try_load_gpu(final_params, requested_layers, backend)
+            if loaded:
+                return
 
         # Fallback to CPU if GPU attempts failed or were not allowed
         fallback_params = {**self.llm_params}
@@ -157,10 +166,7 @@ class LLMExtractionStrategy(ExtractionStrategy):
         fallback_params['use_mmap'] = False   # mmap can fail on network filesystems
 
         try:
-            self.llm = Llama(
-                model_path=self.model_path,
-                **fallback_params
-            )
+            self.llm = self._load_llm_model(fallback_params)
             self._initialized = True
             logger.info("Loaded LLM model on CPU (fallback): %s", self.model_path)
         except Exception as fallback_error:
