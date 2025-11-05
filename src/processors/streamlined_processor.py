@@ -2,10 +2,10 @@
 EXPLAINIUM - Document Processor
 """
 
-import asyncio
 import time
 import hashlib
-from typing import Dict, List, Any, Optional
+import asyncio
+from typing import Dict, List, Any, Optional, Callable, TypeVar
 from dataclasses import dataclass
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
@@ -61,6 +61,7 @@ from src.ai.knowledge_engine import UnifiedKnowledgeEngine, ExtractionResult
 from src.exceptions import ProcessingError
 
 logger = get_logger(__name__)
+T = TypeVar("T")
 
 
 @dataclass
@@ -106,6 +107,11 @@ class StreamlinedDocumentProcessor:
         self.audio_formats = {'.mp3', '.wav', '.flac', '.aac'}
         
         logger.info("Streamlined Document Processor initialized")
+    
+    async def _run_in_executor(self, func: Callable[[], T]) -> T:
+        """Execute blocking operations in the shared thread pool."""
+        loop = asyncio.get_running_loop()
+        return await loop.run_in_executor(self.executor, func)
     
     async def process_document(
         self, 
@@ -225,7 +231,7 @@ class StreamlinedDocumentProcessor:
                 logger.warning(f"PDF extraction failed: {e}")
                 return ""
         
-        return await asyncio.get_event_loop().run_in_executor(self.executor, extract_pdf)
+        return await self._run_in_executor(extract_pdf)
     
     async def _extract_docx_content(self, file_path: Path) -> str:
         """Extract text from Word documents"""
@@ -244,7 +250,7 @@ class StreamlinedDocumentProcessor:
                 logger.warning(f"DOCX extraction failed: {e}")
                 return ""
         
-        return await asyncio.get_event_loop().run_in_executor(self.executor, extract_docx)
+        return await self._run_in_executor(extract_docx)
     
     async def _extract_image_content(self, file_path: Path) -> str:
         """Extract text from images using OCR"""
@@ -262,7 +268,7 @@ class StreamlinedDocumentProcessor:
                 logger.warning(f"OCR extraction failed: {e}")
                 return ""
         
-        return await asyncio.get_event_loop().run_in_executor(self.executor, extract_ocr)
+        return await self._run_in_executor(extract_ocr)
     
     async def _extract_spreadsheet_content(self, file_path: Path, file_format: str) -> str:
         """Extract content from spreadsheets"""
@@ -285,7 +291,7 @@ class StreamlinedDocumentProcessor:
                 logger.warning(f"Spreadsheet extraction failed: {e}")
                 return ""
         
-        return await asyncio.get_event_loop().run_in_executor(self.executor, extract_spreadsheet)
+        return await self._run_in_executor(extract_spreadsheet)
     
     async def _extract_presentation_content(self, file_path: Path) -> str:
         """Extract text from presentations"""
@@ -308,7 +314,7 @@ class StreamlinedDocumentProcessor:
                 logger.warning(f"Presentation extraction failed: {e}")
                 return ""
         
-        return await asyncio.get_event_loop().run_in_executor(self.executor, extract_presentation)
+        return await self._run_in_executor(extract_presentation)
     
     async def _extract_audio_content(self, file_path: Path) -> str:
         """Extract text from audio files using Whisper"""
@@ -325,7 +331,7 @@ class StreamlinedDocumentProcessor:
                 logger.warning(f"Audio extraction failed: {e}")
                 return ""
         
-        return await asyncio.get_event_loop().run_in_executor(self.executor, extract_audio)
+        return await self._run_in_executor(extract_audio)
     
     async def _extract_plain_text(self, file_path: Path) -> str:
         """Extract plain text content"""
@@ -337,7 +343,7 @@ class StreamlinedDocumentProcessor:
                 logger.warning(f"Plain text extraction failed: {e}")
                 return ""
         
-        return await asyncio.get_event_loop().run_in_executor(self.executor, extract_text)
+        return await self._run_in_executor(extract_text)
     
     def _detect_document_type(self, file_format: str) -> str:
         """Detect document type based on file format"""

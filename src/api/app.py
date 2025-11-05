@@ -31,15 +31,6 @@ class HealthResponse(BaseModel):
     environment: str
 
 
-class ProcessingResponse(BaseModel):
-    document_id: str
-    status: str
-    entities_extracted: int
-    confidence_score: float
-    processing_time: float
-    message: str
-
-
 class EntityResponse(BaseModel):
     content: str
     entity_type: str
@@ -111,26 +102,26 @@ config = get_config()
 processor = StreamlinedDocumentProcessor()
 
 
-@app.get("/", response_model=HealthResponse)
-async def root():
-    """Root endpoint with basic health information"""
+def _build_health_response() -> HealthResponse:
+    """Shared helper for health endpoints."""
     return HealthResponse(
         status="healthy",
         timestamp=datetime.now().isoformat(),
         version="2.0",
         environment=config.environment.value
     )
+
+
+@app.get("/", response_model=HealthResponse)
+async def root():
+    """Root endpoint with basic health information"""
+    return _build_health_response()
 
 
 @app.get("/health", response_model=HealthResponse)
 async def health_check():
     """Detailed health check endpoint"""
-    return HealthResponse(
-        status="healthy",
-        timestamp=datetime.now().isoformat(),
-        version="2.0",
-        environment=config.environment.value
-    )
+    return _build_health_response()
 
 
 @app.get("/config")
@@ -168,7 +159,6 @@ async def extract_knowledge(
     if not file.filename:
         raise HTTPException(status_code=400, detail="No file provided")
     
-    file_size = 0
     content = await file.read()
     file_size = len(content)
     
