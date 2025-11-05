@@ -32,13 +32,48 @@ def _get_env_value(*keys: str, default: Optional[str] = None) -> Optional[str]:
     return default
 
 
-def _safe_int(value: Optional[str], fallback: int) -> int:
-    """Safe integer conversion allowing non-negative values only."""
+def _env_int(*keys: str, default: int, min_value: Optional[int] = None) -> int:
+    """Fetch an int from env with optional lower bound."""
+    raw = _get_env_value(*keys)
+    if raw is None:
+        return default
     try:
-        result = int(value) if value is not None else fallback
+        value = int(raw)
     except (TypeError, ValueError):
-        return fallback
-    return result if result >= 0 else 0
+        return default
+    if min_value is not None and value < min_value:
+        return min_value
+    return value
+
+
+def _env_float(
+    *keys: str,
+    default: float,
+    min_value: Optional[float] = None,
+    max_value: Optional[float] = None
+) -> float:
+    """Fetch a float from env with optional bounds."""
+    raw = _get_env_value(*keys)
+    if raw is None:
+        return default
+    try:
+        value = float(raw)
+    except (TypeError, ValueError):
+        return default
+    if min_value is not None and value < min_value:
+        value = min_value
+    if max_value is not None and value > max_value:
+        value = max_value
+    return value
+
+
+def _env_bool(*keys: str, default: bool = False) -> bool:
+    """Fetch a boolean flag from env."""
+    raw = _get_env_value(*keys)
+    if raw is None:
+        return default
+    return raw.strip().lower() in {"1", "true", "yes", "on"}
+
 
 @dataclass
 class UnifiedConfig:
@@ -136,28 +171,26 @@ class UnifiedConfig:
     @classmethod
     def _development_config(cls) -> 'UnifiedConfig':
         """Development environment configuration"""
-        max_file_size = int(_get_env_value(
+        max_file_size = _env_int(
             'MAX_FILE_SIZE_MB',
             'EXPLAINIUM_MAX_FILE_SIZE_MB',
             'EXPLAINIUM_MAX_FILE_SIZE',
-            default='50'
-        ))
-        processing_timeout = int(_get_env_value(
+            default=50,
+            min_value=1
+        )
+        processing_timeout = _env_int(
             'PROCESSING_TIMEOUT',
             'EXPLAINIUM_PROCESSING_TIMEOUT',
-            default='180'
-        ))
+            default=180,
+            min_value=1
+        )
         api_host = _get_env_value('API_HOST', 'EXPLAINIUM_API_HOST', default='127.0.0.1')
         gpu_backend = _get_env_value(
             'GPU_BACKEND',
             'EXPLAINIUM_GPU_BACKEND',
             default='auto'
         )
-        enable_gpu = _get_env_value(
-            'ENABLE_GPU',
-            'EXPLAINIUM_ENABLE_GPU',
-            default='true'
-        ).lower() == 'true'
+        enable_gpu = _env_bool('ENABLE_GPU', 'EXPLAINIUM_ENABLE_GPU', default=True)
         llm_gpu_layers_raw = _get_env_value(
             'LLM_GPU_LAYERS',
             'EXPLAINIUM_LLM_GPU_LAYERS',
@@ -167,45 +200,33 @@ class UnifiedConfig:
             llm_n_gpu_layers = int(llm_gpu_layers_raw)
         except (TypeError, ValueError):
             llm_n_gpu_layers = -1
-        gpu_memory_fraction_raw = _get_env_value(
+        gpu_memory_fraction = _env_float(
             'GPU_MEMORY_FRACTION',
             'EXPLAINIUM_GPU_MEMORY_FRACTION',
-            default='0.8'
+            default=0.8,
+            min_value=0.0,
+            max_value=1.0
         )
-        try:
-            gpu_memory_fraction = float(gpu_memory_fraction_raw)
-        except (TypeError, ValueError):
-            gpu_memory_fraction = 0.8
-        else:
-            if gpu_memory_fraction <= 0 or gpu_memory_fraction > 1:
-                gpu_memory_fraction = 0.8
-        confidence_threshold_raw = _get_env_value(
+        confidence_threshold = _env_float(
             'CONFIDENCE_THRESHOLD',
             'EXPLAINIUM_CONFIDENCE_THRESHOLD',
-            default='0.8'
+            default=0.8,
+            min_value=0.0,
+            max_value=1.0
         )
-        try:
-            confidence_threshold = float(confidence_threshold_raw)
-        except (TypeError, ValueError):
-            confidence_threshold = 0.8
-        quality_threshold_raw = _get_env_value(
+        quality_threshold = _env_float(
             'QUALITY_THRESHOLD',
             'EXPLAINIUM_QUALITY_THRESHOLD',
-            default='0.7'
+            default=0.7,
+            min_value=0.0,
+            max_value=1.0
         )
-        try:
-            quality_threshold = float(quality_threshold_raw)
-        except (TypeError, ValueError):
-            quality_threshold = 0.7
-        chunk_size_raw = _get_env_value(
+        chunk_size = _env_int(
             'CHUNK_SIZE',
             'EXPLAINIUM_CHUNK_SIZE',
-            default='2000'
+            default=2000,
+            min_value=100
         )
-        try:
-            chunk_size = int(chunk_size_raw)
-        except (TypeError, ValueError):
-            chunk_size = 2000
         llm_n_ctx_raw = _get_env_value(
             'LLM_N_CTX',
             'EXPLAINIUM_LLM_N_CTX',
@@ -224,39 +245,24 @@ class UnifiedConfig:
             llm_temperature = float(llm_temperature_raw)
         except (TypeError, ValueError):
             llm_temperature = cls.llm_temperature
-        llm_max_tokens_raw = _get_env_value(
+        llm_max_tokens = _env_int(
             'LLM_MAX_TOKENS',
             'EXPLAINIUM_LLM_MAX_TOKENS',
-            default=str(cls.llm_max_tokens)
+            default=cls.llm_max_tokens,
+            min_value=64
         )
-        try:
-            llm_max_tokens = int(llm_max_tokens_raw)
-        except (TypeError, ValueError):
-            llm_max_tokens = cls.llm_max_tokens
-        llm_max_chunks_raw = _get_env_value(
+        llm_max_chunks = _env_int(
             'LLM_MAX_CHUNKS',
             'EXPLAINIUM_LLM_MAX_CHUNKS',
-            default=str(cls.llm_max_chunks)
+            default=cls.llm_max_chunks,
+            min_value=0
         )
-        try:
-            llm_max_chunks = int(llm_max_chunks_raw)
-        except (TypeError, ValueError):
-            llm_max_chunks = cls.llm_max_chunks
-        else:
-            if llm_max_chunks < 0:
-                llm_max_chunks = 0
-        max_workers_raw = _get_env_value(
+        max_workers = _env_int(
             'MAX_WORKERS',
             'EXPLAINIUM_MAX_WORKERS',
-            default=str(cls.max_workers)
+            default=cls.max_workers,
+            min_value=1
         )
-        try:
-            max_workers = int(max_workers_raw)
-        except (TypeError, ValueError):
-            max_workers = cls.max_workers
-        else:
-            if max_workers < 1:
-                max_workers = cls.max_workers
         
         return cls(
             environment=Environment.DEVELOPMENT,
@@ -282,11 +288,12 @@ class UnifiedConfig:
     @classmethod
     def _testing_config(cls) -> 'UnifiedConfig':
         """Testing environment configuration"""
-        max_file_size = int(_get_env_value(
+        max_file_size = _env_int(
             'TEST_MAX_FILE_SIZE_MB',
             'EXPLAINIUM_TEST_MAX_FILE_SIZE_MB',
-            default='10'
-        ))
+            default=10,
+            min_value=1
+        )
         return cls(
             environment=Environment.TESTING,
             debug=False,
@@ -303,27 +310,33 @@ class UnifiedConfig:
     def _production_config(cls) -> 'UnifiedConfig':
         """Production environment configuration"""
         log_level = _get_env_value('LOG_LEVEL', 'EXPLAINIUM_LOG_LEVEL', default='INFO')
-        max_file_size = int(_get_env_value(
+        max_file_size = _env_int(
             'MAX_FILE_SIZE_MB',
             'EXPLAINIUM_MAX_FILE_SIZE_MB',
             'EXPLAINIUM_MAX_FILE_SIZE',
-            default='200'
-        ))
-        confidence_threshold = float(_get_env_value(
+            default=200,
+            min_value=1
+        )
+        confidence_threshold = _env_float(
             'CONFIDENCE_THRESHOLD',
             'EXPLAINIUM_CONFIDENCE_THRESHOLD',
-            default='0.8'
-        ))
-        quality_threshold = float(_get_env_value(
+            default=0.8,
+            min_value=0.0,
+            max_value=1.0
+        )
+        quality_threshold = _env_float(
             'QUALITY_THRESHOLD',
             'EXPLAINIUM_QUALITY_THRESHOLD',
-            default='0.85'
-        ))
-        processing_timeout = int(_get_env_value(
+            default=0.85,
+            min_value=0.0,
+            max_value=1.0
+        )
+        processing_timeout = _env_int(
             'PROCESSING_TIMEOUT',
             'EXPLAINIUM_PROCESSING_TIMEOUT',
-            default='600'
-        ))
+            default=600,
+            min_value=60
+        )
         api_host = _get_env_value('API_HOST', 'EXPLAINIUM_API_HOST', default='0.0.0.0')
         cors_origins_raw = _get_env_value('CORS_ORIGINS', 'EXPLAINIUM_CORS_ORIGINS', default='')
         cors_origins = cors_origins_raw.split(',') if cors_origins_raw else []
@@ -334,21 +347,19 @@ class UnifiedConfig:
             'EXPLAINIUM_GPU_BACKEND',
             default='auto'
         )
-        enable_gpu = _get_env_value(
-            'ENABLE_GPU',
-            'EXPLAINIUM_ENABLE_GPU',
-            default='true'
-        ).lower() == 'true'
+        enable_gpu = _env_bool('ENABLE_GPU', 'EXPLAINIUM_ENABLE_GPU', default=True)
         llm_n_gpu_layers = int(_get_env_value(
             'LLM_GPU_LAYERS',
             'EXPLAINIUM_LLM_GPU_LAYERS',
             default='-1'  # Use all GPU layers by default
         ))
-        gpu_memory_fraction = float(_get_env_value(
+        gpu_memory_fraction = _env_float(
             'GPU_MEMORY_FRACTION',
             'EXPLAINIUM_GPU_MEMORY_FRACTION',
-            default='0.8'
-        ))
+            default=0.8,
+            min_value=0.0,
+            max_value=1.0
+        )
         
         return cls(
             environment=Environment.PRODUCTION,
@@ -364,13 +375,11 @@ class UnifiedConfig:
             enable_gpu=enable_gpu,
             llm_n_gpu_layers=llm_n_gpu_layers,
             gpu_memory_fraction=gpu_memory_fraction,
-            llm_max_chunks=_safe_int(
-                _get_env_value(
-                    'LLM_MAX_CHUNKS',
-                    'EXPLAINIUM_LLM_MAX_CHUNKS',
-                    default=str(cls.llm_max_chunks)
-                ),
-                fallback=cls.llm_max_chunks
+            llm_max_chunks=_env_int(
+                'LLM_MAX_CHUNKS',
+                'EXPLAINIUM_LLM_MAX_CHUNKS',
+                default=cls.llm_max_chunks,
+                min_value=0
             )
         )
     
