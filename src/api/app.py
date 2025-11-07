@@ -1,5 +1,5 @@
 """
-EXPLAINIUM - Streamlined FastAPI app
+Thesis System - Streamlined FastAPI app (Industrial Procedural Knowledge Extraction)
 """
 
 from typing import Dict, Any, List
@@ -56,7 +56,7 @@ class ExtractionResponse(BaseModel):
 async def lifespan(app: FastAPI):
     """Lifecycle hooks replacing deprecated on_event handlers."""
     cfg = get_config()
-    logger.info(f"Explainium API starting up in {cfg.environment.value} environment")
+    logger.info(f"IPKE API starting up in {cfg.environment.value} environment")
     logger.info(f"Upload directory: {cfg.upload_directory}")
     logger.info(f"Max file size: {cfg.max_file_size_mb}MB")
     logger.info(f"Supported formats: {len(cfg.supported_formats)} types")
@@ -66,7 +66,7 @@ async def lifespan(app: FastAPI):
     try:
         yield
     finally:
-        logger.info("Explainium API shutting down")
+        logger.info("IPKE API shutting down")
 
 
 def create_app() -> FastAPI:
@@ -74,7 +74,7 @@ def create_app() -> FastAPI:
     config = get_config()
     
     app = FastAPI(
-        title="Explainium Knowledge Extraction API",
+        title="Industrial Procedural Knowledge Extraction API",
         description="Simplified, high-performance knowledge extraction from documents",
         version="2.0",
         debug=config.is_development(),

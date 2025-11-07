@@ -1,5 +1,5 @@
 """
-EXPLAINIUM - Document Processor
+Industrial Procedural Knowledge Extraction - Document Processor
 """
 
 import time

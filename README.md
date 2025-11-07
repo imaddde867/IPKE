@@ -1,6 +1,6 @@
-# Explainium — Procedural Knowledge Extraction (Starting Point)
+# Industrial Procedural Knowledge Extraction (IPKE) — Procedural Knowledge Extraction (Starting Point)
 
-Explainium ingests technical, safety, compliance, and operational documents and extracts granular facts and procedural items using a local LLM. The current system runs fully offline with a llama.cpp-backed model and exposes both an API and a Streamlit UI. This README describes the current starting-point state: what exists today, how extraction works, runtime setup, and the current evaluation method.
+This thesis system ingests technical, safety, compliance, and operational documents and extracts granular facts and procedural items using a local LLM. The current system runs fully offline with a llama.cpp‑backed model and exposes both an API and a Streamlit UI. This README describes the current starting‑point state: what exists today, how extraction works, runtime setup, and the current evaluation method.
 
 [![Python 3.12+](https://img.shields.io/badge/python-3.12+-blue.svg)](https://python.org)
 [![FastAPI](https://img.shields.io/badge/API-FastAPI-00a86b.svg)](https://fastapi.tiangolo.com)
