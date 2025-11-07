@@ -12,7 +12,7 @@ from src.processors.streamlined_processor import StreamlinedDocumentProcessor
 from src.exceptions import ProcessingError
 
 st.set_page_config(
-    page_title="Explainium",
+    page_title="Industrial Procedural Knowledge Extraction (IPKE)",
     page_icon="🐴",
     layout="wide",
 )
@@ -237,7 +237,7 @@ def main() -> None:
     _ensure_session_defaults()
     _render_sidebar()
 
-    st.title("Explainium - Information Extraction")
+    st.title("Industrial Procedural Knowledge Extraction (IPKE)")
     st.write("Upload a document, tune extraction parameters, and review structured results.")
 
     config = get_config()
@@ -245,7 +245,7 @@ def main() -> None:
     uploaded_file = st.file_uploader(
         "Upload a document",
         type=supported_types or None,
-        help="Supported formats are driven by the Explainium configuration.",
+        help="Supported formats are driven by the system configuration.",
     )
 
     run_extraction = st.button("Run Extraction", type="primary")

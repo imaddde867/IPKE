@@ -1,7 +1,7 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "$id": "https://example.org/explainium/procedural-graph.schema.json",
-  "title": "Explainium Procedural Graph",
+  "title": "Industrial Procedural Knowledge Graph",
   "type": "object",
   "required": ["document_id", "steps", "edges"],
   "additionalProperties": false,
@@ -136,4 +136,3 @@
     }
   }
 }
-

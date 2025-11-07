@@ -13,7 +13,7 @@ class TestUnifiedConfig:
         """Test that default configuration loads successfully"""
         config = get_config()
         assert config is not None
-        assert config.app_name == "Explainium"
+        assert config.app_name == "Industrial Procedural Knowledge Extraction (IPKE)"
         assert config.app_version == "2.0"
     
     def test_environment_detection(self):

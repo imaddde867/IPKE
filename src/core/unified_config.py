@@ -1,5 +1,5 @@
 """
-EXPLAINIUM - Unified Configuration System
+Unified Configuration System for Industrial Procedural Knowledge Extraction (IPKE)
 """
 
 import os
@@ -78,7 +78,7 @@ def _env_bool(*keys: str, default: bool = False) -> bool:
 @dataclass
 class UnifiedConfig:
     """
-    Unified configuration for the entire Explainium system all settings are centralized here and loaded from environment variables
+    Unified configuration for the entire thesis system (IPKE): all settings are centralized here and loaded from environment variables
     with sensible defaults for each environment.
     """
     
@@ -86,7 +86,7 @@ class UnifiedConfig:
     environment: Environment = Environment.DEVELOPMENT
     
     # Application
-    app_name: str = "Explainium"
+    app_name: str = "Industrial Procedural Knowledge Extraction (IPKE)"
     app_version: str = "2.0"
     debug: bool = True
     log_level: str = "INFO"

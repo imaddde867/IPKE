@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Explainium - Knowledge Extraction API Server
+Industrial Procedural Knowledge Extraction (IPKE) - API Server
 
 A streamlined knowledge extraction system powered by Mistral-7B LLM.
 Extracts structured information from technical documents.
@@ -34,9 +34,9 @@ def check_model_availability():
     return True
 
 def main():
-    """Run the Explainium API server"""
+    """Run the IPKE API server"""
     print("=" * 60)
-    print("Explainium - Knowledge Extraction API")
+    print("Industrial Procedural Knowledge Extraction (IPKE) - API")
     print("=" * 60)
     
     # Check model availability
