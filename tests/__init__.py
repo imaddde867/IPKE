@@ -1,3 +1,3 @@
 """
-Test suite for Explainium Knowledge Extraction System
+Test suite for Industrial Procedural Knowledge Extraction (IPKE)
 """

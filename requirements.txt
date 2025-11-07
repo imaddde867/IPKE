@@ -1,4 +1,4 @@
-# Explainium - Core Dependencies
+# IPKE - Core Dependencies
 # Clean architecture with minimal required packages
 
 # Numerics + NLP (baseline evaluation + embeddings)
