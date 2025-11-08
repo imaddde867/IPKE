@@ -138,6 +138,25 @@ Notes:
 - Defaults expect a local gold set and embedding model. Adjust `src/pipelines/baseline.py` paths or pass explicit args to `evaluate.py`.
 - Evaluator (`evaluate.py`) computes headline metrics (StepF1, AdjacencyF1, Kendall, ConstraintCoverage, ConstraintAttachmentF1, A_score, GraphF1, NEXT_EdgeF1, Logic_EdgeF1, B_score) and writes a JSON report.
 
+## Extraction & Evaluation
+
+Run batch extraction and evaluation on test documents:
+
+```bash
+# Single extraction run with evaluation
+python run_baseline_loops.py
+
+# Multiple runs for statistical analysis
+python run_baseline_loops.py --runs 5
+
+# Include visualizations
+python run_baseline_loops.py --visualize
+```
+
+**Configuration:** Unlimited chunks (`max_chunks=0`), full GPU acceleration
+
+**Output:** `logs/extraction/` with predictions, metrics, and optional plots
+
 ## Supported Formats
 - Text: `.pdf`, `.doc/.docx`, `.txt`, `.rtf`
 - Spreadsheets: `.csv`, `.xls/.xlsx`
