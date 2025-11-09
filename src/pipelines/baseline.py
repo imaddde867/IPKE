@@ -11,6 +11,7 @@ from typing import Any, Callable, Dict, Iterable, Mapping, MutableMapping, Optio
 from evaluate import main as evaluate_main
 
 from src.processors.streamlined_processor import ProcessingResult, StreamlinedDocumentProcessor
+from src.graph.adapter import flat_to_tierb
 
 # Canonical Tier-A documents bundled with the repository (test split)
 TIER_A_TEST_DOCS: Dict[str, Path] = {
@@ -60,11 +61,20 @@ async def extract_documents(
     run_dir = Path(run_dir)
     run_dir.mkdir(parents=True, exist_ok=True)
 
+    # Also emit Tier-B structured files alongside flat predictions
+    tierb_dir = run_dir / "tierb"
+    tierb_dir.mkdir(parents=True, exist_ok=True)
+
     for doc_id, source_path in doc_sources.items():
         resolved = _normalise_path(source_path, base_dir)
         result = await processor.process_document(file_path=str(resolved), document_id=doc_id)
         payload = extraction_payload(doc_id, result)
         (run_dir / f"{doc_id}.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
+
+        # Write Tier-B structured view for the evaluator (nodes + edges with lowercase types)
+        tierb_payload = flat_to_tierb(payload)
+        (tierb_dir / f"{doc_id}.json").write_text(json.dumps(tierb_payload, indent=2), encoding="utf-8")
+
         if status_callback:
             status_callback(doc_id, payload)
 
