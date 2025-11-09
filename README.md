@@ -137,6 +137,8 @@ python scripts/plot_baseline_metrics.py
 Notes:
 - Defaults expect a local gold set and embedding model. Adjust `src/pipelines/baseline.py` paths or pass explicit args to `evaluate.py`.
 - Evaluator (`evaluate.py`) computes headline metrics (StepF1, AdjacencyF1, Kendall, ConstraintCoverage, ConstraintAttachmentF1, A_score, GraphF1, NEXT_EdgeF1, Logic_EdgeF1, B_score) and writes a JSON report.
+- 2025-11-09: Added a tiny Tier-B adapter at `src/graph/adapter.py` to convert flat predictions (steps/constraints/entities) into `nodes[]` + `edges[]` with lowercase relation types (e.g., "next", "condition_on") for `evaluate.py`. Baseline extractor remains flat; the adapter is optional.
+- Next session: Evaluate Tier A + Tier B with `evaluate.py`; only after that, touch semantic chunking and validators.
 
 ## Extraction & Evaluation
 
@@ -156,6 +158,30 @@ python run_baseline_loops.py --visualize
 **Configuration:** Unlimited chunks (`max_chunks=0`), full GPU acceleration
 
 **Output:** `logs/extraction/` with predictions, metrics, and optional plots
+
+### Tier-B conversion for gold and evaluation
+- Convert human gold (flat) to Tier‑B nodes/edges:
+```
+python -m tools.convert_flat_to_tierb \
+  --in datasets/archive/gold_human \
+  --out datasets/archive/gold_human_tierb
+```
+- Evaluate Tier A (flat):
+```
+python evaluate.py \
+  --gold_dir datasets/archive/gold_human \
+  --pred_dir logs/baseline_runs/run_1 \
+  --tier A \
+  --out_file logs/baseline_runs/run_1/eval_tierA.json
+```
+- Evaluate Tier B (derived nodes/edges):
+```
+python evaluate.py \
+  --gold_dir datasets/archive/gold_human_tierb \
+  --pred_dir logs/baseline_runs/run_1/tierb \
+  --tier B \
+  --out_file logs/baseline_runs/run_1/eval_tierB.json
+```
 
 ## Supported Formats
 - Text: `.pdf`, `.doc/.docx`, `.txt`, `.rtf`
