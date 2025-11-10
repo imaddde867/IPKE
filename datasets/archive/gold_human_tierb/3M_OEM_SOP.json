@@ -1,0 +1,352 @@
+{
+  "document_id": "",
+  "nodes": [
+    {
+      "id": "s1",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s2",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s3",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s4",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s5",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s6",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s7",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s8",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s9",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s10",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s11",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s12",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s13",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s14",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s15",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s16",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s17",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s18",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s19",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s20",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s21",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s22",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s23",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s24",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s25",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s26",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s27",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s28",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s29",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "s30",
+      "type": "step",
+      "text": "",
+      "order": null
+    },
+    {
+      "id": "c1",
+      "type": "condition",
+      "text": "Wear appropriate Personal Protective Equipment (PPE) including safety glasses, gloves, respirator, and hearing protection based on job and exposure assessment."
+    },
+    {
+      "id": "c2",
+      "type": "condition",
+      "text": "Ensure the surface is completely dry before masking."
+    },
+    {
+      "id": "c3",
+      "type": "condition",
+      "text": "Remove filter in the lid of the spray cup when applying gelcoat or bottom paint."
+    },
+    {
+      "id": "c4",
+      "type": "condition",
+      "text": "Wipe boat wax clean before it dries."
+    }
+  ],
+  "edges": [
+    {
+      "source": "s1",
+      "target": "s2",
+      "type": "next"
+    },
+    {
+      "source": "s2",
+      "target": "s3",
+      "type": "next"
+    },
+    {
+      "source": "s3",
+      "target": "s4",
+      "type": "next"
+    },
+    {
+      "source": "s4",
+      "target": "s5",
+      "type": "next"
+    },
+    {
+      "source": "s5",
+      "target": "s6",
+      "type": "next"
+    },
+    {
+      "source": "s6",
+      "target": "s7",
+      "type": "next"
+    },
+    {
+      "source": "s7",
+      "target": "s8",
+      "type": "next"
+    },
+    {
+      "source": "s8",
+      "target": "s9",
+      "type": "next"
+    },
+    {
+      "source": "s9",
+      "target": "s10",
+      "type": "next"
+    },
+    {
+      "source": "s10",
+      "target": "s11",
+      "type": "next"
+    },
+    {
+      "source": "s11",
+      "target": "s12",
+      "type": "next"
+    },
+    {
+      "source": "s12",
+      "target": "s13",
+      "type": "next"
+    },
+    {
+      "source": "s13",
+      "target": "s14",
+      "type": "next"
+    },
+    {
+      "source": "s14",
+      "target": "s15",
+      "type": "next"
+    },
+    {
+      "source": "s15",
+      "target": "s16",
+      "type": "next"
+    },
+    {
+      "source": "s16",
+      "target": "s17",
+      "type": "next"
+    },
+    {
+      "source": "s17",
+      "target": "s18",
+      "type": "next"
+    },
+    {
+      "source": "s18",
+      "target": "s19",
+      "type": "next"
+    },
+    {
+      "source": "s19",
+      "target": "s20",
+      "type": "next"
+    },
+    {
+      "source": "s20",
+      "target": "s21",
+      "type": "next"
+    },
+    {
+      "source": "s21",
+      "target": "s22",
+      "type": "next"
+    },
+    {
+      "source": "s22",
+      "target": "s23",
+      "type": "next"
+    },
+    {
+      "source": "s23",
+      "target": "s24",
+      "type": "next"
+    },
+    {
+      "source": "s24",
+      "target": "s25",
+      "type": "next"
+    },
+    {
+      "source": "s25",
+      "target": "s26",
+      "type": "next"
+    },
+    {
+      "source": "s26",
+      "target": "s27",
+      "type": "next"
+    },
+    {
+      "source": "s27",
+      "target": "s28",
+      "type": "next"
+    },
+    {
+      "source": "s28",
+      "target": "s29",
+      "type": "next"
+    },
+    {
+      "source": "s29",
+      "target": "s30",
+      "type": "next"
+    }
+  ]
+}

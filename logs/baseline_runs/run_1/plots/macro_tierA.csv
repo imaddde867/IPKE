@@ -1,0 +1,7 @@
+metric,value
+StepF1,0.148
+AdjacencyF1,0.190
+Kendall,0.909
+ConstraintCoverage,0.075
+ConstraintAttachmentF1,0.000
+A_score,0.161

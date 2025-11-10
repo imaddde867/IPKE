@@ -1,0 +1,34 @@
+{
+  "3M_OEM_SOP": {
+    "StepF1": 0.62,
+    "AdjacencyF1": 0.267,
+    "Kendall": 0.736,
+    "ConstraintCoverage": 0.0,
+    "ConstraintAttachmentF1": 0.0,
+    "A_score": 0.514
+  },
+  "DOA_Food_Man_Proc_Stor": {
+    "StepF1": 0.168,
+    "AdjacencyF1": 0.0,
+    "Kendall": 0.75,
+    "ConstraintCoverage": 0.625,
+    "ConstraintAttachmentF1": 0.0,
+    "A_score": 0.118
+  },
+  "op_firesafety_guideline": {
+    "StepF1": 0.438,
+    "AdjacencyF1": 0.476,
+    "Kendall": 0.945,
+    "ConstraintCoverage": 0.4,
+    "ConstraintAttachmentF1": 0.0,
+    "A_score": 0.449
+  },
+  "macro_avg": {
+    "StepF1": 0.409,
+    "AdjacencyF1": 0.248,
+    "Kendall": 0.81,
+    "ConstraintCoverage": 0.342,
+    "ConstraintAttachmentF1": 0.0,
+    "A_score": 0.36
+  }
+}

@@ -26,7 +26,10 @@ def _ensure_session_defaults() -> None:
         "chunk_size": config.chunk_size,
         "llm_n_ctx": config.llm_n_ctx,
         "llm_temperature": config.llm_temperature,
+        "llm_top_p": config.llm_top_p,
+        "llm_repeat_penalty": config.llm_repeat_penalty,
         "llm_max_tokens": config.llm_max_tokens,
+        "llm_n_threads": config.llm_n_threads,
         "max_workers": config.max_workers,
         "enable_gpu": config.enable_gpu,
         "gpu_backend": config.gpu_backend,
@@ -111,6 +114,14 @@ def _render_sidebar() -> None:
                 step=0.01,
                 value=float(current["llm_temperature"]),
             )
+            llm_top_p = st.slider(
+                "LLM Top-P (nucleus)",
+                min_value=0.0,
+                max_value=1.0,
+                step=0.01,
+                value=float(current.get("llm_top_p", 0.9)),
+                help="Nucleus sampling probability mass."
+            )
         with col_right:
             llm_n_ctx = st.number_input(
                 "Context Window",
@@ -128,6 +139,14 @@ def _render_sidebar() -> None:
                 value=int(current["llm_max_tokens"]),
                 help="Generation budget for model outputs."
             )
+            llm_repeat_penalty = st.number_input(
+                "Repeat Penalty",
+                min_value=0.5,
+                max_value=2.0,
+                step=0.05,
+                value=float(current.get("llm_repeat_penalty", 1.1)),
+                help="Discourage verbatim repetition (>1.0)."
+            )
         st.subheader("Performance")
         max_workers = st.number_input(
             "Max Workers",
@@ -135,6 +154,14 @@ def _render_sidebar() -> None:
             max_value=16,
             step=1,
             value=int(current["max_workers"]),
+        )
+        llm_n_threads = st.number_input(
+            "LLM CPU Threads",
+            min_value=1,
+            max_value=64,
+            step=1,
+            value=int(current.get("llm_n_threads", 4)),
+            help="CPU threads used by llama.cpp when applicable."
         )
         with st.expander("GPU Controls", expanded=False):
             gpu_backend_options = ["auto", "metal", "cuda", "cpu"]
@@ -170,7 +197,10 @@ def _render_sidebar() -> None:
             "chunk_size": int(chunk_size),
             "llm_n_ctx": int(llm_n_ctx),
             "llm_temperature": float(llm_temperature),
+            "llm_top_p": float(llm_top_p),
+            "llm_repeat_penalty": float(llm_repeat_penalty),
             "llm_max_tokens": int(llm_max_tokens),
+            "llm_n_threads": int(llm_n_threads),
             "max_workers": int(max_workers),
             "enable_gpu": str(gpu_backend).lower() != "cpu",
             "gpu_backend": str(gpu_backend),
