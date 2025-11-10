@@ -1,0 +1,12 @@
+{
+  "document_id": "toy_doc",
+  "nodes": [
+    { "id": "S1", "type": "step", "text": "Shut off main power.", "order": 1 },
+    { "id": "S2", "type": "step", "text": "Open the service panel.", "order": 2 },
+    { "id": "C1", "type": "condition", "text": "Wear insulated gloves." }
+  ],
+  "edges": [
+    { "source": "S1", "target": "S2", "type": "next" },
+    { "source": "C1", "target": "S1", "type": "condition_on" }
+  ]
+}
