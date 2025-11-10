@@ -245,6 +245,28 @@ class UnifiedConfig:
             llm_temperature = float(llm_temperature_raw)
         except (TypeError, ValueError):
             llm_temperature = cls.llm_temperature
+
+        llm_top_p = _env_float(
+            'LLM_TOP_P',
+            'EXPLAINIUM_LLM_TOP_P',
+            default=cls.llm_top_p,
+            min_value=0.0,
+            max_value=1.0,
+        )
+        llm_repeat_penalty = _env_float(
+            'LLM_REPEAT_PENALTY',
+            'EXPLAINIUM_LLM_REPEAT_PENALTY',
+            default=cls.llm_repeat_penalty,
+            min_value=0.5,
+            max_value=2.0,
+        )
+        llm_n_threads = _env_int(
+            'LLM_N_THREADS',
+            'EXPLAINIUM_LLM_N_THREADS',
+            default=cls.llm_n_threads,
+            min_value=1,
+        )
+
         llm_max_tokens = _env_int(
             'LLM_MAX_TOKENS',
             'EXPLAINIUM_LLM_MAX_TOKENS',
@@ -274,6 +296,9 @@ class UnifiedConfig:
             chunk_size=chunk_size,
             llm_n_ctx=llm_n_ctx,
             llm_temperature=llm_temperature,
+            llm_top_p=llm_top_p,
+            llm_repeat_penalty=llm_repeat_penalty,
+            llm_n_threads=llm_n_threads,
             llm_max_tokens=llm_max_tokens,
             llm_max_chunks=llm_max_chunks,
             max_workers=max_workers,
@@ -360,6 +385,35 @@ class UnifiedConfig:
             min_value=0.0,
             max_value=1.0
         )
+
+        # LLM decoding/runtime overrides
+        llm_temperature = _env_float(
+            'LLM_TEMPERATURE',
+            'EXPLAINIUM_LLM_TEMPERATURE',
+            default=cls.llm_temperature,
+            min_value=0.0,
+            max_value=1.0,
+        )
+        llm_top_p = _env_float(
+            'LLM_TOP_P',
+            'EXPLAINIUM_LLM_TOP_P',
+            default=cls.llm_top_p,
+            min_value=0.0,
+            max_value=1.0,
+        )
+        llm_repeat_penalty = _env_float(
+            'LLM_REPEAT_PENALTY',
+            'EXPLAINIUM_LLM_REPEAT_PENALTY',
+            default=cls.llm_repeat_penalty,
+            min_value=0.5,
+            max_value=2.0,
+        )
+        llm_n_threads = _env_int(
+            'LLM_N_THREADS',
+            'EXPLAINIUM_LLM_N_THREADS',
+            default=cls.llm_n_threads,
+            min_value=1,
+        )
         
         return cls(
             environment=Environment.PRODUCTION,
@@ -380,7 +434,11 @@ class UnifiedConfig:
                 'EXPLAINIUM_LLM_MAX_CHUNKS',
                 default=cls.llm_max_chunks,
                 min_value=0
-            )
+            ),
+            llm_temperature=llm_temperature,
+            llm_top_p=llm_top_p,
+            llm_repeat_penalty=llm_repeat_penalty,
+            llm_n_threads=llm_n_threads,
         )
     
     # Utility methods for backward compatibility
