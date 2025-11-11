@@ -321,6 +321,7 @@ class UnifiedConfig:
             'confidence_threshold': self.confidence_threshold,
             'enable_gpu': self.enable_gpu,
             'gpu_backend': self.gpu_backend,
+            'gpu_memory_fraction': self.gpu_memory_fraction,
             'verbose': False,
 
             # Llama.cpp specific

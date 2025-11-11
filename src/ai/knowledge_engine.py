@@ -378,6 +378,11 @@ class UnifiedKnowledgeEngine:
         }
         self._initialize_strategy()
 
+    @property
+    def strategies(self) -> List[BaseExtractionStrategy]:
+        """Backward-compatible accessor returning the active strategy as a list."""
+        return [self.strategy] if self.strategy is not None else []
+
     def _initialize_strategy(self):
         backend = self.config.detect_gpu_backend()
         logger.info(f"Detected GPU backend: {backend}. Initializing corresponding strategy.")
