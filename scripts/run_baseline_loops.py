@@ -3,12 +3,12 @@
 Run extraction and evaluation on test documents.
 
 Usage:
-    python run_baseline_loops.py [--runs N] [--out DIR] [--visualize]
+    python scripts/run_baseline_loops.py [--runs N] [--out DIR] [--visualize]
 
 Examples:
-    python run_baseline_loops.py                    # Single run
-    python run_baseline_loops.py --runs 5           # Multiple runs for statistics
-    python run_baseline_loops.py --visualize        # Include visualizations
+    python scripts/run_baseline_loops.py                    # Single run
+    python scripts/run_baseline_loops.py --runs 5           # Multiple runs for statistics
+    python scripts/run_baseline_loops.py --visualize        # Include visualizations
 """
 
 from __future__ import annotations
@@ -19,6 +19,12 @@ import json
 import os
 from pathlib import Path
 from typing import Dict, List
+
+# Ensure project root is on sys.path when running from scripts/
+import sys
+REPO_ROOT = Path(__file__).resolve().parents[1]
+if str(REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(REPO_ROOT))
 
 # Configure unlimited chunks
 os.environ['LLM_MAX_CHUNKS'] = '0'
@@ -137,9 +143,9 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Run extraction and evaluation on test documents",
         epilog="Examples:\n"
-               "  python run_baseline_loops.py\n"
-               "  python run_baseline_loops.py --runs 5\n"
-               "  python run_baseline_loops.py --visualize\n",
+               "  python scripts/run_baseline_loops.py\n"
+               "  python scripts/run_baseline_loops.py --runs 5\n"
+               "  python scripts/run_baseline_loops.py --visualize\n",
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
     parser.add_argument("--runs", type=int, default=1, help="Number of runs to execute (default: 1)")
