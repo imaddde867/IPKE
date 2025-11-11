@@ -1,11 +1,13 @@
 # Industrial Procedural Knowledge Extraction (IPKE)
 
-Streamlined system to extract structured procedural knowledge (steps, constraints, entities) from unstructured technical documents. Powered by a local LLM (Mistral‑7B Instruct via llama.cpp), with a FastAPI service, a Streamlit UI, and an evaluation pipeline.
+Streamlined system to extract structured procedural knowledge (steps, constraints, entities) from unstructured technical documents. Powered by a local LLM (Mistral‑7B Instruct) with a dual-backend architecture for Metal and CUDA GPUs.
 
 ## Highlights
+- **Dual-Backend LLM Inference**:
+  - **`llama.cpp` on Metal**: Optimized for high-performance inference on Apple Silicon GPUs.
+  - **`transformers` on CUDA**: Leverages PyTorch and `bitsandbytes` for efficient inference on NVIDIA GPUs.
 - LLM‑driven extraction with chunking and normalization
-- Local inference via llama.cpp (CUDA/Metal/CPU auto‑detect)
-- Unified config with sane defaults and .env overrides
+- Unified config with sane defaults and `.env` overrides
 - FastAPI endpoints + Streamlit UI for quick iteration
 - JSON logging with correlation IDs (request tracing)
 - Baseline pipeline + evaluator with reproducible metrics
@@ -19,107 +21,88 @@ Streamlined system to extract structured procedural knowledge (steps, constraint
 - `scripts/` — preflight checks and metric plots
 - `src/`
   - `api/app.py` — FastAPI app, routes, models, middleware wiring
-  - `ai/knowledge_engine.py` — llama.cpp integration + JSON parsing/normalization
+  - `ai/knowledge_engine.py` — Dual-backend LLM integration (`llama.cpp` and `transformers`)
   - `processors/streamlined_processor.py` — format‑aware loaders + knowledge engine orchestration
   - `core/unified_config.py` — single source of truth for all settings
   - `graph/` — pydantic graph models and JSON schema
-  - `middleware.py`, `exceptions.py`, `logging_config.py` — infra and ergonomics
-- `tests/` — unit + integration tests (API, processor, config, evaluation)
-- `models/` — expected local model artifacts (LLM/embeddings)
+- `tests/` — unit + integration tests
 
 ## Quickstart
-1) Environment
-- Python 3.10+ recommended (Ran my tests 3.11 and runs well)
-- macOS (Metal), Linux/Windows (CUDA) or CPU‑only
 
-2) Install
-```
-python -m venv .venv && source .venv/bin/activate  # Windows: .venv\Scripts\activate
+1) **Environment**
+- Python 3.10+
+- **For Metal**: macOS with Apple Silicon.
+- **For CUDA**: Linux/Windows with an NVIDIA GPU.
+
+2) **Install Dependencies**
+```bash
+python -m venv .venv && source .venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-3) Download the LLM (one‑time)
-- Default path: `models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf`
-```
+3) **Set up Your Model**
+
+The setup depends on your `GPU_BACKEND` choice (`metal` or `cuda`).
+
+**For `metal` backend (Apple Silicon):**
+You must download the GGUF model manually.
+```bash
 huggingface-cli login
 huggingface-cli download TheBloke/Mistral-7B-Instruct-v0.2-GGUF \
   --include "mistral-7b-instruct-v0.2.Q4_K_M.gguf" \
   --local-dir models/llm --local-dir-use-symlinks False
 ```
+Ensure your `.env` file points to this model via `LLM_MODEL_PATH`.
 
-4) Configure (optional but i recommend it)
-- Copy `.env.example` to `.env` and adjust. Key knobs below.
+**For `cuda` backend (NVIDIA GPU):**
+No download is needed. The `transformers` library will automatically download the model specified by `LLM_MODEL_ID` on the first run.
 
-5) Run the API
-```
+4) **Configure Your Environment**
+- Copy `.env.example` to `.env`.
+- Set `GPU_BACKEND` to `metal` or `cuda`.
+- Adjust other settings as needed (see Configuration section).
+
+5) **Run the API**
+```bash
 python main.py
-# or
-uvicorn src.api.app:app --host 0.0.0.0 --port 8000
 ```
 - Open docs: `http://localhost:8000/docs`
 
-6) Run the UI
-```
+6) **Run the UI**
+```bash
 streamlit run app.py
-```
-
-## API Overview
-- `GET /` and `GET /health` — health status
-- `GET /config` — active model/runtime settings
-- `POST /extract` — multipart file upload → structured extraction
-- `GET /stats` — processor + engine stats
-- `POST /clear-cache` — clear in‑memory extraction cache
-
-Example:
-```
-curl -X POST http://localhost:8000/extract \
-  -F "file=@/path/to/document.pdf"
-```
-Response (shape):
-```
-{
-  "document_id": "...",
-  "document_type": "manual|document|text|...",
-  "entities": [
-    {"content": "...", "entity_type": "...", "category": "...", "confidence": 0.9, "context": "..."}
-  ],
-  "steps": [{"id": "S1", "text": "...", "order": 1, "confidence": 0.9}],
-  "constraints": [{"id": "C1", "text": "...", "steps": ["S1"], "confidence": 0.85}],
-  "confidence_score": 0.83,
-  "processing_time": 1.23,
-  "strategy_used": "llm_default",
-  "metadata": {...}
-}
 ```
 
 ## How It Works
 - `StreamlinedDocumentProcessor`
-  - Detects format → extracts text (PDF via PyMuPDF, DOCX via python‑docx, PPTX via python‑pptx, CSV/XLSX via pandas, images via easyocr, audio via Whisper). Falls back to plain text.
+  - Detects format and extracts text from various file types.
   - Chunks input and calls the `UnifiedKnowledgeEngine`.
-  - Tracks stats and returns consistent `ProcessingResult`.
 - `UnifiedKnowledgeEngine`
-  - Uses llama.cpp to run Mistral‑7B with GPU auto‑detection (Metal/CUDA/CPU fallback).
-  - Prompts the model to return a single JSON object; robustly parses variants.
-  - Normalizes steps/constraints/entities; caches results; collects performance metrics.
-- Infra
-  - JSON logging with correlation IDs; central error handling middleware.
-  - Unified configuration w/ environment profiles (dev/test/prod) and helper getters.
+  - **Detects the GPU backend** (`metal`, `cuda`, or `cpu`) from the configuration.
+  - **Initializes the appropriate strategy**:
+    - `LlamaCppStrategy`: For `metal`, uses `llama-cpp-python` to run a GGUF model.
+    - `TransformersStrategy`: For `cuda`, uses Hugging Face `transformers` to run a PyTorch model with `bitsandbytes` quantization.
+  - Prompts the model to return a single JSON object and robustly parses the output.
+- **Infra**
+  - JSON logging with correlation IDs and central error handling.
+  - Unified configuration with environment profiles.
 
 ## Configuration (.env)
-Most used variables (see `.env.example` and `src/core/unified_config.py`):
-- `EXPLAINIUM_ENV` — `development|testing|production` (default: development)
-- `ENABLE_GPU` — `true|false` (default: true)
-- `GPU_BACKEND` — `auto|metal|cuda|cpu` (default: auto)
-- `LLM_GPU_LAYERS` — `-1` for all layers, or cap (e.g., `32`) (default: -1)
-- `GPU_MEMORY_FRACTION` — fraction of total GPU memory (default: 0.8)
-- `CHUNK_SIZE` — characters per chunk (default: 2000)
-- `LLM_N_CTX` — context window (default: 8192)
-- `LLM_TEMPERATURE` — decoding temperature (default: 0.1)
-- `LLM_MAX_TOKENS` — max generation tokens (default: 1536)
-- `CONFIDENCE_THRESHOLD` / `QUALITY_THRESHOLD` — scoring gates
-- `MAX_WORKERS` — threadpool workers
-- `API_HOST` — bind host for the API (default: 127.0.0.1)
+Set the `GPU_BACKEND` to `metal`, `cuda`, or `auto`.
+
+**Common Settings:**
+- `EXPLAINIUM_ENV`: `development|testing|production`
+- `ENABLE_GPU`: `true|false`
+- `CHUNK_SIZE`, `LLM_N_CTX`, `LLM_TEMPERATURE`, `LLM_MAX_TOKENS`
+
+**`metal` Backend Settings (`llama.cpp`):**
+- `LLM_MODEL_PATH`: Path to your local `.gguf` model file.
+- `LLM_N_GPU_LAYERS`: Number of layers to offload to the GPU (`-1` for all).
+
+**`cuda` Backend Settings (`transformers`):**
+- `LLM_MODEL_ID`: Hugging Face model ID (e.g., `mistralai/Mistral-7B-Instruct-v0.2`).
+- `LLM_QUANTIZATION`: `4bit` or `8bit` for quantization on CUDA.
 
 ## Evaluation & Baselines
 - Preflight checks (assets/deps):
