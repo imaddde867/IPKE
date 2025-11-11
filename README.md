@@ -41,6 +41,16 @@ pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
+2.1) Install spaCy English model (required)
+```bash
+python -m spacy download en_core_web_sm
+```
+- If your environment is offline, pre-download the wheel and install it:
+```bash
+pip install en_core_web_sm-*.whl
+```
+- The preflight script checks this model.
+
 3) **Set up Your Model**
 
 The setup depends on your `GPU_BACKEND` choice (`metal` or `cuda`).
