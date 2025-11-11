@@ -51,17 +51,49 @@ def _import_check(name: str, module: str) -> CheckResult:
 
 
 def _check_spacy_model(model_name: str) -> CheckResult:
+    """Check that a spaCy model is available across spaCy versions.
+
+    Uses multiple strategies to avoid version-specific util APIs:
+    1) importlib spec check
+    2) optional util.get_data_path() if present (older spaCy)
+    3) attempt a lightweight spacy.load(model_name)
+    """
     try:
+        import importlib.util
         import spacy
 
-        if spacy.util.is_package(model_name) or Path(spacy.util.get_data_path(), model_name).exists():
+        # 1) Check if the package can be imported directly
+        if importlib.util.find_spec(model_name) is not None:
             return CheckResult("spaCy model", model_name, "ok")
+
+        # 2) Older spaCy exposed util.get_data_path(); guard via getattr
+        get_data_path = getattr(spacy.util, "get_data_path", None)
+        if callable(get_data_path):
+            data_path = get_data_path()
+            try:
+                if data_path and Path(data_path, model_name).exists():
+                    return CheckResult("spaCy model", model_name, "ok")
+            except Exception:
+                # Ignore path issues and fall through to load()
+                pass
+
+        # 3) Try to load the model; success implies installation
+        try:
+            _nlp = spacy.load(model_name)
+            # Best-effort cleanup
+            try:
+                _ = _nlp.pipe_names  # touch to ensure it's initialized
+            except Exception:
+                pass
+            return CheckResult("spaCy model", model_name, "ok")
+        except Exception:
+            pass
 
         return CheckResult(
             "spaCy model",
             model_name,
             "missing",
-            hint=f"Run `python -m spacy download {model_name}`",
+            hint=f"Install it via: python -m spacy download {model_name}",
         )
     except Exception as exc:  # noqa: BLE001
         return CheckResult("spaCy availability", "spacy", "missing", hint=str(exc))
