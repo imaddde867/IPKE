@@ -32,6 +32,9 @@ openai-whisper>=20231117
 
 # LLM backend (optional for baseline if cached outputs unavailable)
 llama-cpp-python==0.2.80
+transformers>=4.36.0
+accelerate>=0.25.0
+bitsandbytes>=0.41.3
 
 # Testing
 pytest>=7.4.0
