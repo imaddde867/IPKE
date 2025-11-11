@@ -15,9 +15,9 @@ Streamlined system to extract structured procedural knowledge (steps, constraint
 
 ## Repository Layout
 - `main.py` — starts the FastAPI server with model checks
-- `app.py` — Streamlit UI for interactive uploads
-- `evaluate.py` — evaluator for structured predictions (Tier A & B)
-- `run_baseline_loops.py` — batch extract + evaluate over test set
+- `streamlit_app.py` — Streamlit UI for interactive uploads
+- `tools/evaluate.py` — evaluator for structured predictions (Tier A & B)
+- `scripts/run_baseline_loops.py` — batch extract + evaluate over test set
 - `scripts/` — preflight checks and metric plots
 - `src/`
   - `api/app.py` — FastAPI app, routes, models, middleware wiring
@@ -71,7 +71,7 @@ python main.py
 
 6) **Run the UI**
 ```bash
-streamlit run app.py
+streamlit run streamlit_app.py
 ```
 
 ## How It Works
@@ -111,15 +111,15 @@ python scripts/baseline_preflight.py          # add --json for machine output
 ```
 - Run extraction + evaluation loops (saves per‑run predictions + reports):
 ```
-python run_baseline_loops.py --runs 3 --out logs/baseline_runs
+python scripts/run_baseline_loops.py --runs 3 --out logs/baseline_runs
 ```
 - Plot trends and aggregates:
 ```
 python scripts/plot_baseline_metrics.py
 ```
 Notes:
-- Defaults expect a local gold set and embedding model. Adjust `src/pipelines/baseline.py` paths or pass explicit args to `evaluate.py`.
-- Evaluator (`evaluate.py`) computes headline metrics (StepF1, AdjacencyF1, Kendall, ConstraintCoverage, ConstraintAttachmentF1, A_score, GraphF1, NEXT_EdgeF1, Logic_EdgeF1, B_score) and writes a JSON report.
+- Defaults expect a local gold set and embedding model. Adjust `src/pipelines/baseline.py` paths or pass explicit args to `tools/evaluate.py`.
+- Evaluator (`tools/evaluate.py`) computes headline metrics (StepF1, AdjacencyF1, Kendall, ConstraintCoverage, ConstraintAttachmentF1, A_score, GraphF1, NEXT_EdgeF1, Logic_EdgeF1, B_score) and writes a JSON report.
 - 2025-11-09: Added a tiny Tier-B adapter at `src/graph/adapter.py` to convert flat predictions (steps/constraints/entities) into `nodes[]` + `edges[]` with lowercase relation types (e.g., "next", "condition_on") for `evaluate.py`. Baseline extractor remains flat; the adapter is optional.
 - Next session: Evaluate Tier A + Tier B with `evaluate.py`; only after that, touch semantic chunking and validators.
 
@@ -129,13 +129,13 @@ Run batch extraction and evaluation on test documents:
 
 ```bash
 # Single extraction run with evaluation
-python run_baseline_loops.py
+python scripts/run_baseline_loops.py
 
 # Multiple runs for statistical analysis
-python run_baseline_loops.py --runs 5
+python scripts/run_baseline_loops.py --runs 5
 
 # Include visualizations
-python run_baseline_loops.py --visualize
+python scripts/run_baseline_loops.py --visualize
 ```
 
 **Configuration:** Unlimited chunks (`max_chunks=0`), full GPU acceleration
@@ -151,7 +151,7 @@ python -m tools.convert_flat_to_tierb \
 ```
 - Evaluate Tier A (flat):
 ```
-python evaluate.py \
+python tools/evaluate.py \
   --gold_dir datasets/archive/gold_human \
   --pred_dir logs/baseline_runs/run_1 \
   --tier A \
@@ -159,7 +159,7 @@ python evaluate.py \
 ```
 - Evaluate Tier B (derived nodes/edges):
 ```
-python evaluate.py \
+python tools/evaluate.py \
   --gold_dir datasets/archive/gold_human_tierb \
   --pred_dir logs/baseline_runs/run_1/tierb \
   --tier B \

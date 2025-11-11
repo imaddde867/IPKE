@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Quick readiness check for running run_baseline_loops.py."""
+"""Quick readiness check for running scripts/run_baseline_loops.py."""
 
 from __future__ import annotations
 
@@ -86,7 +86,7 @@ def checks() -> List[CheckResult]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Verify assets required for run_baseline_loops.py")
+    parser = argparse.ArgumentParser(description="Verify assets required for scripts/run_baseline_loops.py")
     parser.add_argument("--json", action="store_true", help="Emit machine-readable JSON output.")
     args = parser.parse_args()
 

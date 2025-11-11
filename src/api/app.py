@@ -280,13 +280,3 @@ async def general_exception_handler(request, exc: Exception):
     )
 
 
-if __name__ == "__main__":
-    import uvicorn
-    
-    uvicorn.run(
-        "src.api.app:app",
-        host=config.api_host,
-        port=config.api_port,
-        reload=config.is_development(),
-        log_level=config.log_level.lower()
-    )

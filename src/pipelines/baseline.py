@@ -8,7 +8,7 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Any, Callable, Dict, Iterable, Mapping, MutableMapping, Optional
 
-from evaluate import main as evaluate_main
+from tools.evaluate import main as evaluate_main
 
 from src.processors.streamlined_processor import ProcessingResult, StreamlinedDocumentProcessor
 from src.graph.adapter import flat_to_tierb
