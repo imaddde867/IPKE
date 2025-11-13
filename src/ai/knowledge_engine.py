@@ -28,6 +28,7 @@ except ImportError:
 
 from src.logging_config import get_logger
 from src.core.unified_config import UnifiedConfig, get_config
+from src.ai.chunkers import get_chunker
 
 logger = get_logger(__name__)
 
@@ -80,7 +81,24 @@ class BaseExtractionStrategy(ABC):
         start_time = time.time()
         await self._initialize()
 
-        chunks = list(self._iter_chunks(content, self.config.chunk_size))
+        # Use the configured chunker
+        chunker = get_chunker(self.config)
+        chunk_objs = chunker.chunk(content)
+        chunks = [c.text for c in chunk_objs]
+        
+        # Log chunking info
+        if chunks:
+            avg_len = sum(len(c) for c in chunks) / len(chunks)
+            logger.info(
+                f"Chunked text using '{self.config.chunking_method}': "
+                f"{len(chunks)} chunks, avg length {avg_len:.0f} chars"
+            )
+            
+            # If DEBUG_CHUNKING, log more details
+            if self.config.debug_chunking and chunk_objs:
+                avg_sents = sum(c.meta.get('num_sentences', 0) for c in chunk_objs) / len(chunk_objs)
+                logger.debug(f"Chunking debug: avg sentences/chunk = {avg_sents:.1f}")
+
         chunk_results = await asyncio.gather(
             *(self._process_chunk_with_llm(chunk, document_type) for chunk in chunks)
         )
@@ -112,6 +130,7 @@ class BaseExtractionStrategy(ABC):
                 'entity_count': len(all_entities),
                 'avg_confidence': confidence_score,
                 'chunks_processed': len(chunks),
+                'chunking_method': self.config.chunking_method,
             }
         )
 

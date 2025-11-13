@@ -108,6 +108,14 @@ def checks() -> List[CheckResult]:
 
     results.append(_exists_check("Gold annotations", DEFAULT_GOLD_DIR))
     results.append(_exists_check("Embedding model", Path(DEFAULT_EMBEDDING_MODEL)))
+    
+    # Check embedding model path from config (for semantic chunking)
+    if config.chunking_method in ("breakpoint_semantic", "dsc"):
+        results.append(_exists_check(
+            "Chunking embedding model",
+            Path(config.embedding_model_path)
+        ))
+    
     results.append(_exists_check("LLM model", Path(config.llm_model_path)))
 
     results.append(_import_check("llama-cpp-python", "llama_cpp"))

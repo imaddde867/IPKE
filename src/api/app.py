@@ -129,6 +129,7 @@ async def get_config_info():
     """Get system configuration information"""
     config = get_config()
     llm_config = config.get_llm_config()
+    chunking_config = config.get_chunking_config()
     
     return {
         "gpu_enabled": llm_config['enable_gpu'],
@@ -140,7 +141,8 @@ async def get_config_info():
         "max_chunks": llm_config['max_chunks'],
         "max_tokens": llm_config['max_tokens'],
         "confidence_threshold": llm_config['confidence_threshold'],
-        "chunk_size": config.chunk_size
+        "chunk_size": config.chunk_size,
+        "chunking": chunking_config,
     }
 
 

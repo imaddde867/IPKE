@@ -142,6 +142,30 @@ class UnifiedConfig:
     cache_size: int = 1000
     processing_timeout: int = 300
     
+    # Chunking Configuration
+    chunking_method: str = "fixed"  # "fixed", "breakpoint_semantic", or "dsc"
+    chunk_max_chars: int = 2000  # Universal cap for all methods
+    
+    # Semantic Chunking Shared Settings
+    embedding_model_path: str = "models/embeddings/all-mpnet-base-v2"
+    sem_similarity: str = "cosine"
+    sem_min_sentences_per_chunk: int = 2
+    sem_max_sentences_per_chunk: int = 40
+    
+    # Breakpoint Semantic Settings
+    sem_lambda: float = 0.15  # Per-break penalty
+    sem_window_w: int = 30  # DP window constraint
+    
+    # Dual Semantic Chunker (DSC) Settings
+    dsc_parent_min_sentences: int = 10
+    dsc_parent_max_sentences: int = 120
+    dsc_delta_window: int = 25
+    dsc_threshold_k: float = 1.0  # θ = μ + k·σ
+    dsc_use_headings: bool = True
+    
+    # Chunking Debug
+    debug_chunking: bool = False
+    
     # API
     api_host: str = "0.0.0.0"
     api_port: int = 8000
@@ -196,6 +220,21 @@ class UnifiedConfig:
             max_workers=_env_int('MAX_WORKERS', default=cls.max_workers, min_value=1),
             llm_model_id=_get_env_value('LLM_MODEL_ID', default=cls.llm_model_id),
             llm_quantization=_get_env_value('LLM_QUANTIZATION', default=cls.llm_quantization),
+            # Chunking configuration
+            chunking_method=_get_env_value('CHUNKING_METHOD', default='fixed'),
+            chunk_max_chars=_env_int('CHUNK_MAX_CHARS', default=2000, min_value=100),
+            embedding_model_path=_get_env_value('EMBEDDING_MODEL_PATH', default='models/embeddings/all-mpnet-base-v2'),
+            sem_similarity=_get_env_value('SEM_SIMILARITY', default='cosine'),
+            sem_min_sentences_per_chunk=_env_int('SEM_MIN_SENTENCES_PER_CHUNK', default=2, min_value=1),
+            sem_max_sentences_per_chunk=_env_int('SEM_MAX_SENTENCES_PER_CHUNK', default=40, min_value=2),
+            sem_lambda=_env_float('SEM_LAMBDA', default=0.15, min_value=0.0),
+            sem_window_w=_env_int('SEM_WINDOW_W', default=30, min_value=1),
+            dsc_parent_min_sentences=_env_int('DSC_PARENT_MIN_SENTENCES', default=10, min_value=1),
+            dsc_parent_max_sentences=_env_int('DSC_PARENT_MAX_SENTENCES', default=120, min_value=2),
+            dsc_delta_window=_env_int('DSC_DELTA_WINDOW', default=25, min_value=1),
+            dsc_threshold_k=_env_float('DSC_THRESHOLD_K', default=1.0, min_value=0.0),
+            dsc_use_headings=_env_bool('DSC_USE_HEADINGS', default=True),
+            debug_chunking=_env_bool('DEBUG_CHUNKING', default=False),
         )
     
     @classmethod
@@ -262,7 +301,28 @@ class UnifiedConfig:
             'supported_formats': self.supported_formats,
             'max_workers': self.max_workers,
             'chunk_size': self.chunk_size,
-            'processing_timeout': self.processing_timeout
+            'processing_timeout': self.processing_timeout,
+            'chunking_method': self.chunking_method,
+            'chunk_max_chars': self.chunk_max_chars,
+        }
+    
+    def get_chunking_config(self) -> Dict[str, Any]:
+        """Get chunking-related configuration."""
+        return {
+            'chunking_method': self.chunking_method,
+            'chunk_max_chars': self.chunk_max_chars,
+            'embedding_model_path': self.embedding_model_path,
+            'sem_similarity': self.sem_similarity,
+            'sem_min_sentences_per_chunk': self.sem_min_sentences_per_chunk,
+            'sem_max_sentences_per_chunk': self.sem_max_sentences_per_chunk,
+            'sem_lambda': self.sem_lambda,
+            'sem_window_w': self.sem_window_w,
+            'dsc_parent_min_sentences': self.dsc_parent_min_sentences,
+            'dsc_parent_max_sentences': self.dsc_parent_max_sentences,
+            'dsc_delta_window': self.dsc_delta_window,
+            'dsc_threshold_k': self.dsc_threshold_k,
+            'dsc_use_headings': self.dsc_use_headings,
+            'debug_chunking': self.debug_chunking,
         }
 
     def is_development(self) -> bool:

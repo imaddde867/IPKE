@@ -114,6 +114,88 @@ Set the `GPU_BACKEND` to `metal`, `cuda`, or `auto`.
 - `LLM_MODEL_ID`: Hugging Face model ID (e.g., `mistralai/Mistral-7B-Instruct-v0.2`).
 - `LLM_QUANTIZATION`: `4bit` or `8bit` for quantization on CUDA.
 
+## Chunking Methods
+
+IPKE supports three pluggable text chunking strategies, selectable via the `CHUNKING_METHOD` environment variable:
+
+### 1. Fixed Chunking (Default)
+Simple character-based chunking that splits on whitespace boundaries. This is the default method and preserves the original behavior.
+
+**Configuration:**
+```bash
+export CHUNKING_METHOD=fixed
+export CHUNK_MAX_CHARS=2000  # Character limit per chunk
+```
+
+### 2. Breakpoint Semantic Chunking
+Sentence-level segmentation using embeddings and dynamic programming. Maximizes average within-segment cosine similarity minus a break penalty (λ).
+
+**How it works:**
+- Tokenizes text into sentences using spaCy
+- Embeds each sentence using SentenceTransformers
+- Uses DP to find optimal segmentation: `DP[j] = max(DP[i] + c(i,j) - λ)` where `c(i,j)` is the mean similarity of consecutive sentence pairs in the segment
+- Enforces min/max sentences per chunk and respects `CHUNK_MAX_CHARS`
+
+**Configuration:**
+```bash
+export CHUNKING_METHOD=breakpoint_semantic
+export CHUNK_MAX_CHARS=2000
+export SEM_LAMBDA=0.15                      # Break penalty (higher = fewer, larger chunks)
+export SEM_WINDOW_W=30                      # DP window constraint
+export SEM_MIN_SENTENCES_PER_CHUNK=2
+export SEM_MAX_SENTENCES_PER_CHUNK=40
+export EMBEDDING_MODEL_PATH=models/embeddings/all-mpnet-base-v2
+```
+
+### 3. Dual Semantic Chunker (DSC)
+Two-stage approach: coarse parent blocks based on semantic breakpoints, then fine-grained breakpoint semantic within each parent.
+
+**How it works:**
+1. **Coarse stage**: Computes distance deltas `d_t = 1 - cos(e_t, e_{t+1})` between consecutive sentences
+2. Uses adaptive threshold `θ = μ + k·σ` over a rolling window to detect major topic shifts
+3. Optionally biases boundaries at headings/numbered sections
+4. **Fine stage**: Runs breakpoint semantic chunker within each parent block
+
+**Configuration:**
+```bash
+export CHUNKING_METHOD=dsc
+export CHUNK_MAX_CHARS=2000
+export DSC_PARENT_MIN_SENTENCES=10
+export DSC_PARENT_MAX_SENTENCES=120
+export DSC_DELTA_WINDOW=25                  # Window for local statistics
+export DSC_THRESHOLD_K=1.0                  # θ = μ + k·σ
+export DSC_USE_HEADINGS=true                # Bias breaks at headings
+# Also uses all SEM_* parameters for fine-grained chunking
+```
+
+### Model Requirements
+
+For semantic methods (`breakpoint_semantic` and `dsc`), you need the embedding model:
+- **Default path**: `models/embeddings/all-mpnet-base-v2`
+- If missing, download from Hugging Face:
+  ```bash
+  pip install sentence-transformers
+  python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('sentence-transformers/all-mpnet-base-v2').save('models/embeddings/all-mpnet-base-v2')"
+  ```
+
+### Inspection Tool
+
+Visualize and debug chunking strategies:
+```bash
+# Inspect a file with fixed chunking
+python scripts/inspect_chunking.py --method fixed --text-file sample.txt
+
+# Try semantic chunking with custom parameters
+python scripts/inspect_chunking.py \
+  --method breakpoint_semantic \
+  --text-file doc.txt \
+  --lambda 0.2 \
+  --verbose
+
+# Test DSC
+python scripts/inspect_chunking.py --method dsc --text "Your text here"
+```
+
 ## Evaluation & Baselines
 - Preflight checks (assets/deps):
 ```
