@@ -17,7 +17,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from src.core.unified_config import UnifiedConfig, get_config, reload_config
+from src.core.unified_config import reload_config
 from src.ai.chunkers import get_chunker
 import os
 

@@ -8,7 +8,7 @@ from src.ai.chunkers import (
     BreakpointSemanticChunker,
     DualSemanticChunker,
     get_chunker,
-    Chunk,
+
 )
 from src.core.unified_config import UnifiedConfig
 
@@ -25,7 +25,7 @@ class TestFixedChunker:
         
         assert len(chunks) > 1, "Should create multiple chunks"
         for chunk in chunks:
-            assert len(chunk.text) <= 120, f"Chunk exceeds limit: {len(chunk.text)} chars"
+            assert len(chunk.text) <= 100, f"Chunk exceeds limit: {len(chunk.text)} chars"
     
     def test_fixed_chunker_empty_text(self):
         """Empty text should return no chunks."""
@@ -168,8 +168,8 @@ class TestBreakpointSemanticChunker:
         chunks = chunker.chunk(text)
         
         for chunk in chunks:
-            # Allow small margin for splitting logic
-            assert len(chunk.text) <= config.chunk_max_chars + 50, \
+            # Allow small margin for splitting logic (20 chars, consistent with other tests)
+            assert len(chunk.text) <= config.chunk_max_chars + 20, \
                 f"Chunk too long: {len(chunk.text)} chars"
 
 
