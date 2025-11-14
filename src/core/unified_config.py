@@ -125,6 +125,7 @@ class UnifiedConfig:
     llm_top_p: float = 0.9
     llm_repeat_penalty: float = 1.1
     llm_max_chunks: int = 0
+    llm_parallel_instances: int = 1
     
     # GPU Configuration
     gpu_backend: str = "auto"  # "metal", "cuda", "auto", or "cpu"
@@ -193,6 +194,7 @@ class UnifiedConfig:
             llm_n_threads=_env_int('LLM_N_THREADS', default=cls.llm_n_threads, min_value=1),
             llm_max_tokens=_env_int('LLM_MAX_TOKENS', default=cls.llm_max_tokens, min_value=64),
             llm_max_chunks=_env_int('LLM_MAX_CHUNKS', default=cls.llm_max_chunks, min_value=0),
+            llm_parallel_instances=_env_int('LLM_PARALLEL_INSTANCES', default=cls.llm_parallel_instances, min_value=1),
             max_workers=_env_int('MAX_WORKERS', default=cls.max_workers, min_value=1),
             llm_model_id=_get_env_value('LLM_MODEL_ID', default=cls.llm_model_id),
             llm_quantization=_get_env_value('LLM_QUANTIZATION', default=cls.llm_quantization),
@@ -211,7 +213,8 @@ class UnifiedConfig:
             max_file_size_mb=_env_int('TEST_MAX_FILE_SIZE_MB', default=10, min_value=1),
             confidence_threshold=0.5,
             cache_size=100,
-            llm_model_id="sshleifer/tiny-gpt2"
+            llm_model_id="sshleifer/tiny-gpt2",
+            llm_parallel_instances=1,
         )
 
     @classmethod
@@ -239,6 +242,7 @@ class UnifiedConfig:
             llm_repeat_penalty=_env_float('LLM_REPEAT_PENALTY', default=cls.llm_repeat_penalty),
             llm_n_threads=_env_int('LLM_N_THREADS', default=cls.llm_n_threads, min_value=1),
             llm_max_chunks=_env_int('LLM_MAX_CHUNKS', default=cls.llm_max_chunks, min_value=0),
+            llm_parallel_instances=_env_int('LLM_PARALLEL_INSTANCES', default=cls.llm_parallel_instances, min_value=1),
             llm_model_id=_get_env_value('LLM_MODEL_ID', default=cls.llm_model_id),
             llm_quantization=_get_env_value('LLM_QUANTIZATION', default=cls.llm_quantization),
         )
@@ -323,6 +327,7 @@ class UnifiedConfig:
             'gpu_backend': self.gpu_backend,
             'gpu_memory_fraction': self.gpu_memory_fraction,
             'verbose': False,
+            'parallel_instances': self.llm_parallel_instances,
 
             # Llama.cpp specific
             'model_path': self.llm_model_path,

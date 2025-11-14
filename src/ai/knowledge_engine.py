@@ -66,6 +66,7 @@ class BaseExtractionStrategy(ABC):
         self.llm_config = self.config.get_llm_config()
         self.max_chunks = max(0, self.llm_config['max_chunks'])
         self.confidence_threshold = self.llm_config['confidence_threshold']
+        self.parallel_instances = max(1, int(self.llm_config.get('parallel_instances', 1)))
         self._initialized = False
 
     @abstractmethod
@@ -81,9 +82,20 @@ class BaseExtractionStrategy(ABC):
         await self._initialize()
 
         chunks = list(self._iter_chunks(content, self.config.chunk_size))
-        chunk_results = await asyncio.gather(
-            *(self._process_chunk_with_llm(chunk, document_type) for chunk in chunks)
-        )
+        if self.max_chunks > 0:
+            chunks = chunks[:self.max_chunks]
+
+        if not chunks:
+            chunk_results = []
+        else:
+            max_parallel = min(self.parallel_instances, len(chunks))
+            semaphore = asyncio.Semaphore(max_parallel or 1)
+
+            async def process_chunk(chunk: str) -> ChunkExtraction:
+                async with semaphore:
+                    return await self._process_chunk_with_llm(chunk, document_type)
+
+            chunk_results = await asyncio.gather(*(process_chunk(chunk) for chunk in chunks))
 
         all_entities: List[ExtractedEntity] = []
         raw_steps: List[Dict[str, Any]] = []
@@ -214,6 +226,9 @@ class LlamaCppStrategy(BaseExtractionStrategy):
     def __init__(self, config: Optional[UnifiedConfig] = None):
         super().__init__(config)
         self.llm = None
+        self.pool_size = max(1, self.parallel_instances)
+        self._llm_pool: List[Any] = []
+        self._instance_queue: Optional[asyncio.Queue] = None
         self.generation_params = {
             'max_tokens': self.llm_config['max_tokens'],
             'temperature': self.llm_config['temperature'],
@@ -239,9 +254,22 @@ class LlamaCppStrategy(BaseExtractionStrategy):
         }
         
         try:
-            self.llm = Llama(**params)
+            self._llm_pool = []
+            for idx in range(self.pool_size):
+                instance = Llama(**params)
+                self._llm_pool.append(instance)
+                logger.debug(f"Loaded llama.cpp instance {idx + 1}/{self.pool_size}")
+
+            self.llm = self._llm_pool[0]
+            if self.pool_size > 1:
+                self._instance_queue = asyncio.Queue(maxsize=self.pool_size)
+                for instance in self._llm_pool:
+                    self._instance_queue.put_nowait(instance)
+
             self._initialized = True
-            logger.info(f"Initialized LlamaCppStrategy with model: {params['model_path']}")
+            logger.info(
+                f"Initialized {self.pool_size} llama.cpp instance(s) with model: {params['model_path']}"
+            )
         except Exception as e:
             logger.error(f"Failed to initialize Llama.cpp model: {e}")
             raise RuntimeError("Failed to load Llama.cpp model") from e
@@ -249,19 +277,33 @@ class LlamaCppStrategy(BaseExtractionStrategy):
     async def _process_chunk_with_llm(self, chunk: str, document_type: str) -> ChunkExtraction:
         prompt = self._create_prompt(chunk, document_type)
         loop = asyncio.get_running_loop()
-        
+
+        llm_instance = await self._acquire_llm_instance()
+
         try:
             response = await loop.run_in_executor(
                 None,
-                lambda: self.llm(prompt, stop=["</s>", "[/INST]"], **self.generation_params)
+                lambda: llm_instance(prompt, stop=["</s>", "[/INST]"], **self.generation_params)
             )
             return self._parse_llm_response(response['choices'][0]['text'], chunk)
         except Exception as e:
             logger.warning(f"Llama.cpp processing failed: {e}")
             return ChunkExtraction()
+        finally:
+            await self._release_llm_instance(llm_instance)
 
     def get_strategy_name(self) -> str:
         return "llama.cpp"
+
+    async def _acquire_llm_instance(self):
+        if self.pool_size == 1 or not self._instance_queue:
+            return self.llm
+        return await self._instance_queue.get()
+
+    async def _release_llm_instance(self, instance):
+        if self.pool_size == 1 or not self._instance_queue:
+            return
+        await self._instance_queue.put(instance)
 
     @staticmethod
     def _create_prompt(chunk: str, document_type: str) -> str:
