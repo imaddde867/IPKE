@@ -11,6 +11,7 @@ import os
 from dataclasses import dataclass, field
 from typing import Dict, Tuple, List
 from abc import ABC, abstractmethod
+import numpy as np
 
 # Ensure tokenizers stay single-threaded before any optional imports occur.
 os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
@@ -127,6 +128,22 @@ class BreakpointSemanticChunker(BaseChunker):
 
     def chunk(self, text: str) -> List[Chunk]:
         raise NotImplementedError("Semantic breakpoint chunking not implemented yet")
+    def _embeddings(self, sentences: List[str]) -> np.ndarray:
+        """
+        Embed sentences and return L2-normalized embeddings.
+        Shape: (n_sentences, embedding_dim)
+        """
+        if not sentences:
+            return np.array([])
+
+        model = self._load_embedder()
+        embeddings = model.encode(
+            sentences,
+            show_progress_bar=False,
+            convert_to_numpy=True,
+            normalize_embeddings=True
+        )
+        return embeddings
 
 
 def get_chunker(cfg) -> BaseChunker:
