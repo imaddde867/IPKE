@@ -121,7 +121,7 @@ class UnifiedConfig:
     whisper_model: str = "base"
 
     # LLM Configuration (Llama.cpp backend)
-    llm_model_path: str = "models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf"
+    llm_model_path: str = "/app/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf"
     llm_n_gpu_layers: int = -1
     llm_f16_kv: bool = True
     llm_use_mlock: bool = True
