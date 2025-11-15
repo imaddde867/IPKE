@@ -1,0 +1,67 @@
+x-common-env: &ipke-common-env
+  ENABLE_GPU: "true"
+  GPU_BACKEND: metal
+  LLM_MODEL_PATH: /app/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf
+  EMBEDDING_MODEL_PATH: /app/models/embeddings/all-mpnet-base-v2
+  LLM_GPU_LAYERS: "-1"
+  LLM_N_THREADS: "8"
+  SKIP_MODEL_CHECK: "false"
+
+x-common-volumes: &ipke-volumes
+  - ./models:/app/models:ro
+  - ./data:/app/data
+  - ./results:/app/results
+
+x-health: &ipke-health
+  test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+  interval: 30s
+  timeout: 10s
+  start_period: 40s
+  retries: 3
+
+version: '3.8'
+
+services:
+  ipke-fixed:
+    build: .
+    container_name: ipke-fixed-chunking
+    ports:
+      - "8000:8000"
+    volumes: *ipke-volumes
+    environment:
+      <<: *ipke-common-env
+      CHUNKING_METHOD: fixed
+      CHUNK_MAX_CHARS: "2000"
+    healthcheck: *ipke-health
+
+  ipke-semantic:
+    build: .
+    container_name: ipke-semantic-chunking
+    ports:
+      - "8001:8000"
+    volumes: *ipke-volumes
+    environment:
+      <<: *ipke-common-env
+      CHUNKING_METHOD: breakpoint_semantic
+      CHUNK_MAX_CHARS: "2000"
+      SEM_LAMBDA: "0.15"
+      SEM_WINDOW_W: "30"
+      SEM_MIN_SENTENCES_PER_CHUNK: "2"
+      SEM_MAX_SENTENCES_PER_CHUNK: "40"
+    healthcheck: *ipke-health
+
+  ipke-dsc:
+    build: .
+    container_name: ipke-dsc-chunking
+    ports:
+      - "8002:8000"
+    volumes: *ipke-volumes
+    environment:
+      <<: *ipke-common-env
+      CHUNKING_METHOD: dsc
+      DSC_PARENT_MIN_SENTENCES: "10"
+      DSC_PARENT_MAX_SENTENCES: "120"
+      DSC_DELTA_WINDOW: "25"
+      DSC_THRESHOLD_K: "1.0"
+      DSC_USE_HEADINGS: "true"
+    healthcheck: *ipke-health

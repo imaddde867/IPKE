@@ -49,6 +49,7 @@ class ExtractionResponse(BaseModel):
     processing_time: float
     strategy_used: str
     metadata: Dict[str, Any]
+    quality_metrics: Dict[str, Any]
 
 
 # Create FastAPI app
@@ -211,7 +212,8 @@ async def extract_knowledge(
             confidence_score=result.extraction_result.confidence_score,
             processing_time=result.processing_time,
             strategy_used=result.extraction_result.strategy_used,
-            metadata=result.metadata
+            metadata=result.metadata,
+            quality_metrics=result.extraction_result.quality_metrics
         )
         
         logger.info(
@@ -281,4 +283,3 @@ async def general_exception_handler(request, exc: Exception):
         status_code=500,
         content={"error": "Internal Server Error", "detail": "An unexpected error occurred"}
     )
-

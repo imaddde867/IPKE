@@ -88,6 +88,16 @@ class BaseExtractionStrategy(ABC):
         chunks = [chunk.text for chunk in chunk_objects]
         chunk_duration = time.time() - chunk_start
 
+        # enforce max_chunks if configured to avoid concurrent llama.cpp calls blowing context
+        if self.max_chunks > 0 and len(chunk_objects) > self.max_chunks:
+            logger.info(
+                "Limiting LLM processing to %d chunks (from %d) based on configuration.",
+                self.max_chunks,
+                len(chunk_objects),
+            )
+            chunk_objects = chunk_objects[: self.max_chunks]
+            chunks = [chunk.text for chunk in chunk_objects]
+
         chunk_count = len(chunk_objects)
         avg_chunk_size = (
             sum(len(chunk.text) for chunk in chunk_objects) / chunk_count
@@ -123,9 +133,10 @@ class BaseExtractionStrategy(ABC):
             }
         )
 
-        chunk_results = await asyncio.gather(
-            *(self._process_chunk_with_llm(chunk, document_type) for chunk in chunks)
-        )
+        chunk_results = []
+        for chunk in chunks:
+            result = await self._process_chunk_with_llm(chunk, document_type)
+            chunk_results.append(result)
 
         all_entities: List[ExtractedEntity] = []
         raw_steps: List[Dict[str, Any]] = []
@@ -153,7 +164,13 @@ class BaseExtractionStrategy(ABC):
             quality_metrics={
                 'entity_count': len(all_entities),
                 'avg_confidence': confidence_score,
+                'chunk_count': chunk_count,
                 'chunks_processed': len(chunks),
+                'avg_chunk_size': round(avg_chunk_size, 2) if chunk_count else 0,
+                'avg_sentences_per_chunk': round(avg_sentences, 2) if chunk_count else 0,
+                'avg_chunk_cohesion': round(avg_cohesion, 2) if chunk_count else 0,
+                'chunking_duration': round(chunk_duration, 4),
+                'chunking_method': self.config.chunking_method,
             }
         )
 
@@ -463,14 +480,17 @@ class UnifiedKnowledgeEngine:
         # MPS acceleration will be reserved for embedding workloads where we control parallelism.
 
         if backend == "metal":
-            if TRANSFORMERS_AVAILABLE:
-                self._strategy = TransformersStrategy(self.config)
-                logger.info("Using TransformersStrategy on CPU for Metal backend.")
-            elif LLAMA_CPP_AVAILABLE:
+            # On Apple Silicon, prefer llama.cpp on Metal / CPU to avoid tokenizer mutex issues.
+            if LLAMA_CPP_AVAILABLE:
                 self._strategy = LlamaCppStrategy(self.config)
-                logger.info("Fallback to LlamaCppStrategy for Metal backend.")
+                logger.info("Using LlamaCppStrategy on Metal backend.")
+            elif TRANSFORMERS_AVAILABLE:
+                self._strategy = TransformersStrategy(self.config)
+                logger.info("Fallback to TransformersStrategy on CPU for Metal backend.")
             else:
-                raise RuntimeError("No suitable LLM backend found. Please install 'transformers' or 'llama-cpp-python'.")
+                raise RuntimeError(
+                    "No suitable LLM backend found. Please install 'llama-cpp-python' or 'transformers'."
+                )
         elif backend == "cuda":
             self._strategy = TransformersStrategy(self.config)
             logger.info("Using TransformersStrategy for CUDA backend.")
