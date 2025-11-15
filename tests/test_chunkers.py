@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from src.ai.chunkers import BreakpointSemanticChunker, DualSemanticChunker
+from src.ai.chunkers import BreakpointSemanticChunker, DualSemanticChunker, FixedChunker
 
 
 class DummyCfg:
@@ -143,3 +143,36 @@ def test_dual_semantic_parent_boundaries(monkeypatch):
     assert spans.count((0, 2)) >= 1
     assert spans.count((2, 4)) >= 1
     assert spans.count((4, 7)) >= 1
+def test_fixed_chunker_respects_char_cap():
+    chunker = FixedChunker(max_chars=500)
+    text = " ".join(f"sentence_{i}" for i in range(1500))  # ~15000 chars
+
+    chunks = chunker.chunk(text)
+    assert len(chunks) > 0
+
+    prev_end = 0
+    for chunk in chunks:
+        assert len(chunk.text) <= 500
+        assert chunk.start_char >= prev_end
+        prev_end = chunk.end_char
+
+
+def test_semantic_fallbacks_with_fixed_chunker():
+    chunker = FixedChunker(max_chars=500)
+
+    assert chunker.chunk("") == []
+
+    single = "Run diagnostics."
+    chunks = chunker.chunk(single)
+    assert len(chunks) == 1
+    assert chunks[0].text == single
+
+
+def test_char_cap_enforcement_on_fixed():
+    chunker = FixedChunker(max_chars=250)
+    text = ("alpha beta gamma delta epsilon " * 200).strip()
+
+    chunks = chunker.chunk(text)
+    assert len(chunks) >= 2
+    for chunk in chunks:
+        assert len(chunk.text) <= 250
