@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from src.ai.chunkers import BreakpointSemanticChunker
+from src.ai.chunkers import BreakpointSemanticChunker, DualSemanticChunker
 
 
 class DummyCfg:
@@ -13,6 +13,11 @@ class DummyCfg:
     sem_max_sentences_per_chunk = 3
     sem_window_w = 4
     sem_lambda = 0.05
+    dsc_parent_min_sentences = 2
+    dsc_parent_max_sentences = 6
+    dsc_delta_window = 2
+    dsc_threshold_k = 0.5
+    dsc_use_headings = True
 
 
 @pytest.mark.integration
@@ -87,3 +92,54 @@ def test_breakpoint_semantic_chunk_boundaries(monkeypatch):
     assert chunks[1].meta["sentences"] == (2, 4)
     assert "Prep station" in chunks[0].text
     assert "Drain hydraulic" in chunks[1].text
+
+
+@pytest.mark.integration
+def test_dual_semantic_parent_boundaries(monkeypatch):
+    monkeypatch.setenv("EXPLAINIUM_ENV", "testing")
+
+    class DSCfg(DummyCfg):
+        chunking_method = "dsc"
+
+    chunker = DualSemanticChunker(DSCfg())
+
+    sentences = [
+        "Section 1. PPE setup instructions.",
+        "Ensure gloves and goggles are ready.",
+        "Heading 2. Ventilation guidelines.",
+        "Start exhaust fans and monitor sensors.",
+        "Heading 3. Calibration tasks.",
+        "Run diagnostic sequence for axis motors.",
+        "Finalize with checklist sign-off."
+    ]
+
+    text = ""
+    spans = []
+    cursor = 0
+    for idx, sent in enumerate(sentences):
+        text += sent
+        spans.append((cursor, cursor + len(sent)))
+        cursor += len(sent)
+        if idx < len(sentences) - 1:
+            text += "\n"
+            cursor += 1
+
+    topic_vectors = np.array([
+        [1.0, 0.0],
+        [0.95, 0.05],
+        [-0.8, -0.5],
+        [-0.82, -0.48],
+        [0.2, 0.98],
+        [0.23, 0.97],
+        [0.3, 0.95]
+    ], dtype=float)
+    embeddings = topic_vectors / np.linalg.norm(topic_vectors, axis=1, keepdims=True)
+
+    monkeypatch.setattr(chunker.base, "_sentences", lambda _: (sentences, spans))
+    monkeypatch.setattr(chunker.base, "_embeddings", lambda sents: embeddings[:len(sents)])
+
+    chunks = chunker.chunk(text)
+    spans = [chunk.sentence_span for chunk in chunks]
+    assert spans.count((0, 2)) >= 1
+    assert spans.count((2, 4)) >= 1
+    assert spans.count((4, 7)) >= 1
