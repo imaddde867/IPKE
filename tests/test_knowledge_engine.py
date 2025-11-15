@@ -66,5 +66,30 @@ class TestKnowledgeEngine:
         assert 'strategy_usage' in stats
 
 
+@pytest.mark.asyncio
+@pytest.mark.parametrize("chunking_method", ["fixed", "breakpoint_semantic", "dsc"])
+async def test_tiny_end_to_end_runs_for_all_chunkers(monkeypatch, chunking_method):
+    """Ensure every chunking method can process a tiny document repeatedly."""
+    for key, value in [
+        ("EXPLAINIUM_ENV", "testing"),
+        ("GPU_BACKEND", "cpu"),
+        ("ENABLE_GPU", "false"),
+        ("CHUNKING_METHOD", chunking_method),
+    ]:
+        monkeypatch.setenv(key, value)
+    unified_config.reload_config()
+    engine = UnifiedKnowledgeEngine()
+    tiny_doc = "Step one. Step two. Step three. Final instruction."
+
+    for _ in range(3):
+        await engine.clear_cache()
+        result = await engine.extract_knowledge(tiny_doc, document_type="dummy")
+        assert isinstance(result, ExtractionResult)
+        assert result.strategy_used == "mock"
+        chunk_meta = result.metadata.get("chunking", {})
+        assert chunk_meta.get("method") == chunking_method
+        assert chunk_meta.get("count", 0) >= 1
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "-s"])
