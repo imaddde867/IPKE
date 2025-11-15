@@ -75,6 +75,19 @@ def _env_bool(*keys: str, default: bool = False) -> bool:
     return raw.strip().lower() in {"1", "true", "yes", "on"}
 
 
+CHUNKING_METHOD_CHOICES = {"fixed", "breakpoint_semantic", "dsc"}
+
+
+def _sanitize_chunking_method(value: Optional[str], default: str) -> str:
+    """Validate chunking method values."""
+    if not value:
+        return default
+    method = value.strip().lower()
+    if method not in CHUNKING_METHOD_CHOICES:
+        return default
+    return method
+
+
 @dataclass
 class UnifiedConfig:
     """
@@ -141,6 +154,22 @@ class UnifiedConfig:
     chunk_size: int = 2000
     cache_size: int = 1000
     processing_timeout: int = 300
+
+    # Chunking configuration
+    chunking_method: str = "fixed"
+    chunk_max_chars: int = 2000
+    embedding_model_path: str = "models/embeddings/all-mpnet-base-v2"
+    sem_similarity: str = "cosine"
+    sem_min_sentences_per_chunk: int = 2
+    sem_max_sentences_per_chunk: int = 40
+    sem_lambda: float = 0.15
+    sem_window_w: int = 30
+    dsc_parent_min_sentences: int = 10
+    dsc_parent_max_sentences: int = 120
+    dsc_delta_window: int = 25
+    dsc_threshold_k: float = 1.0
+    dsc_use_headings: bool = True
+    debug_chunking: bool = False
     
     # API
     api_host: str = "0.0.0.0"
@@ -172,47 +201,53 @@ class UnifiedConfig:
     @classmethod
     def _development_config(cls) -> 'UnifiedConfig':
         """Development environment configuration"""
-        return cls(
-            environment=Environment.DEVELOPMENT,
-            debug=True,
-            log_level="INFO",
-            max_file_size_mb=_env_int('MAX_FILE_SIZE_MB', default=50, min_value=1),
-            processing_timeout=_env_int('PROCESSING_TIMEOUT', default=180, min_value=1),
-            api_host=_get_env_value('API_HOST', default='127.0.0.1'),
-            gpu_backend=_get_env_value('GPU_BACKEND', default='auto'),
-            enable_gpu=_env_bool('ENABLE_GPU', default=True),
-            llm_n_gpu_layers=_env_int('LLM_GPU_LAYERS', default=-1),
-            gpu_memory_fraction=_env_float('GPU_MEMORY_FRACTION', default=0.8, min_value=0.0, max_value=1.0),
-            confidence_threshold=_env_float('CONFIDENCE_THRESHOLD', default=0.8, min_value=0.0, max_value=1.0),
-            quality_threshold=_env_float('QUALITY_THRESHOLD', default=0.7, min_value=0.0, max_value=1.0),
-            chunk_size=_env_int('CHUNK_SIZE', default=2000, min_value=100),
-            llm_n_ctx=_env_int('LLM_N_CTX', default=cls.llm_n_ctx),
-            llm_temperature=_env_float('LLM_TEMPERATURE', default=cls.llm_temperature),
-            llm_top_p=_env_float('LLM_TOP_P', default=cls.llm_top_p),
-            llm_repeat_penalty=_env_float('LLM_REPEAT_PENALTY', default=cls.llm_repeat_penalty),
-            llm_n_threads=_env_int('LLM_N_THREADS', default=cls.llm_n_threads, min_value=1),
-            llm_max_tokens=_env_int('LLM_MAX_TOKENS', default=cls.llm_max_tokens, min_value=64),
-            llm_max_chunks=_env_int('LLM_MAX_CHUNKS', default=cls.llm_max_chunks, min_value=0),
-            max_workers=_env_int('MAX_WORKERS', default=cls.max_workers, min_value=1),
-            llm_model_id=_get_env_value('LLM_MODEL_ID', default=cls.llm_model_id),
-            llm_quantization=_get_env_value('LLM_QUANTIZATION', default=cls.llm_quantization),
-        )
+        chunk_kwargs = cls._chunking_overrides()
+        base_kwargs: Dict[str, Any] = {
+            'environment': Environment.DEVELOPMENT,
+            'debug': True,
+            'log_level': "INFO",
+            'max_file_size_mb': _env_int('MAX_FILE_SIZE_MB', default=50, min_value=1),
+            'processing_timeout': _env_int('PROCESSING_TIMEOUT', default=180, min_value=1),
+            'api_host': _get_env_value('API_HOST', default='127.0.0.1'),
+            'gpu_backend': _get_env_value('GPU_BACKEND', default='auto'),
+            'enable_gpu': _env_bool('ENABLE_GPU', default=True),
+            'llm_n_gpu_layers': _env_int('LLM_GPU_LAYERS', default=-1),
+            'gpu_memory_fraction': _env_float('GPU_MEMORY_FRACTION', default=0.8, min_value=0.0, max_value=1.0),
+            'confidence_threshold': _env_float('CONFIDENCE_THRESHOLD', default=0.8, min_value=0.0, max_value=1.0),
+            'quality_threshold': _env_float('QUALITY_THRESHOLD', default=0.7, min_value=0.0, max_value=1.0),
+            'chunk_size': _env_int('CHUNK_SIZE', default=2000, min_value=100),
+            'llm_n_ctx': _env_int('LLM_N_CTX', default=cls.llm_n_ctx),
+            'llm_temperature': _env_float('LLM_TEMPERATURE', default=cls.llm_temperature),
+            'llm_top_p': _env_float('LLM_TOP_P', default=cls.llm_top_p),
+            'llm_repeat_penalty': _env_float('LLM_REPEAT_PENALTY', default=cls.llm_repeat_penalty),
+            'llm_n_threads': _env_int('LLM_N_THREADS', default=cls.llm_n_threads, min_value=1),
+            'llm_max_tokens': _env_int('LLM_MAX_TOKENS', default=cls.llm_max_tokens, min_value=64),
+            'llm_max_chunks': _env_int('LLM_MAX_CHUNKS', default=cls.llm_max_chunks, min_value=0),
+            'max_workers': _env_int('MAX_WORKERS', default=cls.max_workers, min_value=1),
+            'llm_model_id': _get_env_value('LLM_MODEL_ID', default=cls.llm_model_id),
+            'llm_quantization': _get_env_value('LLM_QUANTIZATION', default=cls.llm_quantization),
+        }
+        base_kwargs.update(chunk_kwargs)
+        return cls(**base_kwargs)
     
     @classmethod
     def _testing_config(cls) -> 'UnifiedConfig':
         """Testing environment configuration"""
-        return cls(
-            environment=Environment.TESTING,
-            debug=False,
-            log_level="WARNING",
-            enable_gpu=False,
-            llm_n_gpu_layers=0,
-            gpu_backend="cpu",
-            max_file_size_mb=_env_int('TEST_MAX_FILE_SIZE_MB', default=10, min_value=1),
-            confidence_threshold=0.5,
-            cache_size=100,
-            llm_model_id="sshleifer/tiny-gpt2"
-        )
+        chunk_kwargs = cls._chunking_overrides()
+        base_kwargs: Dict[str, Any] = {
+            'environment': Environment.TESTING,
+            'debug': False,
+            'log_level': "WARNING",
+            'enable_gpu': False,
+            'llm_n_gpu_layers': 0,
+            'gpu_backend': "cpu",
+            'max_file_size_mb': _env_int('TEST_MAX_FILE_SIZE_MB', default=10, min_value=1),
+            'confidence_threshold': 0.5,
+            'cache_size': 100,
+            'llm_model_id': "sshleifer/tiny-gpt2"
+        }
+        base_kwargs.update(chunk_kwargs)
+        return cls(**base_kwargs)
 
     @classmethod
     def _production_config(cls) -> 'UnifiedConfig':
@@ -220,28 +255,81 @@ class UnifiedConfig:
         cors_origins_raw = _get_env_value('CORS_ORIGINS', default='')
         cors_origins = cors_origins_raw.split(',') if cors_origins_raw else []
         
-        return cls(
-            environment=Environment.PRODUCTION,
-            debug=False,
-            log_level=_get_env_value('LOG_LEVEL', default='INFO'),
-            max_file_size_mb=_env_int('MAX_FILE_SIZE_MB', default=200, min_value=1),
-            confidence_threshold=_env_float('CONFIDENCE_THRESHOLD', default=0.8, min_value=0.0, max_value=1.0),
-            quality_threshold=_env_float('QUALITY_THRESHOLD', default=0.85, min_value=0.0, max_value=1.0),
-            processing_timeout=_env_int('PROCESSING_TIMEOUT', default=600, min_value=60),
-            api_host=_get_env_value('API_HOST', default='0.0.0.0'),
-            cors_origins=cors_origins,
-            gpu_backend=_get_env_value('GPU_BACKEND', default='auto'),
-            enable_gpu=_env_bool('ENABLE_GPU', default=True),
-            llm_n_gpu_layers=_env_int('LLM_GPU_LAYERS', default=-1),
-            gpu_memory_fraction=_env_float('GPU_MEMORY_FRACTION', default=0.8, min_value=0.0, max_value=1.0),
-            llm_temperature=_env_float('LLM_TEMPERATURE', default=cls.llm_temperature),
-            llm_top_p=_env_float('LLM_TOP_P', default=cls.llm_top_p),
-            llm_repeat_penalty=_env_float('LLM_REPEAT_PENALTY', default=cls.llm_repeat_penalty),
-            llm_n_threads=_env_int('LLM_N_THREADS', default=cls.llm_n_threads, min_value=1),
-            llm_max_chunks=_env_int('LLM_MAX_CHUNKS', default=cls.llm_max_chunks, min_value=0),
-            llm_model_id=_get_env_value('LLM_MODEL_ID', default=cls.llm_model_id),
-            llm_quantization=_get_env_value('LLM_QUANTIZATION', default=cls.llm_quantization),
+        chunk_kwargs = cls._chunking_overrides()
+        base_kwargs: Dict[str, Any] = {
+            'environment': Environment.PRODUCTION,
+            'debug': False,
+            'log_level': _get_env_value('LOG_LEVEL', default='INFO'),
+            'max_file_size_mb': _env_int('MAX_FILE_SIZE_MB', default=200, min_value=1),
+            'confidence_threshold': _env_float('CONFIDENCE_THRESHOLD', default=0.8, min_value=0.0, max_value=1.0),
+            'quality_threshold': _env_float('QUALITY_THRESHOLD', default=0.85, min_value=0.0, max_value=1.0),
+            'processing_timeout': _env_int('PROCESSING_TIMEOUT', default=600, min_value=60),
+            'api_host': _get_env_value('API_HOST', default='0.0.0.0'),
+            'cors_origins': cors_origins,
+            'gpu_backend': _get_env_value('GPU_BACKEND', default='auto'),
+            'enable_gpu': _env_bool('ENABLE_GPU', default=True),
+            'llm_n_gpu_layers': _env_int('LLM_GPU_LAYERS', default=-1),
+            'gpu_memory_fraction': _env_float('GPU_MEMORY_FRACTION', default=0.8, min_value=0.0, max_value=1.0),
+            'llm_temperature': _env_float('LLM_TEMPERATURE', default=cls.llm_temperature),
+            'llm_top_p': _env_float('LLM_TOP_P', default=cls.llm_top_p),
+            'llm_repeat_penalty': _env_float('LLM_REPEAT_PENALTY', default=cls.llm_repeat_penalty),
+            'llm_n_threads': _env_int('LLM_N_THREADS', default=cls.llm_n_threads, min_value=1),
+            'llm_max_chunks': _env_int('LLM_MAX_CHUNKS', default=cls.llm_max_chunks, min_value=0),
+            'llm_model_id': _get_env_value('LLM_MODEL_ID', default=cls.llm_model_id),
+            'llm_quantization': _get_env_value('LLM_QUANTIZATION', default=cls.llm_quantization),
+        }
+        base_kwargs.update(chunk_kwargs)
+        return cls(**base_kwargs)
+    
+    @classmethod
+    def _chunking_overrides(cls) -> Dict[str, Any]:
+        """Load chunking configuration overrides from the environment."""
+        method = _sanitize_chunking_method(
+            _get_env_value('CHUNKING_METHOD', default=cls.chunking_method),
+            cls.chunking_method
         )
+        overrides: Dict[str, Any] = {
+            'chunking_method': method,
+            'chunk_max_chars': _env_int('CHUNK_MAX_CHARS', default=cls.chunk_max_chars, min_value=200),
+            'debug_chunking': _env_bool('DEBUG_CHUNKING', default=cls.debug_chunking),
+        }
+        if method != "fixed":
+            overrides.update({
+                'embedding_model_path': _get_env_value('EMBEDDING_MODEL_PATH', default=cls.embedding_model_path),
+                'sem_similarity': _get_env_value('SEM_SIMILARITY', default=cls.sem_similarity),
+                'sem_min_sentences_per_chunk': _env_int(
+                    'SEM_MIN_SENTENCES_PER_CHUNK',
+                    default=cls.sem_min_sentences_per_chunk,
+                    min_value=1
+                ),
+                'sem_max_sentences_per_chunk': _env_int(
+                    'SEM_MAX_SENTENCES_PER_CHUNK',
+                    default=cls.sem_max_sentences_per_chunk,
+                    min_value=2
+                ),
+            })
+            if method == "breakpoint_semantic":
+                overrides.update({
+                    'sem_lambda': _env_float('SEM_LAMBDA', default=cls.sem_lambda, min_value=0.0),
+                    'sem_window_w': _env_int('SEM_WINDOW_W', default=cls.sem_window_w, min_value=1),
+                })
+            elif method == "dsc":
+                overrides.update({
+                    'dsc_parent_min_sentences': _env_int(
+                        'DSC_PARENT_MIN_SENTENCES',
+                        default=cls.dsc_parent_min_sentences,
+                        min_value=1
+                    ),
+                    'dsc_parent_max_sentences': _env_int(
+                        'DSC_PARENT_MAX_SENTENCES',
+                        default=cls.dsc_parent_max_sentences,
+                        min_value=1
+                    ),
+                    'dsc_delta_window': _env_int('DSC_DELTA_WINDOW', default=cls.dsc_delta_window, min_value=1),
+                    'dsc_threshold_k': _env_float('DSC_THRESHOLD_K', default=cls.dsc_threshold_k, min_value=0.0),
+                    'dsc_use_headings': _env_bool('DSC_USE_HEADINGS', default=cls.dsc_use_headings),
+                })
+        return overrides
     
     # Utility methods
     def get_upload_directory(self) -> str:
@@ -344,6 +432,36 @@ class UnifiedConfig:
             'cors_origins': self.cors_origins,
             'debug': self.debug
         }
+
+    def get_chunking_config(self) -> Dict[str, Any]:
+        """Expose chunking configuration to downstream components."""
+        config: Dict[str, Any] = {
+            'method': self.chunking_method,
+            'chunk_size': self.chunk_size,
+            'chunk_max_chars': self.chunk_max_chars,
+            'debug_chunking': self.debug_chunking,
+        }
+        if self.chunking_method != "fixed":
+            config.update({
+                'embedding_model_path': self.embedding_model_path,
+                'sem_similarity': self.sem_similarity,
+                'sem_min_sentences_per_chunk': self.sem_min_sentences_per_chunk,
+                'sem_max_sentences_per_chunk': self.sem_max_sentences_per_chunk,
+            })
+            if self.chunking_method == "breakpoint_semantic":
+                config.update({
+                    'sem_lambda': self.sem_lambda,
+                    'sem_window_w': self.sem_window_w,
+                })
+            elif self.chunking_method == "dsc":
+                config.update({
+                    'dsc_parent_min_sentences': self.dsc_parent_min_sentences,
+                    'dsc_parent_max_sentences': self.dsc_parent_max_sentences,
+                    'dsc_delta_window': self.dsc_delta_window,
+                    'dsc_threshold_k': self.dsc_threshold_k,
+                    'dsc_use_headings': self.dsc_use_headings,
+                })
+        return config
 
 
 
