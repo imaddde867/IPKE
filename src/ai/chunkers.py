@@ -1,8 +1,9 @@
 """
 Chunking utilities for Explainium/IPKE.
 
-Currently only provides a fixed-length chunker plus scaffolding for semantic
-approaches. Heavy dependencies (spaCy, sentence-transformers) are loaded lazily.
+Provides a fixed length chunker, the breakpoint semantic chunker, and the
+dual semantic chunker scaffold. Heavy dependencies are loaded lazily to avoid
+mutex issues from underlying native libraries.
 """
 
 from __future__ import annotations
@@ -77,7 +78,7 @@ class FixedChunker(BaseChunker):
 
 
 class BreakpointSemanticChunker(BaseChunker):
-    """Semantic chunker scaffold using spaCy + sentence-transformer embeddings."""
+    """Semantic chunker using spaCy + sentence-transformer embeddings."""
 
     def __init__(self, cfg):
         self.cfg = cfg
@@ -102,8 +103,13 @@ class BreakpointSemanticChunker(BaseChunker):
         os.environ["TOKENIZERS_PARALLELISM"] = "false"
         from sentence_transformers import SentenceTransformer
 
-        device = "cuda" if getattr(self.cfg, "gpu_backend", "cpu") == "cuda" else "cpu"
-        model_path = getattr(self.cfg, "embedding_model_path", "models/embeddings/all-mpnet-base-v2")
+        backend = getattr(self.cfg, "gpu_backend", "cpu")
+        device = "cuda" if backend == "cuda" else "cpu"
+        model_path = getattr(
+            self.cfg,
+            "embedding_model_path",
+            "models/embeddings/all-mpnet-base-v2"
+        )
         self._model = SentenceTransformer(model_path, device=device)
         return self._model
 
@@ -150,22 +156,6 @@ class BreakpointSemanticChunker(BaseChunker):
 
         chunks = self._splice_chunks(sentences, spans, boundaries, prefix_sims)
         return self._enforce_char_cap(chunks, sentences, spans, prefix_sims)
-    def _embeddings(self, sentences: List[str]) -> np.ndarray:
-        """
-        Embed sentences and return L2-normalized embeddings.
-        Shape: (n_sentences, embedding_dim)
-        """
-        if not sentences:
-            return np.array([])
-
-        model = self._load_embedder()
-        embeddings = model.encode(
-            sentences,
-            show_progress_bar=False,
-            convert_to_numpy=True,
-            normalize_embeddings=True
-        )
-        return embeddings
 
     def _fallback_chunk(self, text: str, spans: List[Tuple[int, int]]) -> List[Chunk]:
         clean = text.strip()
@@ -197,8 +187,7 @@ class BreakpointSemanticChunker(BaseChunker):
             best_score = -float("inf")
             best_start = -1
             max_window = min(end, min(max_len, window))
-            min_window = min_len
-            for length in range(min_window, max_window + 1):
+            for length in range(min_len, max_window + 1):
                 start = end - length
                 if start < 0 or dp[start] == -float("inf"):
                     continue
@@ -309,6 +298,78 @@ class BreakpointSemanticChunker(BaseChunker):
                         ranges.insert(0, (start, mid))
         return refined
 
+    def _embeddings(self, sentences: List[str]) -> np.ndarray:
+        """
+        Embed sentences and return L2-normalized embeddings.
+        Shape: (n_sentences, embedding_dim)
+        """
+        if not sentences:
+            return np.array([])
+
+        model = self._load_embedder()
+        embeddings = model.encode(
+            sentences,
+            show_progress_bar=False,
+            convert_to_numpy=True,
+            normalize_embeddings=True
+        )
+        return embeddings
+
+
+class DualSemanticChunker(BaseChunker):
+    """Hierarchical semantic chunker using parent sections + breakpoint refinement."""
+
+    def __init__(self, cfg):
+        self.cfg = cfg
+        self.base = BreakpointSemanticChunker(cfg)
+
+    def chunk(self, text: str) -> List[Chunk]:
+        sentences, spans = self.base._sentences(text)
+        if not sentences:
+            return []
+
+        embeddings = self.base._embeddings(sentences)
+        if embeddings.size == 0 or embeddings.shape[0] != len(sentences):
+            return self.base._fallback_chunk(text, spans)
+
+        if len(sentences) == 1:
+            return self.base._fallback_chunk(text, spans)
+
+        sims = np.sum(embeddings[:-1] * embeddings[1:], axis=1)
+        prefix_sims = np.zeros(len(sentences))
+        if sims.size:
+            prefix_sims[1:] = np.cumsum(sims)
+        distances = 1.0 - sims
+        parents = self._parent_boundaries(distances, sentences, spans, text)
+
+        if not parents:
+            parents = [(0, len(sentences))]
+
+        chunks: List[Chunk] = []
+        for start, end in parents:
+            if start >= end:
+                continue
+            parent_text = text[spans[start][0]:spans[end - 1][1]]
+            sub_chunks = self.base.chunk(parent_text)
+            offset = spans[start][0]
+            for chunk in sub_chunks:
+                chunk.start_char += offset
+                chunk.end_char += offset
+                global_span = (
+                    start + chunk.sentence_span[0],
+                    start + chunk.sentence_span[1]
+                )
+                chunk.sentence_span = global_span
+                if isinstance(chunk.meta, dict):
+                    chunk.meta["sentences"] = global_span
+                    chunk.meta["parent"] = (start, end)
+                chunks.append(chunk)
+
+        return self.base._enforce_char_cap(chunks, sentences, spans, prefix_sims)
+
+    def _parent_boundaries(self, distances, sentences, spans, text):
+        raise NotImplementedError("Parent boundary detection not implemented")
+
 
 def get_chunker(cfg) -> BaseChunker:
     """Factory for chunker instances."""
@@ -319,4 +380,6 @@ def get_chunker(cfg) -> BaseChunker:
         return FixedChunker(max_chars)
     if method == "breakpoint_semantic":
         return BreakpointSemanticChunker(cfg)
+    if method == "dsc":
+        return DualSemanticChunker(cfg)
     raise NotImplementedError(f"Method {method} not implemented yet")

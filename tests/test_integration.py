@@ -8,6 +8,7 @@ from fastapi.testclient import TestClient
 from src.api.app import app
 
 
+@pytest.mark.integration
 class TestIntegration:
     """End-to-end integration tests"""
     
