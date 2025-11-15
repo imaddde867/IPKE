@@ -29,6 +29,7 @@ except ImportError:
 
 from src.logging_config import get_logger
 from src.core.unified_config import UnifiedConfig, get_config
+from src.ai.chunkers import get_chunker
 
 logger = get_logger(__name__)
 
@@ -81,7 +82,26 @@ class BaseExtractionStrategy(ABC):
         start_time = time.time()
         await self._initialize()
 
-        chunks = list(self._iter_chunks(content, self.config.chunk_size))
+        chunker = get_chunker(self.config)
+        chunk_objects = chunker.chunk(content)
+        chunks = [chunk.text for chunk in chunk_objects]
+
+        chunk_count = len(chunk_objects)
+        avg_chunk_size = (
+            sum(len(chunk.text) for chunk in chunk_objects) / chunk_count
+            if chunk_count > 0 else 0
+        )
+        logger.info(
+            f"Chunked document using {self.config.chunking_method} method: "
+            f"{chunk_count} chunks, avg size {avg_chunk_size:.2f} chars" if chunk_count else
+            f"Chunked document using {self.config.chunking_method} method: no content",
+            extra={
+                "chunking_method": self.config.chunking_method,
+                "chunk_count": chunk_count,
+                "avg_chunk_size": round(avg_chunk_size, 2) if avg_chunk_size else 0,
+            }
+        )
+
         chunk_results = await asyncio.gather(
             *(self._process_chunk_with_llm(chunk, document_type) for chunk in chunks)
         )
@@ -115,10 +135,6 @@ class BaseExtractionStrategy(ABC):
                 'chunks_processed': len(chunks),
             }
         )
-
-    def _iter_chunks(self, content: str, chunk_size: int):
-        for i in range(0, len(content), chunk_size):
-            yield content[i:i + chunk_size]
 
     def _parse_llm_response(self, response: str, chunk: str) -> ChunkExtraction:
         try:
@@ -357,10 +373,10 @@ class TransformersStrategy(BaseExtractionStrategy):
                 trust_remote_code=True,
                 low_cpu_mem_usage=True
             )
-        if self.device == "cpu":
-            self.model.to(self.device)
-            logger.info(f"Moved model to {self.device}")
-        self._initialized = True
+            if self.device == "cpu":
+                self.model.to(self.device)
+                logger.info(f"Moved model to {self.device}")
+            self._initialized = True
             logger.info(f"Loaded Transformers model '{self.llm_config['model_id']}' on {self.device}")
         except Exception as e:
             raise RuntimeError(f"Failed to load Transformers model: {e}") from e
