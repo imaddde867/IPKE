@@ -83,22 +83,43 @@ class BaseExtractionStrategy(ABC):
         await self._initialize()
 
         chunker = get_chunker(self.config)
+        chunk_start = time.time()
         chunk_objects = chunker.chunk(content)
         chunks = [chunk.text for chunk in chunk_objects]
+        chunk_duration = time.time() - chunk_start
 
         chunk_count = len(chunk_objects)
         avg_chunk_size = (
             sum(len(chunk.text) for chunk in chunk_objects) / chunk_count
             if chunk_count > 0 else 0
         )
-        logger.info(
+        avg_sentences = (
+            sum(max(1, chunk.sentence_span[1] - chunk.sentence_span[0]) for chunk in chunk_objects)
+            / chunk_count if chunk_count else 0
+        )
+        cohesion_values = [
+            chunk.meta.get("cohesion")
+            for chunk in chunk_objects
+            if isinstance(chunk.meta, dict) and isinstance(chunk.meta.get("cohesion"), (int, float))
+        ]
+        avg_cohesion = sum(cohesion_values) / len(cohesion_values) if cohesion_values else 0.0
+
+        log_message = (
             f"Chunked document using {self.config.chunking_method} method: "
-            f"{chunk_count} chunks, avg size {avg_chunk_size:.2f} chars" if chunk_count else
-            f"Chunked document using {self.config.chunking_method} method: no content",
+            f"{chunk_count} chunks, avg size {avg_chunk_size:.2f} chars, "
+            f"avg sentences {avg_sentences:.2f}, avg cohesion {avg_cohesion:.2f}, "
+            f"chunk_time {chunk_duration:.3f}s"
+        ) if chunk_count else f"Chunked document using {self.config.chunking_method} method: no content"
+
+        logger.info(
+            log_message,
             extra={
                 "chunking_method": self.config.chunking_method,
                 "chunk_count": chunk_count,
-                "avg_chunk_size": round(avg_chunk_size, 2) if avg_chunk_size else 0,
+                "avg_chunk_size": round(avg_chunk_size, 2) if chunk_count else 0,
+                "avg_sentences_per_chunk": round(avg_sentences, 2) if chunk_count else 0,
+                "avg_chunk_cohesion": round(avg_cohesion, 2) if cohesion_values else 0,
+                "chunking_duration": round(chunk_duration, 4),
             }
         )
 
@@ -408,7 +429,7 @@ class UnifiedKnowledgeEngine:
     
     def __init__(self, config: Optional[UnifiedConfig] = None):
         self.config = config or get_config()
-        self.strategy: Optional[BaseExtractionStrategy] = None
+        self._strategy: Optional[BaseExtractionStrategy] = None
         self.cache = {}
         self.cache_lock = asyncio.Lock()
         self.performance_stats = {
@@ -417,12 +438,23 @@ class UnifiedKnowledgeEngine:
             'strategy_usage': {},
             'avg_processing_time': 0.0
         }
-        self._initialize_strategy()
+
+    @property
+    def strategy(self) -> BaseExtractionStrategy:
+        """Lazy-load the extraction strategy on first access."""
+        if self._strategy is None:
+            self._initialize_strategy()
+        return self._strategy
 
     @property
     def strategies(self) -> List[BaseExtractionStrategy]:
         """Backward-compatible accessor returning the active strategy as a list."""
-        return [self.strategy] if self.strategy is not None else []
+        if self._strategy is None:
+            try:
+                return [self.strategy]
+            except RuntimeError:
+                return []
+        return [self._strategy]
 
     def _initialize_strategy(self):
         backend = self.config.detect_gpu_backend()
@@ -432,23 +464,23 @@ class UnifiedKnowledgeEngine:
 
         if backend == "metal":
             if TRANSFORMERS_AVAILABLE:
-                self.strategy = TransformersStrategy(self.config)
+                self._strategy = TransformersStrategy(self.config)
                 logger.info("Using TransformersStrategy on CPU for Metal backend.")
             elif LLAMA_CPP_AVAILABLE:
-                self.strategy = LlamaCppStrategy(self.config)
+                self._strategy = LlamaCppStrategy(self.config)
                 logger.info("Fallback to LlamaCppStrategy for Metal backend.")
             else:
                 raise RuntimeError("No suitable LLM backend found. Please install 'transformers' or 'llama-cpp-python'.")
         elif backend == "cuda":
-            self.strategy = TransformersStrategy(self.config)
+            self._strategy = TransformersStrategy(self.config)
             logger.info("Using TransformersStrategy for CUDA backend.")
         else: # cpu
             # Prefer transformers on CPU if available, otherwise fallback to llama.cpp
             if TRANSFORMERS_AVAILABLE:
-                self.strategy = TransformersStrategy(self.config)
+                self._strategy = TransformersStrategy(self.config)
                 logger.info("Using TransformersStrategy for CPU backend.")
             elif LLAMA_CPP_AVAILABLE:
-                self.strategy = LlamaCppStrategy(self.config)
+                self._strategy = LlamaCppStrategy(self.config)
                 logger.info("Transformers not found. Using LlamaCppStrategy for CPU backend.")
             else:
                 raise RuntimeError("No suitable LLM backend found. Please install either 'transformers' or 'llama-cpp-python'.")
@@ -459,7 +491,8 @@ class UnifiedKnowledgeEngine:
         document_type: str = "unknown",
         quality_threshold: Optional[float] = None
     ) -> ExtractionResult:
-        if not self.strategy:
+        strategy = self.strategy
+        if not strategy:
             raise RuntimeError("Knowledge extraction strategy not initialized.")
             
         final_quality_threshold = quality_threshold if quality_threshold is not None else self.config.quality_threshold
@@ -471,7 +504,7 @@ class UnifiedKnowledgeEngine:
                 self.performance_stats['cache_hits'] += 1
                 return self.cache[cache_key]
 
-        result = await self.strategy.extract(content, document_type)
+        result = await strategy.extract(content, document_type)
 
         if result.confidence_score < final_quality_threshold:
             logger.warning(

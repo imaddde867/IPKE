@@ -1,5 +1,14 @@
-import asyncio
+"""Streamlit UI for document extraction."""
+# CRITICAL: Set environment variables BEFORE any imports
 import os
+
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+
+from src.ai.llm_env_setup import *  # noqa: F401,F403
+
+import asyncio
 import tempfile
 from pathlib import Path
 from typing import Dict, Any, List
@@ -10,6 +19,23 @@ import streamlit as st
 from src.core.unified_config import get_config
 from src.processors.streamlined_processor import StreamlinedDocumentProcessor
 from src.exceptions import ProcessingError
+
+
+# Quick chunker smoke test without touching LLMs
+def _verify_chunking_safe():
+    try:
+        from src.ai.chunkers import get_chunker, FixedChunker
+        cfg = get_config()
+        chunker = get_chunker(cfg)
+        if isinstance(chunker, FixedChunker):
+            _ = chunker.chunk("Test.")
+        return True
+    except Exception as e:  # noqa: BLE001
+        st.error(f"Chunking verification failed: {e}")
+        return False
+
+
+_verify_chunking_safe()
 
 st.set_page_config(
     page_title="Industrial Procedural Knowledge Extraction (IPKE)",
@@ -319,7 +345,11 @@ def main() -> None:
                     "document_type": last_result["document_type"],
                     "metadata": last_result["metadata"],
                     "settings": st.session_state["settings"],
-                    "processor_stats": _get_processor().get_processing_stats(),
+                    "processor_stats": (
+                        st.session_state.get("processor").get_processing_stats()
+                        if st.session_state.get("processor")
+                        else {}
+                    ),
                 }
             )
 

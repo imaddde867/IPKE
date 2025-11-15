@@ -43,11 +43,12 @@ def _exists_check(name: str, path: Path) -> CheckResult:
 
 
 def _import_check(name: str, module: str) -> CheckResult:
-    try:
-        importlib.import_module(module)
-        return CheckResult(name, module, "ok")
-    except Exception as exc:  # noqa: BLE001
-        return CheckResult(name, module, "missing", hint=f"Import failed: {exc}")
+    import importlib.util
+
+    spec = importlib.util.find_spec(module)
+    if spec is None:
+        return CheckResult(name, module, "missing", hint="Module not found")
+    return CheckResult(name, module, "ok")
 
 
 def _check_spacy_model(model_name: str) -> CheckResult:
@@ -109,6 +110,19 @@ def checks() -> List[CheckResult]:
     results.append(_exists_check("Gold annotations", DEFAULT_GOLD_DIR))
     results.append(_exists_check("Embedding model", Path(DEFAULT_EMBEDDING_MODEL)))
     results.append(_exists_check("LLM model", Path(config.llm_model_path)))
+
+    chunk_method = getattr(config, "chunking_method", "fixed")
+    if chunk_method in {"breakpoint_semantic", "dsc"}:
+        embedding_path = Path(getattr(config, "embedding_model_path", DEFAULT_EMBEDDING_MODEL)).expanduser()
+        if not embedding_path.exists():
+            hint = (
+                f"Semantic chunking requires embeddings at {embedding_path}.\n"
+                f"Download via: huggingface-cli download sentence-transformers/all-MiniLM-L6-v2 "
+                f"--local-dir {embedding_path.parent} --local-dir-use-symlinks False"
+            )
+            results.append(CheckResult("Chunking embeddings", str(embedding_path), "missing", hint=hint))
+        else:
+            results.append(CheckResult("Chunking embeddings", str(embedding_path), "ok"))
 
     results.append(_import_check("llama-cpp-python", "llama_cpp"))
     results.append(_import_check("sentence-transformers", "sentence_transformers"))

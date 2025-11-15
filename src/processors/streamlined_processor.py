@@ -57,7 +57,7 @@ except ImportError:
 
 from src.logging_config import get_logger
 from src.core.unified_config import UnifiedConfig, get_config
-from src.ai.knowledge_engine import UnifiedKnowledgeEngine, ExtractionResult
+from src.ai.knowledge_engine import ExtractionResult
 from src.exceptions import ProcessingError
 
 logger = get_logger(__name__)
@@ -88,7 +88,7 @@ class StreamlinedDocumentProcessor:
     
     def __init__(self, config: Optional[UnifiedConfig] = None):
         self.config = config or get_config()
-        self.knowledge_engine = UnifiedKnowledgeEngine()
+        self._engine: Optional["UnifiedKnowledgeEngine"] = None
         self.executor = ThreadPoolExecutor(max_workers=self.config.max_workers)
         
         # Performance tracking
@@ -107,6 +107,13 @@ class StreamlinedDocumentProcessor:
         self.audio_formats = {'.mp3', '.wav', '.flac', '.aac'}
         
         logger.info("Streamlined Document Processor initialized")
+
+    @property
+    def knowledge_engine(self) -> "UnifiedKnowledgeEngine":
+        if self._engine is None:
+            from src.ai.knowledge_engine import UnifiedKnowledgeEngine
+            self._engine = UnifiedKnowledgeEngine(self.config)
+        return self._engine
     
     async def _run_in_executor(self, func: Callable[[], T]) -> T:
         """Execute blocking operations in the shared thread pool."""
