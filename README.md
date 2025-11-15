@@ -176,6 +176,54 @@ python tools/evaluate.py \
   --out_file logs/baseline_runs/run_1/eval_tierB.json
 ```
 
+## Chunking Methods
+
+The extraction pipeline supports three chunking strategies. Switch between them by setting `CHUNKING_METHOD` in your environment or `.env`.
+
+### Fixed (Default)
+```
+CHUNKING_METHOD=fixed
+CHUNK_MAX_CHARS=2000
+```
+Deterministic whitespace splitting with a strict char cap. Recommended for small pilots or environments without embeddings.
+
+### Breakpoint Semantic
+```
+CHUNKING_METHOD=breakpoint_semantic
+EMBEDDING_MODEL_PATH=models/embeddings/all-MiniLM-L6-v2
+SEM_MIN_SENTENCES_PER_CHUNK=2
+SEM_MAX_SENTENCES_PER_CHUNK=40
+SEM_LAMBDA=0.15
+SEM_WINDOW_W=30
+```
+Uses spaCy’s sentencizer, SBERT embeddings, and a dynamic-programming objective (`score = cohesion(i,j) – λ`) to maximize per-chunk mean cosine similarity while obeying min/max sentence constraints.
+
+### Dual Semantic Chunking (DSC)
+```
+CHUNKING_METHOD=dsc
+EMBEDDING_MODEL_PATH=models/embeddings/all-MiniLM-L6-v2
+DSC_PARENT_MIN_SENTENCES=10
+DSC_PARENT_MAX_SENTENCES=120
+DSC_DELTA_WINDOW=25
+DSC_THRESHOLD_K=1.0
+DSC_USE_HEADINGS=true
+```
+Runs an adaptive parent-boundary detector that compares local cosine-distance deltas against `μ + k·σ`, optionally biased by heading regexes, then refines each parent via the breakpoint DP.
+
+### Model Download
+Semantic methods require an SBERT checkpoint. Example using Hugging Face:
+```
+huggingface-cli download sentence-transformers/all-MiniLM-L6-v2 \
+  --local-dir models/embeddings/all-MiniLM-L6-v2 \
+  --local-dir-use-symlinks False
+```
+Update `EMBEDDING_MODEL_PATH` to match the downloaded directory. `scripts/baseline_preflight.py` now fails if the path is missing when a semantic method is configured.
+
+### Troubleshooting
+- **Tokenizer mutex errors**: macOS Metal users should keep `TOKENIZERS_PARALLELISM=false` (already enforced in `llm_env_setup`). Re-enabling parallelism reintroduces the mutex crash.
+- **Memory usage**: reduce `CHUNK_MAX_CHARS` or `DSC_PARENT_MAX_SENTENCES` if you encounter out-of-memory issues on large manuals.
+- **Unexpected chunk counts**: check the log line `Chunked document using ...` (method, count, avg sentences, cohesion, runtime) to verify the active strategy.
+
 ## Supported Formats
 - Text: `.pdf`, `.doc/.docx`, `.txt`, `.rtf`
 - Spreadsheets: `.csv`, `.xls/.xlsx`
