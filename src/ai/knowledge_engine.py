@@ -1,4 +1,5 @@
 """LLM-driven knowledge extraction engine."""
+from src.ai.llm_env_setup import *  # Must be first!
 
 import asyncio
 from abc import ABC, abstractmethod
@@ -302,6 +303,7 @@ class TransformersStrategy(BaseExtractionStrategy):
         super().__init__(config)
         self.model = None
         self.tokenizer = None
+        self.device = "cpu"
         self.generation_params = {
             'max_new_tokens': self.llm_config['max_tokens'],
             'temperature': self.llm_config['temperature'],
@@ -310,34 +312,56 @@ class TransformersStrategy(BaseExtractionStrategy):
             'do_sample': True,
         }
 
+    def _resolve_device(self) -> str:
+        """Determine the target device for inference."""
+        if torch.cuda.is_available() and self.llm_config['enable_gpu']:
+            return "cuda"
+        return "cpu"
+
     async def _initialize(self):
         if self._initialized:
             return
         if not TRANSFORMERS_AVAILABLE:
             raise RuntimeError("Hugging Face transformers library is not installed. Please install it for the 'cuda' backend.")
 
-        device = "cuda" if torch.cuda.is_available() and self.llm_config['enable_gpu'] else "cpu"
-        logger.info(f"Initializing TransformersStrategy on device: {device}")
+        # Force single-threaded mode for tokenizers/OMP
+        import os
+        os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
+        self.device = self._resolve_device()
+        logger.info(f"Initializing TransformersStrategy on device: {self.device}")
+
+        # Small delay to ensure env vars propagate in native libs
+        await asyncio.sleep(0.1)
 
         quant_config = None
-        if device == "cuda":
+        if self.device == "cuda":
             if self.llm_config['quantization'] == "4bit":
                 quant_config = BitsAndBytesConfig(load_in_4bit=True, bnb_4bit_compute_dtype=torch.float16)
             elif self.llm_config['quantization'] == "8bit":
                 quant_config = BitsAndBytesConfig(load_in_8bit=True)
 
         try:
-            self.tokenizer = AutoTokenizer.from_pretrained(self.llm_config['model_id'])
+            # Disable parallelism to avoid mutex issues on macOS
+            os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
+            self.tokenizer = AutoTokenizer.from_pretrained(
+                self.llm_config['model_id'],
+                use_fast=True
+            )
             self.model = AutoModelForCausalLM.from_pretrained(
                 self.llm_config['model_id'],
                 quantization_config=quant_config,
-                device_map="auto" if device == "cuda" else None,
-                trust_remote_code=True
+                device_map=None,
+                dtype="auto",
+                trust_remote_code=True,
+                low_cpu_mem_usage=True
             )
-            if device == "cpu":
-                self.model.to(device)
-            self._initialized = True
-            logger.info(f"Loaded Transformers model '{self.llm_config['model_id']}' on {self.model.device}")
+        if self.device == "cpu":
+            self.model.to(self.device)
+            logger.info(f"Moved model to {self.device}")
+        self._initialized = True
+            logger.info(f"Loaded Transformers model '{self.llm_config['model_id']}' on {self.device}")
         except Exception as e:
             raise RuntimeError(f"Failed to load Transformers model: {e}") from e
 
@@ -346,7 +370,8 @@ class TransformersStrategy(BaseExtractionStrategy):
         loop = asyncio.get_running_loop()
 
         def generate():
-            inputs = self.tokenizer(prompt, return_tensors="pt").to(self.model.device)
+            inputs = self.tokenizer(prompt, return_tensors="pt")
+            inputs = inputs.to(self.device)
             outputs = self.model.generate(**inputs, **self.generation_params)
             # Decode only the generated part, excluding the prompt
             return self.tokenizer.decode(outputs[0][inputs.input_ids.shape[1]:], skip_special_tokens=True)
@@ -386,10 +411,18 @@ class UnifiedKnowledgeEngine:
     def _initialize_strategy(self):
         backend = self.config.detect_gpu_backend()
         logger.info(f"Detected GPU backend: {backend}. Initializing corresponding strategy.")
+        # Note: On macOS Metal, we run the LLM on CPU to avoid tokenizer mutex issues.
+        # MPS acceleration will be reserved for embedding workloads where we control parallelism.
 
         if backend == "metal":
-            self.strategy = LlamaCppStrategy(self.config)
-            logger.info("Using LlamaCppStrategy for Metal backend.")
+            if TRANSFORMERS_AVAILABLE:
+                self.strategy = TransformersStrategy(self.config)
+                logger.info("Using TransformersStrategy on CPU for Metal backend.")
+            elif LLAMA_CPP_AVAILABLE:
+                self.strategy = LlamaCppStrategy(self.config)
+                logger.info("Fallback to LlamaCppStrategy for Metal backend.")
+            else:
+                raise RuntimeError("No suitable LLM backend found. Please install 'transformers' or 'llama-cpp-python'.")
         elif backend == "cuda":
             self.strategy = TransformersStrategy(self.config)
             logger.info("Using TransformersStrategy for CUDA backend.")

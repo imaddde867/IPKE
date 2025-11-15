@@ -3,6 +3,7 @@ Unified Configuration System for Industrial Procedural Knowledge Extraction (IPK
 """
 
 import os
+import platform
 from typing import Dict, Any, List, Optional
 from dataclasses import dataclass, field
 from enum import Enum
@@ -380,8 +381,13 @@ class UnifiedConfig:
         if not self.enable_gpu:
             return "cpu"
         
-        import platform
         system = platform.system()
+        processor = platform.processor().lower()
+        if system == "Darwin" and ("arm" in processor or "apple" in processor):
+            # Use CPU for LLMs on Apple Silicon to avoid tokenizer mutex issues.
+            # MPS acceleration will be reserved for embedding workloads.
+            return "cpu"
+        
         if system == "Darwin" and platform.machine() in ["arm64", "aarch64"]:
             return "metal"
         
