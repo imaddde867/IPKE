@@ -8,6 +8,7 @@ from src.processors.streamlined_processor import StreamlinedDocumentProcessor
 from src.exceptions import ProcessingError
 
 
+@pytest.mark.integration
 class TestDocumentProcessor:
     """Test document processing functionality"""
     

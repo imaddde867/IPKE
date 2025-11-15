@@ -5,6 +5,7 @@ import pytest
 from src.ai.knowledge_engine import UnifiedKnowledgeEngine, ExtractedEntity, ExtractionResult
 
 
+@pytest.mark.integration
 class TestKnowledgeEngine:
     """Test knowledge extraction engine"""
     
