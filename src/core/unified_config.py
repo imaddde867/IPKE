@@ -142,6 +142,22 @@ class UnifiedConfig:
     chunk_size: int = 2000
     cache_size: int = 1000
     processing_timeout: int = 300
+
+    # Chunking
+    chunking_method: str = "fixed"
+    chunk_max_chars: int = 2000
+    embedding_model_path: str = "models/embeddings/all-mpnet-base-v2"
+    sem_similarity: str = "cosine"
+    sem_min_sentences_per_chunk: int = 2
+    sem_max_sentences_per_chunk: int = 40
+    sem_lambda: float = 0.15
+    sem_window_w: int = 30
+    dsc_parent_min_sentences: int = 10
+    dsc_parent_max_sentences: int = 120
+    dsc_delta_window: int = 25
+    dsc_threshold_k: float = 1.0
+    dsc_use_headings: bool = True
+    debug_chunking: bool = False
     
     # API
     api_host: str = "0.0.0.0"
@@ -173,6 +189,8 @@ class UnifiedConfig:
     @classmethod
     def _development_config(cls) -> 'UnifiedConfig':
         """Development environment configuration"""
+        chunking_method = (_get_env_value('CHUNKING_METHOD', default=cls.chunking_method) or cls.chunking_method).lower()
+        sem_similarity = (_get_env_value('SEM_SIMILARITY', default=cls.sem_similarity) or cls.sem_similarity).lower()
         return cls(
             environment=Environment.DEVELOPMENT,
             debug=True,
@@ -198,11 +216,27 @@ class UnifiedConfig:
             max_workers=_env_int('MAX_WORKERS', default=cls.max_workers, min_value=1),
             llm_model_id=_get_env_value('LLM_MODEL_ID', default=cls.llm_model_id),
             llm_quantization=_get_env_value('LLM_QUANTIZATION', default=cls.llm_quantization),
+            chunking_method=chunking_method,
+            chunk_max_chars=_env_int('CHUNK_MAX_CHARS', default=cls.chunk_max_chars, min_value=256),
+            embedding_model_path=_get_env_value('EMBEDDING_MODEL_PATH', default=cls.embedding_model_path),
+            sem_similarity=sem_similarity,
+            sem_min_sentences_per_chunk=_env_int('SEM_MIN_SENTENCES_PER_CHUNK', default=cls.sem_min_sentences_per_chunk, min_value=1),
+            sem_max_sentences_per_chunk=_env_int('SEM_MAX_SENTENCES_PER_CHUNK', default=cls.sem_max_sentences_per_chunk, min_value=2),
+            sem_lambda=_env_float('SEM_LAMBDA', default=cls.sem_lambda, min_value=0.0),
+            sem_window_w=_env_int('SEM_WINDOW_W', default=cls.sem_window_w, min_value=2),
+            dsc_parent_min_sentences=_env_int('DSC_PARENT_MIN_SENTENCES', default=cls.dsc_parent_min_sentences, min_value=2),
+            dsc_parent_max_sentences=_env_int('DSC_PARENT_MAX_SENTENCES', default=cls.dsc_parent_max_sentences, min_value=4),
+            dsc_delta_window=_env_int('DSC_DELTA_WINDOW', default=cls.dsc_delta_window, min_value=5),
+            dsc_threshold_k=_env_float('DSC_THRESHOLD_K', default=cls.dsc_threshold_k),
+            dsc_use_headings=_env_bool('DSC_USE_HEADINGS', default=cls.dsc_use_headings),
+            debug_chunking=_env_bool('DEBUG_CHUNKING', default=cls.debug_chunking),
         )
     
     @classmethod
     def _testing_config(cls) -> 'UnifiedConfig':
         """Testing environment configuration"""
+        chunking_method = (_get_env_value('CHUNKING_METHOD', default=cls.chunking_method) or cls.chunking_method).lower()
+        sem_similarity = (_get_env_value('SEM_SIMILARITY', default=cls.sem_similarity) or cls.sem_similarity).lower()
         return cls(
             environment=Environment.TESTING,
             debug=False,
@@ -215,6 +249,20 @@ class UnifiedConfig:
             cache_size=100,
             llm_model_id="sshleifer/tiny-gpt2",
             llm_parallel_instances=1,
+            chunking_method=chunking_method,
+            chunk_max_chars=_env_int('CHUNK_MAX_CHARS', default=cls.chunk_max_chars, min_value=128),
+            embedding_model_path=_get_env_value('EMBEDDING_MODEL_PATH', default=cls.embedding_model_path),
+            sem_similarity=sem_similarity,
+            sem_min_sentences_per_chunk=_env_int('SEM_MIN_SENTENCES_PER_CHUNK', default=cls.sem_min_sentences_per_chunk, min_value=1),
+            sem_max_sentences_per_chunk=_env_int('SEM_MAX_SENTENCES_PER_CHUNK', default=cls.sem_max_sentences_per_chunk, min_value=2),
+            sem_lambda=_env_float('SEM_LAMBDA', default=cls.sem_lambda, min_value=0.0),
+            sem_window_w=_env_int('SEM_WINDOW_W', default=cls.sem_window_w, min_value=2),
+            dsc_parent_min_sentences=_env_int('DSC_PARENT_MIN_SENTENCES', default=cls.dsc_parent_min_sentences, min_value=2),
+            dsc_parent_max_sentences=_env_int('DSC_PARENT_MAX_SENTENCES', default=cls.dsc_parent_max_sentences, min_value=4),
+            dsc_delta_window=_env_int('DSC_DELTA_WINDOW', default=cls.dsc_delta_window, min_value=5),
+            dsc_threshold_k=_env_float('DSC_THRESHOLD_K', default=cls.dsc_threshold_k),
+            dsc_use_headings=_env_bool('DSC_USE_HEADINGS', default=cls.dsc_use_headings),
+            debug_chunking=_env_bool('DEBUG_CHUNKING', default=cls.debug_chunking),
         )
 
     @classmethod
@@ -222,6 +270,8 @@ class UnifiedConfig:
         """Production environment configuration"""
         cors_origins_raw = _get_env_value('CORS_ORIGINS', default='')
         cors_origins = cors_origins_raw.split(',') if cors_origins_raw else []
+        chunking_method = (_get_env_value('CHUNKING_METHOD', default=cls.chunking_method) or cls.chunking_method).lower()
+        sem_similarity = (_get_env_value('SEM_SIMILARITY', default=cls.sem_similarity) or cls.sem_similarity).lower()
         
         return cls(
             environment=Environment.PRODUCTION,
@@ -245,6 +295,20 @@ class UnifiedConfig:
             llm_parallel_instances=_env_int('LLM_PARALLEL_INSTANCES', default=cls.llm_parallel_instances, min_value=1),
             llm_model_id=_get_env_value('LLM_MODEL_ID', default=cls.llm_model_id),
             llm_quantization=_get_env_value('LLM_QUANTIZATION', default=cls.llm_quantization),
+            chunking_method=chunking_method,
+            chunk_max_chars=_env_int('CHUNK_MAX_CHARS', default=cls.chunk_max_chars, min_value=256),
+            embedding_model_path=_get_env_value('EMBEDDING_MODEL_PATH', default=cls.embedding_model_path),
+            sem_similarity=sem_similarity,
+            sem_min_sentences_per_chunk=_env_int('SEM_MIN_SENTENCES_PER_CHUNK', default=cls.sem_min_sentences_per_chunk, min_value=1),
+            sem_max_sentences_per_chunk=_env_int('SEM_MAX_SENTENCES_PER_CHUNK', default=cls.sem_max_sentences_per_chunk, min_value=2),
+            sem_lambda=_env_float('SEM_LAMBDA', default=cls.sem_lambda, min_value=0.0),
+            sem_window_w=_env_int('SEM_WINDOW_W', default=cls.sem_window_w, min_value=2),
+            dsc_parent_min_sentences=_env_int('DSC_PARENT_MIN_SENTENCES', default=cls.dsc_parent_min_sentences, min_value=2),
+            dsc_parent_max_sentences=_env_int('DSC_PARENT_MAX_SENTENCES', default=cls.dsc_parent_max_sentences, min_value=4),
+            dsc_delta_window=_env_int('DSC_DELTA_WINDOW', default=cls.dsc_delta_window, min_value=5),
+            dsc_threshold_k=_env_float('DSC_THRESHOLD_K', default=cls.dsc_threshold_k),
+            dsc_use_headings=_env_bool('DSC_USE_HEADINGS', default=cls.dsc_use_headings),
+            debug_chunking=_env_bool('DEBUG_CHUNKING', default=cls.debug_chunking),
         )
     
     # Utility methods
@@ -267,6 +331,25 @@ class UnifiedConfig:
             'max_workers': self.max_workers,
             'chunk_size': self.chunk_size,
             'processing_timeout': self.processing_timeout
+        }
+    
+    def get_chunking_config(self) -> Dict[str, Any]:
+        """Return chunking-related configuration."""
+        return {
+            'chunking_method': self.chunking_method,
+            'chunk_max_chars': self.chunk_max_chars,
+            'embedding_model_path': self.embedding_model_path,
+            'sem_similarity': self.sem_similarity,
+            'sem_min_sentences_per_chunk': self.sem_min_sentences_per_chunk,
+            'sem_max_sentences_per_chunk': self.sem_max_sentences_per_chunk,
+            'sem_lambda': self.sem_lambda,
+            'sem_window_w': self.sem_window_w,
+            'dsc_parent_min_sentences': self.dsc_parent_min_sentences,
+            'dsc_parent_max_sentences': self.dsc_parent_max_sentences,
+            'dsc_delta_window': self.dsc_delta_window,
+            'dsc_threshold_k': self.dsc_threshold_k,
+            'dsc_use_headings': self.dsc_use_headings,
+            'debug_chunking': self.debug_chunking,
         }
 
     def is_development(self) -> bool:

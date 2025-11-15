@@ -12,6 +12,7 @@ from tools.evaluate import main as evaluate_main
 
 from src.processors.streamlined_processor import ProcessingResult, StreamlinedDocumentProcessor
 from src.graph.adapter import flat_to_tierb
+from src.core.unified_config import get_config
 
 # Canonical Tier-A documents bundled with the repository (test split)
 TIER_A_TEST_DOCS: Dict[str, Path] = {
@@ -36,6 +37,12 @@ def _normalise_path(path: Path | str, base_dir: Optional[Path] = None) -> Path:
 def extraction_payload(doc_id: str, result: ProcessingResult) -> Dict[str, Any]:
     """Serialise a processing result into the JSON structure expected by the evaluator."""
     extraction = result.extraction_result
+    extraction_meta = extraction.metadata or {}
+    chunk_meta = extraction_meta.get("chunking", {})
+    payload_meta = dict(result.metadata)
+    payload_meta.update(extraction_meta)
+    payload_meta["chunking"] = dict(chunk_meta)
+    payload_meta["chunking_method"] = chunk_meta.get("method", get_config().chunking_method)
     return {
         "document_id": doc_id,
         "document_type": result.document_type,
@@ -45,7 +52,7 @@ def extraction_payload(doc_id: str, result: ProcessingResult) -> Dict[str, Any]:
         "confidence_score": extraction.confidence_score,
         "processing_time": result.processing_time,
         "strategy_used": extraction.strategy_used,
-        "metadata": result.metadata,
+        "metadata": payload_meta,
     }
 
 

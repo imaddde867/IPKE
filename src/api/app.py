@@ -60,6 +60,13 @@ async def lifespan(app: FastAPI):
     logger.info(f"Upload directory: {cfg.upload_directory}")
     logger.info(f"Max file size: {cfg.max_file_size_mb}MB")
     logger.info(f"Supported formats: {len(cfg.supported_formats)} types")
+    chunking_cfg = cfg.get_chunking_config()
+    logger.info(
+        "Chunking method: %s (char cap=%s, semantic window=%s)",
+        chunking_cfg['chunking_method'],
+        chunking_cfg['chunk_max_chars'],
+        chunking_cfg['sem_window_w'],
+    )
 
     upload_dir_path = Path(cfg.upload_directory)
     upload_dir_path.mkdir(exist_ok=True)
@@ -129,6 +136,7 @@ async def get_config_info():
     """Get system configuration information"""
     config = get_config()
     llm_config = config.get_llm_config()
+    chunking_config = config.get_chunking_config()
     
     return {
         "gpu_enabled": llm_config['enable_gpu'],
@@ -140,7 +148,8 @@ async def get_config_info():
         "max_chunks": llm_config['max_chunks'],
         "max_tokens": llm_config['max_tokens'],
         "confidence_threshold": llm_config['confidence_threshold'],
-        "chunk_size": config.chunk_size
+        "chunk_size": config.chunk_size,
+        "chunking": chunking_config,
     }
 
 
@@ -278,5 +287,4 @@ async def general_exception_handler(request, exc: Exception):
         status_code=500,
         content={"error": "Internal Server Error", "detail": "An unexpected error occurred"}
     )
-
 

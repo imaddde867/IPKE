@@ -27,7 +27,8 @@ except ImportError:
     AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig = None, None, None
 
 from src.logging_config import get_logger
-from src.core.unified_config import UnifiedConfig, get_config
+from src.core.unified_config import UnifiedConfig, get_config, Environment
+from src.ai.chunkers import Chunk, FixedChunker, get_chunker
 
 logger = get_logger(__name__)
 
@@ -67,6 +68,7 @@ class BaseExtractionStrategy(ABC):
         self.max_chunks = max(0, self.llm_config['max_chunks'])
         self.confidence_threshold = self.llm_config['confidence_threshold']
         self.parallel_instances = max(1, int(self.llm_config.get('parallel_instances', 1)))
+        self.chunker = get_chunker(self.config)
         self._initialized = False
 
     @abstractmethod
@@ -81,21 +83,22 @@ class BaseExtractionStrategy(ABC):
         start_time = time.time()
         await self._initialize()
 
-        chunks = list(self._iter_chunks(content, self.config.chunk_size))
+        chunk_objects = self._chunk_content(content)
         if self.max_chunks > 0:
-            chunks = chunks[:self.max_chunks]
+            chunk_objects = chunk_objects[:self.max_chunks]
+        chunk_texts = [chunk.text for chunk in chunk_objects] or ([content] if content else [])
 
-        if not chunks:
+        if not chunk_texts:
             chunk_results = []
         else:
-            max_parallel = min(self.parallel_instances, len(chunks))
+            max_parallel = min(self.parallel_instances, len(chunk_texts))
             semaphore = asyncio.Semaphore(max_parallel or 1)
 
             async def process_chunk(chunk: str) -> ChunkExtraction:
                 async with semaphore:
                     return await self._process_chunk_with_llm(chunk, document_type)
 
-            chunk_results = await asyncio.gather(*(process_chunk(chunk) for chunk in chunks))
+            chunk_results = await asyncio.gather(*(process_chunk(chunk) for chunk in chunk_texts))
 
         all_entities: List[ExtractedEntity] = []
         raw_steps: List[Dict[str, Any]] = []
@@ -112,6 +115,18 @@ class BaseExtractionStrategy(ABC):
 
         processing_time = time.time() - start_time
         confidence_score = sum(e.confidence for e in all_entities) / len(all_entities) if all_entities else 0.0
+        chunk_stats = self._compute_chunk_stats(chunk_objects, len(chunk_texts))
+        metadata: Dict[str, Any] = {"chunking": chunk_stats}
+        if self.config.debug_chunking:
+            metadata["chunks"] = [
+                {
+                    "start_char": chunk.start_char,
+                    "end_char": chunk.end_char,
+                    "sentence_span": chunk.sentence_span,
+                    "meta": chunk.meta,
+                }
+                for chunk in chunk_objects
+            ]
 
         return ExtractionResult(
             entities=all_entities,
@@ -123,13 +138,71 @@ class BaseExtractionStrategy(ABC):
             quality_metrics={
                 'entity_count': len(all_entities),
                 'avg_confidence': confidence_score,
-                'chunks_processed': len(chunks),
-            }
+                'chunks_processed': len(chunk_texts),
+            },
+            metadata=metadata,
         )
+    def _chunk_content(self, content: str) -> List[Chunk]:
+        if not content:
+            return []
+        try:
+            chunks = self.chunker.chunk(content)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning(
+                "Chunker '%s' failed (%s). Falling back to fixed-size splitting.",
+                self.config.chunking_method,
+                exc,
+            )
+            fallback = FixedChunker(max_chars=self.config.chunk_max_chars)
+            chunks = fallback.chunk(content)
+        if not chunks:
+            return [
+                Chunk(
+                    text=content,
+                    start_char=0,
+                    end_char=len(content),
+                    sentence_span=(-1, -1),
+                    meta={
+                        "chunking_method": "fallback",
+                        "sentence_count": None,
+                        "cohesion": None,
+                        "char_length": len(content),
+                    },
+                )
+            ]
+        return chunks
 
-    def _iter_chunks(self, content: str, chunk_size: int):
-        for i in range(0, len(content), chunk_size):
-            yield content[i:i + chunk_size]
+    def _compute_chunk_stats(self, chunks: List[Chunk], processed_count: int) -> Dict[str, Any]:
+        if not chunks:
+            return {
+                "method": self.config.chunking_method,
+                "count": 0,
+                "avg_sentences": 0.0,
+                "avg_chars": 0.0,
+                "avg_cohesion": None,
+            }
+        sentence_counts = [
+            chunk.meta.get("sentence_count")
+            for chunk in chunks
+            if chunk.meta.get("sentence_count") is not None
+        ]
+        cohesions = [
+            chunk.meta.get("cohesion")
+            for chunk in chunks
+            if chunk.meta.get("cohesion") is not None
+        ]
+        avg_sentences = sum(sentence_counts) / len(sentence_counts) if sentence_counts else 0.0
+        avg_chars = sum(len(chunk.text) for chunk in chunks) / len(chunks)
+        avg_cohesion = (
+            sum(cohesions) / len(cohesions) if cohesions else None
+        )
+        return {
+            "method": chunks[0].meta.get("chunking_method", self.config.chunking_method),
+            "count": processed_count,
+            "avg_sentences": round(avg_sentences, 2),
+            "avg_chars": round(avg_chars, 2),
+            "avg_cohesion": round(avg_cohesion, 3) if avg_cohesion is not None else None,
+        }
 
     def _parse_llm_response(self, response: str, chunk: str) -> ChunkExtraction:
         try:
@@ -404,6 +477,41 @@ class TransformersStrategy(BaseExtractionStrategy):
         return "transformers"
 
 
+class MockExtractionStrategy(BaseExtractionStrategy):
+    """Deterministic strategy for testing environments (no model dependency)."""
+
+    async def _initialize(self):
+        self._initialized = True
+
+    async def _process_chunk_with_llm(self, chunk: str, document_type: str) -> ChunkExtraction:
+        lines = [line.strip() for line in chunk.splitlines() if line.strip()]
+        steps = []
+        for idx, line in enumerate(lines[:5]):
+            steps.append({
+                "id": f"S{idx + 1}",
+                "text": line,
+                "confidence": 0.8,
+            })
+        entities = [
+            ExtractedEntity(
+                content=line,
+                entity_type="fact",
+                category=document_type or "general",
+                confidence=0.85,
+                context=line[:120] + "...",
+                metadata={"llm_extracted": False, "source": "mock"},
+            )
+            for line in lines[:3]
+        ]
+        constraints = [
+            {"id": "C1", "text": "Mock constraint", "confidence": 0.7, "steps": ["S1"]},
+        ] if steps else []
+        return ChunkExtraction(entities=entities, steps=steps, constraints=constraints)
+
+    def get_strategy_name(self) -> str:
+        return "mock"
+
+
 class UnifiedKnowledgeEngine:
     """LLM-only knowledge extraction pipeline with selectable backend."""
     
@@ -428,6 +536,11 @@ class UnifiedKnowledgeEngine:
     def _initialize_strategy(self):
         backend = self.config.detect_gpu_backend()
         logger.info(f"Detected GPU backend: {backend}. Initializing corresponding strategy.")
+
+        if self.config.environment == Environment.TESTING:
+            self.strategy = MockExtractionStrategy(self.config)
+            logger.info("Using MockExtractionStrategy for testing backend.")
+            return
 
         if backend == "metal":
             self.strategy = LlamaCppStrategy(self.config)
@@ -478,8 +591,18 @@ class UnifiedKnowledgeEngine:
             if len(self.cache) < self.config.cache_size:
                 self.cache[cache_key] = result
 
-        logger.info(f"Extracted {len(result.entities)} entities using {result.strategy_used} "
-                   f"in {result.processing_time:.2f}s (confidence: {result.confidence_score:.2f})")
+        chunk_meta = result.metadata.get("chunking", {}) if result.metadata else {}
+        logger.info(
+            "Extracted %s entities using %s in %.2fs (confidence: %.2f) | chunking=%s count=%s avg_sent=%s avg_cohesion=%s",
+            len(result.entities),
+            result.strategy_used,
+            result.processing_time,
+            result.confidence_score,
+            chunk_meta.get("method"),
+            chunk_meta.get("count"),
+            chunk_meta.get("avg_sentences"),
+            chunk_meta.get("avg_cohesion"),
+        )
         
         return result
 

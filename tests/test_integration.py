@@ -1,20 +1,47 @@
 """
 Integration tests for the complete system
 """
-import pytest
-import tempfile
+from importlib import reload
 from pathlib import Path
+import tempfile
+
+import pytest
 from fastapi.testclient import TestClient
-from src.api.app import app
+
+import src.api.app as app_module
+from src.core import unified_config
+from src.ai.knowledge_engine import ExtractionResult, ExtractedEntity
 
 
 class TestIntegration:
     """End-to-end integration tests"""
     
     @pytest.fixture
-    def client(self):
+    def client(self, monkeypatch):
         """Create test client"""
-        return TestClient(app)
+        monkeypatch.setenv("EXPLAINIUM_ENV", "testing")
+        monkeypatch.setenv("GPU_BACKEND", "cpu")
+        monkeypatch.setenv("ENABLE_GPU", "false")
+        unified_config.reload_config()
+        reload(app_module)
+        async def _fake_extract(*args, **kwargs):
+            return ExtractionResult(
+                entities=[ExtractedEntity(content="Mock entity", entity_type="spec", category="general", confidence=0.9)],
+                steps=[{"id": "S1", "text": "Mock step", "order": 1, "confidence": 0.9}],
+                constraints=[{"id": "C1", "text": "Mock constraint", "confidence": 0.8, "steps": ["S1"]}],
+                confidence_score=0.9,
+                processing_time=0.01,
+                strategy_used="test-double",
+                quality_metrics={"entity_count": 1},
+                metadata={"chunking": {"method": "fixed", "count": 1, "avg_sentences": 0, "avg_chars": 10, "avg_cohesion": None}},
+            )
+        monkeypatch.setattr(
+            app_module.processor.knowledge_engine,
+            "extract_knowledge",
+            _fake_extract,
+            raising=True,
+        )
+        return TestClient(app_module.app)
     
     def test_complete_text_extraction_flow(self, client):
         """Test complete extraction flow with text file"""

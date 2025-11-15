@@ -104,7 +104,10 @@ Set the `GPU_BACKEND` to `metal`, `cuda`, or `auto`.
 **Common Settings:**
 - `EXPLAINIUM_ENV`: `development|testing|production`
 - `ENABLE_GPU`: `true|false`
-- `CHUNK_SIZE`, `LLM_N_CTX`, `LLM_TEMPERATURE`, `LLM_MAX_TOKENS`
+- `CHUNK_SIZE`, `CHUNK_MAX_CHARS`, `CHUNKING_METHOD`, `LLM_N_CTX`, `LLM_TEMPERATURE`, `LLM_MAX_TOKENS`
+- Semantic chunking knobs: `SEM_LAMBDA`, `SEM_WINDOW_W`, `SEM_MIN_SENTENCES_PER_CHUNK`, `SEM_MAX_SENTENCES_PER_CHUNK`, `SEM_SIMILARITY`
+- Dual Semantic Chunker knobs: `DSC_PARENT_MIN_SENTENCES`, `DSC_PARENT_MAX_SENTENCES`, `DSC_DELTA_WINDOW`, `DSC_THRESHOLD_K`, `DSC_USE_HEADINGS`
+- Diagnostics: `DEBUG_CHUNKING=true` emits per-chunk spans/metadata in the API response
 
 **`metal` Backend Settings (`llama.cpp`):**
 - `LLM_MODEL_PATH`: Path to your local `.gguf` model file.
@@ -113,6 +116,44 @@ Set the `GPU_BACKEND` to `metal`, `cuda`, or `auto`.
 **`cuda` Backend Settings (`transformers`):**
 - `LLM_MODEL_ID`: Hugging Face model ID (e.g., `mistralai/Mistral-7B-Instruct-v0.2`).
 - `LLM_QUANTIZATION`: `4bit` or `8bit` for quantization on CUDA.
+
+## Chunking Methods
+Select the chunker via `CHUNKING_METHOD` (default `fixed`). Every chunk is capped by `CHUNK_MAX_CHARS` to keep LLM prompts safe.
+
+1. **`fixed`** – legacy behavior: greedily splits every ~`CHUNK_MAX_CHARS` characters on whitespace. Zero dependencies, ideal for smoke tests or extremely small machines.
+2. **`breakpoint_semantic`** – sentence-level dynamic programming. Steps:
+   - SpaCy (`en_core_web_sm`) splits sentences.
+   - Sentence embeddings (default `models/embeddings/all-mpnet-base-v2`) provide cosine similarities between consecutive sentences.
+   - Objective: maximise average cohesion minus a per-break penalty `SEM_LAMBDA`, constrained by window `SEM_WINDOW_W` and min/max sentence counts.
+3. **`dsc`** (Dual Semantic Chunker) – two stage:
+   - Parent blocks via distance deltas `d_t = 1 - cos(e_t, e_{t+1})` and adaptive threshold `θ = μ + k·σ` (`DSC_THRESHOLD_K`) with rolling window `DSC_DELTA_WINDOW`. `DSC_PARENT_MIN_SENTENCES` / `DSC_PARENT_MAX_SENTENCES` bound block size, heading heuristics (`DSC_USE_HEADINGS=true`) bias toward enumerated sections.
+   - Each parent block is refined by the breakpoint semantic chunker to produce child chunks, inheriting parent metadata.
+
+Example configurations:
+
+```bash
+export CHUNKING_METHOD=breakpoint_semantic
+export EMBEDDING_MODEL_PATH=models/embeddings/all-mpnet-base-v2
+export SEM_LAMBDA=0.15
+export SEM_WINDOW_W=30
+export SEM_MIN_SENTENCES_PER_CHUNK=2
+export SEM_MAX_SENTENCES_PER_CHUNK=40
+export CHUNK_MAX_CHARS=2000
+```
+
+```bash
+export CHUNKING_METHOD=dsc
+export DSC_PARENT_MIN_SENTENCES=10
+export DSC_PARENT_MAX_SENTENCES=120
+export DSC_DELTA_WINDOW=25
+export DSC_THRESHOLD_K=1.0
+export DSC_USE_HEADINGS=true
+```
+
+> **Embedding asset**: semantic chunkers expect `models/embeddings/all-mpnet-base-v2` (SentenceTransformers format). Download once with  
+> `huggingface-cli download sentence-transformers/all-mpnet-base-v2 --local-dir models/embeddings/all-mpnet-base-v2 --local-dir-use-symlinks False`.
+
+Turn on `DEBUG_CHUNKING=true` to record chunk spans, cohesion, and parent metadata in every extraction response/log line—handy when tuning `SEM_LAMBDA`/`θ` for EBBC or DSC chunkers.
 
 ## Evaluation & Baselines
 - Preflight checks (assets/deps):

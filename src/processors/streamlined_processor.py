@@ -154,6 +154,8 @@ class StreamlinedDocumentProcessor:
             
             processing_time = time.time() - start_time
             file_size = file_path.stat().st_size
+            chunk_meta = extraction_result.metadata.get('chunking', {}) if extraction_result.metadata else {}
+            chunk_debug = extraction_result.metadata.get('chunks') if extraction_result.metadata else None
             
             # Update statistics
             self._update_stats(processing_time, file_format)
@@ -171,7 +173,9 @@ class StreamlinedDocumentProcessor:
                     'content_length': len(content),
                     'entities_extracted': len(extraction_result.entities),
                     'steps_extracted': len(extraction_result.steps),
-                    'constraints_extracted': len(extraction_result.constraints)
+                    'constraints_extracted': len(extraction_result.constraints),
+                    'chunking': chunk_meta,
+                    'chunk_debug': chunk_debug if self.config.debug_chunking else None,
                 }
             )
             

@@ -3,14 +3,19 @@ Test knowledge extraction engine
 """
 import pytest
 from src.ai.knowledge_engine import UnifiedKnowledgeEngine, ExtractedEntity, ExtractionResult
+from src.core import unified_config
 
 
 class TestKnowledgeEngine:
     """Test knowledge extraction engine"""
     
     @pytest.fixture
-    def engine(self):
+    def engine(self, monkeypatch):
         """Create engine instance"""
+        monkeypatch.setenv("EXPLAINIUM_ENV", "testing")
+        monkeypatch.setenv("GPU_BACKEND", "cpu")
+        monkeypatch.setenv("ENABLE_GPU", "false")
+        unified_config.reload_config()
         try:
             return UnifiedKnowledgeEngine()
         except RuntimeError as e:
