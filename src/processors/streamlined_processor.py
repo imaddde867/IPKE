@@ -178,7 +178,8 @@ class StreamlinedDocumentProcessor:
                     'content_length': len(content),
                     'entities_extracted': len(extraction_result.entities),
                     'steps_extracted': len(extraction_result.steps),
-                    'constraints_extracted': len(extraction_result.constraints)
+                    'constraints_extracted': len(extraction_result.constraints),
+                    'quality_metrics': extraction_result.quality_metrics
                 }
             )
             

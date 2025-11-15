@@ -227,6 +227,7 @@ class UnifiedConfig:
             'max_workers': _env_int('MAX_WORKERS', default=cls.max_workers, min_value=1),
             'llm_model_id': _get_env_value('LLM_MODEL_ID', default=cls.llm_model_id),
             'llm_quantization': _get_env_value('LLM_QUANTIZATION', default=cls.llm_quantization),
+            'llm_model_path': _get_env_value('LLM_MODEL_PATH', default=cls.llm_model_path),
         }
         base_kwargs.update(chunk_kwargs)
         return cls(**base_kwargs)
@@ -245,7 +246,8 @@ class UnifiedConfig:
             'max_file_size_mb': _env_int('TEST_MAX_FILE_SIZE_MB', default=10, min_value=1),
             'confidence_threshold': 0.5,
             'cache_size': 100,
-            'llm_model_id': "sshleifer/tiny-gpt2"
+            'llm_model_id': "sshleifer/tiny-gpt2",
+            'llm_model_path': _get_env_value('LLM_MODEL_PATH', default=cls.llm_model_path),
         }
         base_kwargs.update(chunk_kwargs)
         return cls(**base_kwargs)
@@ -278,6 +280,7 @@ class UnifiedConfig:
             'llm_max_chunks': _env_int('LLM_MAX_CHUNKS', default=cls.llm_max_chunks, min_value=0),
             'llm_model_id': _get_env_value('LLM_MODEL_ID', default=cls.llm_model_id),
             'llm_quantization': _get_env_value('LLM_QUANTIZATION', default=cls.llm_quantization),
+            'llm_model_path': _get_env_value('LLM_MODEL_PATH', default=cls.llm_model_path),
         }
         base_kwargs.update(chunk_kwargs)
         return cls(**base_kwargs)
