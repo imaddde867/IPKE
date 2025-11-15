@@ -24,6 +24,18 @@ def _ensure_session_defaults() -> None:
         "quality_threshold": config.quality_threshold,
         "confidence_threshold": config.confidence_threshold,
         "chunk_size": config.chunk_size,
+        "chunking_method": config.chunking_method,
+        "embedding_model_path": config.embedding_model_path,
+        "sem_min_sentences_per_chunk": config.sem_min_sentences_per_chunk,
+        "sem_max_sentences_per_chunk": config.sem_max_sentences_per_chunk,
+        "sem_lambda": config.sem_lambda,
+        "sem_window_w": config.sem_window_w,
+        "dsc_parent_min_sentences": config.dsc_parent_min_sentences,
+        "dsc_parent_max_sentences": config.dsc_parent_max_sentences,
+        "dsc_delta_window": config.dsc_delta_window,
+        "dsc_threshold_k": config.dsc_threshold_k,
+        "dsc_use_headings": config.dsc_use_headings,
+        "debug_chunking": config.debug_chunking,
         "llm_n_ctx": config.llm_n_ctx,
         "llm_temperature": config.llm_temperature,
         "llm_top_p": config.llm_top_p,
@@ -48,7 +60,11 @@ def _ensure_session_defaults() -> None:
 
 def _apply_settings(new_values: Dict[str, Any]) -> None:
     config = get_config()
+    chunk_char_cap = int(new_values.get("chunk_size", config.chunk_size))
+    config.set_chunk_char_cap(chunk_char_cap)
     for key, value in new_values.items():
+        if key == "chunk_size":
+            continue
         setattr(config, key, value)
     st.session_state["settings"] = new_values.copy()
     st.session_state["processor"] = None  # rebuild with fresh config
@@ -101,11 +117,12 @@ def _render_sidebar() -> None:
         col_left, col_right = st.columns(2)
         with col_left:
             chunk_size = st.number_input(
-                "Chunk Size",
+                "Chunk Size (characters)",
                 min_value=256,
-                max_value=4096,
+                max_value=8192,
                 step=128,
                 value=int(current["chunk_size"]),
+                help="Character limit per chunk. Semantic chunkers inherit this cap.",
             )
             llm_temperature = st.slider(
                 "LLM Temperature",
@@ -188,13 +205,129 @@ def _render_sidebar() -> None:
                 help="Fraction of total GPU memory the model may reserve."
             )
 
+        st.subheader("Chunking")
+        chunking_options = {
+            "Fixed (legacy whitespace)": "fixed",
+            "Breakpoint-based semantic": "breakpoint_semantic",
+            "Dual Semantic Chunker (DSC)": "dsc",
+        }
+        chunking_labels = list(chunking_options.keys())
+        selected_method = str(current.get("chunking_method", "fixed")).lower()
+        default_label = next(
+            (label for label, value in chunking_options.items() if value == selected_method),
+            chunking_labels[0],
+        )
+        chunking_method_label = st.selectbox(
+            "Chunking Method",
+            options=chunking_labels,
+            index=chunking_labels.index(default_label),
+            help="Fixed chunking splits by characters only; semantic modes score sentences using embeddings.",
+        )
+        chunking_method = chunking_options[chunking_method_label]
+        debug_chunking = st.checkbox(
+            "Return chunk diagnostics in responses",
+            value=bool(current.get("debug_chunking", False)),
+            help="Adds per-chunk spans/metadata to API responses for research/debugging.",
+        )
+        embedding_model_path = st.text_input(
+            "Embedding Model Path",
+            value=str(current.get("embedding_model_path") or ""),
+            help="SentenceTransformer checkpoint used for semantic chunking. Leave blank to keep current path.",
+        ).strip() or str(current.get("embedding_model_path") or "")
+
+        sem_min = int(current.get("sem_min_sentences_per_chunk", 2))
+        sem_max = int(current.get("sem_max_sentences_per_chunk", 40))
+        sem_lambda = float(current.get("sem_lambda", 0.15))
+        sem_window = int(current.get("sem_window_w", 30))
+        if chunking_method in {"breakpoint_semantic", "dsc"}:
+            with st.expander("Semantic Chunking Hyperparameters", expanded=False):
+                sem_min = st.number_input(
+                    "Min sentences per chunk",
+                    min_value=1,
+                    max_value=50,
+                    step=1,
+                    value=sem_min,
+                )
+                sem_max = st.number_input(
+                    "Max sentences per chunk",
+                    min_value=sem_min,
+                    max_value=200,
+                    step=1,
+                    value=max(sem_max, sem_min),
+                )
+                sem_lambda = st.slider(
+                    "Breakpoint penalty (λ)",
+                    min_value=0.0,
+                    max_value=1.0,
+                    step=0.01,
+                    value=min(max(sem_lambda, 0.0), 1.0),
+                    help="Larger λ encourages fewer chunks by penalizing each breakpoint.",
+                )
+                sem_window = st.number_input(
+                    "Similarity window (sentences)",
+                    min_value=sem_max,
+                    max_value=400,
+                    step=1,
+                    value=max(sem_window, sem_max),
+                )
+
+        dsc_parent_min = int(current.get("dsc_parent_min_sentences", 10))
+        dsc_parent_max = int(current.get("dsc_parent_max_sentences", 120))
+        dsc_delta_window = int(current.get("dsc_delta_window", 25))
+        dsc_threshold_k = float(current.get("dsc_threshold_k", 1.0))
+        dsc_use_headings = bool(current.get("dsc_use_headings", True))
+        if chunking_method == "dsc":
+            with st.expander("Dual Semantic Chunker (DSC) Settings", expanded=False):
+                dsc_parent_min = st.number_input(
+                    "Parent block min sentences",
+                    min_value=2,
+                    max_value=200,
+                    step=1,
+                    value=dsc_parent_min,
+                )
+                dsc_parent_max = st.number_input(
+                    "Parent block max sentences",
+                    min_value=dsc_parent_min,
+                    max_value=400,
+                    step=1,
+                    value=max(dsc_parent_max, dsc_parent_min),
+                )
+                dsc_delta_window = st.number_input(
+                    "Rolling window (sentences)",
+                    min_value=5,
+                    max_value=200,
+                    step=1,
+                    value=max(dsc_delta_window, 5),
+                    help="Window size for adaptive thresholding over cosine deltas.",
+                )
+                dsc_threshold_k = st.slider(
+                    "Threshold multiplier (k)",
+                    min_value=0.0,
+                    max_value=2.0,
+                    step=0.05,
+                    value=min(max(dsc_threshold_k, 0.0), 2.0),
+                    help="Higher values prefer coarser parents; lower values split more aggressively.",
+                )
+                dsc_use_headings = st.checkbox(
+                    "Prefer heading boundaries",
+                    value=dsc_use_headings,
+                    help="Bias splits when encountering enumerated/uppercase headings.",
+                )
+
         submitted = st.form_submit_button("Apply Settings")
 
     if submitted:
+        sem_min = int(sem_min)
+        sem_max = max(int(sem_max), sem_min)
+        sem_window = max(int(sem_window), sem_max)
+        dsc_parent_min = int(dsc_parent_min)
+        dsc_parent_max = max(int(dsc_parent_max), dsc_parent_min)
+        dsc_delta_window = max(int(dsc_delta_window), 5)
         new_values = {
             "quality_threshold": float(quality_threshold),
             "confidence_threshold": float(confidence_threshold),
             "chunk_size": int(chunk_size),
+            "chunking_method": chunking_method,
             "llm_n_ctx": int(llm_n_ctx),
             "llm_temperature": float(llm_temperature),
             "llm_top_p": float(llm_top_p),
@@ -206,6 +339,17 @@ def _render_sidebar() -> None:
             "gpu_backend": str(gpu_backend),
             "llm_n_gpu_layers": int(llm_n_gpu_layers),
             "gpu_memory_fraction": float(gpu_memory_fraction),
+            "embedding_model_path": embedding_model_path,
+            "sem_min_sentences_per_chunk": sem_min,
+            "sem_max_sentences_per_chunk": sem_max,
+            "sem_lambda": float(sem_lambda),
+            "sem_window_w": sem_window,
+            "dsc_parent_min_sentences": dsc_parent_min,
+            "dsc_parent_max_sentences": dsc_parent_max,
+            "dsc_delta_window": dsc_delta_window,
+            "dsc_threshold_k": float(dsc_threshold_k),
+            "dsc_use_headings": bool(dsc_use_headings),
+            "debug_chunking": bool(debug_chunking),
         }
         _apply_settings(new_values)
         st.sidebar.success("Settings updated. Next run will use the new values.")
@@ -227,7 +371,8 @@ def _render_sidebar() -> None:
         f"Environment: **{config.environment.value.capitalize()}** · "
         f"Backend: `{config.gpu_backend}` · "
         f"GPU Layers: {config.llm_n_gpu_layers} · "
-        f"n_ctx: {int(current.get('llm_n_ctx', config.llm_n_ctx))}"
+        f"n_ctx: {int(current.get('llm_n_ctx', config.llm_n_ctx))} · "
+        f"Chunker: `{current.get('chunking_method', config.chunking_method)}`"
     )
 
 
@@ -308,6 +453,12 @@ def main() -> None:
             f"{last_result['processing_time']:.2f}",
         )
         col_right.metric("Strategy", last_result["strategy_used"])
+        chunk_stats = (last_result.get("metadata") or {}).get("chunking") or {}
+        if chunk_stats:
+            st.caption(
+                f"Chunking → {chunk_stats.get('method', 'n/a')} produced {chunk_stats.get('count', 0)} chunks "
+                f"(avg sentences {chunk_stats.get('avg_sentences', 0)}, avg chars {chunk_stats.get('avg_chars', 0)})"
+            )
 
         st.subheader("Entities")
         st.dataframe(last_result["entities"], use_container_width=True, hide_index=True)

@@ -104,7 +104,7 @@ Set the `GPU_BACKEND` to `metal`, `cuda`, or `auto`.
 **Common Settings:**
 - `EXPLAINIUM_ENV`: `development|testing|production`
 - `ENABLE_GPU`: `true|false`
-- `CHUNK_SIZE`, `CHUNK_MAX_CHARS`, `CHUNKING_METHOD`, `LLM_N_CTX`, `LLM_TEMPERATURE`, `LLM_MAX_TOKENS`
+- `CHUNK_SIZE` (also used as the per-chunk character cap unless `CHUNK_MAX_CHARS` is explicitly set), `CHUNK_MAX_CHARS`, `CHUNKING_METHOD`, `LLM_N_CTX`, `LLM_TEMPERATURE`, `LLM_MAX_TOKENS`
 - Semantic chunking knobs: `SEM_LAMBDA`, `SEM_WINDOW_W`, `SEM_MIN_SENTENCES_PER_CHUNK`, `SEM_MAX_SENTENCES_PER_CHUNK`, `SEM_SIMILARITY`
 - Dual Semantic Chunker knobs: `DSC_PARENT_MIN_SENTENCES`, `DSC_PARENT_MAX_SENTENCES`, `DSC_DELTA_WINDOW`, `DSC_THRESHOLD_K`, `DSC_USE_HEADINGS`
 - Diagnostics: `DEBUG_CHUNKING=true` emits per-chunk spans/metadata in the API response
@@ -128,6 +128,8 @@ Select the chunker via `CHUNKING_METHOD` (default `fixed`). Every chunk is cappe
 3. **`dsc`** (Dual Semantic Chunker) – two stage:
    - Parent blocks via distance deltas `d_t = 1 - cos(e_t, e_{t+1})` and adaptive threshold `θ = μ + k·σ` (`DSC_THRESHOLD_K`) with rolling window `DSC_DELTA_WINDOW`. `DSC_PARENT_MIN_SENTENCES` / `DSC_PARENT_MAX_SENTENCES` bound block size, heading heuristics (`DSC_USE_HEADINGS=true`) bias toward enumerated sections.
    - Each parent block is refined by the breakpoint semantic chunker to produce child chunks, inheriting parent metadata.
+
+The Streamlit UI mirrors these knobs. Open the sidebar → **Chunking** to switch methods, edit the SentenceTransformer path, tune `SEM_*`/`DSC_*` values, and toggle `DEBUG_CHUNKING` to inspect per-chunk spans when experimenting.
 
 Example configurations:
 

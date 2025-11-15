@@ -191,6 +191,9 @@ class UnifiedConfig:
         """Development environment configuration"""
         chunking_method = (_get_env_value('CHUNKING_METHOD', default=cls.chunking_method) or cls.chunking_method).lower()
         sem_similarity = (_get_env_value('SEM_SIMILARITY', default=cls.sem_similarity) or cls.sem_similarity).lower()
+        chunk_size = _env_int('CHUNK_SIZE', default=cls.chunk_size, min_value=100)
+        chunk_max_default = max(chunk_size, 256)
+        chunk_max_chars = _env_int('CHUNK_MAX_CHARS', default=chunk_max_default, min_value=256)
         return cls(
             environment=Environment.DEVELOPMENT,
             debug=True,
@@ -204,7 +207,7 @@ class UnifiedConfig:
             gpu_memory_fraction=_env_float('GPU_MEMORY_FRACTION', default=0.8, min_value=0.0, max_value=1.0),
             confidence_threshold=_env_float('CONFIDENCE_THRESHOLD', default=0.8, min_value=0.0, max_value=1.0),
             quality_threshold=_env_float('QUALITY_THRESHOLD', default=0.7, min_value=0.0, max_value=1.0),
-            chunk_size=_env_int('CHUNK_SIZE', default=2000, min_value=100),
+            chunk_size=chunk_size,
             llm_n_ctx=_env_int('LLM_N_CTX', default=cls.llm_n_ctx),
             llm_temperature=_env_float('LLM_TEMPERATURE', default=cls.llm_temperature),
             llm_top_p=_env_float('LLM_TOP_P', default=cls.llm_top_p),
@@ -217,7 +220,7 @@ class UnifiedConfig:
             llm_model_id=_get_env_value('LLM_MODEL_ID', default=cls.llm_model_id),
             llm_quantization=_get_env_value('LLM_QUANTIZATION', default=cls.llm_quantization),
             chunking_method=chunking_method,
-            chunk_max_chars=_env_int('CHUNK_MAX_CHARS', default=cls.chunk_max_chars, min_value=256),
+            chunk_max_chars=chunk_max_chars,
             embedding_model_path=_get_env_value('EMBEDDING_MODEL_PATH', default=cls.embedding_model_path),
             sem_similarity=sem_similarity,
             sem_min_sentences_per_chunk=_env_int('SEM_MIN_SENTENCES_PER_CHUNK', default=cls.sem_min_sentences_per_chunk, min_value=1),
@@ -237,6 +240,9 @@ class UnifiedConfig:
         """Testing environment configuration"""
         chunking_method = (_get_env_value('CHUNKING_METHOD', default=cls.chunking_method) or cls.chunking_method).lower()
         sem_similarity = (_get_env_value('SEM_SIMILARITY', default=cls.sem_similarity) or cls.sem_similarity).lower()
+        chunk_size = _env_int('CHUNK_SIZE', default=cls.chunk_size, min_value=100)
+        chunk_max_default = max(chunk_size, 256)
+        chunk_max_chars = _env_int('CHUNK_MAX_CHARS', default=chunk_max_default, min_value=256)
         return cls(
             environment=Environment.TESTING,
             debug=False,
@@ -249,8 +255,9 @@ class UnifiedConfig:
             cache_size=100,
             llm_model_id="sshleifer/tiny-gpt2",
             llm_parallel_instances=1,
+            chunk_size=chunk_size,
             chunking_method=chunking_method,
-            chunk_max_chars=_env_int('CHUNK_MAX_CHARS', default=cls.chunk_max_chars, min_value=128),
+            chunk_max_chars=chunk_max_chars,
             embedding_model_path=_get_env_value('EMBEDDING_MODEL_PATH', default=cls.embedding_model_path),
             sem_similarity=sem_similarity,
             sem_min_sentences_per_chunk=_env_int('SEM_MIN_SENTENCES_PER_CHUNK', default=cls.sem_min_sentences_per_chunk, min_value=1),
@@ -272,6 +279,9 @@ class UnifiedConfig:
         cors_origins = cors_origins_raw.split(',') if cors_origins_raw else []
         chunking_method = (_get_env_value('CHUNKING_METHOD', default=cls.chunking_method) or cls.chunking_method).lower()
         sem_similarity = (_get_env_value('SEM_SIMILARITY', default=cls.sem_similarity) or cls.sem_similarity).lower()
+        chunk_size = _env_int('CHUNK_SIZE', default=cls.chunk_size, min_value=100)
+        chunk_max_default = max(chunk_size, 256)
+        chunk_max_chars = _env_int('CHUNK_MAX_CHARS', default=chunk_max_default, min_value=256)
         
         return cls(
             environment=Environment.PRODUCTION,
@@ -295,8 +305,9 @@ class UnifiedConfig:
             llm_parallel_instances=_env_int('LLM_PARALLEL_INSTANCES', default=cls.llm_parallel_instances, min_value=1),
             llm_model_id=_get_env_value('LLM_MODEL_ID', default=cls.llm_model_id),
             llm_quantization=_get_env_value('LLM_QUANTIZATION', default=cls.llm_quantization),
+            chunk_size=chunk_size,
             chunking_method=chunking_method,
-            chunk_max_chars=_env_int('CHUNK_MAX_CHARS', default=cls.chunk_max_chars, min_value=256),
+            chunk_max_chars=chunk_max_chars,
             embedding_model_path=_get_env_value('EMBEDDING_MODEL_PATH', default=cls.embedding_model_path),
             sem_similarity=sem_similarity,
             sem_min_sentences_per_chunk=_env_int('SEM_MIN_SENTENCES_PER_CHUNK', default=cls.sem_min_sentences_per_chunk, min_value=1),
@@ -332,11 +343,18 @@ class UnifiedConfig:
             'chunk_size': self.chunk_size,
             'processing_timeout': self.processing_timeout
         }
+
+    def set_chunk_char_cap(self, char_cap: int) -> None:
+        """Update both chunk_size and chunk_max_chars to keep chunking consistent."""
+        cap = max(64, int(char_cap))
+        self.chunk_size = cap
+        self.chunk_max_chars = cap
     
     def get_chunking_config(self) -> Dict[str, Any]:
         """Return chunking-related configuration."""
         return {
             'chunking_method': self.chunking_method,
+            'chunk_size': self.chunk_size,
             'chunk_max_chars': self.chunk_max_chars,
             'embedding_model_path': self.embedding_model_path,
             'sem_similarity': self.sem_similarity,

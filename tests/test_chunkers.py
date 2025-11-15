@@ -1,6 +1,8 @@
 import re
 from typing import List
 
+import pytest
+
 import numpy as np
 
 from src.ai.chunkers import (
@@ -152,3 +154,26 @@ def test_semantic_fallbacks_when_short_or_unembeddable():
     fallback_chunks = strategy._chunk_content("Alpha Beta Gamma " * 5)
     assert fallback_chunks
     assert fallback_chunks[0].meta["chunking_method"] == "fixed"
+
+
+def test_chunk_char_cap_defaults_to_chunk_size(monkeypatch):
+    monkeypatch.setenv("CHUNK_SIZE", "1024")
+    monkeypatch.delenv("CHUNK_MAX_CHARS", raising=False)
+    cfg = UnifiedConfig._development_config()
+    assert cfg.chunk_size == 1024
+    assert cfg.chunk_max_chars == 1024
+
+
+def test_chunk_char_cap_respects_explicit_override(monkeypatch):
+    monkeypatch.setenv("CHUNK_SIZE", "1500")
+    monkeypatch.setenv("CHUNK_MAX_CHARS", "2048")
+    cfg = UnifiedConfig._development_config()
+    assert cfg.chunk_size == 1500
+    assert cfg.chunk_max_chars == 2048
+
+
+def test_chunk_char_cap_setter_syncs_values():
+    cfg = make_config()
+    cfg.set_chunk_char_cap(3072)
+    assert cfg.chunk_size == 3072
+    assert cfg.chunk_max_chars == 3072
