@@ -2,14 +2,14 @@ experiment_group: "chunking_grid_v1"
 
 docs:
   - id: "3M_OEM_SOP"
-    path: "datasets/3M_OEM_SOP.pdf"
-    gold: "datasets/gold/3M_OEM_SOP.json"
+    path: "../datasets/3M_OEM_SOP.pdf"
+    gold: "../datasets/gold/3M_OEM_SOP.json"
   - id: "DOA_Food_Proc"
-    path: "datasets/DOA_Food_Proc.pdf"
-    gold: "datasets/gold/DOA_Food_Proc.json"
+    path: "../datasets/DOA_Food_Proc.pdf"
+    gold: "../datasets/gold/DOA_Food_Proc.json"
   - id: "op_firesafety_guideline"
-    path: "datasets/op_firesafety_guideline.pdf"
-    gold: "datasets/gold/op_firesafety_guideline.json"
+    path: "../datasets/op_firesafety_guideline.pdf"
+    gold: "../datasets/gold/op_firesafety_guideline.json"
 
 llm:
   backend: "llama_cpp"
