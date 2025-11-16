@@ -32,6 +32,7 @@ from scripts.experiments.experiment_utils import (
     restart_service,
     run_evaluation_cli,
     run_method_extraction,
+    request_form_fields_from_env,
     save_metadata,
     wait_for_health,
     write_override_file,
@@ -98,6 +99,7 @@ def execute_run(
     LOGGER.info("Running DSC config %s", config_id)
     run_start = time.time()
     log_since = datetime.now(timezone.utc)
+    form_fields = request_form_fields_from_env("dsc", env_overrides)
     doc_summaries = run_method_extraction(
         method="dsc",
         service_cfg=service_cfg,
@@ -106,6 +108,7 @@ def execute_run(
         request_timeout=args.timeout,
         skip_existing=args.skip_existing,
         doc_id_overrides=doc_id_overrides,
+        request_form_fields=form_fields,
     )
     tier_a_metrics = run_evaluation_cli("A", args.gold_tier_a, run_paths.predictions_dir, run_paths.metrics_dir / "tier_a.json")
     tier_b_metrics = run_evaluation_cli("B", args.gold_tier_b, run_paths.tierb_dir, run_paths.metrics_dir / "tier_b.json")

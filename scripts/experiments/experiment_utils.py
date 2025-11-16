@@ -26,6 +26,7 @@ from scripts.run_thesis_experiments import (  # noqa: E402
     make_service_url,
     run_single_request,
     save_result,
+    env_to_method_form_fields,
 )
 from src.graph.adapter import flat_to_tierb  # noqa: E402
 
@@ -42,6 +43,13 @@ DEFAULT_TIMEOUT = 2000
 DOC_ID_OVERRIDES = {
     "3m_marine_oem_sop": "3M_OEM_SOP",
 }
+
+
+def request_form_fields_from_env(method: str, env_overrides: Optional[Dict[str, str]]) -> Dict[str, str]:
+    """Translate docker env overrides into request form fields expected by /extract."""
+    if not env_overrides:
+        return {}
+    return env_to_method_form_fields(method, env_overrides)
 
 
 @dataclass
@@ -175,6 +183,7 @@ def run_method_extraction(
     request_timeout: int = DEFAULT_TIMEOUT,
     skip_existing: bool = False,
     doc_id_overrides: Optional[Dict[str, str]] = None,
+    request_form_fields: Optional[Dict[str, object]] = None,
 ) -> List[Dict[str, object]]:
     session = requests.Session()
     service_url = make_service_url(service_cfg.host, service_cfg.port)
@@ -197,7 +206,14 @@ def run_method_extraction(
 
         LOGGER.info("Requesting %s via %s", doc_id, service_url)
         start = time.time()
-        payload = run_single_request(session, service_url, doc_path, request_timeout)
+        payload = run_single_request(
+            session,
+            service_url,
+            doc_path,
+            request_timeout,
+            method=method,
+            form_overrides=request_form_fields,
+        )
         elapsed = time.time() - start
         save_result(payload, output_path)
         tierb_payload = flat_to_tierb(payload)
