@@ -16,7 +16,7 @@ docs:
 
 llm:
   backend: "llama_cpp"
-  model_path: "models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf"
+  model_path: "../models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf"
   n_ctx: 8192
   temperature: 0.1
   top_p: 0.9
