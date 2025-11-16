@@ -1,0 +1,28 @@
+curl -L -o models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf \https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.2-GGUF/resolve/main/mistral-7b-instruct-v0.2.Q4_K_M.gguf?download=true
+
+   # Embedding model (all-mpnet-base-v2)
+   mkdir -p models/embeddings/all-mpnet-base-v2
+   cd models/embeddings/all-mpnet-base-v2
+   wget https://huggingface.co/sentence-transformers/all-mpnet-base-v2/resolve/main/config.json
+   wget https://huggingface.co/sentence-transformers/all-mpnet-base-v2/resolve/main/pytorch_model.bin
+   wget https://huggingface.co/sentence-transformers/all-mpnet-base-v2/resolve/main/tokenizer.json
+   wget https://huggingface.co/sentence-transformers/all-mpnet-base-v2/resolve/main/tokenizer_config.json
+   wget https://huggingface.co/sentence-transformers/all-mpnet-base-v2/resolve/main/special_tokens_map.json
+   cd ~/IPKE
+   ```
+   *If the files are gated, set `HF_TOKEN=...` and add `-H "Authorization: Bearer $HF_TOKEN"` to each curl/wget command.*
+
+3. Option B – Copy your existing models from your laptop (run these on your local machine):
+   ```
+   rsync -avP models/llm imadeddine@34.10.48.76:~/IPKE/models/
+   rsync -avP models/embeddings imadeddine@34.10.48.76:~/IPKE/models/
+   ```
+   Replace the IP/user if they differ.
+
+4. Verify the files exist:
+   ```
+   ls -lh models/llm
+   ls -lh models/embeddings/all-mpnet-base-v2
+   ```
+
+After the files are staged, `docker compose -f docker-compose.yml -f docker-compose.gcp.yml up -d ipke-fixed` will mount them automatically under `/app/models` inside the containers.

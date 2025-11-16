@@ -22,6 +22,7 @@ class Environment(Enum):
     DEVELOPMENT = "development"
     TESTING = "testing"
     PRODUCTION = "production"
+    CLOUD = "cloud"
 
 
 def _get_env_value(*keys: str, default: Optional[str] = None) -> Optional[str]:
@@ -135,6 +136,7 @@ class UnifiedConfig:
     llm_n_ctx: int = 8192
     llm_n_threads: int = 4
     llm_max_tokens: int = 1536
+    llm_cpu_max_tokens_cap: int = 512
     llm_temperature: float = 0.1
     llm_top_p: float = 0.9
     llm_repeat_penalty: float = 1.1
@@ -183,21 +185,33 @@ class UnifiedConfig:
     @classmethod
     def from_environment(cls) -> 'UnifiedConfig':
         """Load configuration from environment variables"""
-        
-        env_name = _get_env_value(
-            'EXPLAINIUM_ENV', 'ENVIRONMENT', default='development'
-        ).lower()
+        env_name_raw = _get_env_value(
+            'EXPLAINIUM_ENV', 'ENVIRONMENT', default=None
+        )
+        env_name = (env_name_raw or "development").lower()
+        if env_name in {"gcp", "google", "google_cloud"}:
+            env_name = "cloud"
+        env_override_requested = env_name_raw is not None
+
+        google_cloud_detected = any(
+            os.getenv(flag) for flag in ("GOOGLE_CLOUD_PROJECT", "GCE_INSTANCE_NAME", "KUBERNETES_SERVICE_HOST")
+        )
+
         try:
             environment = Environment(env_name)
         except ValueError:
-            environment = Environment.DEVELOPMENT
+            environment = Environment.CLOUD if google_cloud_detected else Environment.DEVELOPMENT
+        
+        if not env_override_requested and google_cloud_detected:
+            environment = Environment.CLOUD
         
         if environment == Environment.PRODUCTION:
             return cls._production_config()
-        elif environment == Environment.TESTING:
+        if environment == Environment.TESTING:
             return cls._testing_config()
-        else:
-            return cls._development_config()
+        if environment == Environment.CLOUD:
+            return cls._cloud_config()
+        return cls._development_config()
     
     @classmethod
     def _development_config(cls) -> 'UnifiedConfig':
@@ -224,6 +238,7 @@ class UnifiedConfig:
             'llm_n_threads': _env_int('LLM_N_THREADS', default=cls.llm_n_threads, min_value=1),
             'llm_max_tokens': _env_int('LLM_MAX_TOKENS', default=cls.llm_max_tokens, min_value=64),
             'llm_max_chunks': _env_int('LLM_MAX_CHUNKS', default=cls.llm_max_chunks, min_value=0),
+            'llm_cpu_max_tokens_cap': _env_int('LLM_CPU_MAX_TOKENS_CAP', default=cls.llm_cpu_max_tokens_cap),
             'max_workers': _env_int('MAX_WORKERS', default=cls.max_workers, min_value=1),
             'llm_model_id': _get_env_value('LLM_MODEL_ID', default=cls.llm_model_id),
             'llm_quantization': _get_env_value('LLM_QUANTIZATION', default=cls.llm_quantization),
@@ -248,6 +263,7 @@ class UnifiedConfig:
             'cache_size': 100,
             'llm_model_id': "sshleifer/tiny-gpt2",
             'llm_model_path': _get_env_value('LLM_MODEL_PATH', default=cls.llm_model_path),
+            'llm_cpu_max_tokens_cap': _env_int('LLM_CPU_MAX_TOKENS_CAP', default=cls.llm_cpu_max_tokens_cap),
         }
         base_kwargs.update(chunk_kwargs)
         return cls(**base_kwargs)
@@ -278,6 +294,39 @@ class UnifiedConfig:
             'llm_repeat_penalty': _env_float('LLM_REPEAT_PENALTY', default=cls.llm_repeat_penalty),
             'llm_n_threads': _env_int('LLM_N_THREADS', default=cls.llm_n_threads, min_value=1),
             'llm_max_chunks': _env_int('LLM_MAX_CHUNKS', default=cls.llm_max_chunks, min_value=0),
+            'llm_model_id': _get_env_value('LLM_MODEL_ID', default=cls.llm_model_id),
+            'llm_quantization': _get_env_value('LLM_QUANTIZATION', default=cls.llm_quantization),
+            'llm_model_path': _get_env_value('LLM_MODEL_PATH', default=cls.llm_model_path),
+            'llm_cpu_max_tokens_cap': _env_int('LLM_CPU_MAX_TOKENS_CAP', default=cls.llm_cpu_max_tokens_cap),
+        }
+        base_kwargs.update(chunk_kwargs)
+        return cls(**base_kwargs)
+    
+    @classmethod
+    def _cloud_config(cls) -> 'UnifiedConfig':
+        """Google Cloud friendly configuration preset."""
+        chunk_kwargs = cls._chunking_overrides()
+        base_kwargs: Dict[str, Any] = {
+            'environment': Environment.CLOUD,
+            'debug': False,
+            'log_level': _get_env_value('LOG_LEVEL', default='INFO'),
+            'max_file_size_mb': _env_int('MAX_FILE_SIZE_MB', default=200, min_value=1),
+            'processing_timeout': _env_int('PROCESSING_TIMEOUT', default=600, min_value=60),
+            'api_host': _get_env_value('API_HOST', default='0.0.0.0'),
+            'gpu_backend': _get_env_value('GPU_BACKEND', default='cuda'),
+            'enable_gpu': _env_bool('ENABLE_GPU', default=True),
+            'llm_n_gpu_layers': _env_int('LLM_GPU_LAYERS', default=-1),
+            'gpu_memory_fraction': _env_float('GPU_MEMORY_FRACTION', default=0.9, min_value=0.0, max_value=1.0),
+            'confidence_threshold': _env_float('CONFIDENCE_THRESHOLD', default=0.8, min_value=0.0, max_value=1.0),
+            'quality_threshold': _env_float('QUALITY_THRESHOLD', default=0.8, min_value=0.0, max_value=1.0),
+            'llm_temperature': _env_float('LLM_TEMPERATURE', default=cls.llm_temperature),
+            'llm_top_p': _env_float('LLM_TOP_P', default=cls.llm_top_p),
+            'llm_repeat_penalty': _env_float('LLM_REPEAT_PENALTY', default=cls.llm_repeat_penalty),
+            'llm_n_threads': _env_int('LLM_N_THREADS', default=cls.llm_n_threads, min_value=1),
+            'llm_max_tokens': _env_int('LLM_MAX_TOKENS', default=cls.llm_max_tokens, min_value=64),
+            'llm_max_chunks': _env_int('LLM_MAX_CHUNKS', default=cls.llm_max_chunks, min_value=0),
+            'llm_cpu_max_tokens_cap': _env_int('LLM_CPU_MAX_TOKENS_CAP', default=cls.llm_cpu_max_tokens_cap),
+            'max_workers': _env_int('MAX_WORKERS', default=16, min_value=1),
             'llm_model_id': _get_env_value('LLM_MODEL_ID', default=cls.llm_model_id),
             'llm_quantization': _get_env_value('LLM_QUANTIZATION', default=cls.llm_quantization),
             'llm_model_path': _get_env_value('LLM_MODEL_PATH', default=cls.llm_model_path),
@@ -415,6 +464,7 @@ class UnifiedConfig:
             'top_p': self.llm_top_p,
             'repeat_penalty': self.llm_repeat_penalty,
             'max_chunks': self.llm_max_chunks,
+            'cpu_max_tokens_cap': self.llm_cpu_max_tokens_cap,
             'confidence_threshold': self.confidence_threshold,
             'enable_gpu': self.enable_gpu,
             'gpu_backend': self.gpu_backend,

@@ -55,3 +55,18 @@ Each service exposes a different host port (8000/8001/8002) but serves the FastA
 5. **Batch Experiments**: Automate runs with `scripts/run_baseline_loops.py --runs N`, pointing the script at the specific service endpoint (e.g., `http://localhost:8001` for semantic chunking). Capture metrics under `results/` for thesis reporting.
 
 By keeping models mounted and chunking configs isolated per service, you can iterate on extraction strategies without rebuilding large images or copying GB-scale checkpoints into the container layers.
+
+## 5. Running on Google Cloud GPU VMs
+
+High-memory NVIDIA GPUs on Google Compute Engine dramatically cut extraction latency compared to local CPU-only runs. The repo now ships with a Compose overlay that wires in CUDA defaults and requests GPUs from Docker:
+
+1. Provision a Compute Engine VM with an NVIDIA GPU (e.g., L4, T4, or A100) and install the [NVIDIA drivers + Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html). Confirm `nvidia-smi` works before continuing.
+2. Copy your `models/`, `data/`, and `results/` folders to the VM (or mount a GCS bucket) exactly as described earlier.
+3. Launch the GPU-tuned stack with the overlay file:
+   ```bash
+   docker compose -f docker-compose.yml -f docker-compose.gcp.yml up -d ipke-fixed
+   ```
+   Swap `ipke-fixed` for `ipke-semantic`/`ipke-dsc` as needed. The overlay injects `EXPLAINIUM_ENV=cloud`, enables CUDA in the FastAPI app, and issues a GPU device request so Docker binds the accelerator into each container.
+4. (Optional) Override specific knobs—`LLM_MODEL_ID`, `LLM_MAX_TOKENS`, chunking bounds, etc.—via `ENV=... docker compose ...` to fine-tune for your VM size. The new `cloud` configuration preset automatically picks sane CUDA defaults whenever `GOOGLE_CLOUD_PROJECT` is present or `EXPLAINIUM_ENV=cloud`.
+
+With GPUs attached you can keep `LLM_CPU_MAX_TOKENS_CAP` disabled (set to `0`) for full-quality generations while still reusing the same experiment scripts described above.
