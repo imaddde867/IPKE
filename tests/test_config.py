@@ -19,7 +19,12 @@ class TestUnifiedConfig:
     def test_environment_detection(self):
         """Test environment detection from env vars"""
         config = get_config()
-        assert config.environment in [Environment.DEVELOPMENT, Environment.TESTING, Environment.PRODUCTION]
+        assert config.environment in [
+            Environment.DEVELOPMENT,
+            Environment.TESTING,
+            Environment.PRODUCTION,
+            Environment.CLOUD,
+        ]
     
     def test_file_size_limits(self):
         """Test file size configuration"""
@@ -79,6 +84,28 @@ class TestUnifiedConfig:
             monkeypatch.delenv('LLM_GPU_LAYERS', raising=False)
             monkeypatch.delenv('GPU_MEMORY_FRACTION', raising=False)
             monkeypatch.delenv('ENABLE_GPU', raising=False)
+            reload_config()
+
+    def test_cloud_environment_detected(self, monkeypatch):
+        """Setting GCP hints or EXPLAINIUM_ENV=cloud should load the cloud preset."""
+        try:
+            monkeypatch.delenv('EXPLAINIUM_ENV', raising=False)
+            monkeypatch.delenv('ENVIRONMENT', raising=False)
+            monkeypatch.setenv('GOOGLE_CLOUD_PROJECT', 'demo-project')
+            reload_config()
+            config = get_config()
+            assert config.environment == Environment.CLOUD
+            assert config.enable_gpu is True
+        finally:
+            monkeypatch.delenv('GOOGLE_CLOUD_PROJECT', raising=False)
+            reload_config()
+        try:
+            monkeypatch.setenv('EXPLAINIUM_ENV', 'cloud')
+            reload_config()
+            config = get_config()
+            assert config.environment == Environment.CLOUD
+        finally:
+            monkeypatch.delenv('EXPLAINIUM_ENV', raising=False)
             reload_config()
 
 

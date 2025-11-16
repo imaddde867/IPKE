@@ -358,6 +358,7 @@ class TransformersStrategy(BaseExtractionStrategy):
         self.model = None
         self.tokenizer = None
         self.device = "cpu"
+        self.cpu_max_tokens_cap = self.llm_config.get("cpu_max_tokens_cap", 512)
         self.generation_params = {
             'max_new_tokens': self.llm_config['max_tokens'],
             'temperature': self.llm_config['temperature'],
@@ -384,6 +385,15 @@ class TransformersStrategy(BaseExtractionStrategy):
 
         self.device = self._resolve_device()
         logger.info(f"Initializing TransformersStrategy on device: {self.device}")
+        if self.device == "cpu" and self.cpu_max_tokens_cap and self.cpu_max_tokens_cap > 0:
+            capped_tokens = min(self.generation_params['max_new_tokens'], self.cpu_max_tokens_cap)
+            if capped_tokens < self.generation_params['max_new_tokens']:
+                logger.info(
+                    "Clamping max_new_tokens from %d to %d for CPU inference (override via LLM_CPU_MAX_TOKENS_CAP).",
+                    self.generation_params['max_new_tokens'],
+                    capped_tokens,
+                )
+                self.generation_params['max_new_tokens'] = capped_tokens
 
         # Small delay to ensure env vars propagate in native libs
         await asyncio.sleep(0.1)
@@ -426,7 +436,8 @@ class TransformersStrategy(BaseExtractionStrategy):
         def generate():
             inputs = self.tokenizer(prompt, return_tensors="pt")
             inputs = inputs.to(self.device)
-            outputs = self.model.generate(**inputs, **self.generation_params)
+            with torch.inference_mode():
+                outputs = self.model.generate(**inputs, **self.generation_params)
             # Decode only the generated part, excluding the prompt
             return self.tokenizer.decode(outputs[0][inputs.input_ids.shape[1]:], skip_special_tokens=True)
 

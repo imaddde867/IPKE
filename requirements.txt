@@ -7,7 +7,7 @@ scipy>=1.11.3
 networkx>=3.1
 tqdm>=4.66.1
 spacy>=3.7.2
-https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl
+en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl
 sentence-transformers>=2.2.2
 torch>=2.1.0
 requests>=2.31.0
