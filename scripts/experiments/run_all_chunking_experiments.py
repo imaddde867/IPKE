@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import datetime
 import importlib
 import logging
 import shlex
@@ -12,11 +13,12 @@ import subprocess
 import sys
 import time
 from dataclasses import dataclass
-from datetime import datetime
 from pathlib import Path
 from typing import Callable, Dict, Iterable, List, Optional, Sequence, Tuple
 from urllib import error as urllib_error
 from urllib import request as urllib_request
+
+import requests
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -154,7 +156,7 @@ class ErrorLogger:
             path.parent.mkdir(parents=True, exist_ok=True)
 
     def log(self, message: str) -> None:
-        timestamp = datetime.utcnow().isoformat()
+        timestamp = datetime.datetime.utcnow().isoformat()
         entry = f"[{timestamp}] {message}\n"
         for path in self.paths:
             with path.open("a", encoding="utf-8") as handle:
@@ -314,9 +316,17 @@ def build_sweeps() -> List[SweepDefinition]:
     ]
 
 
-def write_done_file(path: Path, statuses: Dict[str, bool], summary_path: Optional[Path]) -> None:
+def notify_discord(webhook_url: str, message: str) -> None:
+    payload = {"content": message}
+    try:
+        requests.post(webhook_url, json=payload, timeout=10)
+    except Exception as exc:
+        print(f"Failed to send Discord notification: {exc}")
+
+
+def write_done_file(path: Path, statuses: Dict[str, bool], summary_path: Optional[Path]) -> Path:
     lines = [
-        f"Completed at {datetime.utcnow().isoformat()}Z",
+        f"Completed at {datetime.datetime.utcnow().isoformat()}Z",
         "Sweep statuses:",
     ]
     for name, status in statuses.items():
@@ -325,6 +335,7 @@ def write_done_file(path: Path, statuses: Dict[str, bool], summary_path: Optiona
     if summary_path:
         lines.append(f"Summary: {summary_path}")
     path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return path
 
 
 def main() -> None:
@@ -340,7 +351,7 @@ def main() -> None:
     documents = verify_documents_exist(args.documents)
     verify_docker_running()
 
-    timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+    timestamp = datetime.datetime.utcnow().strftime("%Y%m%d_%H%M%S")
     run_root = REPO_ROOT / "results" / f"full_run_{timestamp}"
     log_dir = REPO_ROOT / "results" / "master_logs" / timestamp
     run_root.mkdir(parents=True, exist_ok=True)
@@ -370,9 +381,16 @@ def main() -> None:
     summary_path = run_root / "all_chunking_summary.csv"
     latest_summary = REPO_ROOT / "results" / "all_chunking_summary.csv"
     summary_written = combine_summaries(summary_inputs, summary_path, latest_summary, error_logger.log)
-    done_path = run_root / "DONE.txt"
-    write_done_file(done_path, statuses, summary_path if summary_written else None)
-    logging.info("All sweeps finished. DONE file written to %s.", done_path)
+    done_file = write_done_file(run_root / "DONE.txt", statuses, summary_path if summary_written else None)
+    fixed_status = "SUCCESS" if statuses.get("fixed_chunker") else "FAILED"
+    semantic_status = "SUCCESS" if statuses.get("semantic_chunker") else "FAILED"
+    dsc_status = "SUCCESS" if statuses.get("dsc_chunker") else "FAILED"
+    notify_discord(
+        "https://discord.com/api/webhooks/1439588394404413510/fMrb1wRV8t6KNu9x-L0MwgNXjIuXAlXxKKUcNNshVP1kYnOg_5IWBddGM2cS0tO3X3gE",
+        f"🎉 IPKE EXPERIMENT FINISHED at {datetime.datetime.utcnow()} UTC\n"
+        f"Status: Fixed={fixed_status}, Semantic={semantic_status}, DSC={dsc_status}",
+    )
+    logging.info("All sweeps finished. DONE file written to %s.", done_file)
 
 
 if __name__ == "__main__":
