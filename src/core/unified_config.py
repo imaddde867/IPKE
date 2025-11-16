@@ -76,7 +76,7 @@ def _env_bool(*keys: str, default: bool = False) -> bool:
     return raw.strip().lower() in {"1", "true", "yes", "on"}
 
 
-CHUNKING_METHOD_CHOICES = {"fixed", "breakpoint_semantic", "dsc"}
+CHUNKING_METHOD_CHOICES = {"fixed", "breakpoint_semantic", "dual_semantic", "dsc"}
 
 
 def _sanitize_chunking_method(value: Optional[str], default: str) -> str:
@@ -139,6 +139,10 @@ class UnifiedConfig:
     llm_top_p: float = 0.9
     llm_repeat_penalty: float = 1.1
     llm_max_chunks: int = 0
+    llm_backend: str = "llama_cpp"
+    llm_device_strategy: str = "single"
+    llm_num_workers: int = 1
+    prompting_strategy: str = "P0"
     
     # GPU Configuration
     gpu_backend: str = "auto"  # "metal", "cuda", "auto", or "cpu"
@@ -227,6 +231,10 @@ class UnifiedConfig:
             'max_workers': _env_int('MAX_WORKERS', default=cls.max_workers, min_value=1),
             'llm_model_id': _get_env_value('LLM_MODEL_ID', default=cls.llm_model_id),
             'llm_quantization': _get_env_value('LLM_QUANTIZATION', default=cls.llm_quantization),
+            'llm_backend': _get_env_value('LLM_BACKEND', default=cls.llm_backend),
+            'llm_device_strategy': _get_env_value('LLM_DEVICE_STRATEGY', default=cls.llm_device_strategy),
+            'llm_num_workers': _env_int('LLM_NUM_WORKERS', default=cls.llm_num_workers, min_value=1),
+            'prompting_strategy': _get_env_value('PROMPTING_STRATEGY', default=cls.prompting_strategy).upper(),
         }
         base_kwargs.update(chunk_kwargs)
         return cls(**base_kwargs)
@@ -245,7 +253,11 @@ class UnifiedConfig:
             'max_file_size_mb': _env_int('TEST_MAX_FILE_SIZE_MB', default=10, min_value=1),
             'confidence_threshold': 0.5,
             'cache_size': 100,
-            'llm_model_id': "sshleifer/tiny-gpt2"
+            'llm_model_id': "sshleifer/tiny-gpt2",
+            'llm_backend': "transformers",
+            'llm_device_strategy': "single",
+            'llm_num_workers': 1,
+            'prompting_strategy': "P0",
         }
         base_kwargs.update(chunk_kwargs)
         return cls(**base_kwargs)
@@ -278,6 +290,10 @@ class UnifiedConfig:
             'llm_max_chunks': _env_int('LLM_MAX_CHUNKS', default=cls.llm_max_chunks, min_value=0),
             'llm_model_id': _get_env_value('LLM_MODEL_ID', default=cls.llm_model_id),
             'llm_quantization': _get_env_value('LLM_QUANTIZATION', default=cls.llm_quantization),
+            'llm_backend': _get_env_value('LLM_BACKEND', default=cls.llm_backend),
+            'llm_device_strategy': _get_env_value('LLM_DEVICE_STRATEGY', default=cls.llm_device_strategy),
+            'llm_num_workers': _env_int('LLM_NUM_WORKERS', default=cls.llm_num_workers, min_value=1),
+            'prompting_strategy': _get_env_value('PROMPTING_STRATEGY', default=cls.prompting_strategy).upper(),
         }
         base_kwargs.update(chunk_kwargs)
         return cls(**base_kwargs)
@@ -417,6 +433,10 @@ class UnifiedConfig:
             'gpu_backend': self.gpu_backend,
             'gpu_memory_fraction': self.gpu_memory_fraction,
             'verbose': False,
+            'backend': self.llm_backend,
+            'device_strategy': self.llm_device_strategy,
+            'num_workers': self.llm_num_workers,
+            'prompting_strategy': self.prompting_strategy,
 
             # Llama.cpp specific
             'model_path': self.llm_model_path,
