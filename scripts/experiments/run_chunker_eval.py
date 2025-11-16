@@ -34,6 +34,7 @@ from scripts.experiments.experiment_utils import (  # noqa: E402
     restart_service,
     run_evaluation_cli,
     run_method_extraction,
+    request_form_fields_from_env,
     save_metadata,
     wait_for_health,
     write_override_file,
@@ -154,6 +155,7 @@ def main() -> None:
     LOGGER.info("Running extraction for %s", args.config_id)
     run_start = time.time()
     log_since = datetime.now(timezone.utc)
+    form_fields = request_form_fields_from_env(args.method, env_overrides)
     doc_summaries = run_method_extraction(
         method=args.method,
         service_cfg=service_cfg,
@@ -162,6 +164,7 @@ def main() -> None:
         request_timeout=args.timeout,
         skip_existing=args.skip_existing,
         doc_id_overrides=doc_id_overrides,
+        request_form_fields=form_fields,
     )
 
     tier_a_metrics = run_evaluation_cli("A", args.gold_tier_a, run_paths.predictions_dir, run_paths.metrics_dir / "tier_a.json")

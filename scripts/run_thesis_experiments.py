@@ -15,7 +15,7 @@ import json
 import logging
 import time
 from pathlib import Path
-from typing import Dict, List
+from typing import Any, Dict, List, Optional
 
 import requests
 
@@ -30,6 +30,52 @@ METHOD_PORT_DEFAULTS = {
     "fixed": 8000,
     "breakpoint_semantic": 8001,
     "dsc": 8002,
+}
+
+METHOD_FORM_FIELD_DEFAULTS: Dict[str, Dict[str, Any]] = {
+    "fixed": {
+        "chunking_method": "fixed",
+        "chunk_max_chars": 2000,
+    },
+    "breakpoint_semantic": {
+        "chunking_method": "breakpoint_semantic",
+        "chunk_max_chars": 2000,
+        "sem_lambda": 0.15,
+        "sem_window_w": 30,
+        "sem_min_sentences_per_chunk": 2,
+        "sem_max_sentences_per_chunk": 40,
+    },
+    "dsc": {
+        "chunking_method": "dsc",
+        "chunk_max_chars": 2000,
+        "dsc_parent_min_sentences": 10,
+        "dsc_parent_max_sentences": 120,
+        "dsc_delta_window": 25,
+        "dsc_threshold_k": 1.0,
+        "dsc_use_headings": True,
+    },
+}
+
+ENV_TO_FORM_FIELD_MAPPING: Dict[str, Dict[str, str]] = {
+    "fixed": {
+        "CHUNK_MAX_CHARS": "chunk_max_chars",
+        "CHUNK_STRIDE_CHARS": "chunk_stride_chars",
+    },
+    "breakpoint_semantic": {
+        "CHUNK_MAX_CHARS": "chunk_max_chars",
+        "SEM_LAMBDA": "sem_lambda",
+        "SEM_WINDOW_W": "sem_window_w",
+        "SEM_MIN_SENTENCES_PER_CHUNK": "sem_min_sentences_per_chunk",
+        "SEM_MAX_SENTENCES_PER_CHUNK": "sem_max_sentences_per_chunk",
+    },
+    "dsc": {
+        "CHUNK_MAX_CHARS": "chunk_max_chars",
+        "DSC_PARENT_MIN_SENTENCES": "dsc_parent_min_sentences",
+        "DSC_PARENT_MAX_SENTENCES": "dsc_parent_max_sentences",
+        "DSC_DELTA_WINDOW": "dsc_delta_window",
+        "DSC_THRESHOLD_K": "dsc_threshold_k",
+        "DSC_USE_HEADINGS": "dsc_use_headings",
+    },
 }
 
 LOGGER = logging.getLogger("thesis_runner")
@@ -112,17 +158,40 @@ def make_service_url(host: str, port: int) -> str:
     return f"{base}:{port}"
 
 
+def _stringify_form_value(value: Any) -> str:
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    return str(value)
+
+
+def build_chunk_request_fields(method: str, overrides: Optional[Dict[str, Any]] = None) -> Dict[str, str]:
+    base = METHOD_FORM_FIELD_DEFAULTS.get(method, {"chunking_method": method})
+    payload: Dict[str, Any] = dict(base)
+    payload.setdefault("chunking_method", method)
+    if overrides:
+        payload.update(overrides)
+    return {key: _stringify_form_value(value) for key, value in payload.items() if value is not None}
+
+
+def env_to_method_form_fields(method: str, env_overrides: Dict[str, str]) -> Dict[str, str]:
+    mapping = ENV_TO_FORM_FIELD_MAPPING.get(method, {})
+    return {target: env_overrides[key] for key, target in mapping.items() if key in env_overrides}
+
+
 def run_single_request(
     session: requests.Session,
     url: str,
     doc_path: Path,
     timeout: int,
+    method: str,
+    form_overrides: Optional[Dict[str, Any]] = None,
 ) -> Dict:
     endpoint = f"{url}/extract"
     LOGGER.debug("Posting %s to %s", doc_path, endpoint)
+    form_fields = build_chunk_request_fields(method, form_overrides)
     with doc_path.open("rb") as stream:
         files = {"file": (doc_path.name, stream, "application/pdf")}
-        response = session.post(endpoint, files=files, timeout=timeout)
+        response = session.post(endpoint, files=files, data=form_fields, timeout=timeout)
     response.raise_for_status()
     return response.json()
 
@@ -152,7 +221,7 @@ def main() -> None:
             service_url = make_service_url(args.host, port)
             LOGGER.info("Processing %s with %s via %s", doc_path.name, method, service_url)
             start = time.time()
-            payload = run_single_request(session, service_url, doc_path, args.timeout)
+            payload = run_single_request(session, service_url, doc_path, args.timeout, method=method)
             elapsed = time.time() - start
 
             save_result(payload, output_path)
