@@ -14,7 +14,6 @@ requests>=2.31.0
 
 # Web Framework
 fastapi>=0.104.0
-httpx>=0.28.1
 python-multipart>=0.0.20
 uvicorn>=0.24.0
 streamlit>=1.38.0
