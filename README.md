@@ -207,7 +207,7 @@ Deterministic whitespace splitting with a strict char cap. Recommended for small
 ### Breakpoint Semantic
 ```
 CHUNKING_METHOD=breakpoint_semantic
-EMBEDDING_MODEL_PATH=models/embeddings/all-MiniLM-L6-v2
+EMBEDDING_MODEL_PATH=all-mpnet-base-v2
 SEM_MIN_SENTENCES_PER_CHUNK=2
 SEM_MAX_SENTENCES_PER_CHUNK=40
 SEM_LAMBDA=0.15
@@ -261,7 +261,7 @@ Outputs:
 ### Dual Semantic Chunking (DSC)
 ```
 CHUNKING_METHOD=dsc
-EMBEDDING_MODEL_PATH=models/embeddings/all-MiniLM-L6-v2
+EMBEDDING_MODEL_PATH=all-mpnet-base-v2
 DSC_PARENT_MIN_SENTENCES=10
 DSC_PARENT_MAX_SENTENCES=120
 DSC_DELTA_WINDOW=25
@@ -271,10 +271,12 @@ DSC_USE_HEADINGS=true
 Runs an adaptive parent-boundary detector that compares local cosine-distance deltas against `μ + k·σ`, optionally biased by heading regexes, then refines each parent via the breakpoint DP.
 
 ### Model Download
-Semantic methods require an SBERT checkpoint. Example using Hugging Face:
+Semantic methods require a SentenceTransformer checkpoint. By default we load `all-mpnet-base-v2`
+directly by model id, so HF downloads/caches it automatically on first use. To pin to an offline copy,
+download the model and point `EMBEDDING_MODEL_PATH` at the extracted directory:
 ```
-huggingface-cli download sentence-transformers/all-MiniLM-L6-v2 \
-  --local-dir models/embeddings/all-MiniLM-L6-v2 \
+huggingface-cli download sentence-transformers/all-mpnet-base-v2 \
+  --local-dir models/embeddings/all-mpnet-base-v2 \
   --local-dir-use-symlinks False
 ```
 Update `EMBEDDING_MODEL_PATH` to match the downloaded directory. `scripts/baseline_preflight.py` now fails if the path is missing when a semantic method is configured.

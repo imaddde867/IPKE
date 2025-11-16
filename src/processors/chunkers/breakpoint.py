@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import logging
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np
@@ -12,6 +13,8 @@ from .base import BaseChunker, Chunk
 # Ensure tokenizers stay single-threaded before any optional imports occur.
 os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
 
+LOGGER = logging.getLogger(__name__)
+
 
 class BreakpointSemanticChunker(BaseChunker):
     """Semantic chunker using spaCy + sentence-transformer embeddings."""
@@ -20,6 +23,28 @@ class BreakpointSemanticChunker(BaseChunker):
         self.cfg = cfg
         self._nlp = None
         self._model = None
+        self._device = self._resolve_device()
+
+    def _resolve_device(self) -> str:
+        """Best-effort device selection for sentence-transformer embeddings."""
+        backend = str(getattr(self.cfg, "gpu_backend", "cpu") or "cpu").lower()
+        if backend in {"cuda", "auto", "gpu", "multi_gpu_parallel"}:
+            try:
+                import torch
+
+                if torch.cuda.is_available():
+                    return "cuda"
+            except Exception:  # noqa: BLE001
+                pass
+        if backend in {"metal", "mps"}:
+            try:
+                import torch
+
+                if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+                    return "mps"
+            except Exception:  # noqa: BLE001
+                pass
+        return "cpu"
 
     def _load_spacy(self):
         if self._nlp is not None:
@@ -39,14 +64,13 @@ class BreakpointSemanticChunker(BaseChunker):
         os.environ["TOKENIZERS_PARALLELISM"] = "false"
         from sentence_transformers import SentenceTransformer
 
-        backend = getattr(self.cfg, "gpu_backend", "cpu")
-        device = "cuda" if backend == "cuda" else "cpu"
-        model_path = getattr(
+        model_id = getattr(
             self.cfg,
             "embedding_model_path",
-            "models/embeddings/all-mpnet-base-v2"
-        )
-        self._model = SentenceTransformer(model_path, device=device)
+            "all-mpnet-base-v2",
+        ) or "all-mpnet-base-v2"
+        LOGGER.info("Loading SentenceTransformer '%s' on %s for semantic chunker.", model_id, self._device)
+        self._model = SentenceTransformer(model_id, device=self._device)
         return self._model
 
     @property

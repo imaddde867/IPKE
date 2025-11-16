@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
-"""Chunking + prompting experiment runner for IPKE."""
+"""Chunking + prompting experiment runner for IPKE.
+
+Example:
+    python scripts/run_experiments.py --config configs/chunking_grid_core.yaml \
+        --out-root logs/chunking_grid_core --evaluate true
+"""
 
 from __future__ import annotations
 
@@ -376,8 +381,17 @@ def serialize_config_snapshot(config: UnifiedConfig, path: Path) -> None:
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Execute multi-chunk experiments.")
-    parser.add_argument("--config", required=True, help="Path to the experiment configuration (YAML/JSON).")
+    parser = argparse.ArgumentParser(
+        description=(
+            "Execute multi-chunk experiments (e.g., python scripts/run_experiments.py "
+            "--config configs/chunking_grid_core.yaml --out-root logs/chunking_grid_core --evaluate true)."
+        )
+    )
+    parser.add_argument(
+        "--config",
+        required=True,
+        help="Path to the experiment configuration (YAML/JSON), e.g., configs/chunking_grid_core.yaml.",
+    )
     parser.add_argument("--out-root", default=None, help="Optional override for the output directory.")
     parser.add_argument("--evaluate", default="true", help="Whether to run evaluation (true/false).")
     parser.add_argument("--log-level", default="INFO", help="Logging verbosity.")
