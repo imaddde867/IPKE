@@ -12,6 +12,7 @@ import os
 import sys
 import json
 import subprocess
+import gc
 from typing import List, Dict, Any
 
 # Ensure the src directory is in the Python path
@@ -86,6 +87,13 @@ def run_single_experiment(
         "Constraint Coverage": main_metrics.get("constraint_coverage", 0),
         "A-score": 0.7 * main_metrics.get("step_f1", 0) + 0.3 * main_metrics.get("adjacency_f1", 0),
     }
+
+    # --- Memory Cleanup ---
+    print("Cleaning up processor and running garbage collection...")
+    del processor
+    gc.collect()
+    # --- End Cleanup ---
+
     print("--- Done. ---")
     return report
 
