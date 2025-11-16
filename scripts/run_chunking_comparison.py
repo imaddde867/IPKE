@@ -19,7 +19,7 @@ from typing import List, Dict, Any
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from src.core.unified_config import UnifiedConfig
-from src.processors.streamlined_processor import StreamlinedProcessor
+from src.processors.streamlined_processor import StreamlinedDocumentProcessor
 from tools.evaluate import evaluate_extraction
 
 # --- Experiment Configuration ---
@@ -48,7 +48,7 @@ def run_single_experiment(
     
     # HACK: We need to re-initialize the processor for the config change to take effect
     # This is because the chunker is instantiated in the processor's __init__
-    processor = StreamlinedProcessor(config=config)
+    processor = StreamlinedDocumentProcessor(config=config)
 
     input_pdf_path = os.path.join(config.get('data_dir'), "Samples", f"{document_name}.pdf")
     gold_json_path = os.path.join(config.get('data_dir'), "archive", "gold_human", f"{document_name}.json")
