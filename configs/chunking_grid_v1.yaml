@@ -2,14 +2,17 @@ experiment_group: "chunking_grid_v1"
 
 docs:
   - id: "3M_OEM_SOP"
-    path: "../datasets/3M_OEM_SOP.pdf"
-    gold: "../datasets/gold/3M_OEM_SOP.json"
+    path: "../datasets/archive/test_data/text/3m_marine_oem_sop.txt"
+    gold_tier_a: "../datasets/archive/gold_human/3M_OEM_SOP.json"
+    gold_tier_b: "../datasets/archive/gold_human_tierb/3M_OEM_SOP.json"
   - id: "DOA_Food_Proc"
-    path: "../datasets/DOA_Food_Proc.pdf"
-    gold: "../datasets/gold/DOA_Food_Proc.json"
+    path: "../datasets/archive/test_data/text/DOA_Food_Man_Proc_Stor.txt"
+    gold_tier_a: "../datasets/archive/gold_human/DOA_Food_Man_Proc_Stor.json"
+    gold_tier_b: "../datasets/archive/gold_human_tierb/DOA_Food_Man_Proc_Stor.json"
   - id: "op_firesafety_guideline"
-    path: "../datasets/op_firesafety_guideline.pdf"
-    gold: "../datasets/gold/op_firesafety_guideline.json"
+    path: "../datasets/archive/test_data/text/op_firesafety_guideline.txt"
+    gold_tier_a: "../datasets/archive/gold_human/op_firesafety_guideline.json"
+    gold_tier_b: "../datasets/archive/gold_human_tierb/op_firesafety_guideline.json"
 
 llm:
   backend: "llama_cpp"

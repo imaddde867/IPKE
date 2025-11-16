@@ -68,6 +68,8 @@ def normalize_documents(spec: Dict[str, Any], base_dir: Path) -> List[Dict[str, 
                 "id": entry["id"],
                 "path": str(resolve_path(entry["path"], base_dir)),
                 "gold": str(resolve_path(entry["gold"], base_dir)) if entry.get("gold") else None,
+                "gold_tier_a": str(resolve_path(entry["gold_tier_a"], base_dir)) if entry.get("gold_tier_a") else None,
+                "gold_tier_b": str(resolve_path(entry["gold_tier_b"], base_dir)) if entry.get("gold_tier_b") else None,
                 "type": entry.get("type", "unknown"),
             }
         )
@@ -283,24 +285,46 @@ async def process_document(
 
 
 def evaluate_document(
-    gold_path: Optional[str],
+    doc: Dict[str, Any],
     prediction_path: Path,
     eval_ctx: Optional[EvaluationContext],
 ) -> Optional[Dict[str, Any]]:
     if not eval_ctx:
         return None
-    if not gold_path:
-        LOGGER.warning("Missing gold path for %s; skipping evaluation.", prediction_path)
+    metrics: Dict[str, Any] = {}
+    tiers = set(eval_ctx.tiers)
+    if "A" in tiers:
+        gold_a = doc.get("gold_tier_a") or doc.get("gold")
+        if not gold_a:
+            LOGGER.warning("Missing Tier A gold for %s; skipping Tier A evaluation.", doc["id"])
+        else:
+            metrics.update(
+                evaluator.run_evaluation(
+                    gold_a,
+                    str(prediction_path),
+                    tiers=("A",),
+                    threshold=eval_ctx.threshold,
+                    preprocessor=eval_ctx.preprocessor,
+                    embedder=eval_ctx.embedder,
+                )
+            )
+    if "B" in tiers:
+        gold_b = doc.get("gold_tier_b") or doc.get("gold")
+        if not gold_b:
+            LOGGER.warning("Missing Tier B gold for %s; skipping Tier B evaluation.", doc["id"])
+        else:
+            tier_b_metrics = evaluator.run_evaluation(
+                gold_b,
+                str(prediction_path),
+                tiers=("B",),
+                threshold=eval_ctx.threshold,
+                preprocessor=eval_ctx.preprocessor,
+                embedder=eval_ctx.embedder,
+            )
+            for key, value in tier_b_metrics.items():
+                metrics[key if key not in metrics else f"{key}_TierB"] = value
+    if not metrics:
         return None
-    metrics = evaluator.run_evaluation(
-        gold_path,
-        str(prediction_path),
-        tiers=eval_ctx.tiers,
-        threshold=eval_ctx.threshold,
-        preprocessor=eval_ctx.preprocessor,
-        embedder=eval_ctx.embedder,
-        preserve_conflicts=True,
-    )
     metrics_path = prediction_path.parent / "metrics.json"
     metrics_path.write_text(json.dumps(metrics, indent=2), encoding="utf-8")
     return metrics
@@ -330,7 +354,7 @@ async def run_chunking_experiment(
         result, prediction_path = await process_document(processor, doc, doc_out_dir)
         metrics = None
         if evaluate_flag:
-            metrics = evaluate_document(doc.get("gold"), prediction_path, eval_ctx)
+            metrics = evaluate_document(doc, prediction_path, eval_ctx)
         summary_row = {
             "experiment": exp_name,
             "chunk_method": config.chunking_method,
