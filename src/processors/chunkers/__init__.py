@@ -16,7 +16,8 @@ def get_chunker(cfg: Any) -> BaseChunker:
     method = getattr(cfg, "chunking_method", "fixed")
     if method == "fixed":
         max_chars = getattr(cfg, "chunk_max_chars", 2000)
-        return FixedChunker(max_chars)
+        overlap = getattr(cfg, "chunk_overlap_chars", 0)
+        return FixedChunker(max_chars, overlap)
     if method == "breakpoint_semantic":
         return BreakpointSemanticChunker(cfg)
     if method in {"dual_semantic", "dsc"}:

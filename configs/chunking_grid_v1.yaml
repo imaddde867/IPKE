@@ -1,0 +1,79 @@
+experiment_group: "chunking_grid_v1"
+
+docs:
+  - id: "3M_OEM_SOP"
+    path: "datasets/3M_OEM_SOP.pdf"
+    gold: "datasets/gold/3M_OEM_SOP.json"
+  - id: "DOA_Food_Proc"
+    path: "datasets/DOA_Food_Proc.pdf"
+    gold: "datasets/gold/DOA_Food_Proc.json"
+  - id: "op_firesafety_guideline"
+    path: "datasets/op_firesafety_guideline.pdf"
+    gold: "datasets/gold/op_firesafety_guideline.json"
+
+llm:
+  backend: "llama_cpp"
+  model_path: "models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf"
+  n_ctx: 8192
+  temperature: 0.1
+  top_p: 0.9
+  max_tokens: 1536
+  repeat_penalty: 1.1
+  max_chunks: 0
+  num_workers: 4
+  device_strategy: "multi_gpu_parallel"
+  random_seed: 42
+
+prompting:
+  strategy: "P0"
+
+evaluation:
+  tier: "both"
+  threshold: 0.75
+  spacy_model: "en_core_web_sm"
+  embedding_model: "all-mpnet-base-v2"
+
+chunking_experiments:
+  - name: "fixed_2000_no_overlap"
+    method: "fixed"
+    params:
+      chunk_size_chars: 2000
+      chunk_overlap_chars: 0
+
+  - name: "fixed_2000_overlap200"
+    method: "fixed"
+    params:
+      chunk_size_chars: 2000
+      chunk_overlap_chars: 200
+
+  - name: "ebb_lambda005"
+    method: "breakpoint_semantic"
+    params:
+      sem_lambda: 0.05
+      sem_window_w: 20
+      sem_min_sentences_per_chunk: 2
+      sem_max_sentences_per_chunk: 40
+
+  - name: "ebb_lambda015"
+    method: "breakpoint_semantic"
+    params:
+      sem_lambda: 0.15
+      sem_window_w: 20
+      sem_min_sentences_per_chunk: 2
+      sem_max_sentences_per_chunk: 40
+
+  - name: "dsc_block12"
+    method: "dual_semantic"
+    params:
+      dsc_parent_block_sentences: 12
+      dsc_child_sem_lambda: 0.10
+      dsc_child_window_w: 16
+      dsc_dynamic_threshold_k: 0.5
+
+  - name: "dsc_block20"
+    method: "dual_semantic"
+    params:
+      dsc_parent_block_sentences: 20
+      dsc_child_sem_lambda: 0.10
+      dsc_child_window_w: 16
+      dsc_dynamic_threshold_k: 0.5

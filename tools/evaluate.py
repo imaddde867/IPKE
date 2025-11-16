@@ -853,6 +853,51 @@ def compute_macro_average(results: Dict[str, Dict[str, Optional[float]]]) -> Dic
     return {metric: round3(float(np.mean(values))) if values else None for metric, values in aggregates.items()}
 
 
+def prepare_evaluator(
+    spacy_model: str = "en_core_web_sm",
+    embedding_model: str = "all-mpnet-base-v2",
+    *,
+    device: Optional[str] = None,
+) -> Tuple[TextPreprocessor, EmbeddingCache]:
+    """Instantiate reusable evaluation helpers."""
+    preprocessor = TextPreprocessor(spacy_model)
+    embedder = EmbeddingCache(model_name=embedding_model, device=device)
+    return preprocessor, embedder
+
+
+def run_evaluation(
+    gold: Any,
+    pred: Any,
+    *,
+    tiers: Iterable[str] = ("A", "B"),
+    threshold: float = 0.75,
+    preprocessor: Optional[TextPreprocessor] = None,
+    embedder: Optional[EmbeddingCache] = None,
+    spacy_model: str = "en_core_web_sm",
+    embedding_model: str = "all-mpnet-base-v2",
+    device: Optional[str] = None,
+    preserve_conflicts: bool = False,
+) -> Dict[str, Optional[float]]:
+    """Evaluate a single prediction/gold pair for the requested tiers."""
+    gold_doc = load_json(Path(gold)) if isinstance(gold, (str, Path)) else gold
+    pred_doc = load_json(Path(pred)) if isinstance(pred, (str, Path)) else pred
+    tiers_upper = {tier.upper() for tier in tiers} or {"A", "B"}
+    evaluator_pre = preprocessor or TextPreprocessor(spacy_model)
+    evaluator_emb = embedder or EmbeddingCache(model_name=embedding_model, device=device)
+
+    metrics: Dict[str, Optional[float]] = {}
+    if "A" in tiers_upper:
+        metrics.update(evaluate_tier_a_document(gold_doc, pred_doc, evaluator_pre, evaluator_emb, threshold))
+    if "B" in tiers_upper:
+        tier_b_metrics = evaluate_tier_b_document(gold_doc, pred_doc, evaluator_pre, evaluator_emb, threshold)
+        for key, value in tier_b_metrics.items():
+            if preserve_conflicts and key in metrics:
+                metrics[f"{key}_TierB"] = value
+            else:
+                metrics[key] = value
+    return metrics
+
+
 def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Evaluate procedural extraction quality.")
     parser.add_argument("--run-dir", type=str, default=None, help="Run directory containing predictions/gold.")
@@ -926,18 +971,23 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         logging.error("No document pairs to evaluate.")
         return 1
 
-    preprocessor = TextPreprocessor(args.spacy_model)
-    embedder = EmbeddingCache(model_name=args.embedding_model, device=args.device)
+    preprocessor, embedder = prepare_evaluator(args.spacy_model, args.embedding_model, device=args.device)
 
     doc_results: Dict[str, Dict[str, Optional[float]]] = {}
-    tiers = {"A", "B"} if args.tier == "both" else {args.tier}
+    if args.tier == "both":
+        tier_tuple: Tuple[str, ...] = ("A", "B")
+    else:
+        tier_tuple = (args.tier,)
 
     for doc_id, gold_doc, pred_doc in tqdm(pairs, desc="Evaluating documents"):
-        metrics: Dict[str, Optional[float]] = {}
-        if "A" in tiers:
-            metrics.update(evaluate_tier_a_document(gold_doc, pred_doc, preprocessor, embedder, args.threshold))
-        if "B" in tiers:
-            metrics.update(evaluate_tier_b_document(gold_doc, pred_doc, preprocessor, embedder, args.threshold))
+        metrics = run_evaluation(
+            gold_doc,
+            pred_doc,
+            tiers=tier_tuple,
+            threshold=args.threshold,
+            preprocessor=preprocessor,
+            embedder=embedder,
+        )
         doc_results[doc_id] = metrics
 
     macro = compute_macro_average(doc_results)

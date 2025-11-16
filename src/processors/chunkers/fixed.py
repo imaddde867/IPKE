@@ -10,8 +10,9 @@ from .base import BaseChunker, Chunk
 class FixedChunker(BaseChunker):
     """Splits text into roughly equal sized pieces using whitespace boundaries."""
 
-    def __init__(self, max_chars: int = 2000):
+    def __init__(self, max_chars: int = 2000, overlap_chars: int = 0):
         self.max_chars = max(200, max_chars)
+        self.overlap = max(0, min(overlap_chars, self.max_chars - 1))
 
     def chunk(self, text: str) -> List[Chunk]:
         if not text:
@@ -40,7 +41,10 @@ class FixedChunker(BaseChunker):
                         meta={"strategy": "fixed"},
                     )
                 )
-            start = end
+            next_start = end - self.overlap
+            if next_start <= start:
+                next_start = end
+            start = next_start
             while start < length and text[start].isspace():
                 start += 1
 
