@@ -1,18 +1,19 @@
 #!/usr/bin/env python3
-"""Configurable experiment runner for IPKE chunks + LLM extraction."""
+"""Chunking + prompting experiment runner for IPKE."""
 
 from __future__ import annotations
 
 import argparse
 import asyncio
+import copy
 import csv
 import json
 import logging
 import sys
-from dataclasses import asdict, is_dataclass
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
@@ -26,111 +27,50 @@ from tools import evaluate as evaluator
 LOGGER = logging.getLogger("run_experiments")
 
 
+@dataclass
+class EvaluationContext:
+    preprocessor: evaluator.TextPreprocessor
+    embedder: evaluator.EmbeddingCache
+    threshold: float
+    tiers: Tuple[str, ...]
+
+
 def load_spec(path: Path) -> Dict[str, Any]:
     with path.open("r", encoding="utf-8") as handle:
         if path.suffix.lower() in {".yml", ".yaml"}:
             try:
                 import yaml  # type: ignore
-            except ImportError as exc:  # pragma: no cover - optional dependency
-                raise RuntimeError("PyYAML is required to parse YAML experiment configs.") from exc
+            except ImportError as exc:  # pragma: no cover
+                raise RuntimeError("PyYAML is required for YAML configs.") from exc
             return yaml.safe_load(handle) or {}
         return json.load(handle)
 
 
-def ensure_run_dir(spec: Dict[str, Any], cli_dir: Optional[str]) -> Path:
-    if cli_dir:
-        run_dir = Path(cli_dir)
-    else:
-        candidate = spec.get("run_dir") or spec.get("output_dir")
-        if candidate:
-            run_dir = Path(candidate)
-        else:
-            timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-            run_dir = ROOT / "logs" / "experiments" / timestamp
-    run_dir.mkdir(parents=True, exist_ok=True)
-    (run_dir / "predictions").mkdir(exist_ok=True)
-    (run_dir / "logs").mkdir(exist_ok=True)
-    return run_dir
-
-
-def _apply_chunking_overrides(config: UnifiedConfig, chunk_spec: Dict[str, Any]) -> None:
-    if not chunk_spec:
-        return
-    method = chunk_spec.get("method")
-    if method:
-        config.chunking_method = method.lower()
-    if "max_chars" in chunk_spec:
-        config.chunk_max_chars = int(chunk_spec["max_chars"])
-    if "sem_lambda" in chunk_spec:
-        config.sem_lambda = float(chunk_spec["sem_lambda"])
-    if "sem_window_w" in chunk_spec:
-        config.sem_window_w = int(chunk_spec["sem_window_w"])
-    if "embedding_model_path" in chunk_spec:
-        config.embedding_model_path = chunk_spec["embedding_model_path"]
-
-
-def _apply_prompt_overrides(config: UnifiedConfig, prompting: Dict[str, Any]) -> None:
-    if not prompting:
-        return
-    strategy = prompting.get("strategy")
-    if strategy:
-        config.prompting_strategy = strategy.upper()
-
-
-def _apply_llm_overrides(config: UnifiedConfig, llm_spec: Dict[str, Any]) -> None:
-    if not llm_spec:
-        return
-    backend = llm_spec.get("backend")
-    if backend:
-        config.llm_backend = backend
-    if "num_workers" in llm_spec:
-        config.llm_num_workers = int(llm_spec["num_workers"])
-    if "device_strategy" in llm_spec:
-        config.llm_device_strategy = llm_spec["device_strategy"]
-    if "max_tokens" in llm_spec:
-        config.llm_max_tokens = int(llm_spec["max_tokens"])
-    if "temperature" in llm_spec:
-        config.llm_temperature = float(llm_spec["temperature"])
-    if "model_path" in llm_spec:
-        config.llm_model_path = llm_spec["model_path"]
-
-
-def apply_overrides(config: UnifiedConfig, spec: Dict[str, Any]) -> None:
-    _apply_chunking_overrides(config, spec.get("chunking", {}))
-    _apply_prompt_overrides(config, spec.get("prompting", {}))
-    _apply_llm_overrides(config, spec.get("llm", {}))
-    overrides = spec.get("overrides", {})
-    for key, value in overrides.items():
-        if hasattr(config, key):
-            setattr(config, key, value)
+def resolve_path(raw: str, base_dir: Path) -> Path:
+    path = Path(raw)
+    if not path.is_absolute():
+        path = (base_dir / path).resolve()
+    return path
 
 
 def normalize_documents(spec: Dict[str, Any], base_dir: Path) -> List[Dict[str, Any]]:
-    docs = spec.get("documents")
+    docs = spec.get("docs") or spec.get("documents")
     if not docs:
-        raise ValueError("Experiment config must provide a non-empty 'documents' list.")
+        raise ValueError("Config must include a non-empty 'docs' list.")
     normalized: List[Dict[str, Any]] = []
     for entry in docs:
-        def resolve_path(raw: str) -> str:
-            path = Path(raw)
-            if not path.is_absolute():
-                path = (base_dir / path).resolve()
-            return str(path)
-
-        if isinstance(entry, str):
-            normalized.append({"path": resolve_path(entry), "id": None})
-        elif isinstance(entry, dict):
-            if "path" not in entry:
-                raise ValueError(f"Document entry is missing 'path': {entry}")
-            normalized.append(
-                {
-                    "path": resolve_path(entry["path"]),
-                    "id": entry.get("id"),
-                    "type": entry.get("type"),
-                }
-            )
-        else:
-            raise ValueError(f"Unsupported document entry: {entry}")
+        if not isinstance(entry, dict):
+            raise ValueError(f"Document entries must be objects with id/path: {entry}")
+        if "id" not in entry or "path" not in entry:
+            raise ValueError(f"Document entries require 'id' and 'path': {entry}")
+        normalized.append(
+            {
+                "id": entry["id"],
+                "path": str(resolve_path(entry["path"], base_dir)),
+                "gold": str(resolve_path(entry["gold"], base_dir)) if entry.get("gold") else None,
+                "type": entry.get("type", "unknown"),
+            }
+        )
     return normalized
 
 
@@ -158,106 +98,265 @@ def extraction_to_dict(result: ExtractionResult) -> Dict[str, Any]:
     }
 
 
-def serialize_config(config: UnifiedConfig) -> Dict[str, Any]:
-    snapshot = asdict(config)
-    snapshot["environment"] = config.environment.value
-    return snapshot
+def ensure_out_root(spec: Dict[str, Any], cli_out_root: Optional[str]) -> Path:
+    if cli_out_root:
+        out_root = Path(cli_out_root)
+    elif spec.get("out_root"):
+        out_root = Path(spec["out_root"])
+    else:
+        timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
+        out_root = ROOT / "logs" / "experiments" / timestamp
+    out_root.mkdir(parents=True, exist_ok=True)
+    return out_root
 
 
-def write_metrics(run_dir: Path, rows: List[Dict[str, Any]]) -> None:
-    metrics_path = run_dir / "logs" / "metrics.json"
-    metrics_path.write_text(json.dumps(rows, indent=2), encoding="utf-8")
+def bool_arg(value: Optional[str], default: bool = True) -> bool:
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "on"}
 
-    csv_path = run_dir / "logs" / "metrics.csv"
+
+def apply_llm_settings(config: UnifiedConfig, llm_spec: Dict[str, Any], base_dir: Path) -> None:
+    if not llm_spec:
+        return
+    if llm_spec.get("backend"):
+        config.llm_backend = llm_spec["backend"]
+    if llm_spec.get("model_path"):
+        config.llm_model_path = str(resolve_path(llm_spec["model_path"], base_dir))
+    if llm_spec.get("n_ctx") is not None:
+        config.llm_n_ctx = int(llm_spec["n_ctx"])
+    if llm_spec.get("temperature") is not None:
+        config.llm_temperature = float(llm_spec["temperature"])
+    if llm_spec.get("top_p") is not None:
+        config.llm_top_p = float(llm_spec["top_p"])
+    if llm_spec.get("max_tokens") is not None:
+        config.llm_max_tokens = int(llm_spec["max_tokens"])
+    if llm_spec.get("repeat_penalty") is not None:
+        config.llm_repeat_penalty = float(llm_spec["repeat_penalty"])
+    if llm_spec.get("max_chunks") is not None:
+        config.llm_max_chunks = int(llm_spec["max_chunks"])
+    if llm_spec.get("num_workers") is not None:
+        config.llm_num_workers = int(llm_spec["num_workers"])
+    if llm_spec.get("device_strategy"):
+        config.llm_device_strategy = llm_spec["device_strategy"]
+    if llm_spec.get("random_seed") is not None:
+        config.llm_random_seed = int(llm_spec["random_seed"])
+    if llm_spec.get("confidence_threshold") is not None:
+        config.confidence_threshold = float(llm_spec["confidence_threshold"])
+    if llm_spec.get("quality_threshold") is not None:
+        config.quality_threshold = float(llm_spec["quality_threshold"])
+
+
+def apply_prompt_settings(config: UnifiedConfig, prompting_spec: Dict[str, Any]) -> None:
+    if not prompting_spec:
+        return
+    if prompting_spec.get("strategy"):
+        config.prompting_strategy = prompting_spec["strategy"].upper()
+
+
+def apply_chunk_parameters(config: UnifiedConfig, experiment: Dict[str, Any]) -> None:
+    method = experiment.get("method")
+    if not method:
+        raise ValueError(f"Chunking experiment missing 'method': {experiment}")
+    config.chunking_method = method.lower()
+    params = experiment.get("params", {})
+    if config.chunking_method == "fixed":
+        if "chunk_size_chars" in params:
+            size = int(params["chunk_size_chars"])
+            config.chunk_size = size
+            config.chunk_max_chars = size
+        if "chunk_overlap_chars" in params:
+            config.chunk_overlap_chars = max(0, int(params["chunk_overlap_chars"]))
+    else:
+        if "embedding_model_path" in params:
+            config.embedding_model_path = params["embedding_model_path"]
+        if "sem_lambda" in params or "sem_min_sentences_per_chunk" in params:
+            if "sem_lambda" in params:
+                config.sem_lambda = float(params["sem_lambda"])
+            if "sem_window_w" in params:
+                config.sem_window_w = int(params["sem_window_w"])
+            if "sem_min_sentences_per_chunk" in params:
+                config.sem_min_sentences_per_chunk = int(params["sem_min_sentences_per_chunk"])
+            if "sem_max_sentences_per_chunk" in params:
+                config.sem_max_sentences_per_chunk = int(params["sem_max_sentences_per_chunk"])
+    if config.chunking_method in {"dual_semantic", "dsc"}:
+        parent_block = int(params.get("dsc_parent_block_sentences", config.dsc_parent_min_sentences))
+        config.dsc_parent_min_sentences = max(1, parent_block)
+        config.dsc_parent_max_sentences = max(config.dsc_parent_min_sentences * 2, parent_block)
+        if "dsc_child_sem_lambda" in params:
+            config.sem_lambda = float(params["dsc_child_sem_lambda"])
+        if "dsc_child_window_w" in params:
+            config.sem_window_w = int(params["dsc_child_window_w"])
+        if "dsc_dynamic_threshold_k" in params:
+            config.dsc_threshold_k = float(params["dsc_dynamic_threshold_k"])
+        if "dsc_use_headings" in params:
+            config.dsc_use_headings = bool(params["dsc_use_headings"])
+
+
+def write_metrics_json(path: Path, rows: List[Dict[str, Any]]) -> None:
+    path.write_text(json.dumps(rows, indent=2), encoding="utf-8")
+
+
+def sanitize_row(row: Dict[str, Any], columns: Sequence[str]) -> Dict[str, Any]:
+    return {key: row.get(key) for key in columns}
+
+
+def write_summary_csv(out_root: Path, rows: List[Dict[str, Any]]) -> None:
     fieldnames = [
+        "experiment",
+        "chunk_method",
         "document_id",
         "document_type",
-        "processing_time",
-        "file_size",
-        "entity_count",
-        "step_count",
-        "constraint_count",
-        "confidence_score",
+        "StepF1",
+        "AdjacencyF1",
+        "Kendall",
+        "ConstraintCoverage",
+        "ConstraintAttachmentF1",
+        "A_score",
+        "GraphF1",
+        "NEXT_EdgeF1",
+        "Logic_EdgeF1",
+        "ConstraintAttachmentF1_TierB",
+        "B_score",
     ]
-    with csv_path.open("w", newline="", encoding="utf-8") as handle:
+    summary_path = out_root / "summary.csv"
+    with summary_path.open("w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames)
         writer.writeheader()
         for row in rows:
-            writer.writerow({key: row.get(key, "") for key in fieldnames})
+            writer.writerow(sanitize_row(row, fieldnames))
+    LOGGER.info("Summary CSV written to %s", summary_path)
 
 
-def export_prediction(pred_dir: Path, result: ProcessingResult) -> Path:
+def save_prediction(doc_out_dir: Path, result: ProcessingResult) -> Path:
+    doc_out_dir.mkdir(parents=True, exist_ok=True)
     payload = {
         "document_id": result.document_id,
         "document_type": result.document_type,
         "metadata": result.metadata,
         **extraction_to_dict(result.extraction_result),
     }
-    path = pred_dir / f"{result.document_id}.json"
-    path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-    return path
+    prediction_path = doc_out_dir / "predictions.json"
+    prediction_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    return prediction_path
 
 
-async def run_documents(processor: StreamlinedDocumentProcessor, docs: List[Dict[str, Any]], run_dir: Path):
-    pred_dir = run_dir / "predictions"
-    rows: List[Dict[str, Any]] = []
-    for doc in docs:
-        LOGGER.info("Processing %s", doc["path"])
-        result = await processor.process_document(doc["path"], document_id=doc.get("id"))
-        export_prediction(pred_dir, result)
-        rows.append(
-            {
-                "document_id": result.document_id,
-                "document_type": result.document_type,
-                "processing_time": round(result.processing_time, 4),
-                "file_size": result.file_size,
-                "entity_count": len(result.extraction_result.entities),
-                "step_count": len(result.extraction_result.steps),
-                "constraint_count": len(result.extraction_result.constraints),
-                "confidence_score": round(result.extraction_result.confidence_score, 4),
-            }
-        )
-    return rows
-
-
-def maybe_run_evaluation(run_dir: Path, eval_spec: Dict[str, Any]) -> Optional[Path]:
+def prepare_evaluation_context(eval_spec: Dict[str, Any]) -> Optional[EvaluationContext]:
     if not eval_spec:
         return None
-    gold_dir = eval_spec.get("gold_dir")
-    if not gold_dir:
-        LOGGER.warning("evaluation.gold_dir missing; skipping evaluation.")
+    tier = eval_spec.get("tier", "both").upper()
+    if tier == "A":
+        tiers = ("A",)
+    elif tier == "B":
+        tiers = ("B",)
+    else:
+        tiers = ("A", "B")
+    spacy_model = eval_spec.get("spacy_model", "en_core_web_sm")
+    embedding_model = eval_spec.get("embedding_model", "all-mpnet-base-v2")
+    device = eval_spec.get("device")
+    preprocessor, embedder = evaluator.prepare_evaluator(spacy_model, embedding_model, device=device)
+    threshold = float(eval_spec.get("threshold", 0.75))
+    return EvaluationContext(preprocessor=preprocessor, embedder=embedder, threshold=threshold, tiers=tiers)
+
+
+async def process_document(
+    processor: StreamlinedDocumentProcessor,
+    doc: Dict[str, Any],
+    doc_out_dir: Path,
+) -> Tuple[ProcessingResult, Path]:
+    LOGGER.info("Processing %s (%s)", doc["id"], doc["path"])
+    result = await processor.process_document(doc["path"], document_id=doc["id"])
+    prediction_path = save_prediction(doc_out_dir, result)
+    stats_path = doc_out_dir / "extraction_stats.json"
+    stats_payload = {
+        "document_id": result.document_id,
+        "document_type": result.document_type,
+        "processing_time": result.processing_time,
+        "file_size": result.file_size,
+        "entity_count": len(result.extraction_result.entities),
+        "step_count": len(result.extraction_result.steps),
+        "constraint_count": len(result.extraction_result.constraints),
+        "confidence_score": result.extraction_result.confidence_score,
+    }
+    stats_path.write_text(json.dumps(stats_payload, indent=2), encoding="utf-8")
+    return result, prediction_path
+
+
+def evaluate_document(
+    gold_path: Optional[str],
+    prediction_path: Path,
+    eval_ctx: Optional[EvaluationContext],
+) -> Optional[Dict[str, Any]]:
+    if not eval_ctx:
         return None
-    args = [
-        "--gold_dir",
-        str(gold_dir),
-        "--pred_dir",
-        str(run_dir / "predictions"),
-        "--tier",
-        eval_spec.get("tier", "both"),
-    ]
-    if "threshold" in eval_spec:
-        args.extend(["--threshold", str(eval_spec["threshold"])])
-    if "spacy_model" in eval_spec:
-        args.extend(["--spacy_model", eval_spec["spacy_model"]])
-    if "embedding_model" in eval_spec:
-        args.extend(["--embedding_model", eval_spec["embedding_model"]])
-    if "device" in eval_spec:
-        args.extend(["--device", eval_spec["device"]])
-    report_path = Path(eval_spec.get("out_file", run_dir / "logs" / "evaluation_report.json"))
-    args.extend(["--out_file", str(report_path)])
-    LOGGER.info("Running evaluation via tools/evaluate.py")
-    rc = evaluator.main(args)
-    if rc != 0:
-        LOGGER.warning("Evaluation exited with status %s", rc)
+    if not gold_path:
+        LOGGER.warning("Missing gold path for %s; skipping evaluation.", prediction_path)
         return None
-    return report_path
+    metrics = evaluator.run_evaluation(
+        gold_path,
+        str(prediction_path),
+        tiers=eval_ctx.tiers,
+        threshold=eval_ctx.threshold,
+        preprocessor=eval_ctx.preprocessor,
+        embedder=eval_ctx.embedder,
+        preserve_conflicts=True,
+    )
+    metrics_path = prediction_path.parent / "metrics.json"
+    metrics_path.write_text(json.dumps(metrics, indent=2), encoding="utf-8")
+    return metrics
+
+
+async def run_chunking_experiment(
+    experiment: Dict[str, Any],
+    base_config: UnifiedConfig,
+    docs: List[Dict[str, Any]],
+    out_root: Path,
+    evaluate_flag: bool,
+    eval_ctx: Optional[EvaluationContext],
+) -> List[Dict[str, Any]]:
+    config = copy.deepcopy(base_config)
+    apply_chunk_parameters(config, experiment)
+    exp_name = experiment.get("name") or experiment.get("method")
+    experiment_dir = out_root / exp_name
+    experiment_dir.mkdir(parents=True, exist_ok=True)
+    (experiment_dir / "config_snapshot.json").write_text(
+        json.dumps(config.__dict__, indent=2, default=str), encoding="utf-8"
+    )
+    processor = StreamlinedDocumentProcessor(config)
+    summary_rows: List[Dict[str, Any]] = []
+
+    for doc in docs:
+        doc_out_dir = experiment_dir / doc["id"]
+        result, prediction_path = await process_document(processor, doc, doc_out_dir)
+        metrics = None
+        if evaluate_flag:
+            metrics = evaluate_document(doc.get("gold"), prediction_path, eval_ctx)
+        summary_row = {
+            "experiment": exp_name,
+            "chunk_method": config.chunking_method,
+            "document_id": doc["id"],
+            "document_type": doc.get("type", "unknown"),
+        }
+        if metrics:
+            summary_row.update(metrics)
+        summary_rows.append(summary_row)
+
+    processor.knowledge_engine.clear_cache()
+    return summary_rows
+
+
+def serialize_config_snapshot(config: UnifiedConfig, path: Path) -> None:
+    snapshot = config.__dict__.copy()
+    snapshot["environment"] = config.environment.value
+    path.write_text(json.dumps(snapshot, indent=2, default=str), encoding="utf-8")
 
 
 def parse_args() -> argparse.Namespace:
-    parser = argparse.ArgumentParser(description="Execute extraction experiments from a config file.")
-    parser.add_argument("--config", required=True, help="Path to experiment config (JSON or YAML).")
-    parser.add_argument("--run-dir", default=None, help="Override run directory.")
-    parser.add_argument("--log-level", default="INFO", help="Logging level (default: INFO).")
+    parser = argparse.ArgumentParser(description="Execute multi-chunk experiments.")
+    parser.add_argument("--config", required=True, help="Path to the experiment configuration (YAML/JSON).")
+    parser.add_argument("--out-root", default=None, help="Optional override for the output directory.")
+    parser.add_argument("--evaluate", default="true", help="Whether to run evaluation (true/false).")
+    parser.add_argument("--log-level", default="INFO", help="Logging verbosity.")
     return parser.parse_args()
 
 
@@ -269,33 +368,36 @@ async def main_async() -> None:
     if not spec_path.exists():
         raise FileNotFoundError(f"Config not found: {spec_path}")
     spec = load_spec(spec_path)
-    run_dir = ensure_run_dir(spec, args.run_dir)
+    out_root = ensure_out_root(spec, args.out_root)
 
-    config = UnifiedConfig.from_environment()
-    apply_overrides(config, spec)
-    (run_dir / "logs" / "config_snapshot.json").write_text(
-        json.dumps(serialize_config(config), indent=2), encoding="utf-8"
-    )
+    docs = normalize_documents(spec, spec_path.parent)
+    chunking_experiments = spec.get("chunking_experiments")
+    if not chunking_experiments:
+        raise ValueError("Config must include a 'chunking_experiments' list.")
 
-    documents = normalize_documents(spec, spec_path.parent)
-    processor = StreamlinedDocumentProcessor(config)
-    metrics_rows = await run_documents(processor, documents, run_dir)
-    write_metrics(run_dir, metrics_rows)
+    base_config = UnifiedConfig.from_environment()
+    apply_llm_settings(base_config, spec.get("llm", {}), spec_path.parent)
+    apply_prompt_settings(base_config, spec.get("prompting", {}))
+    serialize_config_snapshot(base_config, out_root / "base_config_snapshot.json")
 
-    evaluation_spec = dict(spec.get("evaluation", {}))
-    if "gold_dir" in evaluation_spec:
-        gold_candidate = Path(evaluation_spec["gold_dir"])
-        if not gold_candidate.is_absolute():
-            evaluation_spec["gold_dir"] = str((spec_path.parent / gold_candidate).resolve())
-    if "out_file" in evaluation_spec:
-        out_candidate = Path(evaluation_spec["out_file"])
-        if not out_candidate.is_absolute():
-            evaluation_spec["out_file"] = str((run_dir / out_candidate).resolve())
+    evaluation_flag = bool_arg(args.evaluate, default=True)
+    eval_ctx = prepare_evaluation_context(spec.get("evaluation", {})) if evaluation_flag else None
 
-    eval_path = maybe_run_evaluation(run_dir, evaluation_spec)
-    if eval_path:
-        LOGGER.info("Saved evaluation summary to %s", eval_path)
-    LOGGER.info("Experiment artifacts stored in %s", run_dir)
+    all_rows: List[Dict[str, Any]] = []
+    for experiment in chunking_experiments:
+        rows = await run_chunking_experiment(
+            experiment=experiment,
+            base_config=base_config,
+            docs=docs,
+            out_root=out_root,
+            evaluate_flag=evaluation_flag,
+            eval_ctx=eval_ctx,
+        )
+        all_rows.extend(rows)
+
+    if evaluation_flag:
+        write_summary_csv(out_root, all_rows)
+    LOGGER.info("Artifacts available under %s", out_root)
 
 
 def main():

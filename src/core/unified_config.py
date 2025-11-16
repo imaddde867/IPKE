@@ -143,6 +143,7 @@ class UnifiedConfig:
     llm_device_strategy: str = "single"
     llm_num_workers: int = 1
     prompting_strategy: str = "P0"
+    llm_random_seed: int = 42
     
     # GPU Configuration
     gpu_backend: str = "auto"  # "metal", "cuda", "auto", or "cpu"
@@ -163,6 +164,7 @@ class UnifiedConfig:
     # Chunking configuration
     chunking_method: str = "fixed"
     chunk_max_chars: int = 2000
+    chunk_overlap_chars: int = 0
     embedding_model_path: str = "models/embeddings/all-mpnet-base-v2"
     sem_similarity: str = "cosine"
     sem_min_sentences_per_chunk: int = 2
@@ -235,6 +237,7 @@ class UnifiedConfig:
             'llm_device_strategy': _get_env_value('LLM_DEVICE_STRATEGY', default=cls.llm_device_strategy),
             'llm_num_workers': _env_int('LLM_NUM_WORKERS', default=cls.llm_num_workers, min_value=1),
             'prompting_strategy': _get_env_value('PROMPTING_STRATEGY', default=cls.prompting_strategy).upper(),
+            'llm_random_seed': _env_int('LLM_RANDOM_SEED', default=cls.llm_random_seed),
         }
         base_kwargs.update(chunk_kwargs)
         return cls(**base_kwargs)
@@ -258,6 +261,7 @@ class UnifiedConfig:
             'llm_device_strategy': "single",
             'llm_num_workers': 1,
             'prompting_strategy': "P0",
+            'llm_random_seed': cls.llm_random_seed,
         }
         base_kwargs.update(chunk_kwargs)
         return cls(**base_kwargs)
@@ -294,6 +298,7 @@ class UnifiedConfig:
             'llm_device_strategy': _get_env_value('LLM_DEVICE_STRATEGY', default=cls.llm_device_strategy),
             'llm_num_workers': _env_int('LLM_NUM_WORKERS', default=cls.llm_num_workers, min_value=1),
             'prompting_strategy': _get_env_value('PROMPTING_STRATEGY', default=cls.prompting_strategy).upper(),
+            'llm_random_seed': _env_int('LLM_RANDOM_SEED', default=cls.llm_random_seed),
         }
         base_kwargs.update(chunk_kwargs)
         return cls(**base_kwargs)
@@ -308,6 +313,7 @@ class UnifiedConfig:
         overrides: Dict[str, Any] = {
             'chunking_method': method,
             'chunk_max_chars': _env_int('CHUNK_MAX_CHARS', default=cls.chunk_max_chars, min_value=200),
+            'chunk_overlap_chars': _env_int('CHUNK_OVERLAP_CHARS', default=cls.chunk_overlap_chars, min_value=0),
             'debug_chunking': _env_bool('DEBUG_CHUNKING', default=cls.debug_chunking),
         }
         if method != "fixed":
@@ -433,6 +439,7 @@ class UnifiedConfig:
             'gpu_backend': self.gpu_backend,
             'gpu_memory_fraction': self.gpu_memory_fraction,
             'verbose': False,
+            'random_seed': self.llm_random_seed,
             'backend': self.llm_backend,
             'device_strategy': self.llm_device_strategy,
             'num_workers': self.llm_num_workers,
@@ -465,6 +472,7 @@ class UnifiedConfig:
             'method': self.chunking_method,
             'chunk_size': self.chunk_size,
             'chunk_max_chars': self.chunk_max_chars,
+            'chunk_overlap_chars': self.chunk_overlap_chars,
             'debug_chunking': self.debug_chunking,
         }
         if self.chunking_method != "fixed":
