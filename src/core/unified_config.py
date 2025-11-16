@@ -165,7 +165,7 @@ class UnifiedConfig:
     chunking_method: str = "fixed"
     chunk_max_chars: int = 2000
     chunk_overlap_chars: int = 0
-    embedding_model_path: str = "models/embeddings/all-mpnet-base-v2"
+    embedding_model_path: str = "all-mpnet-base-v2"
     sem_similarity: str = "cosine"
     sem_min_sentences_per_chunk: int = 2
     sem_max_sentences_per_chunk: int = 40
