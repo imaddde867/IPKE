@@ -279,7 +279,7 @@ huggingface-cli download sentence-transformers/all-mpnet-base-v2 \
   --local-dir models/embeddings/all-mpnet-base-v2 \
   --local-dir-use-symlinks False
 ```
-Update `EMBEDDING_MODEL_PATH` to match the downloaded directory. `scripts/baseline_preflight.py` now fails if the path is missing when a semantic method is configured.
+Only override `EMBEDDING_MODEL_PATH` when pointing at an offline mirror; otherwise keep the default hub id and let SentenceTransformer populate the HF cache. The baseline preflight now just reports the chosen id instead of failing on missing folders.
 
 ### Troubleshooting
 - **Tokenizer mutex errors**: macOS Metal users should keep `TOKENIZERS_PARALLELISM=false` (already enforced in `llm_env_setup`). Re-enabling parallelism reintroduces the mutex crash.
