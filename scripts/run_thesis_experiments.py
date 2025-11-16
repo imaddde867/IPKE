@@ -189,10 +189,17 @@ def run_single_request(
     endpoint = f"{url}/extract"
     LOGGER.debug("Posting %s to %s", doc_path, endpoint)
     form_fields = build_chunk_request_fields(method, form_overrides)
-    with doc_path.open("rb") as stream:
-        files = {"file": (doc_path.name, stream, "application/pdf")}
-        response = session.post(endpoint, files=files, data=form_fields, timeout=timeout)
-    response.raise_for_status()
+    request_data = form_fields or None
+    path_obj = Path(doc_path)
+    with path_obj.open("rb") as stream:
+        files = {"file": (path_obj.name, stream, "text/plain")}
+        response = session.post(endpoint, files=files, data=request_data, timeout=timeout)
+    try:
+        response.raise_for_status()
+    except requests.HTTPError:
+        print(f"HTTP error {response.status_code}")
+        print(response.text[:1000])
+        raise
     return response.json()
 
 
