@@ -1,0 +1,643 @@
+{
+  "document_id": "op_firesafety_guideline",
+  "document_type": "text",
+  "metadata": {},
+  "steps": [
+    {
+      "id": "S1",
+      "text": "Identify potential fire risks in working machines.",
+      "order": 1,
+      "confidence": 0.9
+    },
+    {
+      "id": "S2",
+      "text": "Evaluate each machine's operating environment and conditions.",
+      "order": 2,
+      "confidence": 0.85
+    },
+    {
+      "id": "S3",
+      "text": "Issue clear instructions for safety.",
+      "order": 3,
+      "confidence": 0.9
+    },
+    {
+      "id": "S4",
+      "text": "Supervise compliance with safety instructions.",
+      "order": 4,
+      "confidence": 0.8
+    },
+    {
+      "id": "S5",
+      "text": "Assess fire risks by considering impact on company's other risks, level of risk taken, employee actions in an accident, adequacy of preventive maintenance, and daily work.",
+      "order": 5,
+      "confidence": 0.95
+    },
+    {
+      "id": "S6",
+      "text": "Begin fire timeline when a machine is put into service.",
+      "order": 6,
+      "confidence": 0.9
+    },
+    {
+      "id": "S7",
+      "text": "Perform scheduled maintenance according to manufacturer's instructions.",
+      "order": 7,
+      "confidence": 0.9
+    },
+    {
+      "id": "S8",
+      "text": "Use authentic replacement parts.",
+      "order": 8,
+      "confidence": 0.85
+    },
+    {
+      "id": "S9",
+      "text": "Inspect and clean engine compartment and surroundings daily in fire-hazard conditions.",
+      "order": 9,
+      "confidence": 0.9
+    },
+    {
+      "id": "S10",
+      "text": "Inspect and clean engine compartment and surroundings weekly in other environments.",
+      "order": 10,
+      "confidence": 0.85
+    },
+    {
+      "id": "S11",
+      "text": "Clean engine compartment at least once a week.",
+      "order": 11,
+      "confidence": 0.9
+    },
+    {
+      "id": "S12",
+      "text": "Use compressed air to remove dirt after cleaning.",
+      "order": 12,
+      "confidence": 0.9
+    },
+    {
+      "id": "S13",
+      "text": "Inspect for leaks after cleaning.",
+      "order": 13,
+      "confidence": 0.9
+    },
+    {
+      "id": "S14",
+      "text": "Visually inspect electrical systems at least once a year.",
+      "order": 14,
+      "confidence": 0.9
+    },
+    {
+      "id": "S15",
+      "text": "Service electrical systems daily on electric-powered and hybrid machines.",
+      "order": 15,
+      "confidence": 0.9
+    },
+    {
+      "id": "S16",
+      "text": "Use a multimeter to measure voltage drops.",
+      "order": 16,
+      "confidence": 0.9
+    },
+    {
+      "id": "S17",
+      "text": "Use a thermal imaging camera to detect anomalies.",
+      "order": 17,
+      "confidence": 0.9
+    },
+    {
+      "id": "S18",
+      "text": "Repair any leaks and electrical issues.",
+      "order": 18,
+      "confidence": 0.9
+    },
+    {
+      "id": "S19",
+      "text": "Check battery terminals for integrity.",
+      "order": 19,
+      "confidence": 0.9
+    },
+    {
+      "id": "S20",
+      "text": "Inspect cables for damage and cleanliness.",
+      "order": 20,
+      "confidence": 0.9
+    },
+    {
+      "id": "S21",
+      "text": "Examine electric panel for redundant wires.",
+      "order": 21,
+      "confidence": 0.85
+    },
+    {
+      "id": "S22",
+      "text": "Attach cables with fasteners in engine compartment.",
+      "order": 22,
+      "confidence": 0.9
+    },
+    {
+      "id": "S23",
+      "text": "Check alternator for firm attachment and cleanliness.",
+      "order": 23,
+      "confidence": 0.9
+    },
+    {
+      "id": "S24",
+      "text": "Examine exhaust pipe for leaks and thermal shields.",
+      "order": 24,
+      "confidence": 0.85
+    },
+    {
+      "id": "S25",
+      "text": "Inspect urea systems and diesel particulate filter for contamination.",
+      "order": 25,
+      "confidence": 0.8
+    },
+    {
+      "id": "S26",
+      "text": "Check urea system for leaks and prevent contamination during refueling.",
+      "order": 26,
+      "confidence": 0.9
+    },
+    {
+      "id": "S27",
+      "text": "Ensure regeneration occurs in a safe outdoor environment.",
+      "order": 27,
+      "confidence": 0.95
+    },
+    {
+      "id": "S28",
+      "text": "Delay regeneration if machine is in a fire-hazard environment.",
+      "order": 28,
+      "confidence": 0.9
+    },
+    {
+      "id": "S29",
+      "text": "Never leave machine unattended during regeneration.",
+      "order": 29,
+      "confidence": 0.9
+    },
+    {
+      "id": "S30",
+      "text": "Inspect swivelling joint hoses and electrical systems weekly.",
+      "order": 30,
+      "confidence": 0.85
+    },
+    {
+      "id": "S31",
+      "text": "Ensure all operating manuals are available in a language the operator understands.",
+      "order": 31,
+      "confidence": 0.9
+    },
+    {
+      "id": "S32",
+      "text": "Check auxiliary heater cleanliness and condition before winter.",
+      "order": 32,
+      "confidence": 0.9
+    },
+    {
+      "id": "S33",
+      "text": "Ensure heater compartment is clean and free of fuel leaks.",
+      "order": 33,
+      "confidence": 0.9
+    },
+    {
+      "id": "S34",
+      "text": "Inspect heater's exhaust pipe for contact with flammable materials.",
+      "order": 34,
+      "confidence": 0.9
+    },
+    {
+      "id": "S35",
+      "text": "Test heater under supervision before use.",
+      "order": 35,
+      "confidence": 0.9
+    },
+    {
+      "id": "S36",
+      "text": "Check signs and markings.",
+      "order": 36,
+      "confidence": 0.9
+    },
+    {
+      "id": "S37",
+      "text": "Inspect machine electrical systems (battery cables, harnesses, main power switch, alternator).",
+      "order": 37,
+      "confidence": 0.95
+    },
+    {
+      "id": "S38",
+      "text": "Examine engine mechanics (fuel/oil/hydraulic lines, exhaust system).",
+      "order": 38,
+      "confidence": 0.9
+    },
+    {
+      "id": "S39",
+      "text": "Inspect first-aid extinguishing equipment (hand-held extinguishers, system log).",
+      "order": 39,
+      "confidence": 0.9
+    },
+    {
+      "id": "S40",
+      "text": "Assess auxiliary heater (installation, fuel manifold, exhaust, electrical system).",
+      "order": 40,
+      "confidence": 0.9
+    },
+    {
+      "id": "S41",
+      "text": "Check mains power systems.",
+      "order": 41,
+      "confidence": 0.9
+    },
+    {
+      "id": "S42",
+      "text": "Evaluate general condition and cleanliness.",
+      "order": 42,
+      "confidence": 0.9
+    },
+    {
+      "id": "S43",
+      "text": "Check cables and fasteners for security, heat resistance, insulation, and lead-throughs.",
+      "order": 43,
+      "confidence": 0.9
+    },
+    {
+      "id": "S44",
+      "text": "Inspect fuses and batteries for the condition of non-fused cables and terminal covers.",
+      "order": 44,
+      "confidence": 0.9
+    },
+    {
+      "id": "S45",
+      "text": "Examine engine and heater compartments for cleanliness and leaks.",
+      "order": 45,
+      "confidence": 0.9
+    },
+    {
+      "id": "S46",
+      "text": "Verify availability, markings, and operator training of first-aid extinguishing equipment.",
+      "order": 46,
+      "confidence": 0.9
+    }
+  ],
+  "constraints": [
+    {
+      "id": "C1",
+      "text": "Consider the machine's operating environment and conditions when evaluating fire risks.",
+      "confidence": 0.9,
+      "steps": [
+        "S44"
+      ]
+    },
+    {
+      "id": "C2",
+      "text": "Operating environment affects potential impact of a fire.",
+      "confidence": 0.9,
+      "steps": [
+        "S43"
+      ]
+    },
+    {
+      "id": "C3",
+      "text": "Fire risk arises as soon as a machine is taken into service.",
+      "confidence": 0.95,
+      "steps": [
+        "S44"
+      ]
+    },
+    {
+      "id": "C4",
+      "text": "Shut down engine before inspecting for fuel leaks.",
+      "confidence": 0.95,
+      "steps": [
+        "S45"
+      ]
+    },
+    {
+      "id": "C5",
+      "text": "Protect hydraulic hoses from hot surfaces or high-temperature materials.",
+      "confidence": 0.9,
+      "steps": [
+        "S45"
+      ]
+    },
+    {
+      "id": "C6",
+      "text": "Check main power switch location and operation.",
+      "confidence": 0.85,
+      "steps": [
+        "S43"
+      ]
+    },
+    {
+      "id": "C7",
+      "text": "Repair any malfunction before resuming operation.",
+      "confidence": 0.9,
+      "steps": [
+        "S43",
+        "S44",
+        "S45",
+        "S46",
+        "S40",
+        "S41",
+        "S42"
+      ]
+    },
+    {
+      "id": "C8",
+      "text": "Replace cables showing signs of abrasion or heat damage.",
+      "confidence": 0.8,
+      "steps": [
+        "S44"
+      ]
+    },
+    {
+      "id": "C9",
+      "text": "Ensure fuses are the correct size.",
+      "confidence": 0.85,
+      "steps": [
+        "S45"
+      ]
+    },
+    {
+      "id": "C10",
+      "text": "Ensure regeneration occurs in a safe outdoor environment away from flammable materials.",
+      "confidence": 0.95,
+      "steps": [
+        "S44"
+      ]
+    },
+    {
+      "id": "C11",
+      "text": "Delay regeneration if machine is in a fire-hazard environment.",
+      "confidence": 0.9,
+      "steps": [
+        "S45"
+      ]
+    },
+    {
+      "id": "C12",
+      "text": "Perform inspections in the specified order.",
+      "confidence": 0.95,
+      "steps": [
+        "S43",
+        "S44",
+        "S45",
+        "S46",
+        "S40",
+        "S41",
+        "S42"
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "content": "Fire risks in working machines",
+      "entity_type": "risk_category",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "Pohjola Insurance\nFire safety guidelines for working machines\nValid as of 1 January 2021\n\n---\n\n### Page 1: Introduction\n\n**Risk management is more than just insurance**\n\n**Risk and risk management**\nA...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Normal operating conditions for machines",
+      "entity_type": "specification",
+      "category": "operating_conditions",
+      "confidence": 0.85,
+      "context": "Pohjola Insurance\nFire safety guidelines for working machines\nValid as of 1 January 2021\n\n---\n\n### Page 1: Introduction\n\n**Risk management is more than just insurance**\n\n**Risk and risk management**\nA...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Daily and weekly inspections and cleanings.",
+      "entity_type": "specification",
+      "category": "maintenance_schedule",
+      "confidence": 0.9,
+      "context": "s heightens risks. The operating environment (e.g., populated areas vs. remote locations, sawmills, peat production areas) affects the potential impact of a fire. Toxic fumes can be especially hazardo...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Authentic replacement parts.",
+      "entity_type": "specification",
+      "category": "replacement_parts",
+      "confidence": 0.95,
+      "context": "s heightens risks. The operating environment (e.g., populated areas vs. remote locations, sawmills, peat production areas) affects the potential impact of a fire. Toxic fumes can be especially hazardo...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Weekly cleaning frequency.",
+      "entity_type": "specification",
+      "category": "frequency",
+      "confidence": 0.9,
+      "context": "ean at least once a week.\n* Cleaning should be done after a shift, using compressed air to remove dirt. After cleaning, inspect for leaks. A clean engine compartment prevents ignition and improves coo...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Compressed air for dirt removal.",
+      "entity_type": "specification",
+      "category": "tool",
+      "confidence": 0.9,
+      "context": "ean at least once a week.\n* Cleaning should be done after a shift, using compressed air to remove dirt. After cleaning, inspect for leaks. A clean engine compartment prevents ignition and improves coo...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Visual electrical system inspections.",
+      "entity_type": "specification",
+      "category": "inspection",
+      "confidence": 0.9,
+      "context": "ean at least once a week.\n* Cleaning should be done after a shift, using compressed air to remove dirt. After cleaning, inspect for leaks. A clean engine compartment prevents ignition and improves coo...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Daily electrical system servicing.",
+      "entity_type": "specification",
+      "category": "maintenance",
+      "confidence": 0.9,
+      "context": "ean at least once a week.\n* Cleaning should be done after a shift, using compressed air to remove dirt. After cleaning, inspect for leaks. A clean engine compartment prevents ignition and improves coo...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Multimeter for voltage drop measurement.",
+      "entity_type": "specification",
+      "category": "tool",
+      "confidence": 0.9,
+      "context": "ean at least once a week.\n* Cleaning should be done after a shift, using compressed air to remove dirt. After cleaning, inspect for leaks. A clean engine compartment prevents ignition and improves coo...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Thermal imaging camera for electrical system anomalies.",
+      "entity_type": "specification",
+      "category": "tool",
+      "confidence": 0.9,
+      "context": "ean at least once a week.\n* Cleaning should be done after a shift, using compressed air to remove dirt. After cleaning, inspect for leaks. A clean engine compartment prevents ignition and improves coo...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "150 mm",
+      "entity_type": "distance_requirement",
+      "category": "fastening_brackets",
+      "confidence": 0.9,
+      "context": "ng the machine. It typically shuts down the engine and cuts power.\n* Repair any malfunction that required its use before resuming operation. Never use it for a normal shutdown.\n\n**Battery**\n* Repair a...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Flammable liquid hoses",
+      "entity_type": "hazardous_material",
+      "category": "general",
+      "confidence": 0.85,
+      "context": "ng the machine. It typically shuts down the engine and cuts power.\n* Repair any malfunction that required its use before resuming operation. Never use it for a normal shutdown.\n\n**Battery**\n* Repair a...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Machines > 3,000 kg require at least two hand-held fire extinguishers.",
+      "entity_type": "specification",
+      "category": "fire_extinguisher_requirement",
+      "confidence": 0.95,
+      "context": "e.\n* **Urea systems and diesel particulate filter:** Urea systems themselves are not a fire risk, but leaks can cause corrosion and disrupt electrical equipment. Take care to prevent contamination dur...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Machines for crushing timber or energy waste need four hand-held fire extinguishers.",
+      "entity_type": "specification",
+      "category": "fire_extinguisher_requirement",
+      "confidence": 0.95,
+      "context": "e.\n* **Urea systems and diesel particulate filter:** Urea systems themselves are not a fire risk, but leaks can cause corrosion and disrupt electrical equipment. Take care to prevent contamination dur...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Extinguishers must be easily available, clearly marked, and serviced at least annually.",
+      "entity_type": "specification",
+      "category": "fire_extinguisher_maintenance",
+      "confidence": 0.9,
+      "context": "e.\n* **Urea systems and diesel particulate filter:** Urea systems themselves are not a fire risk, but leaks can cause corrosion and disrupt electrical equipment. Take care to prevent contamination dur...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Operators must be trained in the use of hand-held fire extinguishers.",
+      "entity_type": "specification",
+      "category": "operator_training",
+      "confidence": 0.9,
+      "context": "e.\n* **Urea systems and diesel particulate filter:** Urea systems themselves are not a fire risk, but leaks can cause corrosion and disrupt electrical equipment. Take care to prevent contamination dur...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Machine electrical systems (battery cables, harnesses, main power switch, alternator).",
+      "entity_type": "system",
+      "category": "electrical",
+      "confidence": 0.95,
+      "context": "**Fogmaker:** OEM Finland Oy\n* **Firestop:** YTM-industrial\n* **ExAct Guard:** Mikro-Pulssi\n* **Ceodeux Extinguisher Valves Technology S.A/Rotarex:** Teknosafe Oy\n\n---\n\n### Page 7-8: Fire Safety Inspe...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Engine mechanics (fuel/oil/hydraulic lines, exhaust system).",
+      "entity_type": "system",
+      "category": "mechanical",
+      "confidence": 0.95,
+      "context": "**Fogmaker:** OEM Finland Oy\n* **Firestop:** YTM-industrial\n* **ExAct Guard:** Mikro-Pulssi\n* **Ceodeux Extinguisher Valves Technology S.A/Rotarex:** Teknosafe Oy\n\n---\n\n### Page 7-8: Fire Safety Inspe...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "First-aid extinguishing equipment (hand-held extinguishers, system log).",
+      "entity_type": "equipment",
+      "category": "fire_extinguisher",
+      "confidence": 0.95,
+      "context": "**Fogmaker:** OEM Finland Oy\n* **Firestop:** YTM-industrial\n* **ExAct Guard:** Mikro-Pulssi\n* **Ceodeux Extinguisher Valves Technology S.A/Rotarex:** Teknosafe Oy\n\n---\n\n### Page 7-8: Fire Safety Inspe...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Auxiliary heater (installation, fuel manifold, exhaust, electrical system).",
+      "entity_type": "system",
+      "category": "heating",
+      "confidence": 0.9,
+      "context": "**Fogmaker:** OEM Finland Oy\n* **Firestop:** YTM-industrial\n* **ExAct Guard:** Mikro-Pulssi\n* **Ceodeux Extinguisher Valves Technology S.A/Rotarex:** Teknosafe Oy\n\n---\n\n### Page 7-8: Fire Safety Inspe...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Regular inspection checklists.",
+      "entity_type": "specification",
+      "category": "inspection",
+      "confidence": 0.9,
+      "context": "d lead to an accident without delay.\n* Arrange practical training on accident and fire procedures.\n\n---\n\n### Pages 10-11: Inspection Checklists\n\nThese pages provide templates for regular inspection ch...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Cables and fasteners, fuses and batteries, engine and heater compartments, first-aid extinguishing equipment.",
+      "entity_type": "specification",
+      "category": "equipment_to_check",
+      "confidence": 0.9,
+      "context": "d lead to an accident without delay.\n* Arrange practical training on accident and fire procedures.\n\n---\n\n### Pages 10-11: Inspection Checklists\n\nThese pages provide templates for regular inspection ch...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Security, heat resistance, insulation, lead-throughs, condition of non-fused cables, terminal covers, cleanliness, leaks, availability, markings, operator training.",
+      "entity_type": "specification",
+      "category": "inspection_items",
+      "confidence": 0.9,
+      "context": "d lead to an accident without delay.\n* Arrange practical training on accident and fire procedures.\n\n---\n\n### Pages 10-11: Inspection Checklists\n\nThese pages provide templates for regular inspection ch...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Each use, weekly, as part of regular maintenance.",
+      "entity_type": "specification",
+      "category": "inspection_frequency",
+      "confidence": 0.9,
+      "context": "d lead to an accident without delay.\n* Arrange practical training on accident and fire procedures.\n\n---\n\n### Pages 10-11: Inspection Checklists\n\nThese pages provide templates for regular inspection ch...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    }
+  ],
+  "confidence_score": 0.9083333333333331,
+  "processing_time": 436.3569736480713,
+  "strategy_used": "llama_cpp:P0",
+  "quality_metrics": {
+    "entity_count": 24,
+    "avg_confidence": 0.9083333333333331,
+    "chunks_processed": 8
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "document_id": "DOA_Food_Proc",
+  "document_type": "text",
+  "processing_time": 700.2609796524048,
+  "file_size": 28221,
+  "entity_count": 36,
+  "step_count": 104,
+  "constraint_count": 21,
+  "confidence_score": 0.9083333333333328
+}
