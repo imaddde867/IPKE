@@ -24,7 +24,7 @@ from src.exceptions import ProcessingError
 # Quick chunker smoke test without touching LLMs
 def _verify_chunking_safe():
     try:
-        from src.ai.chunkers import get_chunker, FixedChunker
+        from src.processors.chunkers import get_chunker, FixedChunker
         cfg = get_config()
         chunker = get_chunker(cfg)
         if isinstance(chunker, FixedChunker):

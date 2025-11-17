@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from src.ai.chunkers import BreakpointSemanticChunker, DualSemanticChunker, FixedChunker
+from src.processors.chunkers import BreakpointSemanticChunker, DualSemanticChunker, FixedChunker
 
 
 class DummyCfg:

@@ -7,7 +7,7 @@ from fastapi.testclient import TestClient
 
 from src.api.app import app
 from src.core.unified_config import get_config
-from src.ai.knowledge_engine import ExtractionResult
+from src.ai.types import ExtractionResult
 from src.processors.streamlined_processor import ProcessingResult
 from src.exceptions import ProcessingError
 
