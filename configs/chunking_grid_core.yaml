@@ -43,18 +43,46 @@ chunking_experiments:
       chunk_size_chars: 2000
       chunk_overlap_chars: 0
 
+  - name: "fixed_2000_overlap200"
+    # Sliding-window baseline tuned for high recall with overlap-aware deduplication.
+    method: "fixed"
+    params:
+      chunk_size_chars: 2000
+      chunk_overlap_chars: 200
+      chunk_overlap_dedup_ratio: 0.8
+      enable_chunk_dedup: true
+      chunk_dedup_threshold: 0.92
+      chunk_dedup_overlap_ratio: 0.75
+      chunk_dedup_min_unique_chars: 320
+
   - name: "breakpoint_semantic_lambda015"
+    # Semantic breakpoint chunker (high recall, controlled redundancy via tightening sentence windows).
     method: "breakpoint_semantic"
     params:
-      sem_lambda: 0.15
-      sem_window_w: 20
-      sem_min_sentences_per_chunk: 2
-      sem_max_sentences_per_chunk: 40
+      chunk_max_chars: 1800
+      sem_lambda: 0.12
+      sem_window_w: 28
+      sem_min_sentences_per_chunk: 3
+      sem_max_sentences_per_chunk: 20
+      sem_preferred_sentences_per_chunk: 8
+      enable_chunk_dedup: true
+      chunk_dedup_threshold: 0.9
+      chunk_dedup_overlap_ratio: 0.72
+      chunk_dedup_min_unique_chars: 280
 
   - name: "dual_semantic_block16"
+    # Dual semantic chunker: parent sections then breakpoint refinement with redundancy filtering.
     method: "dual_semantic"
     params:
-      dsc_parent_block_sentences: 16
-      dsc_child_sem_lambda: 0.10
-      dsc_child_window_w: 16
-      dsc_dynamic_threshold_k: 0.5
+      chunk_max_chars: 1900
+      dsc_parent_block_sentences: 20
+      dsc_child_sem_lambda: 0.11
+      dsc_child_window_w: 24
+      dsc_dynamic_threshold_k: 0.75
+      sem_min_sentences_per_chunk: 3
+      sem_max_sentences_per_chunk: 22
+      sem_preferred_sentences_per_chunk: 10
+      enable_chunk_dedup: true
+      chunk_dedup_threshold: 0.9
+      chunk_dedup_overlap_ratio: 0.72
+      chunk_dedup_min_unique_chars: 300

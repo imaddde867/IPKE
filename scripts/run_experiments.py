@@ -167,6 +167,8 @@ def apply_chunk_parameters(config: UnifiedConfig, experiment: Dict[str, Any]) ->
         raise ValueError(f"Chunking experiment missing 'method': {experiment}")
     config.chunking_method = method.lower()
     params = experiment.get("params", {})
+    if "chunk_max_chars" in params:
+        config.chunk_max_chars = int(params["chunk_max_chars"])
     if config.chunking_method == "fixed":
         if "chunk_size_chars" in params:
             size = int(params["chunk_size_chars"])
@@ -174,6 +176,8 @@ def apply_chunk_parameters(config: UnifiedConfig, experiment: Dict[str, Any]) ->
             config.chunk_max_chars = size
         if "chunk_overlap_chars" in params:
             config.chunk_overlap_chars = max(0, int(params["chunk_overlap_chars"]))
+        if "chunk_overlap_dedup_ratio" in params:
+            config.chunk_overlap_dedup_ratio = float(params["chunk_overlap_dedup_ratio"])
     else:
         if "embedding_model_path" in params:
             config.embedding_model_path = params["embedding_model_path"]
@@ -186,6 +190,8 @@ def apply_chunk_parameters(config: UnifiedConfig, experiment: Dict[str, Any]) ->
                 config.sem_min_sentences_per_chunk = int(params["sem_min_sentences_per_chunk"])
             if "sem_max_sentences_per_chunk" in params:
                 config.sem_max_sentences_per_chunk = int(params["sem_max_sentences_per_chunk"])
+            if "sem_preferred_sentences_per_chunk" in params:
+                config.sem_preferred_sentences_per_chunk = int(params["sem_preferred_sentences_per_chunk"])
     if config.chunking_method in {"dual_semantic", "dsc"}:
         parent_block = int(params.get("dsc_parent_block_sentences", config.dsc_parent_min_sentences))
         config.dsc_parent_min_sentences = max(1, parent_block)
@@ -198,6 +204,16 @@ def apply_chunk_parameters(config: UnifiedConfig, experiment: Dict[str, Any]) ->
             config.dsc_threshold_k = float(params["dsc_dynamic_threshold_k"])
         if "dsc_use_headings" in params:
             config.dsc_use_headings = bool(params["dsc_use_headings"])
+    if "enable_chunk_dedup" in params:
+        config.enable_chunk_dedup = bool(params["enable_chunk_dedup"])
+    if "chunk_dedup_threshold" in params:
+        config.chunk_dedup_threshold = float(params["chunk_dedup_threshold"])
+    if "chunk_dedup_overlap_ratio" in params:
+        config.chunk_dedup_overlap_ratio = float(params["chunk_dedup_overlap_ratio"])
+    if "chunk_dedup_min_unique_chars" in params:
+        config.chunk_dedup_min_unique_chars = int(params["chunk_dedup_min_unique_chars"])
+    if "chunk_dedup_embedding_model" in params:
+        config.chunk_dedup_embedding_model = params["chunk_dedup_embedding_model"]
 
 
 def write_metrics_json(path: Path, rows: List[Dict[str, Any]]) -> None:

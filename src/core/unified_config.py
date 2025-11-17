@@ -165,12 +165,19 @@ class UnifiedConfig:
     chunking_method: str = "fixed"
     chunk_max_chars: int = 2000
     chunk_overlap_chars: int = 0
+    chunk_overlap_dedup_ratio: float = 0.75
+    enable_chunk_dedup: bool = False
+    chunk_dedup_threshold: float = 0.9
+    chunk_dedup_overlap_ratio: float = 0.7
+    chunk_dedup_min_unique_chars: int = 320
+    chunk_dedup_embedding_model: str = ""
     embedding_model_path: str = "all-mpnet-base-v2"
     sem_similarity: str = "cosine"
     sem_min_sentences_per_chunk: int = 2
     sem_max_sentences_per_chunk: int = 40
     sem_lambda: float = 0.15
     sem_window_w: int = 30
+    sem_preferred_sentences_per_chunk: int = 12
     dsc_parent_min_sentences: int = 10
     dsc_parent_max_sentences: int = 120
     dsc_delta_window: int = 25
@@ -314,6 +321,34 @@ class UnifiedConfig:
             'chunking_method': method,
             'chunk_max_chars': _env_int('CHUNK_MAX_CHARS', default=cls.chunk_max_chars, min_value=200),
             'chunk_overlap_chars': _env_int('CHUNK_OVERLAP_CHARS', default=cls.chunk_overlap_chars, min_value=0),
+            'chunk_overlap_dedup_ratio': _env_float(
+                'CHUNK_OVERLAP_DEDUP_RATIO',
+                default=cls.chunk_overlap_dedup_ratio,
+                min_value=0.0,
+                max_value=0.95
+            ),
+            'enable_chunk_dedup': _env_bool('ENABLE_CHUNK_DEDUP', default=cls.enable_chunk_dedup),
+            'chunk_dedup_threshold': _env_float(
+                'CHUNK_DEDUP_THRESHOLD',
+                default=cls.chunk_dedup_threshold,
+                min_value=0.0,
+                max_value=1.0
+            ),
+            'chunk_dedup_overlap_ratio': _env_float(
+                'CHUNK_DEDUP_OVERLAP_RATIO',
+                default=cls.chunk_dedup_overlap_ratio,
+                min_value=0.0,
+                max_value=1.0
+            ),
+            'chunk_dedup_min_unique_chars': _env_int(
+                'CHUNK_DEDUP_MIN_UNIQUE_CHARS',
+                default=cls.chunk_dedup_min_unique_chars,
+                min_value=32
+            ),
+            'chunk_dedup_embedding_model': _get_env_value(
+                'CHUNK_DEDUP_EMBEDDING_MODEL',
+                default=cls.chunk_dedup_embedding_model
+            ),
             'debug_chunking': _env_bool('DEBUG_CHUNKING', default=cls.debug_chunking),
         }
         if method != "fixed":
@@ -329,6 +364,11 @@ class UnifiedConfig:
                     'SEM_MAX_SENTENCES_PER_CHUNK',
                     default=cls.sem_max_sentences_per_chunk,
                     min_value=2
+                ),
+                'sem_preferred_sentences_per_chunk': _env_int(
+                    'SEM_PREFERRED_SENTENCES_PER_CHUNK',
+                    default=cls.sem_preferred_sentences_per_chunk,
+                    min_value=1
                 ),
             })
             if method == "breakpoint_semantic":
@@ -473,6 +513,12 @@ class UnifiedConfig:
             'chunk_size': self.chunk_size,
             'chunk_max_chars': self.chunk_max_chars,
             'chunk_overlap_chars': self.chunk_overlap_chars,
+            'chunk_overlap_dedup_ratio': self.chunk_overlap_dedup_ratio,
+            'enable_chunk_dedup': self.enable_chunk_dedup,
+            'chunk_dedup_threshold': self.chunk_dedup_threshold,
+            'chunk_dedup_overlap_ratio': self.chunk_dedup_overlap_ratio,
+            'chunk_dedup_min_unique_chars': self.chunk_dedup_min_unique_chars,
+            'chunk_dedup_embedding_model': self.chunk_dedup_embedding_model,
             'debug_chunking': self.debug_chunking,
         }
         if self.chunking_method != "fixed":
@@ -481,6 +527,7 @@ class UnifiedConfig:
                 'sem_similarity': self.sem_similarity,
                 'sem_min_sentences_per_chunk': self.sem_min_sentences_per_chunk,
                 'sem_max_sentences_per_chunk': self.sem_max_sentences_per_chunk,
+                'sem_preferred_sentences_per_chunk': self.sem_preferred_sentences_per_chunk,
             })
             if self.chunking_method == "breakpoint_semantic":
                 config.update({

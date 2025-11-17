@@ -110,12 +110,14 @@ class BreakpointSemanticChunker(BaseChunker):
         if sims.size:
             prefix_sims[1:] = np.cumsum(sims)
 
-        boundaries = self._compute_boundaries(n_sentences, prefix_sims)
+        boundaries = self._compute_boundaries(n_sentences, prefix_sims, offset=0)
         if not boundaries:
             boundaries = [(0, n_sentences)]
 
         chunks = self._splice_chunks(sentences, spans, boundaries, prefix_sims)
-        return self._enforce_char_cap(chunks, sentences, spans, prefix_sims)
+        refined = self._enforce_char_cap(chunks, sentences, spans, prefix_sims)
+        self._log_chunk_summary(refined, len(text))
+        return refined
 
     def _fallback_chunk(self, text: str, spans: List[Tuple[int, int]]) -> List[Chunk]:
         clean = text.strip()
@@ -133,11 +135,13 @@ class BreakpointSemanticChunker(BaseChunker):
             )
         ]
 
-    def _compute_boundaries(self, n_sentences: int, prefix_sims: np.ndarray) -> List[Tuple[int, int]]:
+    def _compute_boundaries(self, n_sentences: int, prefix_sims: np.ndarray, offset: int = 0) -> List[Tuple[int, int]]:
         min_len = max(1, getattr(self.cfg, "sem_min_sentences_per_chunk", 2))
         max_len = max(min_len, getattr(self.cfg, "sem_max_sentences_per_chunk", 40))
-        window = max(min_len, getattr(self.cfg, "sem_window_w", max_len))
+        window_cfg = getattr(self.cfg, "sem_window_w", max_len)
+        window = max(min_len, min(max_len, window_cfg))
         lam = getattr(self.cfg, "sem_lambda", 0.15)
+        preferred = max(min_len, min(max_len, getattr(self.cfg, "sem_preferred_sentences_per_chunk", (min_len + max_len) // 2 or min_len)))
 
         dp = [-float("inf")] * (n_sentences + 1)
         back = [-1] * (n_sentences + 1)
@@ -151,8 +155,11 @@ class BreakpointSemanticChunker(BaseChunker):
                 start = end - length
                 if start < 0 or dp[start] == -float("inf"):
                     continue
-                cohesion = self._mean_similarity(prefix_sims, start, end)
-                score = dp[start] + cohesion - lam
+                global_start = offset + start
+                global_end = offset + end
+                cohesion = self._mean_similarity(prefix_sims, global_start, global_end)
+                normalized_penalty = lam * (preferred / max(1, length))
+                score = dp[start] + cohesion - normalized_penalty
                 if score > best_score:
                     best_score = score
                     best_start = start
@@ -167,7 +174,7 @@ class BreakpointSemanticChunker(BaseChunker):
         idx = n_sentences
         while idx > 0 and back[idx] != -1:
             start = back[idx]
-            boundaries.append((start, idx))
+            boundaries.append((offset + start, offset + idx))
             idx = start
 
         if idx != 0:
@@ -233,30 +240,77 @@ class BreakpointSemanticChunker(BaseChunker):
         prefix_sims: np.ndarray
     ) -> List[Chunk]:
         max_chars = max(1, getattr(self.cfg, "chunk_max_chars", 2000))
+        min_sentences = max(1, getattr(self.cfg, "sem_min_sentences_per_chunk", 2))
         refined: List[Chunk] = []
         for chunk in chunks:
-            ranges = []
+            sentence_range = None
             if isinstance(chunk.meta, dict) and "sentences" in chunk.meta:
-                ranges.append(chunk.meta["sentences"])
-            else:
+                sentence_range = chunk.meta["sentences"]
+            if sentence_range is None:
+                refined.append(chunk)
+                continue
+            start, end = sentence_range
+            char_len = chunk.end_char - chunk.start_char
+            if char_len <= max_chars:
                 refined.append(chunk)
                 continue
 
-            while ranges:
-                start, end = ranges.pop(0)
-                split_chunk = self._build_chunk(sentences, spans, start, end, prefix_sims)
-                if split_chunk is None:
-                    continue
-                if len(split_chunk.text) <= max_chars or (end - start) <= 1:
+            for split_start, split_end in self._split_range_by_chars(start, end, spans, max_chars, min_sentences):
+                split_chunk = self._build_chunk(sentences, spans, split_start, split_end, prefix_sims)
+                if split_chunk is not None:
                     refined.append(split_chunk)
-                else:
-                    mid = start + (end - start) // 2
-                    if mid == start or mid == end:
-                        refined.append(split_chunk)
-                    else:
-                        ranges.insert(0, (mid, end))
-                        ranges.insert(0, (start, mid))
         return refined
+
+    def _split_range_by_chars(
+        self,
+        start: int,
+        end: int,
+        spans: List[Tuple[int, int]],
+        max_chars: int,
+        min_sentences: int,
+    ) -> List[Tuple[int, int]]:
+        if start >= end:
+            return []
+        ranges: List[Tuple[int, int]] = []
+        cursor = start
+        while cursor < end:
+            segment_start_char = spans[cursor][0]
+            candidate_end = min(end, cursor + min_sentences)
+            segment_end_char = spans[candidate_end - 1][1]
+            current_chars = segment_end_char - segment_start_char
+            while candidate_end < end and current_chars < max_chars:
+                candidate_end += 1
+                segment_end_char = spans[candidate_end - 1][1]
+                current_chars = segment_end_char - segment_start_char
+            if current_chars > max_chars and candidate_end - cursor > min_sentences:
+                candidate_end -= 1
+                segment_end_char = spans[candidate_end - 1][1]
+            ranges.append((cursor, candidate_end))
+            cursor = candidate_end
+        return ranges
+
+    def _log_chunk_summary(self, chunks: List[Chunk], text_len: int) -> None:
+        if not chunks or not bool(getattr(self.cfg, "debug_chunking", False)):
+            return
+        sentences_per_chunk = [max(1, chunk.sentence_span[1] - chunk.sentence_span[0]) for chunk in chunks]
+        char_lengths = [chunk.end_char - chunk.start_char for chunk in chunks]
+        cohesion_values = [chunk.meta.get("cohesion") for chunk in chunks if isinstance(chunk.meta, dict)]
+        numeric_cohesion = [float(c) for c in cohesion_values if isinstance(c, (int, float))]
+        avg_sentences = float(np.mean(sentences_per_chunk)) if sentences_per_chunk else 0.0
+        median_sentences = float(np.median(sentences_per_chunk)) if sentences_per_chunk else 0.0
+        median_chars = float(np.median(char_lengths)) if char_lengths else 0.0
+        p90_chars = float(np.percentile(char_lengths, 90)) if char_lengths else 0.0
+        avg_cohesion = float(np.mean(numeric_cohesion)) if numeric_cohesion else 0.0
+        LOGGER.info(
+            "Breakpoint semantic chunker: %d chunks | mean_sent=%.2f | median_sent=%.2f | median_chars=%.0f | p90_chars=%.0f | avg_cohesion=%.3f | doc_chars=%d",
+            len(chunks),
+            avg_sentences,
+            median_sentences,
+            median_chars,
+            p90_chars,
+            avg_cohesion,
+            text_len,
+        )
 
     def _embeddings(self, sentences: List[str]) -> np.ndarray:
         """
