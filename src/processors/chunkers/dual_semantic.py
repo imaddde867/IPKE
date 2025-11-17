@@ -2,12 +2,16 @@
 
 from __future__ import annotations
 
+import logging
 from typing import List, Tuple
 
 import numpy as np
 
 from .base import BaseChunker, Chunk
 from .breakpoint import BreakpointSemanticChunker
+
+
+LOGGER = logging.getLogger(__name__)
 
 
 class DualSemanticChunker(BaseChunker):
@@ -39,28 +43,30 @@ class DualSemanticChunker(BaseChunker):
         if not parents:
             parents = [(0, len(sentences))]
 
+        self._log_parent_summary(parents, spans, len(text))
+
         chunks: List[Chunk] = []
         for start, end in parents:
             if start >= end:
                 continue
-            parent_text = text[spans[start][0]:spans[end - 1][1]]
-            sub_chunks = self.base.chunk(parent_text)
-            offset = spans[start][0]
-            for chunk in sub_chunks:
-                chunk.start_char += offset
-                chunk.end_char += offset
-                global_span = (
-                    start + chunk.sentence_span[0],
-                    start + chunk.sentence_span[1]
-                )
-                chunk.sentence_span = global_span
+            boundaries = self.base._compute_boundaries(end - start, prefix_sims, offset=start)
+            if not boundaries:
+                boundaries = [(start, end)]
+            parent_cohesion = self.base._mean_similarity(prefix_sims, start, end)
+            for child_start, child_end in boundaries:
+                chunk = self.base._build_chunk(sentences, spans, child_start, child_end, prefix_sims)
+                if chunk is None:
+                    continue
                 if isinstance(chunk.meta, dict):
-                    chunk.meta["sentences"] = global_span
+                    chunk.meta["strategy"] = "dual_semantic"
+                    chunk.meta["sentences"] = (child_start, child_end)
                     chunk.meta["parent"] = (start, end)
-                    chunk.meta["parent_cohesion"] = self.base._mean_similarity(prefix_sims, start, end)
+                    chunk.meta["parent_cohesion"] = parent_cohesion
                 chunks.append(chunk)
 
-        return self.base._enforce_char_cap(chunks, sentences, spans, prefix_sims)
+        refined = self.base._enforce_char_cap(chunks, sentences, spans, prefix_sims)
+        self.base._log_chunk_summary(refined, len(text))
+        return refined
 
     def _parent_boundaries(self, distances, sentences, spans, text):
         min_len = max(1, getattr(self.cfg, "dsc_parent_min_sentences", 10))
@@ -113,6 +119,23 @@ class DualSemanticChunker(BaseChunker):
             boundaries[-1] = (boundaries[-1][0], n)
 
         return boundaries
+
+    def _log_parent_summary(self, parents: List[Tuple[int, int]], spans: List[Tuple[int, int]], doc_chars: int) -> None:
+        if not parents or not bool(getattr(self.cfg, "debug_chunking", False)):
+            return
+        parent_lengths = [end - start for start, end in parents]
+        parent_chars = [spans[end - 1][1] - spans[start][0] for start, end in parents]
+        avg_sent = float(np.mean(parent_lengths)) if parent_lengths else 0.0
+        median_sent = float(np.median(parent_lengths)) if parent_lengths else 0.0
+        median_chars = float(np.median(parent_chars)) if parent_chars else 0.0
+        LOGGER.info(
+            "Dual semantic parents: %d blocks | mean_sent=%.1f | median_sent=%.1f | median_chars=%.0f | doc_chars=%d",
+            len(parents),
+            avg_sent,
+            median_sent,
+            median_chars,
+            doc_chars,
+        )
 
 
 __all__ = ["DualSemanticChunker"]

@@ -3,14 +3,17 @@ from src.ai.llm_env_setup import *  # Must be first!
 
 import asyncio
 import hashlib
+import os
 import time
 from typing import Any, Dict, List, Optional, Tuple
+
+import numpy as np
 
 from src.ai.types import ChunkExtraction, ExtractedEntity, ExtractionResult
 from src.ai.worker_pool import ChunkTask, LLMWorkerPool
 from src.core.unified_config import UnifiedConfig, get_config
 from src.logging_config import get_logger
-from src.processors.chunkers import get_chunker
+from src.processors.chunkers import Chunk, get_chunker
 
 logger = get_logger(__name__)
 
@@ -30,6 +33,8 @@ class UnifiedKnowledgeEngine:
         }
         self._pool: Optional[LLMWorkerPool] = None
         self._backend_name: Optional[str] = None
+        self._chunk_dedup_model = None
+        self._chunk_dedup_device: Optional[str] = None
 
     def _determine_backend(self) -> str:
         requested = getattr(self.config, "llm_backend", None)
@@ -87,6 +92,7 @@ class UnifiedKnowledgeEngine:
         chunker = get_chunker(self.config)
         chunk_start = time.time()
         chunk_objects = chunker.chunk(content)
+        chunk_objects = self._apply_chunk_redundancy_filter(content, chunk_objects)
         chunk_duration = time.time() - chunk_start
 
         chunk_metrics = self._summarize_chunks(chunk_objects, chunk_duration)
@@ -176,6 +182,151 @@ class UnifiedKnowledgeEngine:
                 "chunking_duration": round(duration, 4),
             },
         }
+
+    def _apply_chunk_redundancy_filter(self, content: str, chunks: List[Chunk]) -> List[Chunk]:
+        if not chunks or not bool(getattr(self.config, "enable_chunk_dedup", False)):
+            return chunks
+        if len(chunks) <= 1:
+            return chunks
+        texts = [chunk.text for chunk in chunks]
+        try:
+            embeddings = self._embed_chunk_texts(texts)
+        except Exception as exc:  # noqa: BLE001
+            logger.warning("Chunk deduplication skipped; embedding error: %s", exc)
+            return chunks
+        if embeddings.size == 0:
+            return chunks
+        threshold = float(getattr(self.config, "chunk_dedup_threshold", 0.9))
+        overlap_ratio = float(getattr(self.config, "chunk_dedup_overlap_ratio", 0.7))
+        min_unique_chars = max(32, int(getattr(self.config, "chunk_dedup_min_unique_chars", 200)))
+        filtered: List[Chunk] = [chunks[0]]
+        kept_embeddings: List[np.ndarray] = [embeddings[0]]
+        trimmed = 0
+        dropped = 0
+        for idx in range(1, len(chunks)):
+            chunk = chunks[idx]
+            current_embedding = embeddings[idx]
+            similarity = float(np.dot(kept_embeddings[-1], current_embedding))
+            if similarity >= threshold:
+                chunk, current_embedding, action = self._resolve_redundant_chunk(
+                    filtered[-1],
+                    chunk,
+                    current_embedding,
+                    content,
+                    overlap_ratio,
+                    min_unique_chars,
+                )
+                if action == "drop" or chunk is None:
+                    dropped += 1
+                    continue
+                if action == "trim":
+                    trimmed += 1
+            filtered.append(chunk)
+            kept_embeddings.append(current_embedding)
+
+        if trimmed or dropped:
+            logger.info(
+                "Chunk redundancy filter compacted %d -> %d chunks (trimmed=%d dropped=%d)",
+                len(chunks),
+                len(filtered),
+                trimmed,
+                dropped,
+            )
+        return filtered
+
+    def _resolve_redundant_chunk(
+        self,
+        prev_chunk: Chunk,
+        curr_chunk: Chunk,
+        current_embedding: np.ndarray,
+        content: str,
+        overlap_threshold: float,
+        min_unique_chars: int,
+    ) -> Tuple[Optional[Chunk], np.ndarray, str]:
+        overlap = max(0, prev_chunk.end_char - curr_chunk.start_char)
+        total = max(1, curr_chunk.end_char - curr_chunk.start_char)
+        if overlap <= 0:
+            return curr_chunk, current_embedding, "keep"
+        ratio = overlap / total
+        if ratio < overlap_threshold:
+            return curr_chunk, current_embedding, "keep"
+        unique_start = max(prev_chunk.end_char, curr_chunk.start_char)
+        unique_len = curr_chunk.end_char - unique_start
+        if unique_len < max(1, min_unique_chars):
+            return None, current_embedding, "drop"
+        trimmed_text, new_start, new_end = self._slice_content(content, unique_start, curr_chunk.end_char)
+        if not trimmed_text or (new_end - new_start) < max(1, min_unique_chars // 2):
+            return None, current_embedding, "drop"
+        curr_chunk.text = trimmed_text
+        curr_chunk.start_char = new_start
+        curr_chunk.end_char = new_end
+        new_embedding = self._embed_chunk_texts([trimmed_text])
+        if new_embedding.size == 0:
+            return None, current_embedding, "drop"
+        return curr_chunk, new_embedding[0], "trim"
+
+    def _slice_content(self, content: str, start: int, end: int) -> Tuple[str, int, int]:
+        segment = content[start:end]
+        left = 0
+        right = len(segment)
+        while left < right and segment[left].isspace():
+            left += 1
+        while right > left and segment[right - 1].isspace():
+            right -= 1
+        trimmed = segment[left:right]
+        return trimmed, start + left, start + right
+
+    def _embed_chunk_texts(self, texts: List[str]) -> np.ndarray:
+        if not texts:
+            return np.array([])
+        model = self._get_chunk_dedup_embedder()
+        embeddings = model.encode(
+            texts,
+            show_progress_bar=False,
+            convert_to_numpy=True,
+            normalize_embeddings=True,
+        )
+        return np.atleast_2d(np.asarray(embeddings))
+
+    def _get_chunk_dedup_embedder(self):
+        if self._chunk_dedup_model is not None:
+            return self._chunk_dedup_model
+        os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
+        from sentence_transformers import SentenceTransformer
+
+        model_id = (
+            getattr(self.config, "chunk_dedup_embedding_model", None)
+            or getattr(self.config, "embedding_model_path", "all-mpnet-base-v2")
+        )
+        device = self._resolve_chunk_dedup_device()
+        self._chunk_dedup_model = SentenceTransformer(model_id, device=device)
+        logger.info("Loaded chunk deduplication encoder '%s' on %s", model_id, device)
+        return self._chunk_dedup_model
+
+    def _resolve_chunk_dedup_device(self) -> str:
+        if self._chunk_dedup_device:
+            return self._chunk_dedup_device
+        backend = str(getattr(self.config, "gpu_backend", "cpu") or "cpu").lower()
+        if backend in {"cuda", "auto", "gpu", "multi_gpu_parallel"}:
+            try:
+                import torch
+
+                if torch.cuda.is_available():
+                    self._chunk_dedup_device = "cuda"
+                    return self._chunk_dedup_device
+            except Exception:  # noqa: BLE001
+                pass
+        if backend in {"metal", "mps"}:
+            try:
+                import torch
+
+                if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
+                    self._chunk_dedup_device = "mps"
+                    return self._chunk_dedup_device
+            except Exception:  # noqa: BLE001
+                pass
+        self._chunk_dedup_device = "cpu"
+        return self._chunk_dedup_device
 
     def _merge_chunk_results(
         self, chunk_results: List[ChunkExtraction]
