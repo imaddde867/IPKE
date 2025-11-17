@@ -1,0 +1,1701 @@
+{
+  "document_id": "op_firesafety_guideline",
+  "document_type": "text",
+  "metadata": {},
+  "steps": [
+    {
+      "id": "S1",
+      "text": "Identify potential risks in business operations.",
+      "order": 1,
+      "confidence": 0.95
+    },
+    {
+      "id": "S2",
+      "text": "Identify, analyze, assess, and process organizational risks.",
+      "order": 2,
+      "confidence": 0.95
+    },
+    {
+      "id": "S3",
+      "text": "Identify potential risks and their interconnections.",
+      "order": 3,
+      "confidence": 0.95
+    },
+    {
+      "id": "S4",
+      "text": "Perform business continuity planning.",
+      "order": 4,
+      "confidence": 0.9
+    },
+    {
+      "id": "S5",
+      "text": "Transfer risks through subcontracting or insurance.",
+      "order": 5,
+      "confidence": 0.85
+    },
+    {
+      "id": "S6",
+      "text": "Entrepreneur remains responsible according to insurance terms and safety regulations.",
+      "order": 6,
+      "confidence": 0.8
+    },
+    {
+      "id": "S7",
+      "text": "Company management is responsible for safety.",
+      "order": 7,
+      "confidence": 0.9
+    },
+    {
+      "id": "S8",
+      "text": "Issue clear instructions.",
+      "order": 8,
+      "confidence": 0.9
+    },
+    {
+      "id": "S9",
+      "text": "Supervise compliance.",
+      "order": 9,
+      "confidence": 0.9
+    },
+    {
+      "id": "S10",
+      "text": "Identify potential fire risks in working machines.",
+      "order": 10,
+      "confidence": 0.95
+    },
+    {
+      "id": "S11",
+      "text": "Evaluate each machine's operating environment.",
+      "order": 11,
+      "confidence": 0.9
+    },
+    {
+      "id": "S12",
+      "text": "Assess working environment.",
+      "order": 12,
+      "confidence": 0.9
+    },
+    {
+      "id": "S13",
+      "text": "Ensure conditions are normal.",
+      "order": 13,
+      "confidence": 0.85
+    },
+    {
+      "id": "S14",
+      "text": "Consider operating environment.",
+      "order": 14,
+      "confidence": 0.9
+    },
+    {
+      "id": "S15",
+      "text": "Determine if location is populated or remote.",
+      "order": 15,
+      "confidence": 0.85
+    },
+    {
+      "id": "S16",
+      "text": "Identify specific operating environment (sawmill, peat production area, etc.).",
+      "order": 16,
+      "confidence": 0.8
+    },
+    {
+      "id": "S17",
+      "text": "Consider the impact on the company's other risks.",
+      "order": 17,
+      "confidence": 0.9
+    },
+    {
+      "id": "S18",
+      "text": "Evaluate the level of risk the company is taking.",
+      "order": 18,
+      "confidence": 0.9
+    },
+    {
+      "id": "S19",
+      "text": "Assess employee actions in an accident.",
+      "order": 19,
+      "confidence": 0.85
+    },
+    {
+      "id": "S20",
+      "text": "Assess adequacy of preventive maintenance for business continuity.",
+      "order": 20,
+      "confidence": 0.9
+    },
+    {
+      "id": "S21",
+      "text": "Evaluate fire risk management in daily work.",
+      "order": 21,
+      "confidence": 0.85
+    },
+    {
+      "id": "S22",
+      "text": "Begin operation of a working machine.",
+      "order": 22,
+      "confidence": 0.95
+    },
+    {
+      "id": "S23",
+      "text": "Monitor machine for signs of overheating, leaks, or electrical issues.",
+      "order": 23,
+      "confidence": 0.8
+    },
+    {
+      "id": "S24",
+      "text": "Maintain high-quality service.",
+      "order": 24,
+      "confidence": 0.9
+    },
+    {
+      "id": "S25",
+      "text": "Use first-aid extinguishing equipment if a fire occurs.",
+      "order": 25,
+      "confidence": 0.85
+    },
+    {
+      "id": "S26",
+      "text": "Perform scheduled maintenance according to manufacturer's instructions.",
+      "order": 26,
+      "confidence": 0.95
+    },
+    {
+      "id": "S27",
+      "text": "Participate in manufacturer recall campaigns.",
+      "order": 27,
+      "confidence": 0.9
+    },
+    {
+      "id": "S28",
+      "text": "Use authentic replacement parts.",
+      "order": 28,
+      "confidence": 0.95
+    },
+    {
+      "id": "S29",
+      "text": "Obtain parts from known manufacturers.",
+      "order": 29,
+      "confidence": 0.9
+    },
+    {
+      "id": "S30",
+      "text": "Inspect and clean the engine compartment and surroundings daily in dusty or fire-hazard conditions.",
+      "order": 30,
+      "confidence": 0.95
+    },
+    {
+      "id": "S31",
+      "text": "Inspect and clean at least once a week in other environments.",
+      "order": 31,
+      "confidence": 0.9
+    },
+    {
+      "id": "S32",
+      "text": "Clean using compressed air.",
+      "order": 32,
+      "confidence": 0.95
+    },
+    {
+      "id": "S33",
+      "text": "Inspect for leaks.",
+      "order": 33,
+      "confidence": 0.9
+    },
+    {
+      "id": "S34",
+      "text": "Keep engine compartment clean.",
+      "order": 34,
+      "confidence": 0.9
+    },
+    {
+      "id": "S35",
+      "text": "Avoid exposure of flammable liquids to hot surfaces when temperature reaches about 240\u00b0C.",
+      "order": 35,
+      "confidence": 0.9
+    },
+    {
+      "id": "S36",
+      "text": "Check joints of hoses and pipes.",
+      "order": 36,
+      "confidence": 0.95
+    },
+    {
+      "id": "S37",
+      "text": "Inspect engine compartment for oil leaks.",
+      "order": 37,
+      "confidence": 0.9
+    },
+    {
+      "id": "S38",
+      "text": "Protect hydraulic hoses from high temperatures.",
+      "order": 38,
+      "confidence": 0.9
+    },
+    {
+      "id": "S39",
+      "text": "Use thermal shields or tubes for hoses near hot surfaces.",
+      "order": 39,
+      "confidence": 0.85
+    },
+    {
+      "id": "S40",
+      "text": "Repair any hydraulic hose leaks immediately.",
+      "order": 40,
+      "confidence": 0.9
+    },
+    {
+      "id": "S41",
+      "text": "Visually inspect electrical systems annually.",
+      "order": 41,
+      "confidence": 0.95
+    },
+    {
+      "id": "S42",
+      "text": "Document inspections.",
+      "order": 42,
+      "confidence": 0.9
+    },
+    {
+      "id": "S43",
+      "text": "Service electrical systems daily.",
+      "order": 43,
+      "confidence": 0.9
+    },
+    {
+      "id": "S44",
+      "text": "Inspect electrical systems.",
+      "order": 44,
+      "confidence": 0.9
+    },
+    {
+      "id": "S45",
+      "text": "Use a multimeter to measure voltage drops.",
+      "order": 45,
+      "confidence": 0.9
+    },
+    {
+      "id": "S46",
+      "text": "Check if drop exceeds 20W.",
+      "order": 46,
+      "confidence": 0.9
+    },
+    {
+      "id": "S47",
+      "text": "Use thermal imaging camera to detect anomalies in alternators, cables, and earthing points.",
+      "order": 47,
+      "confidence": 0.9
+    },
+    {
+      "id": "S48",
+      "text": "Compare readings with an intact machine.",
+      "order": 48,
+      "confidence": 0.9
+    },
+    {
+      "id": "S49",
+      "text": "Locate main power switch outside engine compartment.",
+      "order": 49,
+      "confidence": 0.9
+    },
+    {
+      "id": "S50",
+      "text": "Mark the main power switch visibly.",
+      "order": 50,
+      "confidence": 0.9
+    },
+    {
+      "id": "S51",
+      "text": "Check that power is cut off when the switch is used.",
+      "order": 51,
+      "confidence": 0.95
+    },
+    {
+      "id": "S52",
+      "text": "Install terminal covers on the switch poles.",
+      "order": 52,
+      "confidence": 0.9
+    },
+    {
+      "id": "S53",
+      "text": "Locate and operate the emergency kill switch before starting the machine.",
+      "order": 53,
+      "confidence": 0.95
+    },
+    {
+      "id": "S54",
+      "text": "Shuts down engine and cuts power.",
+      "order": 54,
+      "confidence": 0.9
+    },
+    {
+      "id": "S55",
+      "text": "Repair any malfunction.",
+      "order": 55,
+      "confidence": 0.95
+    },
+    {
+      "id": "S56",
+      "text": "Resume operation.",
+      "order": 56,
+      "confidence": 0.9
+    },
+    {
+      "id": "S57",
+      "text": "Repair any deviations immediately.",
+      "order": 57,
+      "confidence": 0.9
+    },
+    {
+      "id": "S58",
+      "text": "Ensure cable terminals are intact, firmly attached, and protected with terminal covers.",
+      "order": 58,
+      "confidence": 0.95
+    },
+    {
+      "id": "S59",
+      "text": "Provide sufficient ventilation for the battery compartment.",
+      "order": 59,
+      "confidence": 0.9
+    },
+    {
+      "id": "S60",
+      "text": "Check cables not protected by a fuse.",
+      "order": 60,
+      "confidence": 0.9
+    },
+    {
+      "id": "S61",
+      "text": "Inspect lead-throughs for rubber collars.",
+      "order": 61,
+      "confidence": 0.9
+    },
+    {
+      "id": "S62",
+      "text": "Replace cables with signs of abrasion or heat damage.",
+      "order": 62,
+      "confidence": 0.9
+    },
+    {
+      "id": "S63",
+      "text": "Protect them with a housing pipe.",
+      "order": 63,
+      "confidence": 0.95
+    },
+    {
+      "id": "S64",
+      "text": "Keep cables clean of oil and dirt.",
+      "order": 64,
+      "confidence": 0.9
+    },
+    {
+      "id": "S65",
+      "text": "Do not attach them to hoses or pipes.",
+      "order": 65,
+      "confidence": 0.9
+    },
+    {
+      "id": "S66",
+      "text": "Protect cable harnesses.",
+      "order": 66,
+      "confidence": 0.9
+    },
+    {
+      "id": "S67",
+      "text": "Firmly attach cable harnesses.",
+      "order": 67,
+      "confidence": 0.9
+    },
+    {
+      "id": "S68",
+      "text": "Make cable connections tight.",
+      "order": 68,
+      "confidence": 0.9
+    },
+    {
+      "id": "S69",
+      "text": "Install terminal covers on cable connections.",
+      "order": 69,
+      "confidence": 0.9
+    },
+    {
+      "id": "S70",
+      "text": "Check the electric panel during maintenance.",
+      "order": 70,
+      "confidence": 0.95
+    },
+    {
+      "id": "S71",
+      "text": "Repair any redundant or hanging wires.",
+      "order": 71,
+      "confidence": 0.9
+    },
+    {
+      "id": "S72",
+      "text": "Ensure fuse boxes are intact and have lids.",
+      "order": 72,
+      "confidence": 0.95
+    },
+    {
+      "id": "S73",
+      "text": "Check that fuses are the correct size.",
+      "order": 73,
+      "confidence": 0.9
+    },
+    {
+      "id": "S74",
+      "text": "Investigate the cause of any blown fuse.",
+      "order": 74,
+      "confidence": 0.9
+    },
+    {
+      "id": "S75",
+      "text": "Fasten cables with brackets no more than 150 mm apart.",
+      "order": 75,
+      "confidence": 0.9
+    },
+    {
+      "id": "S76",
+      "text": "Use fasteners and cable ties that can withstand temperatures of 120\u00b0C.",
+      "order": 76,
+      "confidence": 0.9
+    },
+    {
+      "id": "S77",
+      "text": "Do not attach cables to flammable material pipes or hoses.",
+      "order": 77,
+      "confidence": 0.85
+    },
+    {
+      "id": "S78",
+      "text": "Firmly attach alternator with correct belt tension.",
+      "order": 78,
+      "confidence": 0.95
+    },
+    {
+      "id": "S79",
+      "text": "Install terminal covers on alternator.",
+      "order": 79,
+      "confidence": 0.9
+    },
+    {
+      "id": "S80",
+      "text": "Keep alternator filter clean.",
+      "order": 80,
+      "confidence": 0.9
+    },
+    {
+      "id": "S81",
+      "text": "Check for anomalies with a thermal camera.",
+      "order": 81,
+      "confidence": 0.95
+    },
+    {
+      "id": "S82",
+      "text": "During maintenance, check fasteners.",
+      "order": 82,
+      "confidence": 0.9
+    },
+    {
+      "id": "S83",
+      "text": "Check belts.",
+      "order": 83,
+      "confidence": 0.9
+    },
+    {
+      "id": "S84",
+      "text": "Check bearings.",
+      "order": 84,
+      "confidence": 0.9
+    },
+    {
+      "id": "S85",
+      "text": "Replace noisy bearings.",
+      "order": 85,
+      "confidence": 0.95
+    },
+    {
+      "id": "S86",
+      "text": "Check exhaust pipe for leaks.",
+      "order": 86,
+      "confidence": 0.9
+    },
+    {
+      "id": "S87",
+      "text": "Ensure all thermal shields are in place.",
+      "order": 87,
+      "confidence": 0.9
+    },
+    {
+      "id": "S88",
+      "text": "Keep flammable liquid hoses away from each other.",
+      "order": 88,
+      "confidence": 0.95
+    },
+    {
+      "id": "S89",
+      "text": "Check Urea systems and diesel particulate filters.",
+      "order": 89,
+      "confidence": 0.8
+    },
+    {
+      "id": "S90",
+      "text": "Take care to prevent contamination during refuelling.",
+      "order": 90,
+      "confidence": 0.95
+    },
+    {
+      "id": "S91",
+      "text": "The diesel particulate filter is cleaned via regeneration.",
+      "order": 91,
+      "confidence": 0.9
+    },
+    {
+      "id": "S92",
+      "text": "Check machine indication for regeneration.",
+      "order": 92,
+      "confidence": 0.95
+    },
+    {
+      "id": "S93",
+      "text": "Perform regeneration in a safe outdoor environment.",
+      "order": 93,
+      "confidence": 0.9
+    },
+    {
+      "id": "S94",
+      "text": "Avoid flammable materials during regeneration.",
+      "order": 94,
+      "confidence": 0.9
+    },
+    {
+      "id": "S95",
+      "text": "Monitor regeneration process.",
+      "order": 95,
+      "confidence": 0.8
+    },
+    {
+      "id": "S96",
+      "text": "Check for fire hazards before starting the process.",
+      "order": 96,
+      "confidence": 0.95
+    },
+    {
+      "id": "S97",
+      "text": "Delay the process if machine is in a fire-hazard environment (e.g., underground, indoors).",
+      "order": 97,
+      "confidence": 0.9
+    },
+    {
+      "id": "S98",
+      "text": "Do not leave the machine unattended during regeneration.",
+      "order": 98,
+      "confidence": 0.9
+    },
+    {
+      "id": "S99",
+      "text": "Inspect all hoses and electrical systems in the swivelling joint.",
+      "order": 99,
+      "confidence": 0.95
+    },
+    {
+      "id": "S100",
+      "text": "Remove any rocks or twigs found.",
+      "order": 100,
+      "confidence": 0.9
+    },
+    {
+      "id": "S101",
+      "text": "Make sure all operating manuals are accessible in the machine.",
+      "order": 101,
+      "confidence": 0.95
+    },
+    {
+      "id": "S102",
+      "text": "Check that operating manuals are in a language the operator understands.",
+      "order": 102,
+      "confidence": 0.9
+    },
+    {
+      "id": "S103",
+      "text": "Check cleanliness and condition of auxiliary heater.",
+      "order": 103,
+      "confidence": 0.95
+    },
+    {
+      "id": "S104",
+      "text": "Examine heater compartment for fuel leaks.",
+      "order": 104,
+      "confidence": 0.9
+    },
+    {
+      "id": "S105",
+      "text": "Inspect the heater's exhaust pipe to ensure it doesn't touch anything flammable.",
+      "order": 105,
+      "confidence": 0.95
+    },
+    {
+      "id": "S106",
+      "text": "Test the heater under supervision before use.",
+      "order": 106,
+      "confidence": 0.9
+    },
+    {
+      "id": "S107",
+      "text": "Machines with a weight greater than 3,000 kg require at least two hand-held fire extinguishers.",
+      "order": 107,
+      "confidence": 0.95
+    },
+    {
+      "id": "S108",
+      "text": "Install frost-resistant liquid-based extinguishers with classification 34A233B.",
+      "order": 108,
+      "confidence": 0.9
+    },
+    {
+      "id": "S109",
+      "text": "Machines require four 34A233B extinguishers.",
+      "order": 109,
+      "confidence": 0.95
+    },
+    {
+      "id": "S110",
+      "text": "Extinguishers are to be made available at ground level.",
+      "order": 110,
+      "confidence": 0.9
+    },
+    {
+      "id": "S111",
+      "text": "Extinguishers must be easily accessible.",
+      "order": 111,
+      "confidence": 0.9
+    },
+    {
+      "id": "S112",
+      "text": "Extinguishers need clear marking.",
+      "order": 112,
+      "confidence": 0.9
+    },
+    {
+      "id": "S113",
+      "text": "Extinguishers require annual servicing.",
+      "order": 113,
+      "confidence": 0.9
+    },
+    {
+      "id": "S114",
+      "text": "Operators must be trained.",
+      "order": 114,
+      "confidence": 0.9
+    },
+    {
+      "id": "S115",
+      "text": "Autonomous machines must have a fixed fire extinguishing system.",
+      "order": 115,
+      "confidence": 0.95
+    },
+    {
+      "id": "S116",
+      "text": "Protect hot components, flammable liquid hoses/tanks, and electrical components.",
+      "order": 116,
+      "confidence": 0.9
+    },
+    {
+      "id": "S117",
+      "text": "Cover the entire engine compartment with detection system.",
+      "order": 117,
+      "confidence": 0.95
+    },
+    {
+      "id": "S118",
+      "text": "Protect hydraulic hoses in engine compartment with thermal protection tubes.",
+      "order": 118,
+      "confidence": 0.9
+    },
+    {
+      "id": "S119",
+      "text": "FFI has special requirements for fire extinguishing systems in working machines (Safety regulation FA-127).",
+      "order": 119,
+      "confidence": 0.95
+    },
+    {
+      "id": "S120",
+      "text": "Machines in dust or fire hazard environments (e.g., timber, peat processing) must have a fixed, fully automatic fire extinguishing system.",
+      "order": 120,
+      "confidence": 0.9
+    },
+    {
+      "id": "S121",
+      "text": "Ensure there is at least three litres of extinguishing agent for every cubic meter of engine or heater compartment.",
+      "order": 121,
+      "confidence": 0.95
+    },
+    {
+      "id": "S122",
+      "text": "Install detection system that covers the entire engine compartment and connect it to non-fused cables.",
+      "order": 122,
+      "confidence": 0.9
+    },
+    {
+      "id": "S123",
+      "text": "Install the certificate.",
+      "order": 123,
+      "confidence": 0.9
+    },
+    {
+      "id": "S124",
+      "text": "Obtain a test report for compliance.",
+      "order": 124,
+      "confidence": 0.9
+    },
+    {
+      "id": "S125",
+      "text": "Confirm system operation at start-up.",
+      "order": 125,
+      "confidence": 0.9
+    },
+    {
+      "id": "S126",
+      "text": "Repair any malfunctions.",
+      "order": 126,
+      "confidence": 0.9
+    },
+    {
+      "id": "S127",
+      "text": "Service the system at least once a year.",
+      "order": 127,
+      "confidence": 0.95
+    },
+    {
+      "id": "S128",
+      "text": "Clean engine compartments daily.",
+      "order": 128,
+      "confidence": 0.9
+    },
+    {
+      "id": "S129",
+      "text": "Mark fire extinguishing openings.",
+      "order": 129,
+      "confidence": 0.9
+    },
+    {
+      "id": "S130",
+      "text": "Choose approved extinguisher suppliers.",
+      "order": 130,
+      "confidence": 0.85
+    },
+    {
+      "id": "S131",
+      "text": "Inspect fire safety forms.",
+      "order": 131,
+      "confidence": 0.9
+    },
+    {
+      "id": "S132",
+      "text": "Check signs and markings.",
+      "order": 132,
+      "confidence": 0.85
+    },
+    {
+      "id": "S133",
+      "text": "Inspect machine electrical systems.",
+      "order": 133,
+      "confidence": 0.9
+    },
+    {
+      "id": "S134",
+      "text": "Examine engine mechanics.",
+      "order": 134,
+      "confidence": 0.9
+    },
+    {
+      "id": "S135",
+      "text": "Inspect first-aid extinguishing equipment.",
+      "order": 135,
+      "confidence": 0.9
+    },
+    {
+      "id": "S136",
+      "text": "Check auxiliary heater installation.",
+      "order": 136,
+      "confidence": 0.85
+    },
+    {
+      "id": "S137",
+      "text": "Inspect mains power systems.",
+      "order": 137,
+      "confidence": 0.85
+    },
+    {
+      "id": "S138",
+      "text": "Assess general condition and cleanliness.",
+      "order": 138,
+      "confidence": 0.9
+    },
+    {
+      "id": "S139",
+      "text": "Activate fire extinguisher in case of engine fire.",
+      "order": 139,
+      "confidence": 0.9
+    },
+    {
+      "id": "S140",
+      "text": "Remain calm.",
+      "order": 140,
+      "confidence": 0.95
+    },
+    {
+      "id": "S141",
+      "text": "Shut down the engine.",
+      "order": 141,
+      "confidence": 0.9
+    },
+    {
+      "id": "S142",
+      "text": "Move the machine indoors to outdoors.",
+      "order": 142,
+      "confidence": 0.95
+    },
+    {
+      "id": "S143",
+      "text": "Move the machine away from flammable material.",
+      "order": 143,
+      "confidence": 0.9
+    },
+    {
+      "id": "S144",
+      "text": "Cut electricity from the main power switch.",
+      "order": 144,
+      "confidence": 0.95
+    },
+    {
+      "id": "S145",
+      "text": "Turn off electricity.",
+      "order": 145,
+      "confidence": 0.9
+    },
+    {
+      "id": "S146",
+      "text": "Call for help.",
+      "order": 146,
+      "confidence": 0.95
+    },
+    {
+      "id": "S147",
+      "text": "Use the 112 smartphone app if possible.",
+      "order": 147,
+      "confidence": 0.9
+    },
+    {
+      "id": "S148",
+      "text": "Perform first-aid",
+      "order": 148,
+      "confidence": 0.95
+    },
+    {
+      "id": "S149",
+      "text": "Extinguish fire",
+      "order": 149,
+      "confidence": 0.9
+    },
+    {
+      "id": "S150",
+      "text": "Confirm that the fire is out with the fire department.",
+      "order": 150,
+      "confidence": 0.95
+    },
+    {
+      "id": "S151",
+      "text": "Previously, assumed the fire was controlled.",
+      "order": 151,
+      "confidence": 0.8
+    },
+    {
+      "id": "S152",
+      "text": "Report the incident to the safety officer, site manager, coworkers, and insurance company.",
+      "order": 152,
+      "confidence": 0.95
+    },
+    {
+      "id": "S153",
+      "text": "Report all accidents and dangerous situations to a supervisor immediately.",
+      "order": 153,
+      "confidence": 0.9
+    },
+    {
+      "id": "S154",
+      "text": "Stop the machine.",
+      "order": 154,
+      "confidence": 0.95
+    },
+    {
+      "id": "S155",
+      "text": "Leave the machine in place.",
+      "order": 155,
+      "confidence": 0.9
+    },
+    {
+      "id": "S156",
+      "text": "Wear protective clothing and a helmet.",
+      "order": 156,
+      "confidence": 0.95
+    },
+    {
+      "id": "S157",
+      "text": "Use a hands-free device for phone calls.",
+      "order": 157,
+      "confidence": 0.9
+    },
+    {
+      "id": "S158",
+      "text": "Wear a safety belt.",
+      "order": 158,
+      "confidence": 0.95
+    },
+    {
+      "id": "S159",
+      "text": "Use stepladders and handrails.",
+      "order": 159,
+      "confidence": 0.9
+    },
+    {
+      "id": "S160",
+      "text": "Maintain three points of contact when climbing.",
+      "order": 160,
+      "confidence": 0.9
+    },
+    {
+      "id": "S161",
+      "text": "Keep doors closed during operation.",
+      "order": 161,
+      "confidence": 0.9
+    },
+    {
+      "id": "S162",
+      "text": "Ensure tools are secure.",
+      "order": 162,
+      "confidence": 0.9
+    },
+    {
+      "id": "S163",
+      "text": "Mark emergency exits.",
+      "order": 163,
+      "confidence": 0.9
+    },
+    {
+      "id": "S164",
+      "text": "Repair any malfunctions that could lead to an accident without delay.",
+      "order": 164,
+      "confidence": 0.95
+    },
+    {
+      "id": "S165",
+      "text": "Arrange practical training on accident and fire procedures.",
+      "order": 165,
+      "confidence": 0.9
+    },
+    {
+      "id": "S166",
+      "text": "Check cables and fasteners for security, heat resistance, insulation, and lead-throughs.",
+      "order": 166,
+      "confidence": 0.95
+    },
+    {
+      "id": "S167",
+      "text": "Examine condition of fuses and batteries, including non-fused cables and terminal covers.",
+      "order": 167,
+      "confidence": 0.9
+    },
+    {
+      "id": "S168",
+      "text": "Clean engine and heater compartments.",
+      "order": 168,
+      "confidence": 0.9
+    },
+    {
+      "id": "S169",
+      "text": "Check for leaks in engine and heater compartments.",
+      "order": 169,
+      "confidence": 0.9
+    },
+    {
+      "id": "S170",
+      "text": "Ensure first-aid extinguishing equipment is available.",
+      "order": 170,
+      "confidence": 0.9
+    },
+    {
+      "id": "S171",
+      "text": "Verify markings on first-aid extinguishing equipment.",
+      "order": 171,
+      "confidence": 0.9
+    },
+    {
+      "id": "S172",
+      "text": "Provide operator training for using first-aid extinguishing equipment.",
+      "order": 172,
+      "confidence": 0.9
+    }
+  ],
+  "constraints": [
+    {
+      "id": "C1",
+      "text": "Working in dangerous environments or with abnormal operating conditions increases risks.",
+      "confidence": 0.9,
+      "steps": [
+        "S168"
+      ]
+    },
+    {
+      "id": "C2",
+      "text": "Be aware of potential hazards from toxic fumes.",
+      "confidence": 0.9,
+      "steps": [
+        "S168"
+      ]
+    },
+    {
+      "id": "C3",
+      "text": "* A drop exceeding 20W indicates an increased fire risk.",
+      "confidence": 0.95,
+      "steps": [
+        "S168"
+      ]
+    },
+    {
+      "id": "C4",
+      "text": "Working machines over 500 kg must have a main power switch located outside the engine compartment and visibly marked.",
+      "confidence": 0.95,
+      "steps": [
+        "S169",
+        "S170"
+      ]
+    },
+    {
+      "id": "C5",
+      "text": "Do not use for normal shutdown.",
+      "confidence": 0.85,
+      "steps": [
+        "S169"
+      ]
+    },
+    {
+      "id": "C6",
+      "text": "Repair any deviations immediately to prevent overheating.",
+      "confidence": 0.95,
+      "steps": [
+        "S168"
+      ]
+    },
+    {
+      "id": "C7",
+      "text": "Protect cable terminals with terminal covers to prevent overheating.",
+      "confidence": 0.9,
+      "steps": [
+        "S169"
+      ]
+    },
+    {
+      "id": "C8",
+      "text": "Ensure alternator is securely attached with correct belt tension and terminal covers.",
+      "confidence": 0.95,
+      "steps": [
+        "S168"
+      ]
+    },
+    {
+      "id": "C9",
+      "text": "Maintain a clean alternator filter to prevent overheating.",
+      "confidence": 0.8,
+      "steps": [
+        "S170"
+      ]
+    },
+    {
+      "id": "C10",
+      "text": "* Urea systems and diesel particulate filter: Urea systems do not pose a fire risk, but leaks can cause corrosion and disrupt electrical equipment.",
+      "confidence": 0.9,
+      "steps": [
+        "S169"
+      ]
+    },
+    {
+      "id": "C11",
+      "text": "Perform regeneration in a safe outdoor environment away from flammable materials.",
+      "confidence": 0.95,
+      "steps": [
+        "S169"
+      ]
+    },
+    {
+      "id": "C12",
+      "text": "Machine should not be in a fire-hazard environment (underground, indoors) during the process.",
+      "confidence": 0.95,
+      "steps": [
+        "S168"
+      ]
+    },
+    {
+      "id": "C13",
+      "text": "Do not leave machine unattended during regeneration.",
+      "confidence": 0.9,
+      "steps": [
+        "S170"
+      ]
+    },
+    {
+      "id": "C14",
+      "text": "Ensure availability and comprehension of manuals for safe operation and malfunction response.",
+      "confidence": 0.95,
+      "steps": [
+        "S168",
+        "S169"
+      ]
+    },
+    {
+      "id": "C15",
+      "text": "Machines weighing over 3,000 kg must have at least two hand-held fire extinguishers.",
+      "confidence": 0.95,
+      "steps": [
+        "S168"
+      ]
+    },
+    {
+      "id": "C16",
+      "text": "Frost-resistant liquid-based extinguishers with classification 34A233B are recommended.",
+      "confidence": 0.8,
+      "steps": [
+        "S169"
+      ]
+    },
+    {
+      "id": "C17",
+      "text": "Extinguishers must be available at ground level, easily accessible, clearly marked, and serviced annually.",
+      "confidence": 0.95,
+      "steps": [
+        "S168",
+        "S169",
+        "S170",
+        "S171",
+        "S172"
+      ]
+    },
+    {
+      "id": "C18",
+      "text": "Autonomous machines need six litres of agent per protected cubic metre.",
+      "confidence": 0.95,
+      "steps": [
+        "S169"
+      ]
+    },
+    {
+      "id": "C19",
+      "text": "Machines in dust or fire hazard environments must have a fixed, fully automatic fire extinguishing system.",
+      "confidence": 0.95,
+      "steps": [
+        "S169"
+      ]
+    },
+    {
+      "id": "C20",
+      "text": "Requirements for extinguishing agent and detection system.",
+      "confidence": 0.95,
+      "steps": [
+        "S168"
+      ]
+    },
+    {
+      "id": "C21",
+      "text": "Engine compartment coverage and non-fused cable connection for detection system.",
+      "confidence": 0.9,
+      "steps": [
+        "S169"
+      ]
+    },
+    {
+      "id": "C22",
+      "text": "Installation requires a certificate and compliance requires a test report.",
+      "confidence": 0.95,
+      "steps": [
+        "S168",
+        "S169"
+      ]
+    },
+    {
+      "id": "C23",
+      "text": "Repair any malfunctions immediately by an authorized shop.",
+      "confidence": 0.8,
+      "steps": [
+        "S171"
+      ]
+    },
+    {
+      "id": "C24",
+      "text": "Check and address potential hazards before shutting down.",
+      "confidence": 0.95,
+      "steps": [
+        "S168",
+        "S169"
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "content": "Machine being operated.",
+      "entity_type": "machine",
+      "category": null,
+      "confidence": 1.0,
+      "context": "**Fire risk arises as soon as a working machine is taken into service**\nThe \"fire timeline\" begins when a machine is put into service. Operation causes rising temperatures, vibration, and wear, which ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Fire risk arises from machine operation.",
+      "entity_type": "risk_assessment",
+      "category": null,
+      "confidence": 0.95,
+      "context": "**Fire risk arises as soon as a working machine is taken into service**\nThe \"fire timeline\" begins when a machine is put into service. Operation causes rising temperatures, vibration, and wear, which ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Authentic replacement parts",
+      "entity_type": "specification",
+      "category": "replacement_parts",
+      "confidence": 0.95,
+      "context": "---\n\n### Page 3: Maintenance, Leaks, and Electrical Systems\n\n**Replacement parts**\nAlways use authentic replacement parts from known manufacturers. They are designed for the specific machine and can w...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Temperature threshold for flammable liquids around hot surfaces (about 240\u00b0C).",
+      "entity_type": "specification",
+      "category": "temperature_threshold",
+      "confidence": 0.9,
+      "context": "A clean engine compartment prevents ignition and improves cooling. **Liquids and leaks**\nFlammable liquids like hydraulic oil, diesel fuel, and motor oil pose a fire risk when hot surfaces reach about...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Check joints of hoses and pipes.",
+      "entity_type": "action",
+      "category": null,
+      "confidence": 0.95,
+      "context": "Check joints of hoses and pipes. * **Oil and hydraulic oil leaks:** Check the engine compartment for oil leaks....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Inspect engine compartment for oil leaks.",
+      "entity_type": "action",
+      "category": null,
+      "confidence": 0.9,
+      "context": "Check joints of hoses and pipes. * **Oil and hydraulic oil leaks:** Check the engine compartment for oil leaks....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Hydraulic hoses",
+      "entity_type": "equipment",
+      "category": null,
+      "confidence": 0.9,
+      "context": "Normal hydraulic hoses withstand about 120\u00b0C; protect them with thermal shields or tubes if they are near hot surfaces or when handling high-temperature materials. Repair any leaks immediately....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "120\u00b0C",
+      "entity_type": "temperature",
+      "category": null,
+      "confidence": 0.95,
+      "context": "Normal hydraulic hoses withstand about 120\u00b0C; protect them with thermal shields or tubes if they are near hot surfaces or when handling high-temperature materials. Repair any leaks immediately....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Hot surfaces",
+      "entity_type": "environmental_condition",
+      "category": null,
+      "confidence": 0.8,
+      "context": "Normal hydraulic hoses withstand about 120\u00b0C; protect them with thermal shields or tubes if they are near hot surfaces or when handling high-temperature materials. Repair any leaks immediately....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Daily servicing of electrical systems on electric-powered and hybrid machines.",
+      "entity_type": "description",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "* Servicing electrical systems daily on electric-powered and hybrid machines. **Inspecting electrical systems**\n* Use a multimeter to measure voltage drops....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Multimeter",
+      "entity_type": "tool",
+      "category": "electrical_testing_equipment",
+      "confidence": 0.9,
+      "context": "* Servicing electrical systems daily on electric-powered and hybrid machines. **Inspecting electrical systems**\n* Use a multimeter to measure voltage drops....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Power is cut off when the switch is used.",
+      "entity_type": "specification",
+      "category": "electrical_safety",
+      "confidence": 0.95,
+      "context": "* The switch poles must have terminal covers. Check that power is cut off when the switch is used....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Cables not protected by a fuse, including lead-throughs.",
+      "entity_type": "specification",
+      "category": "cable_check",
+      "confidence": 0.95,
+      "context": "**Cables**\n* Check cables not protected by a fuse (battery, alternator, starter motor) several times a year, especially lead-throughs, which must have rubber collars. * Replace cables showing signs of...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Cables in high-vibration engine compartment.",
+      "entity_type": "specification",
+      "category": "component",
+      "confidence": 0.9,
+      "context": "**Attachment of cables**\n* Cables in the high-vibration engine compartment must have fastening brackets no more than 150 mm apart. * Fasteners and cable ties should withstand temperatures of 120\u00b0C. * ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Fasteners and cable ties.",
+      "entity_type": "specification",
+      "category": "materials",
+      "confidence": 0.85,
+      "context": "**Attachment of cables**\n* Cables in the high-vibration engine compartment must have fastening brackets no more than 150 mm apart. * Fasteners and cable ties should withstand temperatures of 120\u00b0C. * ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "150 mm",
+      "entity_type": "measurement",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "**Attachment of cables**\n* Cables in the high-vibration engine compartment must have fastening brackets no more than 150 mm apart. * Fasteners and cable ties should withstand temperatures of 120\u00b0C. * ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Temperatures of 120\u00b0C.",
+      "entity_type": "specification",
+      "category": "temperature_requirement",
+      "confidence": 0.9,
+      "context": "**Attachment of cables**\n* Cables in the high-vibration engine compartment must have fastening brackets no more than 150 mm apart. * Fasteners and cable ties should withstand temperatures of 120\u00b0C. * ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Replace noisy bearings.",
+      "entity_type": "task",
+      "category": null,
+      "confidence": 1.0,
+      "context": "Replace noisy bearings. **Other parts of a working machine**\n* **Exhaust pipe:** Check for leaks and ensure all thermal shields are in place....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Exhaust pipe",
+      "entity_type": "equipment",
+      "category": "machine_part",
+      "confidence": 0.95,
+      "context": "Replace noisy bearings. **Other parts of a working machine**\n* **Exhaust pipe:** Check for leaks and ensure all thermal shields are in place....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Leaks",
+      "entity_type": "problem",
+      "category": null,
+      "confidence": 0.9,
+      "context": "Replace noisy bearings. **Other parts of a working machine**\n* **Exhaust pipe:** Check for leaks and ensure all thermal shields are in place....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Thermal shields",
+      "entity_type": "equipment",
+      "category": "machine_part",
+      "confidence": 0.9,
+      "context": "Replace noisy bearings. **Other parts of a working machine**\n* **Exhaust pipe:** Check for leaks and ensure all thermal shields are in place....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Cleanliness and condition of auxiliary heater.",
+      "entity_type": "specification",
+      "category": "heater_maintenance",
+      "confidence": 0.95,
+      "context": "**Fire caused by auxiliary heater**\n* Before winter, check the cleanliness and condition of the auxiliary heater, its compartment, and its wiring. * The heater compartment must be clean and free of fu...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Heater compartment.",
+      "entity_type": "equipment",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "**Fire caused by auxiliary heater**\n* Before winter, check the cleanliness and condition of the auxiliary heater, its compartment, and its wiring. * The heater compartment must be clean and free of fu...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Machines with a weight greater than 3,000 kg",
+      "entity_type": "specification",
+      "category": "machine_weight",
+      "confidence": 0.95,
+      "context": "**First-aid extinguishing equipment**\n* **Hand-held fire extinguishers:**\n    * Machines > 3,000 kg must have at least two 34A233B extinguishers. Frost-resistant liquid-based extinguishers are recomme...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Hand-held fire extinguishers",
+      "entity_type": "specification",
+      "category": "extinguisher_type",
+      "confidence": 0.95,
+      "context": "**First-aid extinguishing equipment**\n* **Hand-held fire extinguishers:**\n    * Machines > 3,000 kg must have at least two 34A233B extinguishers. Frost-resistant liquid-based extinguishers are recomme...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Frost-resistant liquid-based extinguishers with classification 34A233B",
+      "entity_type": "specification",
+      "category": "extinguisher_classification",
+      "confidence": 0.9,
+      "context": "**First-aid extinguishing equipment**\n* **Hand-held fire extinguishers:**\n    * Machines > 3,000 kg must have at least two 34A233B extinguishers. Frost-resistant liquid-based extinguishers are recomme...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Six litres of fire extinguishing agent",
+      "entity_type": "specification",
+      "category": "agent_requirement",
+      "confidence": 0.95,
+      "context": "* Operators must be trained in their use. * **Fire extinguishing systems in autonomous working machines:**\n    * Autonomous machines must have a fixed fire extinguishing system protecting hot componen...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "One cubic metre",
+      "entity_type": "specification",
+      "category": "volume_measurement",
+      "confidence": 0.9,
+      "context": "* Operators must be trained in their use. * **Fire extinguishing systems in autonomous working machines:**\n    * Autonomous machines must have a fixed fire extinguishing system protecting hot componen...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Detection system",
+      "entity_type": "equipment",
+      "category": null,
+      "confidence": 0.95,
+      "context": "* The detection system must cover the entire engine compartment. * Hydraulic hoses in the engine compartment must be protected with thermal protection tubes....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Engine compartment",
+      "entity_type": "location",
+      "category": null,
+      "confidence": 0.95,
+      "context": "* The detection system must cover the entire engine compartment. * Hydraulic hoses in the engine compartment must be protected with thermal protection tubes....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Hydraulic hoses",
+      "entity_type": "component",
+      "category": null,
+      "confidence": 0.95,
+      "context": "* The detection system must cover the entire engine compartment. * Hydraulic hoses in the engine compartment must be protected with thermal protection tubes....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Thermal protection tubes",
+      "entity_type": "material",
+      "category": null,
+      "confidence": 0.9,
+      "context": "* The detection system must cover the entire engine compartment. * Hydraulic hoses in the engine compartment must be protected with thermal protection tubes....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Three litres of extinguishing agent per cubic meter.",
+      "entity_type": "specification",
+      "category": "extinguishing_agent_requirement",
+      "confidence": 0.95,
+      "context": "* There must be at least three litres of extinguishing agent for each cubic meter of the engine or heater compartment. * The detection system must cover the entire engine compartment and be connected ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Entire engine compartment.",
+      "entity_type": "specification",
+      "category": "engine_compartment",
+      "confidence": 0.95,
+      "context": "* There must be at least three litres of extinguishing agent for each cubic meter of the engine or heater compartment. * The detection system must cover the entire engine compartment and be connected ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Non-fused cables for detection system.",
+      "entity_type": "specification",
+      "category": "cable_connection",
+      "confidence": 0.9,
+      "context": "* There must be at least three litres of extinguishing agent for each cubic meter of the engine or heater compartment. * The detection system must cover the entire engine compartment and be connected ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Approved extinguisher suppliers: Dafo Oy, OEM Finland Oy, Firestop, ExAct Guard, Ceodeux Extinguisher Valves Technology S.A/Rotarex.",
+      "entity_type": "specification",
+      "category": "supplier_list",
+      "confidence": 0.9,
+      "context": "**Fire extinguishing openings**\nPohjola Insurance recommends all working machines have clearly marked fire extinguishing openings to the engine and auxiliary heater compartments. **Approved extinguish...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "emergency number 112",
+      "entity_type": "specification",
+      "category": "contact_information",
+      "confidence": 0.95,
+      "context": "Call for help (emergency number 112). Use the 112 smartphone app if possible....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Repairing malfunctions to prevent accidents",
+      "entity_type": "goal",
+      "category": "safety",
+      "confidence": 0.95,
+      "context": "* Repair any malfunctions that could lead to an accident without delay. * Arrange practical training on accident and fire procedures. ---\n\n### Pages 10-11: Inspection Checklists\n\nThese pages provide t...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Regular inspection checklists",
+      "entity_type": "document",
+      "category": "inspection",
+      "confidence": 0.98,
+      "context": "* Repair any malfunctions that could lead to an accident without delay. * Arrange practical training on accident and fire procedures. ---\n\n### Pages 10-11: Inspection Checklists\n\nThese pages provide t...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Cables and fasteners",
+      "entity_type": "item_to_check",
+      "category": null,
+      "confidence": 0.95,
+      "context": "Items to check include:\n* **Cables and fasteners:** Security, heat resistance, insulation, lead-throughs. * **Fuses and batteries:** Condition of non-fused cables, terminal covers....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Fuses and batteries",
+      "entity_type": "item_to_check",
+      "category": null,
+      "confidence": 0.9,
+      "context": "Items to check include:\n* **Cables and fasteners:** Security, heat resistance, insulation, lead-throughs. * **Fuses and batteries:** Condition of non-fused cables, terminal covers....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Pohjola Insurance Ltd",
+      "entity_type": "organization",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "* **Engine and heater compartments:** Cleanliness, leaks. * **First-aid extinguishing equipment:** Availability, markings, operator training. ---\n\n### Page 12: Company Information\n\nPohjola Insurance L...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Business ID: 1458359-3",
+      "entity_type": "identification_number",
+      "category": "business_id",
+      "confidence": 0.9,
+      "context": "* **Engine and heater compartments:** Cleanliness, leaks. * **First-aid extinguishing equipment:** Availability, markings, operator training. ---\n\n### Page 12: Company Information\n\nPohjola Insurance L...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Helsinki, Gebhardinaukio 1, 00013 OP, Finland",
+      "entity_type": "location",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "* **Engine and heater compartments:** Cleanliness, leaks. * **First-aid extinguishing equipment:** Availability, markings, operator training. ---\n\n### Page 12: Company Information\n\nPohjola Insurance L...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Financial Supervisory Authority",
+      "entity_type": "organization",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "* **Engine and heater compartments:** Cleanliness, leaks. * **First-aid extinguishing equipment:** Availability, markings, operator training. ---\n\n### Page 12: Company Information\n\nPohjola Insurance L...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    }
+  ],
+  "confidence_score": 0.9239999999999996,
+  "processing_time": 732.5510630607605,
+  "strategy_used": "llama_cpp:P0",
+  "quality_metrics": {
+    "entity_count": 45,
+    "avg_confidence": 0.9239999999999996,
+    "chunks_processed": 68
+  }
+}
