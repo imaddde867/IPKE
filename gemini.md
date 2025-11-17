@@ -1,136 +1,74 @@
-# Industrial Procedural Knowledge Extraction (IPKE)
-
-This document provides a comprehensive overview of the IPKE project, its architecture, and instructions for building, running, and configuring the system.
-
 ## Project Overview
 
-The Industrial Procedural Knowledge Extraction (IPKE) system is a Python-based application designed to extract structured procedural knowledge from unstructured technical documents. It leverages a local Large Language Model (LLM), specifically Mistral-7B-Instruct, to perform the extraction.
+This project, named "Industrial Procedural Knowledge Extraction (IPKE)," is a Python-based system designed to extract structured procedural knowledge from unstructured technical documents. It leverages a local Large Language Model (LLM), specifically Mistral-7B Instruct, with a dual-backend architecture supporting both Metal for Apple Silicon and CUDA for NVIDIA GPUs.
 
-The system features a dual-backend architecture for LLM inference, supporting both Apple Silicon (Metal) and NVIDIA (CUDA) GPUs. It includes a FastAPI backend for serving the extraction API and a Streamlit frontend for interactive use.
-
-### Key Technologies
-
-*   **Backend:** Python, FastAPI
-*   **Frontend:** Streamlit
-*   **LLM:** Mistral-7B-Instruct
-*   **LLM Backends:** `llama.cpp` (for Metal), `transformers` (for CUDA)
-*   **Data Handling:** Pydantic, Pandas
-*   **Configuration:** Unified configuration system with `.env` support
-
-### Architecture
-
-The project is structured as follows:
-
-*   `main.py`: The entry point for the FastAPI server.
-*   `streamlit_app.py`: The entry point for the Streamlit UI.
-*   `src/api/app.py`: Defines the FastAPI application, routes, and middleware.
-*   `src/ai/knowledge_engine.py`: Implements the dual-backend LLM integration.
-*   `src/processors/streamlined_processor.py`: Orchestrates document loading, chunking, and knowledge extraction.
-*   `src/core/unified_config.py`: Provides a single source of truth for all configuration settings.
-*   `tools/evaluate.py`: A tool for evaluating structured predictions.
-*   `scripts/`: Contains various scripts for running baselines, plotting metrics, and other tasks.
+The system features a multi-GPU setup for enhanced throughput, various prompt engineering strategies, and a suite of semantic chunking methods. It provides a FastAPI for programmatic access and a Streamlit application for an interactive user interface. The project is well-structured, with separate directories for source code, tests, configurations, and data.
 
 ## Building and Running
 
-### 1. Installation
+### 1. Environment Setup
 
-1.  **Create and activate a virtual environment:**
+- Python 3.10+
+- For Metal: macOS with Apple Silicon
+- For CUDA: Linux/Windows with an NVIDIA GPU
 
-    ```bash
-    python -m venv .venv
-    source .venv/bin/activate
-    ```
+### 2. Install Dependencies
 
-2.  **Install dependencies:**
+```bash
+python -m venv .venv && source .venv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+python -m spacy download en_core_web_sm
+```
 
-    ```bash
-    pip install --upgrade pip
-    pip install -r requirements.txt
-    ```
+### 3. Model Setup
 
-3.  **Install the spaCy English model:**
+**For `metal` backend (Apple Silicon):**
 
-    ```bash
-    python -m spacy download en_core_web_sm
-    ```
+Download the GGUF model manually:
 
-### 2. Model Setup
+```bash
+huggingface-cli login
+huggingface-cli download TheBloke/Mistral-7B-Instruct-v0.2-GGUF \
+  --include "mistral-7b-instruct-v0.2.Q4_K_M.gguf" \
+  --local-dir models/llm --local-dir-use-symlinks False
+```
 
-The system requires a local LLM. The setup depends on your GPU backend.
+**For `cuda` backend (NVIDIA GPU):**
 
-*   **For Metal (Apple Silicon):** Download the GGUF model manually.
+The `transformers` library will automatically download the model on the first run.
 
-    ```bash
-    huggingface-cli login
-    huggingface-cli download TheBloke/Mistral-7B-Instruct-v0.2-GGUF \
-      --include "mistral-7b-instruct-v0.2.Q4_K_M.gguf" \
-      --local-dir models/llm --local-dir-use-symlinks False
-    ```
+### 4. Configuration
 
-*   **For CUDA (NVIDIA GPU):** The `transformers` library will automatically download the model on the first run.
+Copy the `.env.example` file to `.env` and set the `GPU_BACKEND` to `metal` or `cuda`.
 
-### 3. Configuration
+### 5. Running the Application
 
-1.  Copy the `.env.example` file to `.env`:
+**API:**
 
-    ```bash
-    cp .env.example .env
-    ```
+```bash
+python main.py
+```
 
-2.  Edit the `.env` file to set the `GPU_BACKEND` (`metal` or `cuda`) and other configuration options as needed.
+**UI:**
 
-### 4. Running the Application
+```bash
+streamlit run streamlit_app.py
+```
 
-*   **Run the API server:**
+### 6. Testing
 
-    ```bash
-    python main.py
-    ```
+To run the test suite:
 
-    The API documentation will be available at `http://localhost:8000/docs`.
-
-*   **Run the Streamlit UI:**
-
-    ```bash
-    streamlit run streamlit_app.py
-    ```
-
-    The UI will be available at `http://localhost:8501`.
-
-### 5. Running Evaluations
-
-The project includes scripts for running baseline evaluations and plotting metrics.
-
-*   **Run preflight checks:**
-
-    ```bash
-    python scripts/baseline_preflight.py
-    ```
-
-*   **Run extraction and evaluation loops:**
-
-    ```bash
-    python scripts/run_baseline_loops.py --runs 3 --out logs/baseline_runs
-    ```
-
-*   **Plot metrics:**
-
-    ```bash
-    python scripts/plot_baseline_metrics.py
-    ```
+```bash
+pytest
+```
 
 ## Development Conventions
 
-### Configuration
-
-All configuration for the application is managed through the `src/core/unified_config.py` module. This module loads settings from environment variables and `.env` files, with different defaults for development, testing, and production environments.
-
-To modify the configuration, you can either set environment variables or edit the `.env` file.
-
-### Code Structure
-
-The main application logic is located in the `src/` directory. The code is organized into modules for the API, AI components, core functionality, and processors.
-
-### Testing
-
-Tests are located in the `tests/` directory. The project uses `pytest` for running tests.
+- **Configuration:** The project uses a centralized configuration system in `src/core/unified_config.py`, which loads settings from environment variables and a `.env` file.
+- **Logging:** The application uses JSON logging with correlation IDs for request tracing.
+- **Testing:** The project includes a `tests/` directory with unit and integration tests. The `pytest` framework is used for testing.
+- **API:** A FastAPI application provides the core API, with routes defined in `src/api/app.py`.
+- **UI:** A Streamlit application in `streamlit_app.py` provides a user-friendly interface for document extraction.
+- **Code Style:** The code appears to follow standard Python conventions (PEP 8).

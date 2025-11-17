@@ -1,0 +1,1329 @@
+{
+  "document_id": "DOA_Food_Man_Proc_Stor",
+  "nodes": [
+    {
+      "id": "S1",
+      "type": "step",
+      "text": "Construct a well-designed building for food processing.",
+      "order": 1
+    },
+    {
+      "id": "S2",
+      "type": "step",
+      "text": "Maintain the building preventively.",
+      "order": 2
+    },
+    {
+      "id": "S3",
+      "type": "step",
+      "text": "Maintain daily pest management programs.",
+      "order": 3
+    },
+    {
+      "id": "S4",
+      "type": "step",
+      "text": "Address pests from facility and surrounding areas.",
+      "order": 4
+    },
+    {
+      "id": "S5",
+      "type": "step",
+      "text": "Follow federal and state regulations.",
+      "order": 5
+    },
+    {
+      "id": "S6",
+      "type": "step",
+      "text": "Design building for pest prevention.",
+      "order": 6
+    },
+    {
+      "id": "S7",
+      "type": "step",
+      "text": "Maintain short grass and trimmed shrubs.",
+      "order": 7
+    },
+    {
+      "id": "S8",
+      "type": "step",
+      "text": "Install paved access and proper drainage.",
+      "order": 8
+    },
+    {
+      "id": "S9",
+      "type": "step",
+      "text": "Create an 18- to 24-inch gravel strip around foundation.",
+      "order": 9
+    },
+    {
+      "id": "S10",
+      "type": "step",
+      "text": "Place night-lights at least 30 feet away from doors.",
+      "order": 10
+    },
+    {
+      "id": "S11",
+      "type": "step",
+      "text": "Keep framing at least four inches from walls.",
+      "order": 11
+    },
+    {
+      "id": "S12",
+      "type": "step",
+      "text": "Fill necessary voids with materials like polyurethane foam.",
+      "order": 12
+    },
+    {
+      "id": "S13",
+      "type": "step",
+      "text": "Install concrete or coated concrete floors.",
+      "order": 13
+    },
+    {
+      "id": "S14",
+      "type": "step",
+      "text": "Use acid-proof or brick floors for wet processing areas.",
+      "order": 14
+    },
+    {
+      "id": "S15",
+      "type": "step",
+      "text": "Seal and clean wall materials.",
+      "order": 15
+    },
+    {
+      "id": "S16",
+      "type": "step",
+      "text": "Prevent hollow panel-type walls from becoming insect quarters.",
+      "order": 16
+    },
+    {
+      "id": "S17",
+      "type": "step",
+      "text": "Install smooth and water-free roofs.",
+      "order": 17
+    },
+    {
+      "id": "S18",
+      "type": "step",
+      "text": "Use as few windows as possible with good transparency.",
+      "order": 18
+    },
+    {
+      "id": "S19",
+      "type": "step",
+      "text": "Install metal and tight-fitting doors.",
+      "order": 19
+    },
+    {
+      "id": "S20",
+      "type": "step",
+      "text": "Install air curtains at large doors.",
+      "order": 20
+    },
+    {
+      "id": "S21",
+      "type": "step",
+      "text": "Use good lighting with dust-tight fixtures.",
+      "order": 21
+    },
+    {
+      "id": "S22",
+      "type": "step",
+      "text": "Install electrical and plumbing services for easy access and cleaning.",
+      "order": 22
+    },
+    {
+      "id": "S23",
+      "type": "step",
+      "text": "Make control panels insect-proof.",
+      "order": 23
+    },
+    {
+      "id": "S24",
+      "type": "step",
+      "text": "Eliminate litter, waste, and uncut grass.",
+      "order": 24
+    },
+    {
+      "id": "S25",
+      "type": "step",
+      "text": "Pave dusty roads and maintain lawns.",
+      "order": 25
+    },
+    {
+      "id": "S26",
+      "type": "step",
+      "text": "Ensure proper drainage.",
+      "order": 26
+    },
+    {
+      "id": "S27",
+      "type": "step",
+      "text": "Position lighting away from buildings.",
+      "order": 27
+    },
+    {
+      "id": "S28",
+      "type": "step",
+      "text": "Reduce bird harborage and outside food spillage.",
+      "order": 28
+    },
+    {
+      "id": "S29",
+      "type": "step",
+      "text": "Use rodent, insect, and bird traps.",
+      "order": 29
+    },
+    {
+      "id": "S30",
+      "type": "step",
+      "text": "Maintain housekeeping and implement pest monitoring programs.",
+      "order": 30
+    },
+    {
+      "id": "S31",
+      "type": "step",
+      "text": "Maintain bait stations for rodent management.",
+      "order": 31
+    },
+    {
+      "id": "S32",
+      "type": "step",
+      "text": "Use insecticidal baits and approved insecticides near breeding sites.",
+      "order": 32
+    },
+    {
+      "id": "S33",
+      "type": "step",
+      "text": "Use chemical repellents and avicides where appropriate for bird management.",
+      "order": 33
+    },
+    {
+      "id": "S34",
+      "type": "step",
+      "text": "Rodent-proof all openings in buildings.",
+      "order": 34
+    },
+    {
+      "id": "S35",
+      "type": "step",
+      "text": "Screen windows.",
+      "order": 35
+    },
+    {
+      "id": "S36",
+      "type": "step",
+      "text": "Block bird access to ledges.",
+      "order": 36
+    },
+    {
+      "id": "S37",
+      "type": "step",
+      "text": "Locate equipment off the floor or sealed to it.",
+      "order": 37
+    },
+    {
+      "id": "S38",
+      "type": "step",
+      "text": "Inspect all incoming vehicles and materials.",
+      "order": 38
+    },
+    {
+      "id": "S39",
+      "type": "step",
+      "text": "Store materials away from walls for inspection access.",
+      "order": 39
+    },
+    {
+      "id": "S40",
+      "type": "step",
+      "text": "Use rodent traps near doors.",
+      "order": 40
+    },
+    {
+      "id": "S41",
+      "type": "step",
+      "text": "Use air curtains at doors.",
+      "order": 41
+    },
+    {
+      "id": "S42",
+      "type": "step",
+      "text": "Use deterrents for birds on roosting sites.",
+      "order": 42
+    },
+    {
+      "id": "S43",
+      "type": "step",
+      "text": "Implement a detailed monitoring program and a total facility IPM program in the processing area.",
+      "order": 43
+    },
+    {
+      "id": "S44",
+      "type": "step",
+      "text": "Use rodent traps near doors if needed.",
+      "order": 44
+    },
+    {
+      "id": "S45",
+      "type": "step",
+      "text": "Ensure proper sanitation in the processing area.",
+      "order": 45
+    },
+    {
+      "id": "S46",
+      "type": "step",
+      "text": "Use space treatments with nonresiduals, crack and crevice treatments with residuals, spot treatments, and fumigation for raw commodities in the warehouse.",
+      "order": 46
+    },
+    {
+      "id": "S47",
+      "type": "step",
+      "text": "Form an inspection committee and assign roles.",
+      "order": 47
+    },
+    {
+      "id": "S48",
+      "type": "step",
+      "text": "Conduct a thorough inspection of the plant.",
+      "order": 48
+    },
+    {
+      "id": "S49",
+      "type": "step",
+      "text": "Record all defects and distribute notes to department heads.",
+      "order": 49
+    },
+    {
+      "id": "S50",
+      "type": "step",
+      "text": "Departments correct identified defects.",
+      "order": 50
+    },
+    {
+      "id": "S51",
+      "type": "step",
+      "text": "Committee reviews notes, addresses uncorrected items, and assigns correction dates.",
+      "order": 51
+    },
+    {
+      "id": "S52",
+      "type": "step",
+      "text": "Sanitation is the responsibility of everyone in the plant.",
+      "order": 52
+    },
+    {
+      "id": "S53",
+      "type": "step",
+      "text": "Inspect areas using a flashlight to detect insect trails or mouse footprints.",
+      "order": 53
+    },
+    {
+      "id": "S54",
+      "type": "step",
+      "text": "Observe suspect stock by spreading it on a flat surface and watching for movement.",
+      "order": 54
+    },
+    {
+      "id": "S55",
+      "type": "step",
+      "text": "Inspect areas most likely to produce results, such as under and inside equipment.",
+      "order": 55
+    },
+    {
+      "id": "S56",
+      "type": "step",
+      "text": "Suspect any unaccounted-for voids in equipment or structures.",
+      "order": 56
+    },
+    {
+      "id": "S57",
+      "type": "step",
+      "text": "Observe employee actions and in-plant practices.",
+      "order": 57
+    },
+    {
+      "id": "S58",
+      "type": "step",
+      "text": "Reward good sanitation to encourage plant-wide cooperation.",
+      "order": 58
+    },
+    {
+      "id": "S59",
+      "type": "step",
+      "text": "Consider periodic inspections by an outside firm for a fresh perspective.",
+      "order": 59
+    },
+    {
+      "id": "S60",
+      "type": "step",
+      "text": "Check warehouse regulations, requiring an 18-inch space between pallets and walls.",
+      "order": 60
+    },
+    {
+      "id": "S61",
+      "type": "step",
+      "text": "Implement a written inspection procedure for incoming raw products.",
+      "order": 61
+    },
+    {
+      "id": "S62",
+      "type": "step",
+      "text": "Identify high mortality risk and its impact on stored product pests.",
+      "order": 62
+    },
+    {
+      "id": "S63",
+      "type": "step",
+      "text": "Implement good sanitation and temperature control to slow pest growth.",
+      "order": 63
+    },
+    {
+      "id": "S64",
+      "type": "step",
+      "text": "Minimize insect movement by inspecting incoming materials and designing buildings.",
+      "order": 64
+    },
+    {
+      "id": "S65",
+      "type": "step",
+      "text": "Use visual inspection as a key monitoring method.",
+      "order": 65
+    },
+    {
+      "id": "S66",
+      "type": "step",
+      "text": "Consider using lights to attract insects.",
+      "order": 66
+    },
+    {
+      "id": "S67",
+      "type": "step",
+      "text": "Place pheromone-baited traps for inspecting bagged commodities, identifying pests, determining the extent of a problem, and evaluating treatment methods.",
+      "order": 67
+    },
+    {
+      "id": "S68",
+      "type": "step",
+      "text": "Examine trends in trap catches over time to modify management practices and reduce populations.",
+      "order": 68
+    },
+    {
+      "id": "S69",
+      "type": "step",
+      "text": "Identify common insect pests in raw grain and processed food.",
+      "order": 69
+    },
+    {
+      "id": "S70",
+      "type": "step",
+      "text": "Select appropriate trap types based on the environment.",
+      "order": 70
+    },
+    {
+      "id": "S71",
+      "type": "step",
+      "text": "Place traps on the outer perimeter of a facility for interception and prediction.",
+      "order": 71
+    },
+    {
+      "id": "S72",
+      "type": "step",
+      "text": "Monitor trap catches for increases in numbers from one period to the next.",
+      "order": 72
+    },
+    {
+      "id": "S73",
+      "type": "step",
+      "text": "Implement a pest management plan, including monitoring and inspection, building modifications, non-chemical control, and chemical control.",
+      "order": 73
+    },
+    {
+      "id": "S74",
+      "type": "step",
+      "text": "Read the label carefully.",
+      "order": 74
+    },
+    {
+      "id": "S75",
+      "type": "step",
+      "text": "Ensure application in food-handling establishments adheres to labels.",
+      "order": 75
+    },
+    {
+      "id": "S76",
+      "type": "step",
+      "text": "Understand different types of residual applications (general, spot, crack and crevice).",
+      "order": 76
+    },
+    {
+      "id": "S77",
+      "type": "step",
+      "text": "Follow pesticide regulations at the federal and state levels.",
+      "order": 77
+    },
+    {
+      "id": "S78",
+      "type": "step",
+      "text": "Identify life cycle stages of beetles and moths: egg, larva, pupa, and adult.",
+      "order": 78
+    },
+    {
+      "id": "S79",
+      "type": "step",
+      "text": "Understand beetle and moth larva characteristics: chewing mouthparts, feed on food.",
+      "order": 79
+    },
+    {
+      "id": "S80",
+      "type": "step",
+      "text": "Determine differences between beetle and moth larvae: moth larvae have legs, beetle larvae do not.",
+      "order": 80
+    },
+    {
+      "id": "S81",
+      "type": "step",
+      "text": "Recognize adult beetles: chewing mouthparts, feed on various materials.",
+      "order": 81
+    },
+    {
+      "id": "S82",
+      "type": "step",
+      "text": "Inspect food products for moths and beetles.",
+      "order": 82
+    },
+    {
+      "id": "S83",
+      "type": "step",
+      "text": "Identify specific pests: Almond Moth, Indianmeal Moth, Mediterranean Flour Moth, Mealmoth, Lesser Grain Borer, Cigarette Beetle, Drugstore Beetle, Confused Flour Beetle, Sawtoothed Grain Beetle, Merchant Grain Beetle, or Foreign Grain Beetle.",
+      "order": 83
+    },
+    {
+      "id": "S84",
+      "type": "step",
+      "text": "Implement control measures based on pest identification: Avoidance, Sanitation, Heat Treatment, Cold Treatment, Residual Insecticides, Space Sprays, or Fumigation.",
+      "order": 84
+    },
+    {
+      "id": "S85",
+      "type": "step",
+      "text": "Monitor food products for reinfestation.",
+      "order": 85
+    },
+    {
+      "id": "S86",
+      "type": "step",
+      "text": "Identify pests: Spider Beetles, Warehouse Beetle / Dermestid Beetles, Cockroaches, Flies, Ants, Bees and Wasps, Booklice.",
+      "order": 86
+    },
+    {
+      "id": "S87",
+      "type": "step",
+      "text": "Determine pest characteristics: appearance, behavior, preferred environments, signs of infestation.",
+      "order": 87
+    },
+    {
+      "id": "S88",
+      "type": "step",
+      "text": "Identify control methods based on pest type: sanitation, residual pesticides, dusts, contact sprays, nest treatment.",
+      "order": 88
+    },
+    {
+      "id": "S89",
+      "type": "step",
+      "text": "Identify pest species: Silverfish, Firebrats, Crickets, Ground Beetles, Sowbugs and Pillbugs or Rodents.",
+      "order": 89
+    },
+    {
+      "id": "S90",
+      "type": "step",
+      "text": "Understand pest behavior: senses, reactions, agility.",
+      "order": 90
+    },
+    {
+      "id": "S91",
+      "type": "step",
+      "text": "Recognize signs of infestation: droppings, runways, rubmarks, burrows, tracks, urine.",
+      "order": 91
+    },
+    {
+      "id": "S92",
+      "type": "step",
+      "text": "Implement rodent management strategies: sanitation and habitat modification, rodent-proof construction.",
+      "order": 92
+    },
+    {
+      "id": "S93",
+      "type": "step",
+      "text": "Clean hose, valve, and nozzle after each use.",
+      "order": 93
+    },
+    {
+      "id": "S94",
+      "type": "step",
+      "text": "Check gaskets and valves regularly.",
+      "order": 94
+    },
+    {
+      "id": "S95",
+      "type": "step",
+      "text": "Never leave pressurized equipment unattended.",
+      "order": 95
+    },
+    {
+      "id": "S96",
+      "type": "step",
+      "text": "Choose appropriate nozzle for spray pattern.",
+      "order": 96
+    },
+    {
+      "id": "S97",
+      "type": "step",
+      "text": "Maintain dusters by keeping them clean and dry.",
+      "order": 97
+    },
+    {
+      "id": "S98",
+      "type": "step",
+      "text": "Follow instructions for using space treating equipment.",
+      "order": 98
+    },
+    {
+      "id": "S99",
+      "type": "step",
+      "text": "Wear appropriate respiratory protection as needed.",
+      "order": 99
+    },
+    {
+      "id": "S100",
+      "type": "step",
+      "text": "Perform daily negative and positive pressure checks.",
+      "order": 100
+    },
+    {
+      "id": "S101",
+      "type": "step",
+      "text": "Wash respirators regularly.",
+      "order": 101
+    },
+    {
+      "id": "S102",
+      "type": "step",
+      "text": "Store respirators in a clean, protected place.",
+      "order": 102
+    },
+    {
+      "id": "C1",
+      "type": "condition",
+      "text": "Use IPM (Integrated Pest Management) for managing pests in food processing facilities."
+    },
+    {
+      "id": "C2",
+      "type": "condition",
+      "text": "Thorough inspections must be conducted in obscure places."
+    },
+    {
+      "id": "C3",
+      "type": "condition",
+      "text": "Requirements for warehouse and raw product receiving inspections by law."
+    },
+    {
+      "id": "C4",
+      "type": "condition",
+      "text": "Use pheromone-baited traps for inspecting bagged commodities, identifying pests, determining the extent of a problem, and evaluating treatment methods."
+    },
+    {
+      "id": "C5",
+      "type": "condition",
+      "text": "One trap per 4,000-5,000 square feet in high-risk areas."
+    },
+    {
+      "id": "C6",
+      "type": "condition",
+      "text": "Match trap types to the environment (dusty vs. clean, hot vs. cold)."
+    },
+    {
+      "id": "C7",
+      "type": "condition",
+      "text": "Place traps on the outer perimeter of a facility for interception and prediction."
+    },
+    {
+      "id": "C8",
+      "type": "condition",
+      "text": "Ensure pesticides used on food products have tolerances or are exempt."
+    },
+    {
+      "id": "C9",
+      "type": "condition",
+      "text": "Do not apply pesticides in a manner inconsistent with their labeling (FIFRA law)."
+    },
+    {
+      "id": "C10",
+      "type": "condition",
+      "text": "Understand the importance of identifying life cycle stages for effective pest control."
+    },
+    {
+      "id": "C11",
+      "type": "condition",
+      "text": "Moths and beetles can contaminate food products."
+    },
+    {
+      "id": "C12",
+      "type": "condition",
+      "text": "Proper identification of pests is crucial for effective control measures."
+    },
+    {
+      "id": "C13",
+      "type": "condition",
+      "text": "Ensure proper identification of pests before implementing control methods."
+    },
+    {
+      "id": "C14",
+      "type": "condition",
+      "text": "Follow safety guidelines when handling pesticides and protective clothing for bees and wasps."
+    },
+    {
+      "id": "C15",
+      "type": "condition",
+      "text": "Ensure proper identification of pests before implementing control measures."
+    },
+    {
+      "id": "C16",
+      "type": "condition",
+      "text": "Ensure safety and effectiveness of equipment by following maintenance procedures."
+    },
+    {
+      "id": "C17",
+      "type": "condition",
+      "text": "Use appropriate nozzle for desired spray pattern."
+    },
+    {
+      "id": "C18",
+      "type": "condition",
+      "text": "Perform daily checks to ensure proper fit and function."
+    },
+    {
+      "id": "C19",
+      "type": "condition",
+      "text": "Avoid wearing beards while using respirators for a tight seal."
+    }
+  ],
+  "edges": [
+    {
+      "source": "S1",
+      "target": "S2",
+      "type": "next"
+    },
+    {
+      "source": "S2",
+      "target": "S3",
+      "type": "next"
+    },
+    {
+      "source": "S3",
+      "target": "S4",
+      "type": "next"
+    },
+    {
+      "source": "S4",
+      "target": "S5",
+      "type": "next"
+    },
+    {
+      "source": "S5",
+      "target": "S6",
+      "type": "next"
+    },
+    {
+      "source": "S6",
+      "target": "S7",
+      "type": "next"
+    },
+    {
+      "source": "S7",
+      "target": "S8",
+      "type": "next"
+    },
+    {
+      "source": "S8",
+      "target": "S9",
+      "type": "next"
+    },
+    {
+      "source": "S9",
+      "target": "S10",
+      "type": "next"
+    },
+    {
+      "source": "S10",
+      "target": "S11",
+      "type": "next"
+    },
+    {
+      "source": "S11",
+      "target": "S12",
+      "type": "next"
+    },
+    {
+      "source": "S12",
+      "target": "S13",
+      "type": "next"
+    },
+    {
+      "source": "S13",
+      "target": "S14",
+      "type": "next"
+    },
+    {
+      "source": "S14",
+      "target": "S15",
+      "type": "next"
+    },
+    {
+      "source": "S15",
+      "target": "S16",
+      "type": "next"
+    },
+    {
+      "source": "S16",
+      "target": "S17",
+      "type": "next"
+    },
+    {
+      "source": "S17",
+      "target": "S18",
+      "type": "next"
+    },
+    {
+      "source": "S18",
+      "target": "S19",
+      "type": "next"
+    },
+    {
+      "source": "S19",
+      "target": "S20",
+      "type": "next"
+    },
+    {
+      "source": "S20",
+      "target": "S21",
+      "type": "next"
+    },
+    {
+      "source": "S21",
+      "target": "S22",
+      "type": "next"
+    },
+    {
+      "source": "S22",
+      "target": "S23",
+      "type": "next"
+    },
+    {
+      "source": "S23",
+      "target": "S24",
+      "type": "next"
+    },
+    {
+      "source": "S24",
+      "target": "S25",
+      "type": "next"
+    },
+    {
+      "source": "S25",
+      "target": "S26",
+      "type": "next"
+    },
+    {
+      "source": "S26",
+      "target": "S27",
+      "type": "next"
+    },
+    {
+      "source": "S27",
+      "target": "S28",
+      "type": "next"
+    },
+    {
+      "source": "S28",
+      "target": "S29",
+      "type": "next"
+    },
+    {
+      "source": "S29",
+      "target": "S30",
+      "type": "next"
+    },
+    {
+      "source": "S30",
+      "target": "S31",
+      "type": "next"
+    },
+    {
+      "source": "S31",
+      "target": "S32",
+      "type": "next"
+    },
+    {
+      "source": "S32",
+      "target": "S33",
+      "type": "next"
+    },
+    {
+      "source": "S33",
+      "target": "S34",
+      "type": "next"
+    },
+    {
+      "source": "S34",
+      "target": "S35",
+      "type": "next"
+    },
+    {
+      "source": "S35",
+      "target": "S36",
+      "type": "next"
+    },
+    {
+      "source": "S36",
+      "target": "S37",
+      "type": "next"
+    },
+    {
+      "source": "S37",
+      "target": "S38",
+      "type": "next"
+    },
+    {
+      "source": "S38",
+      "target": "S39",
+      "type": "next"
+    },
+    {
+      "source": "S39",
+      "target": "S40",
+      "type": "next"
+    },
+    {
+      "source": "S40",
+      "target": "S41",
+      "type": "next"
+    },
+    {
+      "source": "S41",
+      "target": "S42",
+      "type": "next"
+    },
+    {
+      "source": "S42",
+      "target": "S43",
+      "type": "next"
+    },
+    {
+      "source": "S43",
+      "target": "S44",
+      "type": "next"
+    },
+    {
+      "source": "S44",
+      "target": "S45",
+      "type": "next"
+    },
+    {
+      "source": "S45",
+      "target": "S46",
+      "type": "next"
+    },
+    {
+      "source": "S46",
+      "target": "S47",
+      "type": "next"
+    },
+    {
+      "source": "S47",
+      "target": "S48",
+      "type": "next"
+    },
+    {
+      "source": "S48",
+      "target": "S49",
+      "type": "next"
+    },
+    {
+      "source": "S49",
+      "target": "S50",
+      "type": "next"
+    },
+    {
+      "source": "S50",
+      "target": "S51",
+      "type": "next"
+    },
+    {
+      "source": "S51",
+      "target": "S52",
+      "type": "next"
+    },
+    {
+      "source": "S52",
+      "target": "S53",
+      "type": "next"
+    },
+    {
+      "source": "S53",
+      "target": "S54",
+      "type": "next"
+    },
+    {
+      "source": "S54",
+      "target": "S55",
+      "type": "next"
+    },
+    {
+      "source": "S55",
+      "target": "S56",
+      "type": "next"
+    },
+    {
+      "source": "S56",
+      "target": "S57",
+      "type": "next"
+    },
+    {
+      "source": "S57",
+      "target": "S58",
+      "type": "next"
+    },
+    {
+      "source": "S58",
+      "target": "S59",
+      "type": "next"
+    },
+    {
+      "source": "S59",
+      "target": "S60",
+      "type": "next"
+    },
+    {
+      "source": "S60",
+      "target": "S61",
+      "type": "next"
+    },
+    {
+      "source": "S61",
+      "target": "S62",
+      "type": "next"
+    },
+    {
+      "source": "S62",
+      "target": "S63",
+      "type": "next"
+    },
+    {
+      "source": "S63",
+      "target": "S64",
+      "type": "next"
+    },
+    {
+      "source": "S64",
+      "target": "S65",
+      "type": "next"
+    },
+    {
+      "source": "S65",
+      "target": "S66",
+      "type": "next"
+    },
+    {
+      "source": "S66",
+      "target": "S67",
+      "type": "next"
+    },
+    {
+      "source": "S67",
+      "target": "S68",
+      "type": "next"
+    },
+    {
+      "source": "S68",
+      "target": "S69",
+      "type": "next"
+    },
+    {
+      "source": "S69",
+      "target": "S70",
+      "type": "next"
+    },
+    {
+      "source": "S70",
+      "target": "S71",
+      "type": "next"
+    },
+    {
+      "source": "S71",
+      "target": "S72",
+      "type": "next"
+    },
+    {
+      "source": "S72",
+      "target": "S73",
+      "type": "next"
+    },
+    {
+      "source": "S73",
+      "target": "S74",
+      "type": "next"
+    },
+    {
+      "source": "S74",
+      "target": "S75",
+      "type": "next"
+    },
+    {
+      "source": "S75",
+      "target": "S76",
+      "type": "next"
+    },
+    {
+      "source": "S76",
+      "target": "S77",
+      "type": "next"
+    },
+    {
+      "source": "S77",
+      "target": "S78",
+      "type": "next"
+    },
+    {
+      "source": "S78",
+      "target": "S79",
+      "type": "next"
+    },
+    {
+      "source": "S79",
+      "target": "S80",
+      "type": "next"
+    },
+    {
+      "source": "S80",
+      "target": "S81",
+      "type": "next"
+    },
+    {
+      "source": "S81",
+      "target": "S82",
+      "type": "next"
+    },
+    {
+      "source": "S82",
+      "target": "S83",
+      "type": "next"
+    },
+    {
+      "source": "S83",
+      "target": "S84",
+      "type": "next"
+    },
+    {
+      "source": "S84",
+      "target": "S85",
+      "type": "next"
+    },
+    {
+      "source": "S85",
+      "target": "S86",
+      "type": "next"
+    },
+    {
+      "source": "S86",
+      "target": "S87",
+      "type": "next"
+    },
+    {
+      "source": "S87",
+      "target": "S88",
+      "type": "next"
+    },
+    {
+      "source": "S88",
+      "target": "S89",
+      "type": "next"
+    },
+    {
+      "source": "S89",
+      "target": "S90",
+      "type": "next"
+    },
+    {
+      "source": "S90",
+      "target": "S91",
+      "type": "next"
+    },
+    {
+      "source": "S91",
+      "target": "S92",
+      "type": "next"
+    },
+    {
+      "source": "S92",
+      "target": "S93",
+      "type": "next"
+    },
+    {
+      "source": "S93",
+      "target": "S94",
+      "type": "next"
+    },
+    {
+      "source": "S94",
+      "target": "S95",
+      "type": "next"
+    },
+    {
+      "source": "S95",
+      "target": "S96",
+      "type": "next"
+    },
+    {
+      "source": "S96",
+      "target": "S97",
+      "type": "next"
+    },
+    {
+      "source": "S97",
+      "target": "S98",
+      "type": "next"
+    },
+    {
+      "source": "S98",
+      "target": "S99",
+      "type": "next"
+    },
+    {
+      "source": "S99",
+      "target": "S100",
+      "type": "next"
+    },
+    {
+      "source": "S100",
+      "target": "S101",
+      "type": "next"
+    },
+    {
+      "source": "S101",
+      "target": "S102",
+      "type": "next"
+    },
+    {
+      "source": "C1",
+      "target": "S100",
+      "type": "condition_on"
+    },
+    {
+      "source": "C2",
+      "target": "S101",
+      "type": "condition_on"
+    },
+    {
+      "source": "C3",
+      "target": "S60",
+      "type": "condition_on"
+    },
+    {
+      "source": "C3",
+      "target": "S61",
+      "type": "condition_on"
+    },
+    {
+      "source": "C4",
+      "target": "S97",
+      "type": "condition_on"
+    },
+    {
+      "source": "C4",
+      "target": "S98",
+      "type": "condition_on"
+    },
+    {
+      "source": "C5",
+      "target": "S98",
+      "type": "condition_on"
+    },
+    {
+      "source": "C6",
+      "target": "S101",
+      "type": "condition_on"
+    },
+    {
+      "source": "C7",
+      "target": "S102",
+      "type": "condition_on"
+    },
+    {
+      "source": "C8",
+      "target": "S102",
+      "type": "condition_on"
+    },
+    {
+      "source": "C9",
+      "target": "S100",
+      "type": "condition_on"
+    },
+    {
+      "source": "C10",
+      "target": "S100",
+      "type": "condition_on"
+    },
+    {
+      "source": "C11",
+      "target": "S100",
+      "type": "condition_on"
+    },
+    {
+      "source": "C12",
+      "target": "S101",
+      "type": "condition_on"
+    },
+    {
+      "source": "C13",
+      "target": "S100",
+      "type": "condition_on"
+    },
+    {
+      "source": "C14",
+      "target": "S102",
+      "type": "condition_on"
+    },
+    {
+      "source": "C15",
+      "target": "S100",
+      "type": "condition_on"
+    },
+    {
+      "source": "C16",
+      "target": "S100",
+      "type": "condition_on"
+    },
+    {
+      "source": "C16",
+      "target": "S101",
+      "type": "condition_on"
+    },
+    {
+      "source": "C16",
+      "target": "S102",
+      "type": "condition_on"
+    },
+    {
+      "source": "C17",
+      "target": "S96",
+      "type": "condition_on"
+    },
+    {
+      "source": "C18",
+      "target": "S100",
+      "type": "condition_on"
+    }
+  ]
+}
