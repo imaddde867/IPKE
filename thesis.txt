@@ -18,7 +18,7 @@ These results are evaluated on four targets (Tier-A):
 	Coverage: fraction of gold constraint statements that are found
 	Attachment F1: correctness of the “constraint to step” linking where links are present.
 We report those four targets into a compact headline score for T.ier-A extractions of : 
-A_score=0.7⋅StepF1+0.3⋅AdjacencyF1
+A_score = 0.5*ConstraintCoverage + 0.3*StepF1 + 0.2*Kendall
 For completeness, we also derive a graph view out of the JSON object predictions and a gold for a second Tier-B evaluation, steps become nodes(type=” step”); constraints become nodes(type=”condition”); next edges are emitted between consecutive steps, condition_on edges are emitted if explicit references exist. We report GraphF1 and edge-type diagnostics (NEXT_EdgeF1; Logic_EdgeF1) as lower bounds; they are not headline results until native graph emission is implemented (see chapter 4).
 Dataset & documents
 We experimented on three industrial documents with manually curated gold (step lists with IDs and constraint phrases; constraint->step links when definitive). These documents are as follows:
@@ -208,7 +208,7 @@ Metrics:
 	Constraint attachment F1: the correctness of constraint-to-step binding (only for Tier B). 
 This separation follows recommendations from Carriero et al. (2024) and Xu et al. (2024) for distinguishing semantic detection from structural linkage accuracy.
 Tier-A headline score : 
-A_score=0.7*Step_F1+0.3*Adjacency_F1
+A_score = 0.5*ConstraintCoverage + 0.3*StepF1 + 0.2*Kendall
 Tier B: Structured (graph) extraction.
 Evaluation performed on the output PKG with nodes (steps and slot fields such as action/object/condition/parameter) and typed edges (e.g., PRECEDES/NEXT, GUARDS, REQUIRES).
 Metrics:

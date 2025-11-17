@@ -8,7 +8,7 @@ The `scripts/experiments` directory provides reproducible sweeps for every chunk
 - Captures Tier‑A and Tier‑B metrics with `tools/evaluate.py`, logs docker output, and records provenance metadata (git SHA, command line, env overrides, duration, document-level chunk stats).
 - Appends a CSV summary with the clean headline metrics you requested: `StepF1`, `AdjacencyF1`, `Kendall`, `ConstraintCoverage`, `ConstraintAttachmentF1`, `A_score`, `GraphF1`, `NEXT_EdgeF1`, `Logic_EdgeF1`, `ConstraintAttachmentF1`, `B_score`.
 
-> Tier-A headline: `A_score = 0.7 * StepF1 + 0.3 * AdjacencyF1`  
+> Tier-A headline: `A_score = 0.5 * ConstraintCoverage + 0.3 * StepF1 + 0.2 * Kendall`  
 > Tier-B headline: `B_score = GraphF1`
 
 ### Metric details

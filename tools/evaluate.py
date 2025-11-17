@@ -407,8 +407,13 @@ def evaluate_tier_a_document(
     )
     metrics.update(constraints_metrics)
 
-    if metrics.get("StepF1") is not None and metrics.get("AdjacencyF1") is not None:
-        a_score = 0.7 * metrics["StepF1"] + 0.3 * metrics["AdjacencyF1"]
+    # New A_score: 0.5*ConstraintCoverage + 0.3*StepF1 + 0.2*Kendall
+    if all(k in metrics for k in ["ConstraintCoverage", "StepF1", "Kendall"]):
+        a_score = (
+            0.5 * metrics.get("ConstraintCoverage", 0) +
+            0.3 * metrics.get("StepF1", 0) +
+            0.2 * metrics.get("Kendall", 0)
+        )
         metrics["A_score"] = round3(a_score)
     else:
         metrics["A_score"] = None
@@ -746,8 +751,14 @@ def evaluate_tier_b_document(
         node_mapping,
     )
 
-    if metrics.get("StepF1") is not None and metrics.get("AdjacencyF1") is not None:
-        metrics["A_score"] = round3(0.7 * metrics["StepF1"] + 0.3 * metrics["AdjacencyF1"])
+    # New A_score: 0.5*ConstraintCoverage + 0.3*StepF1 + 0.2*Kendall
+    if all(k in metrics for k in ["ConstraintCoverage", "StepF1", "Kendall"]):
+        a_score = (
+            0.5 * metrics.get("ConstraintCoverage", 0) +
+            0.3 * metrics.get("StepF1", 0) +
+            0.2 * metrics.get("Kendall", 0)
+        )
+        metrics["A_score"] = round3(a_score)
     else:
         metrics["A_score"] = None
     metrics["B_score"] = metrics.get("GraphF1")
