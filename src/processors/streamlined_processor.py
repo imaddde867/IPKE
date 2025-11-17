@@ -57,7 +57,7 @@ except ImportError:
 
 from src.logging_config import get_logger
 from src.core.unified_config import UnifiedConfig, get_config
-from src.ai.knowledge_engine import ExtractionResult
+from src.ai.types import ExtractionResult
 from src.exceptions import ProcessingError
 
 logger = get_logger(__name__)

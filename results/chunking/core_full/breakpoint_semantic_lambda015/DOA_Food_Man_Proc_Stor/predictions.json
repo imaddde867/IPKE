@@ -1,0 +1,4509 @@
+{
+  "document_id": "DOA_Food_Man_Proc_Stor",
+  "document_type": "text",
+  "metadata": {},
+  "steps": [
+    {
+      "id": "S1",
+      "text": "Become certified in Food Manufacturing, Processing and Storage Pest Control - Classification 7.",
+      "order": 1,
+      "confidence": 0.95
+    },
+    {
+      "id": "S2",
+      "text": "Pass the general standards exam.",
+      "order": 2,
+      "confidence": 0.9
+    },
+    {
+      "id": "S3",
+      "text": "Study materials in 'A Guide for Private and Commercial Applicators: Applying Pesticides Correctly'.",
+      "order": 3,
+      "confidence": 0.85
+    },
+    {
+      "id": "S4",
+      "text": "Pass the exam based on this manual and Arkansas Pest Control Law.",
+      "order": 4,
+      "confidence": 0.9
+    },
+    {
+      "id": "S5",
+      "text": "Obtain study materials from the Arkansas State Plant Board.",
+      "order": 5,
+      "confidence": 0.9
+    },
+    {
+      "id": "S6",
+      "text": "Acknowledge sources of additional information.",
+      "order": 6,
+      "confidence": 0.9
+    },
+    {
+      "id": "S7",
+      "text": "Check pesticide information for currency.",
+      "order": 7,
+      "confidence": 0.9
+    },
+    {
+      "id": "S8",
+      "text": "Ensure intended use aligns with product label.",
+      "order": 8,
+      "confidence": 0.85
+    },
+    {
+      "id": "S9",
+      "text": "Integrate chemical, physical, cultural, and biological controls for pest management in food processing facilities.",
+      "order": 9,
+      "confidence": 0.95
+    },
+    {
+      "id": "S10",
+      "text": "Use pesticides as a last resort.",
+      "order": 10,
+      "confidence": 0.9
+    },
+    {
+      "id": "S11",
+      "text": "Construct a well-built building.",
+      "order": 11,
+      "confidence": 0.95
+    },
+    {
+      "id": "S12",
+      "text": "Implement preventive design and maintenance.",
+      "order": 12,
+      "confidence": 0.9
+    },
+    {
+      "id": "S13",
+      "text": "Implement daily pest management programs for food plants.",
+      "order": 13,
+      "confidence": 0.95
+    },
+    {
+      "id": "S14",
+      "text": "Maintain records as part of the program.",
+      "order": 14,
+      "confidence": 0.9
+    },
+    {
+      "id": "S15",
+      "text": "Address pests in facility.",
+      "order": 15,
+      "confidence": 0.85
+    },
+    {
+      "id": "S16",
+      "text": "Manage pests from surrounding areas.",
+      "order": 16,
+      "confidence": 0.8
+    },
+    {
+      "id": "S17",
+      "text": "Monitor incoming materials for pests.",
+      "order": 17,
+      "confidence": 0.75
+    },
+    {
+      "id": "S18",
+      "text": "The applicator must be aware of federal and state regulations.",
+      "order": 18,
+      "confidence": 0.95
+    },
+    {
+      "id": "S19",
+      "text": "Check regulations from FDA, USDA-FSIS, EPA, OSHA, DOT, Arkansas State Plant Board, ADH, and ADEQ.",
+      "order": 19,
+      "confidence": 0.9
+    },
+    {
+      "id": "S20",
+      "text": "Proper engineering design is implemented for pest prevention.",
+      "order": 20,
+      "confidence": 0.8
+    },
+    {
+      "id": "S21",
+      "text": "Maintain short grass and trim shrubs.",
+      "order": 21,
+      "confidence": 0.9
+    },
+    {
+      "id": "S22",
+      "text": "Pave access areas.",
+      "order": 22,
+      "confidence": 0.85
+    },
+    {
+      "id": "S23",
+      "text": "Ensure proper drainage.",
+      "order": 23,
+      "confidence": 0.9
+    },
+    {
+      "id": "S24",
+      "text": "Place an 18- to 24-inch strip of gravel around the foundation.",
+      "order": 24,
+      "confidence": 0.9
+    },
+    {
+      "id": "S25",
+      "text": "Position night-lights at least 30 feet away from doors.",
+      "order": 25,
+      "confidence": 0.9
+    },
+    {
+      "id": "S26",
+      "text": "Maintain a minimum distance of 4 inches between framing and walls.",
+      "order": 26,
+      "confidence": 0.95
+    },
+    {
+      "id": "S27",
+      "text": "Fill any necessary voids with materials such as polyurethane foam.",
+      "order": 27,
+      "confidence": 0.9
+    },
+    {
+      "id": "S28",
+      "text": "Coat concrete floors for improved sanitation.",
+      "order": 28,
+      "confidence": 0.9
+    },
+    {
+      "id": "S29",
+      "text": "Use acid-proof or brick floors in wet processing areas.",
+      "order": 29,
+      "confidence": 0.85
+    },
+    {
+      "id": "S30",
+      "text": "Seal wall materials like concrete, brick, or tile.",
+      "order": 30,
+      "confidence": 0.95
+    },
+    {
+      "id": "S31",
+      "text": "Easy to clean wall materials.",
+      "order": 31,
+      "confidence": 0.9
+    },
+    {
+      "id": "S32",
+      "text": "Seal hollow panel-type walls.",
+      "order": 32,
+      "confidence": 0.85
+    },
+    {
+      "id": "S33",
+      "text": "Check that roofs are smooth and free of standing water.",
+      "order": 33,
+      "confidence": 0.95
+    },
+    {
+      "id": "S34",
+      "text": "Inspect pitch and gravel or corrugated metal roofs for insect harboring.",
+      "order": 34,
+      "confidence": 0.9
+    },
+    {
+      "id": "S35",
+      "text": "Use few windows with transparent glass.",
+      "order": 35,
+      "confidence": 0.9
+    },
+    {
+      "id": "S36",
+      "text": "Choose metal tight-fitting doors.",
+      "order": 36,
+      "confidence": 0.9
+    },
+    {
+      "id": "S37",
+      "text": "Install air curtains at large doors.",
+      "order": 37,
+      "confidence": 0.8
+    },
+    {
+      "id": "S38",
+      "text": "Install dust-tight fixtures for good lighting.",
+      "order": 38,
+      "confidence": 0.9
+    },
+    {
+      "id": "S39",
+      "text": "Provide electrical and plumbing services for easy access and cleaning.",
+      "order": 39,
+      "confidence": 0.85
+    },
+    {
+      "id": "S40",
+      "text": "Control panels should be insect-proof.",
+      "order": 40,
+      "confidence": 0.9
+    },
+    {
+      "id": "S41",
+      "text": "Equipment should be roomy and accessible for cleaning.",
+      "order": 41,
+      "confidence": 0.9
+    },
+    {
+      "id": "S42",
+      "text": "Equipment should be raised at least six inches off the floor or sealed to it.",
+      "order": 42,
+      "confidence": 0.9
+    },
+    {
+      "id": "S43",
+      "text": "Perform preventive maintenance.",
+      "order": 43,
+      "confidence": 0.95
+    },
+    {
+      "id": "S44",
+      "text": "Eliminate litter, waste, and uncut grass.",
+      "order": 44,
+      "confidence": 0.9
+    },
+    {
+      "id": "S45",
+      "text": "Maintain grounds by preventing litter, waste, and uncut grass.",
+      "order": 45,
+      "confidence": 0.85
+    },
+    {
+      "id": "S46",
+      "text": "Pave dusty roads.",
+      "order": 46,
+      "confidence": 0.9
+    },
+    {
+      "id": "S47",
+      "text": "Maintain lawns.",
+      "order": 47,
+      "confidence": 0.9
+    },
+    {
+      "id": "S48",
+      "text": "Ensure proper drainage.",
+      "order": 48,
+      "confidence": 0.9
+    },
+    {
+      "id": "S49",
+      "text": "Position lighting away from buildings.",
+      "order": 49,
+      "confidence": 0.9
+    },
+    {
+      "id": "S50",
+      "text": "Reduce bird harborage.",
+      "order": 50,
+      "confidence": 0.9
+    },
+    {
+      "id": "S51",
+      "text": "Use rodent, insect, and bird traps for nonchemical management.",
+      "order": 51,
+      "confidence": 0.9
+    },
+    {
+      "id": "S52",
+      "text": "Maintain housekeeping.",
+      "order": 52,
+      "confidence": 0.9
+    },
+    {
+      "id": "S53",
+      "text": "Implement pest monitoring programs.",
+      "order": 53,
+      "confidence": 0.9
+    },
+    {
+      "id": "S54",
+      "text": "Use pheromone traps for pest control.",
+      "order": 54,
+      "confidence": 0.85
+    },
+    {
+      "id": "S55",
+      "text": "Maintain bait stations for rodent pest management.",
+      "order": 55,
+      "confidence": 0.9
+    },
+    {
+      "id": "S56",
+      "text": "Use insecticidal baits and approved insecticides near breeding sites.",
+      "order": 56,
+      "confidence": 0.95
+    },
+    {
+      "id": "S57",
+      "text": "Use chemical repellents and avicides where appropriate.",
+      "order": 57,
+      "confidence": 0.9
+    },
+    {
+      "id": "S58",
+      "text": "Rodent-proof all openings.",
+      "order": 58,
+      "confidence": 0.95
+    },
+    {
+      "id": "S59",
+      "text": "Screen windows.",
+      "order": 59,
+      "confidence": 0.9
+    },
+    {
+      "id": "S60",
+      "text": "Eliminate cracks, crevices, and ledges.",
+      "order": 60,
+      "confidence": 0.95
+    },
+    {
+      "id": "S61",
+      "text": "Block bird access to ledges.",
+      "order": 61,
+      "confidence": 0.9
+    },
+    {
+      "id": "S62",
+      "text": "Locate equipment off the floor.",
+      "order": 62,
+      "confidence": 0.9
+    },
+    {
+      "id": "S63",
+      "text": "Seal equipment to it if necessary.",
+      "order": 63,
+      "confidence": 0.85
+    },
+    {
+      "id": "S64",
+      "text": "Keep all areas free of loose materials.",
+      "order": 64,
+      "confidence": 0.9
+    },
+    {
+      "id": "S65",
+      "text": "Clean structures and equipment.",
+      "order": 65,
+      "confidence": 0.95
+    },
+    {
+      "id": "S66",
+      "text": "Use electrified grids for insect attraction inside.",
+      "order": 66,
+      "confidence": 0.8
+    },
+    {
+      "id": "S67",
+      "text": "Inspect all incoming vehicles and materials.",
+      "order": 67,
+      "confidence": 0.95
+    },
+    {
+      "id": "S68",
+      "text": "Store materials away from walls for inspection access.",
+      "order": 68,
+      "confidence": 0.9
+    },
+    {
+      "id": "S69",
+      "text": "Use rodent traps near doors.",
+      "order": 69,
+      "confidence": 0.9
+    },
+    {
+      "id": "S70",
+      "text": "Map the locations of the rodent traps.",
+      "order": 70,
+      "confidence": 0.85
+    },
+    {
+      "id": "S71",
+      "text": "Install air curtains at doors.",
+      "order": 71,
+      "confidence": 0.9
+    },
+    {
+      "id": "S72",
+      "text": "Use deterrents for birds on roosting sites.",
+      "order": 72,
+      "confidence": 0.9
+    },
+    {
+      "id": "S73",
+      "text": "Use rodent bait stations where policy permits.",
+      "order": 73,
+      "confidence": 0.8
+    },
+    {
+      "id": "S74",
+      "text": "Use space treatments with nonresiduals.",
+      "order": 74,
+      "confidence": 0.9
+    },
+    {
+      "id": "S75",
+      "text": "Use crack and crevice treatments with residuals.",
+      "order": 75,
+      "confidence": 0.9
+    },
+    {
+      "id": "S76",
+      "text": "Apply spot treatments.",
+      "order": 76,
+      "confidence": 0.9
+    },
+    {
+      "id": "S77",
+      "text": "Perform fumigation for raw commodities.",
+      "order": 77,
+      "confidence": 0.9
+    },
+    {
+      "id": "S78",
+      "text": "Implement a detailed monitoring program.",
+      "order": 78,
+      "confidence": 0.85
+    },
+    {
+      "id": "S79",
+      "text": "Establish a total facility IPM program.",
+      "order": 79,
+      "confidence": 0.8
+    },
+    {
+      "id": "S80",
+      "text": "Use rodent traps near doors.",
+      "order": 80,
+      "confidence": 0.95
+    },
+    {
+      "id": "S81",
+      "text": "Ensure proper sanitation.",
+      "order": 81,
+      "confidence": 0.9
+    },
+    {
+      "id": "S82",
+      "text": "Use space treatments in pesticide management.",
+      "order": 82,
+      "confidence": 0.9
+    },
+    {
+      "id": "S83",
+      "text": "Use spot treatments in pesticide management.",
+      "order": 83,
+      "confidence": 0.9
+    },
+    {
+      "id": "S84",
+      "text": "Use crack and crevice treatments in pesticide management.",
+      "order": 84,
+      "confidence": 0.9
+    },
+    {
+      "id": "S85",
+      "text": "Use contact treatments in pesticide management.",
+      "order": 85,
+      "confidence": 0.9
+    },
+    {
+      "id": "S86",
+      "text": "Treat packaging areas.",
+      "order": 86,
+      "confidence": 0.9
+    },
+    {
+      "id": "S87",
+      "text": "Use appropriate treatments in packaging areas as finished foods are exposed.",
+      "order": 87,
+      "confidence": 0.85
+    },
+    {
+      "id": "S88",
+      "text": "Identify potential sources of pests in packaging materials.",
+      "order": 88,
+      "confidence": 0.9
+    },
+    {
+      "id": "S89",
+      "text": "Implement pest management procedures for packaging materials.",
+      "order": 89,
+      "confidence": 0.85
+    },
+    {
+      "id": "S90",
+      "text": "Implement effective pest management programs in finished products warehouse.",
+      "order": 90,
+      "confidence": 0.95
+    },
+    {
+      "id": "S91",
+      "text": "Maintain the finished products warehouse.",
+      "order": 91,
+      "confidence": 0.8
+    },
+    {
+      "id": "S92",
+      "text": "Ensure vehicles are clean.",
+      "order": 92,
+      "confidence": 0.95
+    },
+    {
+      "id": "S93",
+      "text": "Check for vehicle infestation.",
+      "order": 93,
+      "confidence": 0.9
+    },
+    {
+      "id": "S94",
+      "text": "Treat spaces before loading.",
+      "order": 94,
+      "confidence": 0.9
+    },
+    {
+      "id": "S95",
+      "text": "Create an in-plant sanitation program.",
+      "order": 95,
+      "confidence": 0.95
+    },
+    {
+      "id": "S96",
+      "text": "Form an inspection committee with the highest company official as chairman and include all department heads.",
+      "order": 96,
+      "confidence": 0.95
+    },
+    {
+      "id": "S97",
+      "text": "Next step in the process.",
+      "order": 97,
+      "confidence": 0.8
+    },
+    {
+      "id": "S98",
+      "text": "Review existing activities.",
+      "order": 98,
+      "confidence": 0.95
+    },
+    {
+      "id": "S99",
+      "text": "Compile a list of deficiencies.",
+      "order": 99,
+      "confidence": 0.9
+    },
+    {
+      "id": "S100",
+      "text": "The committee should wear identifiable uniforms.",
+      "order": 100,
+      "confidence": 0.9
+    },
+    {
+      "id": "S101",
+      "text": "Carry necessary tools: flashlights and scrapers.",
+      "order": 101,
+      "confidence": 0.9
+    },
+    {
+      "id": "S102",
+      "text": "Thoroughly inspect new places.",
+      "order": 102,
+      "confidence": 0.9
+    },
+    {
+      "id": "S103",
+      "text": "Do not just focus on areas with a history of problems.",
+      "order": 103,
+      "confidence": 0.85
+    },
+    {
+      "id": "S104",
+      "text": "Record all defects completely and specifically.",
+      "order": 104,
+      "confidence": 0.95
+    },
+    {
+      "id": "S105",
+      "text": "Distribute notes to department heads.",
+      "order": 105,
+      "confidence": 0.9
+    },
+    {
+      "id": "S106",
+      "text": "Departments should correct defects immediately.",
+      "order": 106,
+      "confidence": 0.9
+    },
+    {
+      "id": "S107",
+      "text": "Committee meets to review notes, address uncorrected items, and assign realistic correction dates.",
+      "order": 107,
+      "confidence": 0.85
+    },
+    {
+      "id": "S108",
+      "text": "Start by looking in obscure places.",
+      "order": 108,
+      "confidence": 0.9
+    },
+    {
+      "id": "S109",
+      "text": "Use a flashlight to detect insect trails or mouse footprints.",
+      "order": 109,
+      "confidence": 0.9
+    },
+    {
+      "id": "S110",
+      "text": "Observe suspect stock by spreading it on a flat surface.",
+      "order": 110,
+      "confidence": 0.95
+    },
+    {
+      "id": "S111",
+      "text": "Watch for movement in the spread-out stock.",
+      "order": 111,
+      "confidence": 0.9
+    },
+    {
+      "id": "S112",
+      "text": "Inspect areas most likely to produce results.",
+      "order": 112,
+      "confidence": 0.9
+    },
+    {
+      "id": "S113",
+      "text": "Check problem areas.",
+      "order": 113,
+      "confidence": 0.9
+    },
+    {
+      "id": "S114",
+      "text": "Look for unaccounted-for voids in equipment or structures.",
+      "order": 114,
+      "confidence": 0.85
+    },
+    {
+      "id": "S115",
+      "text": "Observe employee actions and in-plant practices.",
+      "order": 115,
+      "confidence": 0.9
+    },
+    {
+      "id": "S116",
+      "text": "Reward good sanitation.",
+      "order": 116,
+      "confidence": 0.85
+    },
+    {
+      "id": "S117",
+      "text": "Consider periodic inspections by an outside firm.",
+      "order": 117,
+      "confidence": 0.9
+    },
+    {
+      "id": "S118",
+      "text": "Inspect the warehouse.",
+      "order": 118,
+      "confidence": 0.9
+    },
+    {
+      "id": "S119",
+      "text": "Require an 18-inch space between pallets and walls.",
+      "order": 119,
+      "confidence": 0.8
+    },
+    {
+      "id": "S120",
+      "text": "Write an inspection procedure for incoming raw products.",
+      "order": 120,
+      "confidence": 0.95
+    },
+    {
+      "id": "S121",
+      "text": "Follow the written procedure to inspect incoming raw products.",
+      "order": 121,
+      "confidence": 0.9
+    },
+    {
+      "id": "S122",
+      "text": "Accept vehicles according to guidelines.",
+      "order": 122,
+      "confidence": 0.9
+    },
+    {
+      "id": "S123",
+      "text": "Record problems on a form.",
+      "order": 123,
+      "confidence": 0.9
+    },
+    {
+      "id": "S124",
+      "text": "Maintain housekeeping standards.",
+      "order": 124,
+      "confidence": 0.9
+    },
+    {
+      "id": "S125",
+      "text": "Implement pallet-cleaning program.",
+      "order": 125,
+      "confidence": 0.9
+    },
+    {
+      "id": "S126",
+      "text": "Follow stock storage specifications.",
+      "order": 126,
+      "confidence": 0.9
+    },
+    {
+      "id": "S127",
+      "text": "Use a reliable stock rotation method.",
+      "order": 127,
+      "confidence": 0.9
+    },
+    {
+      "id": "S128",
+      "text": "Quickly remove spills and trash.",
+      "order": 128,
+      "confidence": 0.9
+    },
+    {
+      "id": "S129",
+      "text": "Emphasize systematic approach to commodity protection.",
+      "order": 129,
+      "confidence": 0.9
+    },
+    {
+      "id": "S130",
+      "text": "Integrate control measures: natural enemies, cultural management, temperature, sanitation, and pesticides.",
+      "order": 130,
+      "confidence": 0.9
+    },
+    {
+      "id": "S131",
+      "text": "Determine if potential losses exceed economic threshold.",
+      "order": 131,
+      "confidence": 0.9
+    },
+    {
+      "id": "S132",
+      "text": "Regulate storability based on moisture content, temperature, pest access, and time.",
+      "order": 132,
+      "confidence": 0.85
+    },
+    {
+      "id": "S133",
+      "text": "Determine moisture content of processed goods.",
+      "order": 133,
+      "confidence": 0.9
+    },
+    {
+      "id": "S134",
+      "text": "Check if moisture level meets pest requirements.",
+      "order": 134,
+      "confidence": 0.85
+    },
+    {
+      "id": "S135",
+      "text": "Determine suitable temperature range for insects and molds.",
+      "order": 135,
+      "confidence": 0.95
+    },
+    {
+      "id": "S136",
+      "text": "Maintain temperature between 65\u00b0F and 95\u00b0F.",
+      "order": 136,
+      "confidence": 0.9
+    },
+    {
+      "id": "S137",
+      "text": "Maintain good sanitation.",
+      "order": 137,
+      "confidence": 0.9
+    },
+    {
+      "id": "S138",
+      "text": "Control temperature.",
+      "order": 138,
+      "confidence": 0.9
+    },
+    {
+      "id": "S139",
+      "text": "Minimize movement of stored product insects.",
+      "order": 139,
+      "confidence": 0.9
+    },
+    {
+      "id": "S140",
+      "text": "Prevent insects from flying.",
+      "order": 140,
+      "confidence": 0.8
+    },
+    {
+      "id": "S141",
+      "text": "Carefully inspect all incoming materials.",
+      "order": 141,
+      "confidence": 0.9
+    },
+    {
+      "id": "S142",
+      "text": "Design buildings to minimize entry points.",
+      "order": 142,
+      "confidence": 0.9
+    },
+    {
+      "id": "S143",
+      "text": "Use visual inspection as a key method.",
+      "order": 143,
+      "confidence": 0.8
+    },
+    {
+      "id": "S144",
+      "text": "Identify high-risk foods.",
+      "order": 144,
+      "confidence": 0.95
+    },
+    {
+      "id": "S145",
+      "text": "Check for oldest foods.",
+      "order": 145,
+      "confidence": 0.9
+    },
+    {
+      "id": "S146",
+      "text": "Examine foods from high-risk firms.",
+      "order": 146,
+      "confidence": 0.9
+    },
+    {
+      "id": "S147",
+      "text": "Inspect for open packages.",
+      "order": 147,
+      "confidence": 0.85
+    },
+    {
+      "id": "S148",
+      "text": "Assess areas with poor sanitation.",
+      "order": 148,
+      "confidence": 0.8
+    },
+    {
+      "id": "S149",
+      "text": "Check for insects near lights.",
+      "order": 149,
+      "confidence": 0.95
+    },
+    {
+      "id": "S150",
+      "text": "Use yellow or sodium arc lights outdoors to reduce attraction.",
+      "order": 150,
+      "confidence": 0.9
+    },
+    {
+      "id": "S151",
+      "text": "Understand the role of pheromones as chemical attractants.",
+      "order": 151,
+      "confidence": 0.8
+    },
+    {
+      "id": "S152",
+      "text": "Use sex pheromones and aggregation pheromones in traps.",
+      "order": 152,
+      "confidence": 0.95
+    },
+    {
+      "id": "S153",
+      "text": "Add food attractants to the traps.",
+      "order": 153,
+      "confidence": 0.9
+    },
+    {
+      "id": "S154",
+      "text": "Determine placement area based on time of year and temperature profiles.",
+      "order": 154,
+      "confidence": 0.95
+    },
+    {
+      "id": "S155",
+      "text": "Place one trap per 4,000-5,000 square feet.",
+      "order": 155,
+      "confidence": 0.9
+    },
+    {
+      "id": "S156",
+      "text": "Focus on high-risk areas.",
+      "order": 156,
+      "confidence": 0.8
+    },
+    {
+      "id": "S157",
+      "text": "Examine trends in trap catches over time.",
+      "order": 157,
+      "confidence": 0.9
+    },
+    {
+      "id": "S158",
+      "text": "Modify management practices based on findings.",
+      "order": 158,
+      "confidence": 0.85
+    },
+    {
+      "id": "S159",
+      "text": "Use pheromone-baited traps in a warehouse.",
+      "order": 159,
+      "confidence": 0.95
+    },
+    {
+      "id": "S160",
+      "text": "Place the traps effectively.",
+      "order": 160,
+      "confidence": 0.8
+    },
+    {
+      "id": "S161",
+      "text": "Inspecting bagged commodities.",
+      "order": 161,
+      "confidence": 0.95
+    },
+    {
+      "id": "S162",
+      "text": "Identifying pests.",
+      "order": 162,
+      "confidence": 0.9
+    },
+    {
+      "id": "S163",
+      "text": "Determining the extent of a problem.",
+      "order": 163,
+      "confidence": 0.9
+    },
+    {
+      "id": "S164",
+      "text": "Evaluating a treatment method.",
+      "order": 164,
+      "confidence": 0.85
+    },
+    {
+      "id": "S165",
+      "text": "Identify the pest species.",
+      "order": 165,
+      "confidence": 0.95
+    },
+    {
+      "id": "S166",
+      "text": "Determine attraction of pests to pheromone traps based on their lifespan.",
+      "order": 166,
+      "confidence": 0.8
+    },
+    {
+      "id": "S167",
+      "text": "Identify common insect pests in raw grain.",
+      "order": 167,
+      "confidence": 0.9
+    },
+    {
+      "id": "S168",
+      "text": "Identify common insect pests in processed food.",
+      "order": 168,
+      "confidence": 0.9
+    },
+    {
+      "id": "S169",
+      "text": "Match the trap type to the environment.",
+      "order": 169,
+      "confidence": 0.9
+    },
+    {
+      "id": "S170",
+      "text": "Use pitfall traps or traps that deflect dust in dusty areas.",
+      "order": 170,
+      "confidence": 0.85
+    },
+    {
+      "id": "S171",
+      "text": "Adapt trap placement to changing temperature gradients.",
+      "order": 171,
+      "confidence": 0.95
+    },
+    {
+      "id": "S172",
+      "text": "Place traps on the outer perimeter of a facility.",
+      "order": 172,
+      "confidence": 0.9
+    },
+    {
+      "id": "S173",
+      "text": "Determine number of traps based on quality assurance standards and goal.",
+      "order": 173,
+      "confidence": 0.9
+    },
+    {
+      "id": "S174",
+      "text": "Begin with a wide grid (one trap per 100,000 cubic feet).",
+      "order": 174,
+      "confidence": 0.85
+    },
+    {
+      "id": "S175",
+      "text": "If pests are detected, move traps or add more.",
+      "order": 175,
+      "confidence": 0.9
+    },
+    {
+      "id": "S176",
+      "text": "Visually search areas with the most insects.",
+      "order": 176,
+      "confidence": 0.9
+    },
+    {
+      "id": "S177",
+      "text": "Look for increases in numbers from one period to the next when interpreting catches.",
+      "order": 177,
+      "confidence": 0.9
+    },
+    {
+      "id": "S178",
+      "text": "Set up pheromone traps.",
+      "order": 178,
+      "confidence": 0.85
+    },
+    {
+      "id": "S179",
+      "text": "Place glue boards.",
+      "order": 179,
+      "confidence": 0.85
+    },
+    {
+      "id": "S180",
+      "text": "Perform visual inspections for insects, rodents, and birds.",
+      "order": 180,
+      "confidence": 0.9
+    },
+    {
+      "id": "S181",
+      "text": "Build structural modifications to keep out pests.",
+      "order": 181,
+      "confidence": 0.9
+    },
+    {
+      "id": "S182",
+      "text": "Implement non-chemical control methods.",
+      "order": 182,
+      "confidence": 0.9
+    },
+    {
+      "id": "S183",
+      "text": "Use cold storage with a temperature of 50\u00b0F.",
+      "order": 183,
+      "confidence": 0.8
+    },
+    {
+      "id": "S184",
+      "text": "Place proper lighting.",
+      "order": 184,
+      "confidence": 0.8
+    },
+    {
+      "id": "S185",
+      "text": "Introduce beneficial insects.",
+      "order": 185,
+      "confidence": 0.7
+    },
+    {
+      "id": "S186",
+      "text": "Install timed pyrethrin dispensers.",
+      "order": 186,
+      "confidence": 0.9
+    },
+    {
+      "id": "S187",
+      "text": "Set up pheromone traps.",
+      "order": 187,
+      "confidence": 0.9
+    },
+    {
+      "id": "S188",
+      "text": "Perform routine fumigation.",
+      "order": 188,
+      "confidence": 0.9
+    },
+    {
+      "id": "S189",
+      "text": "Apply empty bin treatments.",
+      "order": 189,
+      "confidence": 0.9
+    },
+    {
+      "id": "S190",
+      "text": "Control perimeter with weeds and insecticides.",
+      "order": 190,
+      "confidence": 0.9
+    },
+    {
+      "id": "S191",
+      "text": "Implement ULD treatments based on pheromone trap thresholds.",
+      "order": 191,
+      "confidence": 0.85
+    },
+    {
+      "id": "S192",
+      "text": "Fumigate warehouses with proper safety measures.",
+      "order": 192,
+      "confidence": 0.8
+    },
+    {
+      "id": "S193",
+      "text": "Set up outdoor bait stations.",
+      "order": 193,
+      "confidence": 0.9
+    },
+    {
+      "id": "S194",
+      "text": "Apply rodenticides outdoors.",
+      "order": 194,
+      "confidence": 0.9
+    },
+    {
+      "id": "S195",
+      "text": "Implement structural exclusion methods.",
+      "order": 195,
+      "confidence": 0.9
+    },
+    {
+      "id": "S196",
+      "text": "Install netting for bird control.",
+      "order": 196,
+      "confidence": 0.85
+    },
+    {
+      "id": "S197",
+      "text": "Use sticky repellents for birds.",
+      "order": 197,
+      "confidence": 0.8
+    },
+    {
+      "id": "S198",
+      "text": "Administer avicides if necessary.",
+      "order": 198,
+      "confidence": 0.75
+    },
+    {
+      "id": "S199",
+      "text": "Close doors as part of bird control.",
+      "order": 199,
+      "confidence": 0.8
+    },
+    {
+      "id": "S200",
+      "text": "Check if pheromone trap detects target insect species.",
+      "order": 200,
+      "confidence": 0.9
+    },
+    {
+      "id": "S201",
+      "text": "Inspect for presence of other insect species.",
+      "order": 201,
+      "confidence": 0.85
+    },
+    {
+      "id": "S202",
+      "text": "Read the label on the pesticide container.",
+      "order": 202,
+      "confidence": 0.95
+    },
+    {
+      "id": "S203",
+      "text": "Follow instructions on the label.",
+      "order": 203,
+      "confidence": 0.9
+    },
+    {
+      "id": "S204",
+      "text": "Identify the type of food-handling establishment.",
+      "order": 204,
+      "confidence": 0.95
+    },
+    {
+      "id": "S205",
+      "text": "Determine if the establishment involves food processing facilities.",
+      "order": 205,
+      "confidence": 0.9
+    },
+    {
+      "id": "S206",
+      "text": "Identify non-food areas.",
+      "order": 206,
+      "confidence": 0.95
+    },
+    {
+      "id": "S207",
+      "text": "Identify food areas.",
+      "order": 207,
+      "confidence": 0.9
+    },
+    {
+      "id": "S208",
+      "text": "Apply residual insecticide to broad surfaces like walls and floors in nonfood areas.",
+      "order": 208,
+      "confidence": 0.95
+    },
+    {
+      "id": "S209",
+      "text": "Apply residual insecticide to limited areas (not exceeding two square feet) where insects are likely to occur but will not contact food or workers.",
+      "order": 209,
+      "confidence": 0.9
+    },
+    {
+      "id": "S210",
+      "text": "Apply small amounts of insecticide into cracks, crevices, expansion joints, and voids in food areas.",
+      "order": 210,
+      "confidence": 0.85
+    },
+    {
+      "id": "S211",
+      "text": "Nationally, pesticides are regulated by the EPA through FIFRA.",
+      "order": 211,
+      "confidence": 0.9
+    },
+    {
+      "id": "S212",
+      "text": "In Arkansas, the Arkansas State Plant Board regulates pesticide applications.",
+      "order": 212,
+      "confidence": 0.9
+    },
+    {
+      "id": "S213",
+      "text": "Determine if pesticide used on food product has a tolerance or is exempt.",
+      "order": 213,
+      "confidence": 0.95
+    },
+    {
+      "id": "S214",
+      "text": "Check EPA regulations for tolerance information.",
+      "order": 214,
+      "confidence": 0.9
+    },
+    {
+      "id": "S215",
+      "text": "Identify regulatory body responsible for enforcing tolerances.",
+      "order": 215,
+      "confidence": 0.95
+    },
+    {
+      "id": "S216",
+      "text": "Determine if food product contains unapproved substance or residue above tolerance level.",
+      "order": 216,
+      "confidence": 0.9
+    },
+    {
+      "id": "S217",
+      "text": "Destroy adulterated food product.",
+      "order": 217,
+      "confidence": 0.85
+    },
+    {
+      "id": "S218",
+      "text": "Identify the sites specified on a pesticide label.",
+      "order": 218,
+      "confidence": 0.95
+    },
+    {
+      "id": "S219",
+      "text": "Apply the pesticide only to the identified sites.",
+      "order": 219,
+      "confidence": 0.9
+    },
+    {
+      "id": "S220",
+      "text": "Understand site wording to avoid misapplication.",
+      "order": 220,
+      "confidence": 0.9
+    },
+    {
+      "id": "S221",
+      "text": "Identify applicable site group from Code of Federal Regulations.",
+      "order": 221,
+      "confidence": 0.85
+    },
+    {
+      "id": "S222",
+      "text": "Check USDA-approved list for pesticides in federally inspected meat plants.",
+      "order": 222,
+      "confidence": 0.9
+    },
+    {
+      "id": "S223",
+      "text": "Residuals cannot be used in production areas where the product is exposed.",
+      "order": 223,
+      "confidence": 0.95
+    },
+    {
+      "id": "S224",
+      "text": "Residuals can be used as a crack and crevice treatment if the opening is sealed after application.",
+      "order": 224,
+      "confidence": 0.9
+    },
+    {
+      "id": "S225",
+      "text": "Conduct a survey of the facility.",
+      "order": 225,
+      "confidence": 0.95
+    },
+    {
+      "id": "S226",
+      "text": "Consider potential interactions with the facility's practices.",
+      "order": 226,
+      "confidence": 0.9
+    },
+    {
+      "id": "S227",
+      "text": "Identify life stages of beetles and moths: egg, larva, pupa, and adult.",
+      "order": 227,
+      "confidence": 0.95
+    },
+    {
+      "id": "S228",
+      "text": "Determine current stage for effective control methods.",
+      "order": 228,
+      "confidence": 0.8
+    },
+    {
+      "id": "S229",
+      "text": "Identify the type of larva: moth or beetle.",
+      "order": 229,
+      "confidence": 0.9
+    },
+    {
+      "id": "S230",
+      "text": "Determine if the larva has legs on its back half.",
+      "order": 230,
+      "confidence": 0.85
+    },
+    {
+      "id": "S231",
+      "text": "Adult beetles have chewing mouthparts and feed on food products.",
+      "order": 231,
+      "confidence": 0.9
+    },
+    {
+      "id": "S232",
+      "text": "Adult moths have sucking mouthparts and do not feed on solid food but can contaminate products.",
+      "order": 232,
+      "confidence": 0.85
+    },
+    {
+      "id": "S233",
+      "text": "Identify Almond Moth.",
+      "order": 233,
+      "confidence": 0.9
+    },
+    {
+      "id": "S234",
+      "text": "Examine forewings for brown-gray color.",
+      "order": 234,
+      "confidence": 0.85
+    },
+    {
+      "id": "S235",
+      "text": "Inspect larvae for dirty white color.",
+      "order": 235,
+      "confidence": 0.8
+    },
+    {
+      "id": "S236",
+      "text": "Identify the Indianmeal Moth as a common stored product pest.",
+      "order": 236,
+      "confidence": 0.95
+    },
+    {
+      "id": "S237",
+      "text": "Locate areas where dried fruits, nuts, pet foods, or candies are stored.",
+      "order": 237,
+      "confidence": 0.8
+    },
+    {
+      "id": "S238",
+      "text": "Identify the forewings' color pattern.",
+      "order": 238,
+      "confidence": 0.9
+    },
+    {
+      "id": "S239",
+      "text": "Determine the larvae's webbing behavior.",
+      "order": 239,
+      "confidence": 0.85
+    },
+    {
+      "id": "S240",
+      "text": "Identify Mediterranean Flour Moth.",
+      "order": 240,
+      "confidence": 0.9
+    },
+    {
+      "id": "S241",
+      "text": "Examine wings for pale gray color and wavy black markings.",
+      "order": 241,
+      "confidence": 0.85
+    },
+    {
+      "id": "S242",
+      "text": "Inspect larvae for silken threads webbing food particles.",
+      "order": 242,
+      "confidence": 0.8
+    },
+    {
+      "id": "S243",
+      "text": "Determine if flour is preferred food source.",
+      "order": 243,
+      "confidence": 0.75
+    },
+    {
+      "id": "S244",
+      "text": "Identify the color and pattern of Mealmoth's forewings.",
+      "order": 244,
+      "confidence": 0.9
+    },
+    {
+      "id": "S245",
+      "text": "Describe the appearance of Mealmoth's larvae.",
+      "order": 245,
+      "confidence": 0.85
+    },
+    {
+      "id": "S246",
+      "text": "Inspect incoming goods for damp or spoiled grain.",
+      "order": 246,
+      "confidence": 0.95
+    },
+    {
+      "id": "S247",
+      "text": "Remove infested food and dust.",
+      "order": 247,
+      "confidence": 0.9
+    },
+    {
+      "id": "S248",
+      "text": "Heat treat the grain at 140\u00b0F for one hour.",
+      "order": 248,
+      "confidence": 0.95
+    },
+    {
+      "id": "S249",
+      "text": "Apply cold treatment.",
+      "order": 249,
+      "confidence": 0.85
+    },
+    {
+      "id": "S250",
+      "text": "Use residual insecticides.",
+      "order": 250,
+      "confidence": 0.9
+    },
+    {
+      "id": "S251",
+      "text": "Apply space sprays.",
+      "order": 251,
+      "confidence": 0.85
+    },
+    {
+      "id": "S252",
+      "text": "Perform fumigation.",
+      "order": 252,
+      "confidence": 0.9
+    },
+    {
+      "id": "S253",
+      "text": "Identify Lesser Grain Borer as a small, cylindrical, dark brown beetle.",
+      "order": 253,
+      "confidence": 0.95
+    },
+    {
+      "id": "S254",
+      "text": "Inspect grains for damage caused by adults and larvae.",
+      "order": 254,
+      "confidence": 0.9
+    },
+    {
+      "id": "S255",
+      "text": "Identify the presence of a small, oval, reddish-brown beetle with a humped appearance.",
+      "order": 255,
+      "confidence": 0.95
+    },
+    {
+      "id": "S256",
+      "text": "Identify the type of beetle present as Drugstore Beetle.",
+      "order": 256,
+      "confidence": 0.95
+    },
+    {
+      "id": "S257",
+      "text": "Determine the feeding habits of Drugstore Beetles: they feed on dry organic substances.",
+      "order": 257,
+      "confidence": 0.9
+    },
+    {
+      "id": "S258",
+      "text": "Identify Confused and Red Flour Beetles.",
+      "order": 258,
+      "confidence": 0.95
+    },
+    {
+      "id": "S259",
+      "text": "Identify the type of beetle: red flour beetle or sawtoothed grain beetle.",
+      "order": 259,
+      "confidence": 0.9
+    },
+    {
+      "id": "S260",
+      "text": "Determine if the beetle can fly.",
+      "order": 260,
+      "confidence": 0.85
+    },
+    {
+      "id": "S261",
+      "text": "Identify Merchant Grain Beetle.",
+      "order": 261,
+      "confidence": 0.9
+    },
+    {
+      "id": "S262",
+      "text": "Determine preference for oilseed products.",
+      "order": 262,
+      "confidence": 0.85
+    },
+    {
+      "id": "S263",
+      "text": "Examine food sources for vegetable origin.",
+      "order": 263,
+      "confidence": 0.8
+    },
+    {
+      "id": "S264",
+      "text": "Identify presence of Foreign Grain Beetles.",
+      "order": 264,
+      "confidence": 0.9
+    },
+    {
+      "id": "S265",
+      "text": "Check for signs of mold or mildew.",
+      "order": 265,
+      "confidence": 0.85
+    },
+    {
+      "id": "S266",
+      "text": "If Foreign Grain Beetles are present, take necessary actions to remove and prevent future infestations.",
+      "order": 266,
+      "confidence": 0.9
+    },
+    {
+      "id": "S267",
+      "text": "Identify presence of Rusty Grain Beetles.",
+      "order": 267,
+      "confidence": 0.85
+    },
+    {
+      "id": "S268",
+      "text": "Check for high moisture conditions.",
+      "order": 268,
+      "confidence": 0.8
+    },
+    {
+      "id": "S269",
+      "text": "Identify scavenging pests as spider beetles.",
+      "order": 269,
+      "confidence": 0.9
+    },
+    {
+      "id": "S270",
+      "text": "Check for activity in dark, damp areas.",
+      "order": 270,
+      "confidence": 0.85
+    },
+    {
+      "id": "S271",
+      "text": "Identify the presence of oval, black beetles in the warehouse.",
+      "order": 271,
+      "confidence": 0.9
+    },
+    {
+      "id": "S272",
+      "text": "Examine the beetles closely to determine if they have variable patterns and prominent bristles as larvae.",
+      "order": 272,
+      "confidence": 0.85
+    },
+    {
+      "id": "S273",
+      "text": "Identify cockroach infestation by observing cast larval skins.",
+      "order": 273,
+      "confidence": 0.95
+    },
+    {
+      "id": "S274",
+      "text": "Inspect food areas for droppings and bacteria contamination.",
+      "order": 274,
+      "confidence": 0.9
+    },
+    {
+      "id": "S275",
+      "text": "Identify that the organisms are nocturnal.",
+      "order": 275,
+      "confidence": 0.9
+    },
+    {
+      "id": "S276",
+      "text": "Determine they are general feeders.",
+      "order": 276,
+      "confidence": 0.85
+    },
+    {
+      "id": "S277",
+      "text": "Identify their preference for cracks and crevices.",
+      "order": 277,
+      "confidence": 0.9
+    },
+    {
+      "id": "S278",
+      "text": "Determine their gradual metamorphosis stage (egg, nymph, adult).",
+      "order": 278,
+      "confidence": 0.8
+    },
+    {
+      "id": "S279",
+      "text": "Identify signs of infestation such as cast skins, egg cases, and musty odor.",
+      "order": 279,
+      "confidence": 0.95
+    },
+    {
+      "id": "S280",
+      "text": "Determine if the infestation is caused by German Cockroaches.",
+      "order": 280,
+      "confidence": 0.8
+    },
+    {
+      "id": "S281",
+      "text": "Identify the type of cockroach based on color and location.",
+      "order": 281,
+      "confidence": 0.9
+    },
+    {
+      "id": "S282",
+      "text": "Determine preferred habitats for each identified species.",
+      "order": 282,
+      "confidence": 0.85
+    },
+    {
+      "id": "S283",
+      "text": "Identify the type of cockroach: Oriental Cockroach.",
+      "order": 283,
+      "confidence": 0.95
+    },
+    {
+      "id": "S284",
+      "text": "Determine preferred habitats: dark, damp areas such as crawl spaces and drains.",
+      "order": 284,
+      "confidence": 0.9
+    },
+    {
+      "id": "S285",
+      "text": "Identify the type of cockroach: Brown-banded.",
+      "order": 285,
+      "confidence": 0.95
+    },
+    {
+      "id": "S286",
+      "text": "Locate the cockroaches in areas such as high walls, ceilings, and appliances.",
+      "order": 286,
+      "confidence": 0.9
+    },
+    {
+      "id": "S287",
+      "text": "Use crack and crevice or spot treatments with residual pesticides.",
+      "order": 287,
+      "confidence": 0.95
+    },
+    {
+      "id": "S288",
+      "text": "Supplement with dusts and contact sprays.",
+      "order": 288,
+      "confidence": 0.9
+    },
+    {
+      "id": "S289",
+      "text": "Identify pests as flies.",
+      "order": 289,
+      "confidence": 0.95
+    },
+    {
+      "id": "S290",
+      "text": "Observe flies have one pair of wings.",
+      "order": 290,
+      "confidence": 0.9
+    },
+    {
+      "id": "S291",
+      "text": "Identify larvae as legless maggots.",
+      "order": 291,
+      "confidence": 0.95
+    },
+    {
+      "id": "S292",
+      "text": "Control starts with sanitation.",
+      "order": 292,
+      "confidence": 0.95
+    },
+    {
+      "id": "S293",
+      "text": "Remove breeding sites for ants.",
+      "order": 293,
+      "confidence": 0.9
+    },
+    {
+      "id": "S294",
+      "text": "Identify presence of bees and wasps.",
+      "order": 294,
+      "confidence": 0.9
+    },
+    {
+      "id": "S295",
+      "text": "Apply control measures: treat nest, use barrier sprays, and deploy baits.",
+      "order": 295,
+      "confidence": 0.9
+    },
+    {
+      "id": "S296",
+      "text": "Treat nests at night with sprays or dusts.",
+      "order": 296,
+      "confidence": 0.9
+    },
+    {
+      "id": "S297",
+      "text": "Wear protective clothing.",
+      "order": 297,
+      "confidence": 0.9
+    },
+    {
+      "id": "S298",
+      "text": "Identify presence of booklice (Psocids) in the location.",
+      "order": 298,
+      "confidence": 0.9
+    },
+    {
+      "id": "S299",
+      "text": "Lower humidity level to control booklice infestation.",
+      "order": 299,
+      "confidence": 0.85
+    },
+    {
+      "id": "S300",
+      "text": "Implement sanitation measures to eliminate food sources for booklice.",
+      "order": 300,
+      "confidence": 0.8
+    },
+    {
+      "id": "S301",
+      "text": "Identify the type of insect infestation: silverfish or firebrats.",
+      "order": 301,
+      "confidence": 0.95
+    },
+    {
+      "id": "S302",
+      "text": "Determine the preferred living conditions for each insect type: damp areas for silverfish and hot, dry situations for firebrats.",
+      "order": 302,
+      "confidence": 0.9
+    },
+    {
+      "id": "S303",
+      "text": "Manage lighting to reduce cricket entry.",
+      "order": 303,
+      "confidence": 0.9
+    },
+    {
+      "id": "S304",
+      "text": "Attracts crickets: Lights are a draw.",
+      "order": 304,
+      "confidence": 0.85
+    },
+    {
+      "id": "S305",
+      "text": "Reduce cricket presence: Proper lighting management.",
+      "order": 305,
+      "confidence": 0.9
+    },
+    {
+      "id": "S306",
+      "text": "Remove decaying vegetation near foundations.",
+      "order": 306,
+      "confidence": 0.9
+    },
+    {
+      "id": "S307",
+      "text": "Eliminate moisture sources near foundations.",
+      "order": 307,
+      "confidence": 0.9
+    },
+    {
+      "id": "S308",
+      "text": "Understand rat and mouse behavior for effective control.",
+      "order": 308,
+      "confidence": 0.9
+    },
+    {
+      "id": "S309",
+      "text": "Identify animal traits: keen sense of touch, smell, taste, and hearing.",
+      "order": 309,
+      "confidence": 0.95
+    },
+    {
+      "id": "S310",
+      "text": "Note down poor colorblind vision.",
+      "order": 310,
+      "confidence": 0.8
+    },
+    {
+      "id": "S311",
+      "text": "Observe rat behavior towards new objects.",
+      "order": 311,
+      "confidence": 0.9
+    },
+    {
+      "id": "S312",
+      "text": "Compare behavior of rats and mice.",
+      "order": 312,
+      "confidence": 0.85
+    },
+    {
+      "id": "S313",
+      "text": "Identify that all rats are good climbers.",
+      "order": 313,
+      "confidence": 0.9
+    },
+    {
+      "id": "S314",
+      "text": "Determine that rats can jump vertically nearly 2 feet.",
+      "order": 314,
+      "confidence": 0.85
+    },
+    {
+      "id": "S315",
+      "text": "Note that rats can swim.",
+      "order": 315,
+      "confidence": 0.8
+    },
+    {
+      "id": "S316",
+      "text": "Identify that rats can gnaw through wood and cinder block.",
+      "order": 316,
+      "confidence": 0.9
+    },
+    {
+      "id": "S317",
+      "text": "Examine fresh rat droppings.",
+      "order": 317,
+      "confidence": 0.9
+    },
+    {
+      "id": "S318",
+      "text": "Identify soft and dark texture.",
+      "order": 318,
+      "confidence": 0.85
+    },
+    {
+      "id": "S319",
+      "text": "Compare to old droppings.",
+      "order": 319,
+      "confidence": 0.8
+    },
+    {
+      "id": "S320",
+      "text": "Determine if droppings are dull and hard.",
+      "order": 320,
+      "confidence": 0.75
+    },
+    {
+      "id": "S321",
+      "text": "Look for cleared paths outdoors.",
+      "order": 321,
+      "confidence": 0.9
+    },
+    {
+      "id": "S322",
+      "text": "Search for greasy runways indoors.",
+      "order": 322,
+      "confidence": 0.85
+    },
+    {
+      "id": "S323",
+      "text": "Identify rubmarks on surfaces.",
+      "order": 323,
+      "confidence": 0.9
+    },
+    {
+      "id": "S324",
+      "text": "Locate burrows near earth banks or under concrete.",
+      "order": 324,
+      "confidence": 0.85
+    },
+    {
+      "id": "S325",
+      "text": "Look for tracks in dust or tracking patches.",
+      "order": 325,
+      "confidence": 0.9
+    },
+    {
+      "id": "S326",
+      "text": "Check for urine fluorescence under a blacklight.",
+      "order": 326,
+      "confidence": 0.9
+    },
+    {
+      "id": "S327",
+      "text": "Clean, orderly facilities support fewer rodents.",
+      "order": 327,
+      "confidence": 0.9
+    },
+    {
+      "id": "S328",
+      "text": "Eliminate food, water, and shelter for rodents.",
+      "order": 328,
+      "confidence": 0.9
+    },
+    {
+      "id": "S329",
+      "text": "Store products on pallets.",
+      "order": 329,
+      "confidence": 0.9
+    },
+    {
+      "id": "S330",
+      "text": "Keep products away from walls.",
+      "order": 330,
+      "confidence": 0.9
+    },
+    {
+      "id": "S331",
+      "text": "Seal openings larger than 1/4 inch for mice.",
+      "order": 331,
+      "confidence": 0.9
+    },
+    {
+      "id": "S332",
+      "text": "Seal openings larger than 1/2 inch for rats.",
+      "order": 332,
+      "confidence": 0.9
+    },
+    {
+      "id": "S333",
+      "text": "Use rodent-resistant materials like hardware cloth, sheet metal, and concrete.",
+      "order": 333,
+      "confidence": 0.9
+    },
+    {
+      "id": "S334",
+      "text": "Pay attention to doors, windows, vents, drainpipes, foundations, and utility lines.",
+      "order": 334,
+      "confidence": 0.95
+    },
+    {
+      "id": "S335",
+      "text": "Tracking Powders: Toxic dust placed in runways.",
+      "order": 335,
+      "confidence": 0.9
+    },
+    {
+      "id": "S336",
+      "text": "Rodents ingest it during grooming.",
+      "order": 336,
+      "confidence": 0.9
+    },
+    {
+      "id": "S337",
+      "text": "Avoid using it where it could contaminate food.",
+      "order": 337,
+      "confidence": 0.85
+    },
+    {
+      "id": "S338",
+      "text": "Most are Restricted Use pesticides.",
+      "order": 338,
+      "confidence": 0.8
+    },
+    {
+      "id": "S339",
+      "text": "Selection of a proper bait is critical.",
+      "order": 339,
+      "confidence": 0.9
+    },
+    {
+      "id": "S340",
+      "text": "Apply the chosen bait.",
+      "order": 340,
+      "confidence": 0.8
+    },
+    {
+      "id": "S341",
+      "text": "Identify the type of toxicant: anticoagulant or single-dose non-anticoagulant.",
+      "order": 341,
+      "confidence": 0.9
+    },
+    {
+      "id": "S342",
+      "text": "Determine if the anticoagulant is first-generation or second-generation.",
+      "order": 342,
+      "confidence": 0.85
+    },
+    {
+      "id": "S343",
+      "text": "If anticoagulant, establish multiple feedings or check for single-dose effectiveness.",
+      "order": 343,
+      "confidence": 0.8
+    },
+    {
+      "id": "S344",
+      "text": "Identify preferred food types for different rodent species.",
+      "order": 344,
+      "confidence": 0.95
+    },
+    {
+      "id": "S345",
+      "text": "Select appropriate bait based on rodent preference and availability of food sources.",
+      "order": 345,
+      "confidence": 0.85
+    },
+    {
+      "id": "S346",
+      "text": "Offer unpoisoned bait for several days to overcome shyness.",
+      "order": 346,
+      "confidence": 0.95
+    },
+    {
+      "id": "S347",
+      "text": "Place bait in tamper-proof stations.",
+      "order": 347,
+      "confidence": 0.9
+    },
+    {
+      "id": "S348",
+      "text": "Place stations every 10 feet for mice.",
+      "order": 348,
+      "confidence": 0.95
+    },
+    {
+      "id": "S349",
+      "text": "Place stations every 20 feet for rats.",
+      "order": 349,
+      "confidence": 0.9
+    },
+    {
+      "id": "S350",
+      "text": "Install traps.",
+      "order": 350,
+      "confidence": 0.85
+    },
+    {
+      "id": "S351",
+      "text": "Place traps along walls, in dark corners, and behind objects.",
+      "order": 351,
+      "confidence": 0.95
+    },
+    {
+      "id": "S352",
+      "text": "Use multiple traps, placing them close together.",
+      "order": 352,
+      "confidence": 0.9
+    },
+    {
+      "id": "S353",
+      "text": "Secure bait to the trigger.",
+      "order": 353,
+      "confidence": 0.95
+    },
+    {
+      "id": "S354",
+      "text": "Use good baits such as peanut butter, raisins, nutmeats, or bacon.",
+      "order": 354,
+      "confidence": 0.9
+    },
+    {
+      "id": "S355",
+      "text": "Place sticky glue boards to entangle rodents.",
+      "order": 355,
+      "confidence": 0.9
+    },
+    {
+      "id": "S356",
+      "text": "Consider using cats or dogs for rodent control.",
+      "order": 356,
+      "confidence": 0.8
+    },
+    {
+      "id": "S357",
+      "text": "Use compressed air sprayer for pest control.",
+      "order": 357,
+      "confidence": 0.95
+    },
+    {
+      "id": "S358",
+      "text": "Set up the compressed air sprayer with tank, pump, hose, valve, and nozzle.",
+      "order": 358,
+      "confidence": 0.9
+    },
+    {
+      "id": "S359",
+      "text": "Clean after each use.",
+      "order": 359,
+      "confidence": 0.9
+    },
+    {
+      "id": "S360",
+      "text": "Check gaskets and valves regularly.",
+      "order": 360,
+      "confidence": 0.9
+    },
+    {
+      "id": "S361",
+      "text": "Never leave pressurized when unattended.",
+      "order": 361,
+      "confidence": 0.9
+    },
+    {
+      "id": "S362",
+      "text": "Identify the type of nozzle required based on the spray pattern.",
+      "order": 362,
+      "confidence": 0.95
+    },
+    {
+      "id": "S363",
+      "text": "Choose a solid stream nozzle for crack and crevice applications or a fan nozzle for surface applications.",
+      "order": 363,
+      "confidence": 0.9
+    },
+    {
+      "id": "S364",
+      "text": "Use a duster to apply dust into voids, cracks, and burrows.",
+      "order": 364,
+      "confidence": 0.9
+    },
+    {
+      "id": "S365",
+      "text": "Choose the appropriate type of duster: hand shaker, bulb duster, hand plunger duster, or rotary/power duster.",
+      "order": 365,
+      "confidence": 0.85
+    },
+    {
+      "id": "S366",
+      "text": "Keep Space Treating Equipment clean.",
+      "order": 366,
+      "confidence": 0.9
+    },
+    {
+      "id": "S367",
+      "text": "Keep Space Treating Equipment dry.",
+      "order": 367,
+      "confidence": 0.9
+    },
+    {
+      "id": "S368",
+      "text": "Measure droplet size in microns.",
+      "order": 368,
+      "confidence": 0.9
+    },
+    {
+      "id": "S369",
+      "text": "Determine if aerosol is gas-propelled or thermally released.",
+      "order": 369,
+      "confidence": 0.85
+    },
+    {
+      "id": "S370",
+      "text": "Obtain a can or container of the substance.",
+      "order": 370,
+      "confidence": 0.9
+    },
+    {
+      "id": "S371",
+      "text": "Use for flushing, space treatments, or crack and crevice applications.",
+      "order": 371,
+      "confidence": 0.85
+    },
+    {
+      "id": "S372",
+      "text": "Identify type of fogs: thermally or mechanically produced.",
+      "order": 372,
+      "confidence": 0.9
+    },
+    {
+      "id": "S373",
+      "text": "Determine application location: warehouses.",
+      "order": 373,
+      "confidence": 0.85
+    },
+    {
+      "id": "S374",
+      "text": "Turn off pilot lights.",
+      "order": 374,
+      "confidence": 0.9
+    },
+    {
+      "id": "S375",
+      "text": "Know cubic footage.",
+      "order": 375,
+      "confidence": 0.85
+    },
+    {
+      "id": "S376",
+      "text": "Settle out more rapidly.",
+      "order": 376,
+      "confidence": 0.9
+    },
+    {
+      "id": "S377",
+      "text": "Use Ultra Low Dosage (ULD) method.",
+      "order": 377,
+      "confidence": 0.85
+    },
+    {
+      "id": "S378",
+      "text": "Wear respirator as indicated on label.",
+      "order": 378,
+      "confidence": 0.95
+    },
+    {
+      "id": "S379",
+      "text": "Follow instructions for respirator use in enclosed spaces.",
+      "order": 379,
+      "confidence": 0.9
+    },
+    {
+      "id": "S380",
+      "text": "Use filters for particulates.",
+      "order": 380,
+      "confidence": 0.95
+    },
+    {
+      "id": "S381",
+      "text": "Use sorbent cartridges/canisters for vapors/gases.",
+      "order": 381,
+      "confidence": 0.9
+    },
+    {
+      "id": "S382",
+      "text": "Use chemical cartridge respirator for low concentration.",
+      "order": 382,
+      "confidence": 0.9
+    },
+    {
+      "id": "S383",
+      "text": "Use gas mask (canister) for higher concentrations and fumigants.",
+      "order": 383,
+      "confidence": 0.9
+    },
+    {
+      "id": "S384",
+      "text": "Supply clean air from an external source or a tank.",
+      "order": 384,
+      "confidence": 0.95
+    },
+    {
+      "id": "S385",
+      "text": "Ensure respirators for pesticides are approved by MSHA and NIOSH.",
+      "order": 385,
+      "confidence": 0.9
+    },
+    {
+      "id": "S386",
+      "text": "Perform daily negative and positive pressure checks.",
+      "order": 386,
+      "confidence": 0.95
+    },
+    {
+      "id": "S387",
+      "text": "Ensure a proper fit.",
+      "order": 387,
+      "confidence": 0.9
+    },
+    {
+      "id": "S388",
+      "text": "Wash respirators regularly.",
+      "order": 388,
+      "confidence": 0.95
+    },
+    {
+      "id": "S389",
+      "text": "Store respirators in a clean, protected place.",
+      "order": 389,
+      "confidence": 0.9
+    }
+  ],
+  "constraints": [
+    {
+      "id": "C1",
+      "text": "User is responsible for ensuring safe and consistent use with product label.",
+      "confidence": 0.9,
+      "steps": [
+        "S389"
+      ]
+    },
+    {
+      "id": "C2",
+      "text": "Maintain records as part of the daily pest management program.",
+      "confidence": 0.9,
+      "steps": [
+        "S388"
+      ]
+    },
+    {
+      "id": "C3",
+      "text": "Address pests not only within the facility but also from surrounding areas and incoming materials.",
+      "confidence": 0.8,
+      "steps": [
+        "S361",
+        "S320",
+        "S268"
+      ]
+    },
+    {
+      "id": "C4",
+      "text": "Place gravel around foundation to discourage rodents.",
+      "confidence": 0.95,
+      "steps": [
+        "S388"
+      ]
+    },
+    {
+      "id": "C5",
+      "text": "Keep night-lights at least 30 feet away from doors.",
+      "confidence": 0.9,
+      "steps": [
+        "S389"
+      ]
+    },
+    {
+      "id": "C6",
+      "text": "Hollow panel-type walls must be well-sealed to prevent them from becoming insect quarters.",
+      "confidence": 0.9,
+      "steps": [
+        "S361"
+      ]
+    },
+    {
+      "id": "C7",
+      "text": "* Suspect any unaccounted-for voids in equipment or structures.",
+      "confidence": 0.9,
+      "steps": [
+        "S389"
+      ]
+    },
+    {
+      "id": "C8",
+      "text": "Legal requirement for a written inspection procedure.",
+      "confidence": 0.95,
+      "steps": [
+        "S388"
+      ]
+    },
+    {
+      "id": "C9",
+      "text": "Preventing pest problems.",
+      "confidence": 0.8,
+      "steps": [
+        "S388",
+        "S389"
+      ]
+    },
+    {
+      "id": "C10",
+      "text": "Check if potential losses exceed economic threshold before regulating storability.",
+      "confidence": 0.95,
+      "steps": [
+        "S388"
+      ]
+    },
+    {
+      "id": "C11",
+      "text": "Pests have different moisture requirements.",
+      "confidence": 0.9,
+      "steps": []
+    },
+    {
+      "id": "C12",
+      "text": "Processed goods typically have low moisture levels.",
+      "confidence": 0.8,
+      "steps": []
+    },
+    {
+      "id": "C13",
+      "text": "Temperatures below 65\u00b0F or above 95\u00b0F are unfavorable for most insects and molds.",
+      "confidence": 0.95,
+      "steps": [
+        "S388"
+      ]
+    },
+    {
+      "id": "C14",
+      "text": "Avoid rapid temperature drops.",
+      "confidence": 0.8,
+      "steps": [
+        "S389"
+      ]
+    },
+    {
+      "id": "C15",
+      "text": "Not all pests have effective commercial pheromones available.",
+      "confidence": 0.9,
+      "steps": [
+        "S388"
+      ]
+    },
+    {
+      "id": "C16",
+      "text": "Residual applications are permitted only in specified areas.",
+      "confidence": 0.9,
+      "steps": [
+        "S388",
+        "S389"
+      ]
+    },
+    {
+      "id": "C17",
+      "text": "Application to food areas must be limited to cracks, crevices, expansion joints, and voids.",
+      "confidence": 0.8,
+      "steps": [
+        "S361"
+      ]
+    },
+    {
+      "id": "C18",
+      "text": "Food product must not contain unapproved substances or residues above tolerance levels.",
+      "confidence": 0.95,
+      "steps": [
+        "S389"
+      ]
+    },
+    {
+      "id": "C19",
+      "text": "Applying a pesticide to a site not listed on its label is illegal.",
+      "confidence": 0.95,
+      "steps": [
+        "S389"
+      ]
+    },
+    {
+      "id": "C20",
+      "text": "USDA approval is a requirement for using pesticides in federally inspected meat plants.",
+      "confidence": 0.95,
+      "steps": [
+        "S361"
+      ]
+    },
+    {
+      "id": "C21",
+      "text": "Residuals cannot be used in production areas where they might be carried in.",
+      "confidence": 0.85,
+      "steps": [
+        "S388"
+      ]
+    },
+    {
+      "id": "C22",
+      "text": "Ensure safety of other workers, facility employees, and food product.",
+      "confidence": 0.95,
+      "steps": [
+        "S388"
+      ]
+    },
+    {
+      "id": "C23",
+      "text": "* Only proceed if Mediterranean Flour Moth is present.",
+      "confidence": 0.9,
+      "steps": [
+        "S388"
+      ]
+    },
+    {
+      "id": "C24",
+      "text": "Proceed with caution when handling larvae due to silken threads.",
+      "confidence": 0.8,
+      "steps": [
+        "S361"
+      ]
+    },
+    {
+      "id": "C25",
+      "text": "High moisture conditions present.",
+      "confidence": 0.9,
+      "steps": [
+        "S389",
+        "S268"
+      ]
+    },
+    {
+      "id": "C26",
+      "text": "Infestation of Foreign Grain Beetles indicates need for immediate action.",
+      "confidence": 0.8,
+      "steps": [
+        "S388"
+      ]
+    },
+    {
+      "id": "C27",
+      "text": "* Warning: Be careful when handling cockroaches as they can carry diseases.",
+      "confidence": 0.9,
+      "steps": []
+    },
+    {
+      "id": "C28",
+      "text": "Identified rat droppings should be soft and fresh for accurate assessment.",
+      "confidence": 0.9,
+      "steps": [
+        "S388"
+      ]
+    },
+    {
+      "id": "C29",
+      "text": "Compare old and new droppings to determine age.",
+      "confidence": 0.8,
+      "steps": [
+        "S389",
+        "S361"
+      ]
+    },
+    {
+      "id": "C30",
+      "text": "Do not use where it might contaminate food.",
+      "confidence": 0.9,
+      "steps": [
+        "S389"
+      ]
+    },
+    {
+      "id": "C31",
+      "text": "Be aware of fire or explosion hazard.",
+      "confidence": 0.9,
+      "steps": [
+        "S388"
+      ]
+    },
+    {
+      "id": "C32",
+      "text": "Respirators for pesticides must be approved by MSHA and NIOSH.",
+      "confidence": 0.95,
+      "steps": [
+        "S389"
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "content": "Arkansas State Plant Board",
+      "entity_type": "organization",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "The Arkansas State Plant Board administers the examinations. Study materials can be obtained from the Arkansas State Plant Board, #1 Natural Resources Drive (P.O. Box 1069), Little Rock, AR 72203-1069...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "#1 Natural Resources Drive (P.O. Box 1069)",
+      "entity_type": "address",
+      "category": "general",
+      "confidence": 0.85,
+      "context": "The Arkansas State Plant Board administers the examinations. Study materials can be obtained from the Arkansas State Plant Board, #1 Natural Resources Drive (P.O. Box 1069), Little Rock, AR 72203-1069...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Little Rock, AR 72203-1069",
+      "entity_type": "address",
+      "category": "general",
+      "confidence": 0.85,
+      "context": "The Arkansas State Plant Board administers the examinations. Study materials can be obtained from the Arkansas State Plant Board, #1 Natural Resources Drive (P.O. Box 1069), Little Rock, AR 72203-1069...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "(501) 225-1598",
+      "entity_type": "phone_number",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "The Arkansas State Plant Board administers the examinations. Study materials can be obtained from the Arkansas State Plant Board, #1 Natural Resources Drive (P.O. Box 1069), Little Rock, AR 72203-1069...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Federal and state regulations from FDA, USDA-FSIS, EPA, OSHA, DOT, Arkansas State Plant Board, ADH, and ADEQ.",
+      "entity_type": "regulation",
+      "category": "general",
+      "confidence": 0.95,
+      "context": "The applicator must be aware of federal and state regulations from agencies like the FDA, USDA-FSIS, EPA, OSHA, DOT, Arkansas State Plant Board, Arkansas Department of Health (ADH), and Arkansas Depar...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Proper engineering design",
+      "entity_type": "design_specification",
+      "category": "building",
+      "confidence": 0.9,
+      "context": "The applicator must be aware of federal and state regulations from agencies like the FDA, USDA-FSIS, EPA, OSHA, DOT, Arkansas State Plant Board, Arkansas Department of Health (ADH), and Arkansas Depar...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Maintaining short grass and trimmed shrubs.",
+      "entity_type": "specification",
+      "category": "exterior_landscaping",
+      "confidence": 0.9,
+      "context": "This includes exterior landscaping, drainage, and storage for both usable and trash materials. * **Exterior:** Short grass, trimmed shrubs, paved access, and proper drainage reduce pest shelter....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Paving access areas.",
+      "entity_type": "specification",
+      "category": "paving",
+      "confidence": 0.85,
+      "context": "This includes exterior landscaping, drainage, and storage for both usable and trash materials. * **Exterior:** Short grass, trimmed shrubs, paved access, and proper drainage reduce pest shelter....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Proper drainage.",
+      "entity_type": "specification",
+      "category": "drainage",
+      "confidence": 0.9,
+      "context": "This includes exterior landscaping, drainage, and storage for both usable and trash materials. * **Exterior:** Short grass, trimmed shrubs, paved access, and proper drainage reduce pest shelter....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "18- to 24-inch strip of gravel",
+      "entity_type": "specification",
+      "category": "gravel_strip",
+      "confidence": 0.95,
+      "context": "An 18- to 24-inch strip of gravel around the foundation discourages rodents. Night-lights should be at least 30 feet away from doors to attract insects away from entry points....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "30 feet",
+      "entity_type": "measurement",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "An 18- to 24-inch strip of gravel around the foundation discourages rodents. Night-lights should be at least 30 feet away from doors to attract insects away from entry points....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Maintain a minimum distance of 4 inches between framing and walls.",
+      "entity_type": "specification",
+      "category": "distance_requirement",
+      "confidence": 0.95,
+      "context": "* **Framing and Materials:** Keep framing at least four inches from walls to avoid creating inaccessible voids. Fill necessary voids with materials like polyurethane foam....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Polyurethane foam",
+      "entity_type": "material",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "* **Framing and Materials:** Keep framing at least four inches from walls to avoid creating inaccessible voids. Fill necessary voids with materials like polyurethane foam....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Concrete floors",
+      "entity_type": "material",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "Concrete floors are suitable but should be coated to aid sanitation. Wet processing areas require acid-proof or brick floors....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Coating for concrete floors",
+      "entity_type": "tool_or_material",
+      "category": "coating",
+      "confidence": 0.8,
+      "context": "Concrete floors are suitable but should be coated to aid sanitation. Wet processing areas require acid-proof or brick floors....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Wet processing areas",
+      "entity_type": "location",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "Concrete floors are suitable but should be coated to aid sanitation. Wet processing areas require acid-proof or brick floors....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Transparent glass block windows.",
+      "entity_type": "specification",
+      "category": "window_material",
+      "confidence": 0.9,
+      "context": "* **Windows and Doors:** Use as few windows as possible; transparent glass block is a good option. Doors should be metal and tight-fitting. Air curtains can prevent pest entry at large doors....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Metal tight-fitting doors.",
+      "entity_type": "specification",
+      "category": "door_material",
+      "confidence": 0.9,
+      "context": "* **Windows and Doors:** Use as few windows as possible; transparent glass block is a good option. Doors should be metal and tight-fitting. Air curtains can prevent pest entry at large doors....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Air curtains.",
+      "entity_type": "equipment",
+      "category": "general",
+      "confidence": 0.8,
+      "context": "* **Windows and Doors:** Use as few windows as possible; transparent glass block is a good option. Doors should be metal and tight-fitting. Air curtains can prevent pest entry at large doors....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Control panels should be insect-proof.",
+      "entity_type": "specification",
+      "category": "insect_proofing",
+      "confidence": 0.9,
+      "context": "All control panels should be insect-proof. * **Equipment:** Equipment should be roomy, accessible for cleaning, and either raised at least six inches off the floor or sealed to it....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Equipment should be roomy and accessible for cleaning.",
+      "entity_type": "specification",
+      "category": "equipment_requirement",
+      "confidence": 0.9,
+      "context": "All control panels should be insect-proof. * **Equipment:** Equipment should be roomy, accessible for cleaning, and either raised at least six inches off the floor or sealed to it....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Equipment should be raised at least six inches off the floor or sealed to it.",
+      "entity_type": "specification",
+      "category": "distance_requirement",
+      "confidence": 0.9,
+      "context": "All control panels should be insect-proof. * **Equipment:** Equipment should be roomy, accessible for cleaning, and either raised at least six inches off the floor or sealed to it....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "insecticidal baits and approved insecticides",
+      "entity_type": "specification",
+      "category": "chemical_substances",
+      "confidence": 0.95,
+      "context": "Insects) Use insecticidal baits and approved insecticides near breeding sites. ( Birds) Use chemical repellents and avicides where appropriate....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "chemical repellents and avicides",
+      "entity_type": "specification",
+      "category": "chemical_substances",
+      "confidence": 0.9,
+      "context": "Insects) Use insecticidal baits and approved insecticides near breeding sites. ( Birds) Use chemical repellents and avicides where appropriate....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Equipment",
+      "entity_type": "equipment",
+      "category": null,
+      "confidence": 0.9,
+      "context": "Locate equipment off the floor or sealed to it. * **Nonchemical Management:** Keep all areas free of loose materials....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Loose materials",
+      "entity_type": "material",
+      "category": null,
+      "confidence": 0.8,
+      "context": "Locate equipment off the floor or sealed to it. * **Nonchemical Management:** Keep all areas free of loose materials....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Frequent cleaning of structures and equipment.",
+      "entity_type": "specification",
+      "category": "cleaning_frequency",
+      "confidence": 0.95,
+      "context": "Clean structures and equipment frequently. Use electrified grids inside for insect attraction....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Electrified grids for insect attraction.",
+      "entity_type": "equipment",
+      "category": "general",
+      "confidence": 0.8,
+      "context": "Clean structures and equipment frequently. Use electrified grids inside for insect attraction....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Use space treatments with nonresiduals, crack and crevice treatments with residuals, spot treatments, and fumigation for raw commodities.",
+      "entity_type": "instruction",
+      "category": "pest_control_procedure",
+      "confidence": 0.95,
+      "context": "Use space treatments with nonresiduals, crack and crevice treatments with residuals, spot treatments, and fumigation for raw commodities. **Processing Area**\n* **Preventive Maintenance:** Implement a ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Preventive Maintenance: Implement a detailed monitoring program and a total facility IPM program.",
+      "entity_type": "instruction",
+      "category": "facility_maintenance",
+      "confidence": 0.8,
+      "context": "Use space treatments with nonresiduals, crack and crevice treatments with residuals, spot treatments, and fumigation for raw commodities. **Processing Area**\n* **Preventive Maintenance:** Implement a ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Highest company official and all department heads",
+      "entity_type": "group",
+      "category": "roles_and_groups",
+      "confidence": 0.95,
+      "context": "The process involves five steps:\n1. **Organization:** Form an inspection committee with the highest company official as chairman, including all department heads....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "18 inches",
+      "entity_type": "specification",
+      "category": "distance_requirement",
+      "confidence": 0.9,
+      "context": "* Consider periodic inspections by an outside firm for a fresh perspective. **Specialized Plant Inspections**\n* **Warehouse:** Require an 18-inch space between pallets and walls for inspection....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Systematic approach to commodity protection",
+      "entity_type": "description",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "---\n\n### Page 13-16: Integrated Pest Management (IPM)\n\nIPM is a systematic approach to commodity protection that emphasizes increased information for improved decision-making. It integrates control me...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Natural enemies, cultural management, temperature, sanitation, and pesticides",
+      "entity_type": "control_measures",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "---\n\n### Page 13-16: Integrated Pest Management (IPM)\n\nIPM is a systematic approach to commodity protection that emphasizes increased information for improved decision-making. It integrates control me...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Moisture content of processed goods.",
+      "entity_type": "specification",
+      "category": "moisture_level",
+      "confidence": 0.9,
+      "context": "* **Moisture Content:** Different pests have different moisture requirements. Most processed goods are low in moisture, which helps reduce pest development....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Pests' moisture requirements.",
+      "entity_type": "specification",
+      "category": "pest_requirement",
+      "confidence": 0.8,
+      "context": "* **Moisture Content:** Different pests have different moisture requirements. Most processed goods are low in moisture, which helps reduce pest development....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Monitoring Tools",
+      "entity_type": "tool",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "This involves carefully inspecting all incoming materials and designing buildings to minimize entry points. **Monitoring Tools**\n* **Visual Inspection:** A key method....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Insects attracted to lights.",
+      "entity_type": "observation",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "* **Lights:** Many stored product insects are attracted to lights. Finding insects near lights can indicate a nearby population....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Yellow or sodium arc lights for reducing attraction.",
+      "entity_type": "specification",
+      "category": "lighting_option",
+      "confidence": 0.9,
+      "context": "Using yellow or sodium arc lights outdoors can reduce attraction. **Trap Design and Attractants**\n* **Pheromones:** These are chemical attractants released by insects....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Chemical attractants released by insects (pheromones).",
+      "entity_type": "specification",
+      "category": "insect_attraction",
+      "confidence": 0.85,
+      "context": "Using yellow or sodium arc lights outdoors can reduce attraction. **Trap Design and Attractants**\n* **Pheromones:** These are chemical attractants released by insects....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Sex pheromones and aggregation pheromones",
+      "entity_type": "specification",
+      "category": "chemicals",
+      "confidence": 0.95,
+      "context": "Sex pheromones (e.g., for Indianmeal moth) and aggregation pheromones (e.g., for confused flour beetle) are commonly used in traps. * **Food Attractants:** These attract a wide range of species but ma...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Traps",
+      "entity_type": "equipment",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "Sex pheromones (e.g., for Indianmeal moth) and aggregation pheromones (e.g., for confused flour beetle) are commonly used in traps. * **Food Attractants:** These attract a wide range of species but ma...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "One trap per 4,000-5,000 square feet.",
+      "entity_type": "specification",
+      "category": "trap_placement",
+      "confidence": 0.95,
+      "context": "* **Trap Placement:** Placement depends on the time of year and temperature profiles. A rule of thumb is one trap per 4,000-5,000 square feet, focusing on high-risk areas....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Use pheromone-baited traps in a warehouse.",
+      "entity_type": "specification",
+      "category": "insect_control_method",
+      "confidence": 0.95,
+      "context": "**Future Applications**\nWith fewer pesticide alternatives, the industry will need to use alternatives like heat treatments, temperature manipulation, and improved monitoring, based on the ecology of t...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Place the traps effectively.",
+      "entity_type": "specification",
+      "category": "placement_requirement",
+      "confidence": 0.8,
+      "context": "**Future Applications**\nWith fewer pesticide alternatives, the industry will need to use alternatives like heat treatments, temperature manipulation, and improved monitoring, based on the ecology of t...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Long-lived insects like flour beetles.",
+      "entity_type": "specification",
+      "category": "pest_type",
+      "confidence": 0.9,
+      "context": "Knowing the pest is crucial for interpreting trapping results. Long-lived insects like flour beetles are less attracted to pheromone traps than short-lived ones like Indianmeal moths....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Short-lived insects like Indianmeal moths.",
+      "entity_type": "specification",
+      "category": "pest_type",
+      "confidence": 0.9,
+      "context": "Knowing the pest is crucial for interpreting trapping results. Long-lived insects like flour beetles are less attracted to pheromone traps than short-lived ones like Indianmeal moths....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Pheromone traps.",
+      "entity_type": "equipment",
+      "category": "general",
+      "confidence": 0.85,
+      "context": "Knowing the pest is crucial for interpreting trapping results. Long-lived insects like flour beetles are less attracted to pheromone traps than short-lived ones like Indianmeal moths....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Indianmeal moth, sawtoothed grain beetle, red flour beetle",
+      "entity_type": "specification",
+      "category": "pest_names",
+      "confidence": 0.95,
+      "context": "---\n\n### Page 17-20: Common Pests and Pest Management Plans\n\n**Common Insect Pests**\n* **In Raw Grain:** The most frequently found are the Indianmeal moth, sawtoothed grain beetle, and red flour beetl...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Changing temperature gradients throughout the year.",
+      "entity_type": "condition",
+      "category": "environmental_factor",
+      "confidence": 0.95,
+      "context": "Trap placement should adapt to changing temperature gradients throughout the year. **Outdoor Trapping**\nPlacing traps on the outer perimeter of a facility can intercept pests or lure them away from th...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Pests detected",
+      "entity_type": "condition",
+      "category": "pest_detection",
+      "confidence": 0.9,
+      "context": "* If pests are detected, move traps or add more to the suspect area to pinpoint the infestation. * Visually search areas where the most insects were captured....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Suspect area",
+      "entity_type": "location",
+      "category": "general",
+      "confidence": 0.8,
+      "context": "* If pests are detected, move traps or add more to the suspect area to pinpoint the infestation. * Visually search areas where the most insects were captured....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Food-handling establishments",
+      "entity_type": "location",
+      "category": "food_industry",
+      "confidence": 0.95,
+      "context": "**Applications in Food-Handling Establishments**\n* **Food:** Includes items for human or animal consumption, chewing gum, and their components. * **Food Processing Facilities:** Places where food is h...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Food Processing Facilities",
+      "entity_type": "facility",
+      "category": "processing",
+      "confidence": 0.9,
+      "context": "**Applications in Food-Handling Establishments**\n* **Food:** Includes items for human or animal consumption, chewing gum, and their components. * **Food Processing Facilities:** Places where food is h...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Nonfood Areas: Garbage rooms, lavatories, offices, locker rooms, etc.",
+      "entity_type": "description",
+      "category": "location",
+      "confidence": 0.95,
+      "context": "* **Nonfood Areas:** Garbage rooms, lavatories, offices, locker rooms, etc. * **Food Areas:** Receiving, serving, storage, packaging, and preparing areas....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Food Areas: Receiving, serving, storage, packaging, and preparing areas.",
+      "entity_type": "description",
+      "category": "location",
+      "confidence": 0.95,
+      "context": "* **Nonfood Areas:** Garbage rooms, lavatories, offices, locker rooms, etc. * **Food Areas:** Receiving, serving, storage, packaging, and preparing areas....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "FIFRA",
+      "entity_type": "regulatory_agency",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "**Pesticide Regulations**\n* Nationally, pesticides are regulated by the EPA through FIFRA. * In Arkansas, the Arkansas State Plant Board regulates pesticide applications....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "EPA",
+      "entity_type": "regulatory_agency",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "**Pesticide Regulations**\n* Nationally, pesticides are regulated by the EPA through FIFRA. * In Arkansas, the Arkansas State Plant Board regulates pesticide applications....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Arkansas State Plant Board",
+      "entity_type": "regulatory_body",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "**Pesticide Regulations**\n* Nationally, pesticides are regulated by the EPA through FIFRA. * In Arkansas, the Arkansas State Plant Board regulates pesticide applications....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Pesticide used on food product",
+      "entity_type": "subject",
+      "category": null,
+      "confidence": 0.95,
+      "context": "**Pesticide Residues and Tolerances**\n* A pesticide used on a food product must have a tolerance (a legal limit for residue) or be exempt. * EPA sets tolerances under the Federal Food, Drug, and Cosme...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Tolerance or exemption",
+      "entity_type": "specification",
+      "category": null,
+      "confidence": 0.9,
+      "context": "**Pesticide Residues and Tolerances**\n* A pesticide used on a food product must have a tolerance (a legal limit for residue) or be exempt. * EPA sets tolerances under the Federal Food, Drug, and Cosme...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Code of Federal Regulations",
+      "entity_type": "reference_material",
+      "category": "regulatory_document",
+      "confidence": 0.95,
+      "context": "An applicator must understand what the site wording means to avoid misapplication. The Code of Federal Regulations lists site groups, such as \"Food and feed processing plants,\" which includes bakeries...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "USDA-approved list",
+      "entity_type": "specification",
+      "category": "pesticide_list",
+      "confidence": 0.9,
+      "context": "An applicator must understand what the site wording means to avoid misapplication. The Code of Federal Regulations lists site groups, such as \"Food and feed processing plants,\" which includes bakeries...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Four life stages: egg, larva, pupa, and adult.",
+      "entity_type": "information",
+      "category": "general",
+      "confidence": 0.95,
+      "context": "---\n\n### Page 26-38: Insect Pests and Control\n\n**Beetles and Moths**\n* **Life Cycle:** Both have four life stages: egg, larva, pupa, and adult (complete metamorphosis). * **Larva:** The \"worm\" or \"gru...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Beetles and moths undergo complete metamorphosis.",
+      "entity_type": "specification",
+      "category": "biological_process",
+      "confidence": 0.9,
+      "context": "---\n\n### Page 26-38: Insect Pests and Control\n\n**Beetles and Moths**\n* **Life Cycle:** Both have four life stages: egg, larva, pupa, and adult (complete metamorphosis). * **Larva:** The \"worm\" or \"gru...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Type of larva: moth or beetle.",
+      "entity_type": "specification",
+      "category": "larva_type",
+      "confidence": 0.9,
+      "context": "Both have chewing mouthparts and feed on raw or processed food. Moth larvae have legs on the back half of their body; beetle larvae do not....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Presence or absence of legs on the back half of the larva.",
+      "entity_type": "specification",
+      "category": "legs_present",
+      "confidence": 0.8,
+      "context": "Both have chewing mouthparts and feed on raw or processed food. Moth larvae have legs on the back half of their body; beetle larvae do not....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Adult beetles have chewing mouthparts and feed on food products.",
+      "entity_type": "specification",
+      "category": "feeding_behavior",
+      "confidence": 0.9,
+      "context": "* **Adults:** Adult beetles have chewing mouthparts and feed on food products. Adult moths have sucking mouthparts and do not feed on solid food but can contaminate products....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Adult moths have sucking mouthparts and do not feed on solid food but can contaminate products.",
+      "entity_type": "specification",
+      "category": "contamination_risk",
+      "confidence": 0.85,
+      "context": "* **Adults:** Adult beetles have chewing mouthparts and feed on food products. Adult moths have sucking mouthparts and do not feed on solid food but can contaminate products....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Almond Moth",
+      "entity_type": "specification",
+      "category": "insect_species",
+      "confidence": 0.95,
+      "context": "**Moths**\n* **Almond Moth:** Forewings are brown-gray. Larvae are dirty white....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "brown-gray",
+      "entity_type": "specification",
+      "category": "color",
+      "confidence": 0.9,
+      "context": "**Moths**\n* **Almond Moth:** Forewings are brown-gray. Larvae are dirty white....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "dirty white",
+      "entity_type": "specification",
+      "category": "color",
+      "confidence": 0.85,
+      "context": "**Moths**\n* **Almond Moth:** Forewings are brown-gray. Larvae are dirty white....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Indianmeal Moth",
+      "entity_type": "specification",
+      "category": "pest",
+      "confidence": 0.95,
+      "context": "Found in dried fruits, nuts, pet foods, and candies. * **Indianmeal Moth:** Most common stored product pest....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Dried fruits, nuts, pet foods, and candies",
+      "entity_type": "specification",
+      "category": "stored_items",
+      "confidence": 0.9,
+      "context": "Found in dried fruits, nuts, pet foods, and candies. * **Indianmeal Moth:** Most common stored product pest....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Gray color near the body of forewings.",
+      "entity_type": "specification",
+      "category": "color",
+      "confidence": 0.9,
+      "context": "Forewings are gray near the body and reddish at the tip. Larvae leave a silken thread (webbing) on food surfaces....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Reddish tip of forewings.",
+      "entity_type": "specification",
+      "category": "color",
+      "confidence": 0.9,
+      "context": "Forewings are gray near the body and reddish at the tip. Larvae leave a silken thread (webbing) on food surfaces....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Silken thread (webbing) left by larvae.",
+      "entity_type": "specification",
+      "category": "larva_behavior",
+      "confidence": 0.8,
+      "context": "Forewings are gray near the body and reddish at the tip. Larvae leave a silken thread (webbing) on food surfaces....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Mediterranean Flour Moth",
+      "entity_type": "specification",
+      "category": "pest_identification",
+      "confidence": 0.95,
+      "context": "Feed on a wide range of products like flour, cornmeal, seeds, nuts, and pet food. * **Mediterranean Flour Moth:** Pale gray wings with wavy black markings. Larvae spin silken threads that web and mat ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Flour",
+      "entity_type": "specification",
+      "category": "food_source",
+      "confidence": 0.9,
+      "context": "Feed on a wide range of products like flour, cornmeal, seeds, nuts, and pet food. * **Mediterranean Flour Moth:** Pale gray wings with wavy black markings. Larvae spin silken threads that web and mat ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Light brown with dark patches",
+      "entity_type": "description",
+      "category": "mealmoth_forewing_color",
+      "confidence": 0.9,
+      "context": "* **Mealmoth:** Light brown forewings with dark patches. Larvae are whitish with a black head....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Whitish with a black head",
+      "entity_type": "description",
+      "category": "mealmoth_larvae_appearance",
+      "confidence": 0.85,
+      "context": "* **Mealmoth:** Light brown forewings with dark patches. Larvae are whitish with a black head....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "140\u00b0F for one hour",
+      "entity_type": "specification",
+      "category": "temperature_requirement",
+      "confidence": 0.95,
+      "context": "Found in damp or spoiled grain. * **Control for Moths:** Avoidance (inspect incoming goods), sanitation (remove infested food and dust), heat treatment (140\u00b0F for one hour), cold treatment, residual i...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Lesser Grain Borer is a small, cylindrical, dark brown beetle.",
+      "entity_type": "description",
+      "category": "general",
+      "confidence": 0.95,
+      "context": "**Beetles and Weevils**\n* **Lesser Grain Borer:** Small, cylindrical, dark brown beetle. Both adults and larvae damage whole grains and can penetrate packaging....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Both adults and larvae damage whole grains.",
+      "entity_type": "specification",
+      "category": "damage_caused",
+      "confidence": 0.9,
+      "context": "**Beetles and Weevils**\n* **Lesser Grain Borer:** Small, cylindrical, dark brown beetle. Both adults and larvae damage whole grains and can penetrate packaging....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Small, oval, reddish-brown beetle with a humped appearance.",
+      "entity_type": "description",
+      "category": "cigarette_beetle",
+      "confidence": 0.98,
+      "context": "* **Cigarette Beetle:** Small, oval, reddish-brown beetle with a \"humped\" appearance. Primary pest of stored tobacco but also attacks grains and cereal products....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Stored tobacco",
+      "entity_type": "specification",
+      "category": "material",
+      "confidence": 0.9,
+      "context": "* **Cigarette Beetle:** Small, oval, reddish-brown beetle with a \"humped\" appearance. Primary pest of stored tobacco but also attacks grains and cereal products....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Drugstore Beetle",
+      "entity_type": "specification",
+      "category": "insect_type",
+      "confidence": 0.95,
+      "context": "* **Drugstore Beetle:** Similar to the cigarette beetle. Feeds on almost any dry organic substance....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "dry organic substances",
+      "entity_type": "specification",
+      "category": "food_source",
+      "confidence": 0.9,
+      "context": "* **Drugstore Beetle:** Similar to the cigarette beetle. Feeds on almost any dry organic substance....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Confused and Red Flour Beetles",
+      "entity_type": "specification",
+      "category": "pest",
+      "confidence": 0.98,
+      "context": "* **Confused and Red Flour Beetles:** Shiny, reddish-brown beetles. General feeders on cereal products....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Red flour beetle or sawtoothed grain beetle",
+      "entity_type": "specification",
+      "category": "beetle_type",
+      "confidence": 0.9,
+      "context": "The red flour beetle can fly; the confused cannot. * **Sawtoothed Grain Beetle:** Slender, flat, brown beetle with six \"sawtooth\" projections on each side of its thorax....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Can fly",
+      "entity_type": "boolean_value",
+      "category": "behavior",
+      "confidence": 0.8,
+      "context": "The red flour beetle can fly; the confused cannot. * **Sawtoothed Grain Beetle:** Slender, flat, brown beetle with six \"sawtooth\" projections on each side of its thorax....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Merchant Grain Beetle",
+      "entity_type": "pest",
+      "category": "general",
+      "confidence": 0.95,
+      "context": "Attacks all food of vegetable origin. * **Merchant Grain Beetle:** Often confused with the sawtoothed grain beetle but prefers oilseed products. It can fly....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "oilseed products",
+      "entity_type": "specification",
+      "category": "food_source",
+      "confidence": 0.9,
+      "context": "Attacks all food of vegetable origin. * **Merchant Grain Beetle:** Often confused with the sawtoothed grain beetle but prefers oilseed products. It can fly....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Foreign Grain Beetle",
+      "entity_type": "specification",
+      "category": "pest",
+      "confidence": 0.9,
+      "context": "* **Foreign Grain Beetle:** Found in moldy or mildewed products, indicating high moisture. * **Rusty Grain Beetle:** Secondary pest that prefers high moisture conditions but can survive in dry grain....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Rusty Grain Beetle",
+      "entity_type": "specification",
+      "category": "pest",
+      "confidence": 0.85,
+      "context": "* **Foreign Grain Beetle:** Found in moldy or mildewed products, indicating high moisture. * **Rusty Grain Beetle:** Secondary pest that prefers high moisture conditions but can survive in dry grain....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Mold or mildew",
+      "entity_type": "specification",
+      "category": "condition",
+      "confidence": 0.9,
+      "context": "* **Foreign Grain Beetle:** Found in moldy or mildewed products, indicating high moisture. * **Rusty Grain Beetle:** Secondary pest that prefers high moisture conditions but can survive in dry grain....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Spider beetles",
+      "entity_type": "specification",
+      "category": "pest",
+      "confidence": 0.9,
+      "context": "* **Spider Beetles:** Scavengers that can contaminate products with frass and silk. Active at night in dark, damp areas....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Dark, damp areas",
+      "entity_type": "specification",
+      "category": "environment",
+      "confidence": 0.85,
+      "context": "* **Spider Beetles:** Scavengers that can contaminate products with frass and silk. Active at night in dark, damp areas....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Oval, black beetles",
+      "entity_type": "specification",
+      "category": "beetle_description",
+      "confidence": 0.9,
+      "context": "* **Warehouse Beetle / Dermestid Beetles:** Oval, black beetles with variable patterns. Larvae are tapered with prominent bristles. Feed on a wide variety of materials including grain dust, powdered m...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Variable patterns and prominent bristles",
+      "entity_type": "specification",
+      "category": "larvae_description",
+      "confidence": 0.8,
+      "context": "* **Warehouse Beetle / Dermestid Beetles:** Oval, black beetles with variable patterns. Larvae are tapered with prominent bristles. Feed on a wide variety of materials including grain dust, powdered m...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Cast larval skins",
+      "entity_type": "specification",
+      "category": "infestation_sign",
+      "confidence": 0.95,
+      "context": "Their cast larval skins are a sign of infestation. **Cockroaches**\n* They contaminate food with droppings and bacteria (e.g., Salmonella, Staphylococcus)....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Cockroaches",
+      "entity_type": "species",
+      "category": "general",
+      "confidence": 0.98,
+      "context": "Their cast larval skins are a sign of infestation. **Cockroaches**\n* They contaminate food with droppings and bacteria (e.g., Salmonella, Staphylococcus)....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Food areas",
+      "entity_type": "location",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "Their cast larval skins are a sign of infestation. **Cockroaches**\n* They contaminate food with droppings and bacteria (e.g., Salmonella, Staphylococcus)....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Signs of infestation: cast skins, egg cases, and musty odor.",
+      "entity_type": "description",
+      "category": "general",
+      "confidence": 0.95,
+      "context": "Signs of infestation include cast skins, egg cases (ootheca), and a musty odor. * **German Cockroach:** Most common....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "German Cockroaches",
+      "entity_type": "species",
+      "category": "pest",
+      "confidence": 0.98,
+      "context": "Signs of infestation include cast skins, egg cases (ootheca), and a musty odor. * **German Cockroach:** Most common....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Light brown with two black streaks behind the head",
+      "entity_type": "description",
+      "category": "cockroach_appearance",
+      "confidence": 0.9,
+      "context": "Light brown with two black streaks behind the head. Prefers warm, moist areas like kitchens. * **American Cockroach:** Large and reddish-brown. Prefers basements and sewers....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Large and reddish-brown",
+      "entity_type": "description",
+      "category": "cockroach_appearance",
+      "confidence": 0.9,
+      "context": "Light brown with two black streaks behind the head. Prefers warm, moist areas like kitchens. * **American Cockroach:** Large and reddish-brown. Prefers basements and sewers....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Warm, moist areas like kitchens",
+      "entity_type": "environment",
+      "category": "preferred_habitat",
+      "confidence": 0.85,
+      "context": "Light brown with two black streaks behind the head. Prefers warm, moist areas like kitchens. * **American Cockroach:** Large and reddish-brown. Prefers basements and sewers....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Basements and sewers",
+      "entity_type": "environment",
+      "category": "preferred_habitat",
+      "confidence": 0.85,
+      "context": "Light brown with two black streaks behind the head. Prefers warm, moist areas like kitchens. * **American Cockroach:** Large and reddish-brown. Prefers basements and sewers....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Oriental Cockroach",
+      "entity_type": "specification",
+      "category": "pest_identification",
+      "confidence": 0.98,
+      "context": "* **Oriental Cockroach (\"waterbug\"):** Dark brown to black. Prefers dark, damp areas like crawl spaces and drains....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Dark brown to black",
+      "entity_type": "specification",
+      "category": "color",
+      "confidence": 0.95,
+      "context": "* **Oriental Cockroach (\"waterbug\"):** Dark brown to black. Prefers dark, damp areas like crawl spaces and drains....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Dark, damp areas",
+      "entity_type": "specification",
+      "category": "habitat",
+      "confidence": 0.9,
+      "context": "* **Oriental Cockroach (\"waterbug\"):** Dark brown to black. Prefers dark, damp areas like crawl spaces and drains....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Brown-banded Cockroach",
+      "entity_type": "specification",
+      "category": "pest_identification",
+      "confidence": 0.98,
+      "context": "* **Brown-banded Cockroach:** Small, light brown with two lighter bands. Found high on walls, ceilings, and in appliances....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "High walls, ceilings, and appliances",
+      "entity_type": "location",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "* **Brown-banded Cockroach:** Small, light brown with two lighter bands. Found high on walls, ceilings, and in appliances....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Use residual pesticides for crack and crevice or spot treatments.",
+      "entity_type": "specification",
+      "category": "pest_control_method",
+      "confidence": 0.95,
+      "context": "* **Control for Cockroaches:** Sanitation is key. Use crack and crevice or spot treatments with residual pesticides, supplemented by dusts and contact sprays....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Supplement with dusts and contact sprays.",
+      "entity_type": "specification",
+      "category": "pest_control_method",
+      "confidence": 0.9,
+      "context": "* **Control for Cockroaches:** Sanitation is key. Use crack and crevice or spot treatments with residual pesticides, supplemented by dusts and contact sprays....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Pests are identified as flies.",
+      "entity_type": "identification",
+      "category": "general",
+      "confidence": 0.95,
+      "context": "**Other Pests**\n* **Flies:** Have one pair of wings. Undergo complete metamorphosis....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Flies have one pair of wings.",
+      "entity_type": "observation",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "**Other Pests**\n* **Flies:** Have one pair of wings. Undergo complete metamorphosis....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Control starts with sanitation.",
+      "entity_type": "instruction",
+      "category": null,
+      "confidence": 0.95,
+      "context": "Control starts with sanitation and removal of breeding sites. * **Ants:** Social insects that nest in the ground or in structures....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Remove breeding sites for ants.",
+      "entity_type": "instruction",
+      "category": null,
+      "confidence": 0.9,
+      "context": "Control starts with sanitation and removal of breeding sites. * **Ants:** Social insects that nest in the ground or in structures....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Bees and Wasps",
+      "entity_type": "species",
+      "category": "general",
+      "confidence": 0.95,
+      "context": "Control involves direct treatment of the nest, barrier sprays, and baits. * **Bees and Wasps:** Pose a threat to workers....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Booklice (Psocids)",
+      "entity_type": "species",
+      "category": "general",
+      "confidence": 0.95,
+      "context": "* **Booklice (Psocids):** Tiny, soft-bodied insects that feed on microscopic mold in damp locations. Control involves lowering humidity and sanitation....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Damp locations",
+      "entity_type": "environment",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "* **Booklice (Psocids):** Tiny, soft-bodied insects that feed on microscopic mold in damp locations. Control involves lowering humidity and sanitation....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Silverfish and Firebrats are wingless, flat insects that damage paper and stored foods.",
+      "entity_type": "description",
+      "category": "general",
+      "confidence": 0.95,
+      "context": "* **Silverfish and Firebrats:** Wingless, flat insects that damage paper and stored foods. Silverfish are found in damp areas; firebrats prefer hot, dry situations....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Silverfish live in damp areas.",
+      "entity_type": "specification",
+      "category": "habitat_requirement",
+      "confidence": 0.9,
+      "context": "* **Silverfish and Firebrats:** Wingless, flat insects that damage paper and stored foods. Silverfish are found in damp areas; firebrats prefer hot, dry situations....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Firebrats prefer hot, dry situations.",
+      "entity_type": "specification",
+      "category": "habitat_requirement",
+      "confidence": 0.9,
+      "context": "* **Silverfish and Firebrats:** Wingless, flat insects that damage paper and stored foods. Silverfish are found in damp areas; firebrats prefer hot, dry situations....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Crickets",
+      "entity_type": "animal",
+      "category": "pest",
+      "confidence": 0.95,
+      "context": "* **Crickets:** Can become numerous in the fall, attracted to lights. Proper lighting management can reduce entry....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Lights",
+      "entity_type": "tool",
+      "category": "lighting",
+      "confidence": 0.9,
+      "context": "* **Crickets:** Can become numerous in the fall, attracted to lights. Proper lighting management can reduce entry....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Rats and mice contaminate food with urine, feces, and hair.",
+      "entity_type": "information",
+      "category": "contamination_source",
+      "confidence": 0.9,
+      "context": "Control involves removing decaying vegetation and moisture sources near foundations. ---\n\n### Page 39-55: Rodents and Their Control\n\nRats and mice contaminate more food than they eat with their urine,...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Keen sense of touch, smell, taste, and hearing.",
+      "entity_type": "animal_traits",
+      "category": "general",
+      "confidence": 0.95,
+      "context": "* **Senses:** Keen sense of touch (whiskers), smell, taste, and hearing. Poor, colorblind vision....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Poor colorblind vision.",
+      "entity_type": "vision_requirement",
+      "category": "general",
+      "confidence": 0.8,
+      "context": "* **Senses:** Keen sense of touch (whiskers), smell, taste, and hearing. Poor, colorblind vision....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Rat behavior towards new objects",
+      "entity_type": "observation",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "* **Reactions:** Rats may avoid new objects for days (\"new object shyness\"). Mice are more curious....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Mouse behavior",
+      "entity_type": "comparison_subject",
+      "category": "general",
+      "confidence": 0.85,
+      "context": "* **Reactions:** Rats may avoid new objects for days (\"new object shyness\"). Mice are more curious....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Rats are good climbers.",
+      "entity_type": "fact",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "* **Agility:** All are good climbers. Rats can jump nearly 2 feet vertically, swim, and gnaw through materials like wood and cinder block....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Rats can jump vertically nearly 2 feet.",
+      "entity_type": "measurement",
+      "category": "jump_height",
+      "confidence": 0.85,
+      "context": "* **Agility:** All are good climbers. Rats can jump nearly 2 feet vertically, swim, and gnaw through materials like wood and cinder block....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Rats can swim.",
+      "entity_type": "fact",
+      "category": "general",
+      "confidence": 0.8,
+      "context": "* **Agility:** All are good climbers. Rats can jump nearly 2 feet vertically, swim, and gnaw through materials like wood and cinder block....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Rats can gnaw through wood and cinder block.",
+      "entity_type": "ability",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "* **Agility:** All are good climbers. Rats can jump nearly 2 feet vertically, swim, and gnaw through materials like wood and cinder block....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Fresh rat droppings are soft and dark.",
+      "entity_type": "specification",
+      "category": "dropping_description",
+      "confidence": 0.9,
+      "context": "**Recognizing Rat and Mouse Signs**\n* **Droppings:** Fresh droppings are soft and dark; old ones are dull and hard. Shape helps identify the species....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Old rat droppings are dull and hard.",
+      "entity_type": "specification",
+      "category": "dropping_description",
+      "confidence": 0.85,
+      "context": "**Recognizing Rat and Mouse Signs**\n* **Droppings:** Fresh droppings are soft and dark; old ones are dull and hard. Shape helps identify the species....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Cleared paths outdoors",
+      "entity_type": "location",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "* **Runways:** Rats use the same paths along walls. Look for cleared paths outdoors or greasy runways indoors....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Greasy runways indoors",
+      "entity_type": "location",
+      "category": "general",
+      "confidence": 0.85,
+      "context": "* **Runways:** Rats use the same paths along walls. Look for cleared paths outdoors or greasy runways indoors....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Rubmarks - dark, greasy marks from rodent's body.",
+      "entity_type": "evidence",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "* **Rubmarks:** Dark, greasy marks from the rodent's body along runways. * **Burrows:** Norway rats prefer to burrow in earth banks or under concrete....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Burrows - preferred locations for Norway rats.",
+      "entity_type": "location",
+      "category": "general",
+      "confidence": 0.85,
+      "context": "* **Rubmarks:** Dark, greasy marks from the rodent's body along runways. * **Burrows:** Norway rats prefer to burrow in earth banks or under concrete....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Tracks in dust or tracking patches",
+      "entity_type": "description",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "* **Tracks:** Can be seen in dust or tracking patches (flour, talc). * **Urine:** Fluoresces under a blacklight....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Urine",
+      "entity_type": "substance",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "* **Tracks:** Can be seen in dust or tracking patches (flour, talc). * **Urine:** Fluoresces under a blacklight....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Blacklight",
+      "entity_type": "tool",
+      "category": "general",
+      "confidence": 0.8,
+      "context": "* **Tracks:** Can be seen in dust or tracking patches (flour, talc). * **Urine:** Fluoresces under a blacklight....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Pallets",
+      "entity_type": "tool",
+      "category": "handling_equipment",
+      "confidence": 0.9,
+      "context": "Store products on pallets away from walls. A strip of gravel around buildings can deter burrowing....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Openings with a size larger than 1/4 inch for mice and 1/2 inch for rats.",
+      "entity_type": "specification",
+      "category": "size_requirement",
+      "confidence": 0.9,
+      "context": "* **Rodent-Proof Construction:** Seal all openings larger than 1/4 inch for mice and 1/2 inch for rats. Use rodent-resistant materials like hardware cloth, sheet metal, and concrete....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Rodent-resistant materials such as hardware cloth, sheet metal, and concrete.",
+      "entity_type": "specification",
+      "category": "materials",
+      "confidence": 0.9,
+      "context": "* **Rodent-Proof Construction:** Seal all openings larger than 1/4 inch for mice and 1/2 inch for rats. Use rodent-resistant materials like hardware cloth, sheet metal, and concrete....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Toxic dust",
+      "entity_type": "specification",
+      "category": "substance",
+      "confidence": 0.95,
+      "context": "Pay attention to doors, windows, vents, drainpipes, foundations, and utility lines. * **Tracking Powders:** Toxic dust placed in runways....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Doors, windows, vents, drainpipes, foundations, utility lines",
+      "entity_type": "specification",
+      "category": "location",
+      "confidence": 0.95,
+      "context": "Pay attention to doors, windows, vents, drainpipes, foundations, and utility lines. * **Tracking Powders:** Toxic dust placed in runways....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Most are Restricted Use pesticides.",
+      "entity_type": "specification",
+      "category": "pesticide_type",
+      "confidence": 0.95,
+      "context": "Most are Restricted Use pesticides. * **Baits and Baiting:** Selection of a proper bait is critical....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Selection of a proper bait",
+      "entity_type": "specification",
+      "category": "bait_selection",
+      "confidence": 0.9,
+      "context": "Most are Restricted Use pesticides. * **Baits and Baiting:** Selection of a proper bait is critical....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Anticoagulants",
+      "entity_type": "substance",
+      "category": "toxicant",
+      "confidence": 0.9,
+      "context": "* **Toxicants:** Anticoagulants are slow-acting and require multiple feedings (first-generation) or can be effective in a single dose (second-generation, e.g., brodifacoum). Single-dose non-anticoagul...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Single-dose non-anticoagulants",
+      "entity_type": "substance",
+      "category": "toxicant",
+      "confidence": 0.85,
+      "context": "* **Toxicants:** Anticoagulants are slow-acting and require multiple feedings (first-generation) or can be effective in a single dose (second-generation, e.g., brodifacoum). Single-dose non-anticoagul...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "First-generation anticoagulants",
+      "entity_type": "specification",
+      "category": "anticoagulant_generation",
+      "confidence": 0.9,
+      "context": "* **Toxicants:** Anticoagulants are slow-acting and require multiple feedings (first-generation) or can be effective in a single dose (second-generation, e.g., brodifacoum). Single-dose non-anticoagul...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Second-generation anticoagulants",
+      "entity_type": "specification",
+      "category": "anticoagulant_generation",
+      "confidence": 0.85,
+      "context": "* **Toxicants:** Anticoagulants are slow-acting and require multiple feedings (first-generation) or can be effective in a single dose (second-generation, e.g., brodifacoum). Single-dose non-anticoagul...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Bromethalin, cholecalciferol (Vitamin D3), zinc phosphide",
+      "entity_type": "substance",
+      "category": "single-dose_toxicants",
+      "confidence": 0.9,
+      "context": "* **Toxicants:** Anticoagulants are slow-acting and require multiple feedings (first-generation) or can be effective in a single dose (second-generation, e.g., brodifacoum). Single-dose non-anticoagul...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Norway rats prefer meat and fish.",
+      "entity_type": "specification",
+      "category": "rodent_preference",
+      "confidence": 0.9,
+      "context": "* **Food Base:** Norway rats prefer meat and fish; roof rats prefer fruits and nuts; mice prefer seeds. Cereal grains are most common for baits....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Roof rats prefer fruits and nuts.",
+      "entity_type": "specification",
+      "category": "rodent_preference",
+      "confidence": 0.9,
+      "context": "* **Food Base:** Norway rats prefer meat and fish; roof rats prefer fruits and nuts; mice prefer seeds. Cereal grains are most common for baits....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Mice prefer seeds.",
+      "entity_type": "specification",
+      "category": "rodent_preference",
+      "confidence": 0.9,
+      "context": "* **Food Base:** Norway rats prefer meat and fish; roof rats prefer fruits and nuts; mice prefer seeds. Cereal grains are most common for baits....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Cereal grains are most common for baits.",
+      "entity_type": "specification",
+      "category": "bait_information",
+      "confidence": 0.85,
+      "context": "* **Food Base:** Norway rats prefer meat and fish; roof rats prefer fruits and nuts; mice prefer seeds. Cereal grains are most common for baits....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Using acute toxicants for rats",
+      "entity_type": "context",
+      "category": "general",
+      "confidence": 0.95,
+      "context": "* **Prebaiting:** Offering unpoisoned bait for several days to overcome shyness is recommended when using acute toxicants for rats. * **Placement:** Use tamper-proof bait stations to protect bait and ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Tamper-proof bait stations",
+      "entity_type": "tool",
+      "category": "container",
+      "confidence": 0.9,
+      "context": "* **Prebaiting:** Offering unpoisoned bait for several days to overcome shyness is recommended when using acute toxicants for rats. * **Placement:** Use tamper-proof bait stations to protect bait and ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "10 feet for mice, 20 feet for rats.",
+      "entity_type": "specification",
+      "category": "distance_requirement",
+      "confidence": 0.95,
+      "context": "Place stations along walls and runways, every 10 feet for mice and 20 feet for rats. * **Traps and Trapping:**\n    * **Types:** Snap traps, live-capture cage traps, and wind-up multiple-catch traps (f...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Snap traps, live-capture cage traps, wind-up multiple-catch traps.",
+      "entity_type": "specification",
+      "category": "trapping_types",
+      "confidence": 0.9,
+      "context": "Place stations along walls and runways, every 10 feet for mice and 20 feet for rats. * **Traps and Trapping:**\n    * **Types:** Snap traps, live-capture cage traps, and wind-up multiple-catch traps (f...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Placing traps in areas where rodents are likely to encounter them.",
+      "entity_type": "procedure_step_description",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "* **Placement:** Place traps where rodents will encounter them\u2014along walls, in dark corners, behind objects. Use many traps, placed close together for mice....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Multiple traps",
+      "entity_type": "tool_or_material",
+      "category": "trap",
+      "confidence": 0.8,
+      "context": "* **Placement:** Place traps where rodents will encounter them\u2014along walls, in dark corners, behind objects. Use many traps, placed close together for mice....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Good baits: peanut butter, raisins, nutmeats, bacon.",
+      "entity_type": "specification",
+      "category": "bait_type",
+      "confidence": 0.95,
+      "context": "* **Baiting:** Good baits include peanut butter, raisins, nutmeats, and bacon. Secure bait to the trigger....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Rodents can be controlled using sticky glue boards.",
+      "entity_type": "information",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "* **Rodent Glues:** Sticky glue boards that entangle rodents. Effective for mice but can be messy and are affected by temperature and dust. * **Predators:** Cats and dogs are generally not effective f...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Cats and dogs are generally not effective for controlling rodent populations.",
+      "entity_type": "information",
+      "category": "general",
+      "confidence": 0.85,
+      "context": "* **Rodent Glues:** Sticky glue boards that entangle rodents. Effective for mice but can be messy and are affected by temperature and dust. * **Predators:** Cats and dogs are generally not effective f...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Sticky glue boards can be messy.",
+      "entity_type": "warning",
+      "category": "general",
+      "confidence": 0.75,
+      "context": "* **Rodent Glues:** Sticky glue boards that entangle rodents. Effective for mice but can be messy and are affected by temperature and dust. * **Predators:** Cats and dogs are generally not effective f...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Effectiveness of sticky glue boards is affected by temperature and dust.",
+      "entity_type": "requirement",
+      "category": "general",
+      "confidence": 0.8,
+      "context": "* **Rodent Glues:** Sticky glue boards that entangle rodents. Effective for mice but can be messy and are affected by temperature and dust. * **Predators:** Cats and dogs are generally not effective f...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Compressed air sprayer",
+      "entity_type": "equipment",
+      "category": "general",
+      "confidence": 0.95,
+      "context": "---\n\n### Page 56-67: Equipment, Application Techniques, and Respiratory Protection\n\n**Sprayers**\n* **Compressed Air Sprayer:** The \"workhorse\" of pest control, used for crack and crevice, spot, and ge...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "tank, pump, hose, valve, and nozzle",
+      "entity_type": "equipment_parts",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "---\n\n### Page 56-67: Equipment, Application Techniques, and Respiratory Protection\n\n**Sprayers**\n* **Compressed Air Sprayer:** The \"workhorse\" of pest control, used for crack and crevice, spot, and ge...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Solid stream nozzles",
+      "entity_type": "tool",
+      "category": "nozzle_type",
+      "confidence": 0.95,
+      "context": "* **Nozzles:** The most important part, determining the spray pattern (solid stream, flat spray, cone). Solid stream nozzles are for crack and crevice; fan nozzles are for surfaces....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Fan nozzles",
+      "entity_type": "tool",
+      "category": "nozzle_type",
+      "confidence": 0.95,
+      "context": "* **Nozzles:** The most important part, determining the spray pattern (solid stream, flat spray, cone). Solid stream nozzles are for crack and crevice; fan nozzles are for surfaces....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Crack and crevice applications",
+      "entity_type": "application",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "* **Nozzles:** The most important part, determining the spray pattern (solid stream, flat spray, cone). Solid stream nozzles are for crack and crevice; fan nozzles are for surfaces....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Surface applications",
+      "entity_type": "application",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "* **Nozzles:** The most important part, determining the spray pattern (solid stream, flat spray, cone). Solid stream nozzles are for crack and crevice; fan nozzles are for surfaces....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Dusters",
+      "entity_type": "tool",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "**Dusters**\nUsed to apply dusts into voids, cracks, and burrows. Types include hand shakers, bulb dusters, hand plunger dusters, and rotary/power dusters....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Void, cracks, burrows",
+      "entity_type": "location",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "**Dusters**\nUsed to apply dusts into voids, cracks, and burrows. Types include hand shakers, bulb dusters, hand plunger dusters, and rotary/power dusters....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Maintaining cleanliness and dryness for Space Treating Equipment.",
+      "entity_type": "description",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "Maintenance involves keeping them clean and dry. **Space Treating Equipment**\nUsed for quick knockdown of flying insects by creating fine particles (aerosols, fogs, mists)....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Space Treating Equipment",
+      "entity_type": "equipment",
+      "category": "maintenance_equipment",
+      "confidence": 0.95,
+      "context": "Maintenance involves keeping them clean and dry. **Space Treating Equipment**\nUsed for quick knockdown of flying insects by creating fine particles (aerosols, fogs, mists)....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Droplet size measured in microns.",
+      "entity_type": "specification",
+      "category": "size_measurement",
+      "confidence": 0.9,
+      "context": "Effectiveness depends on droplet size (measured in microns). * **Aerosols:** Gas-propelled or thermally released....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Aerosols",
+      "entity_type": "entity",
+      "category": "gas_or_thermal_release",
+      "confidence": 0.8,
+      "context": "Effectiveness depends on droplet size (measured in microns). * **Aerosols:** Gas-propelled or thermally released....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Substance",
+      "entity_type": "material",
+      "category": null,
+      "confidence": 0.9,
+      "context": "Available in disposable cans or reusable containers. Used for flushing, space treatments, and crack and crevice applications....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Cubic footage",
+      "entity_type": "specification",
+      "category": "measurement",
+      "confidence": 0.9,
+      "context": "Thermal fogging can create a fire or explosion hazard if not done correctly (turn off pilot lights, know cubic footage). * **Mists:** Larger droplets than fogs (10-80 microns)....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Ultra Low Dosage (ULD) method",
+      "entity_type": "technique",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "Settle out more rapidly. * **Ultra Low Dosage (ULD):** Uses high concentrations of insecticide in very fine droplets at reduced rates. Requires specialized equipment and careful application to avoid h...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Chemical cartridge respirators are for low concentrations.",
+      "entity_type": "explanation",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "Chemical cartridge respirators are for low concentrations. Gas masks (canisters) are for higher concentrations and fumigants....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Gas masks (canisters) are for higher concentrations and fumigants.",
+      "entity_type": "explanation",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "Chemical cartridge respirators are for low concentrations. Gas masks (canisters) are for higher concentrations and fumigants....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    }
+  ],
+  "confidence_score": 0.8988421052631592,
+  "processing_time": 1686.1385035514832,
+  "strategy_used": "llama_cpp:P0",
+  "quality_metrics": {
+    "entity_count": 190,
+    "avg_confidence": 0.8988421052631592,
+    "chunks_processed": 157
+  }
+}

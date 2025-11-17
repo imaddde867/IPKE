@@ -3,15 +3,17 @@
 Streamlined system to extract structured procedural knowledge (steps, constraints, entities) from unstructured technical documents. Powered by a local LLM (Mistral‑7B Instruct) with a dual-backend architecture for Metal and CUDA GPUs.
 
 ## Highlights
-- **Dual-Backend LLM Inference**:
-  - **`llama.cpp` on Metal**: Optimized for high-performance inference on Apple Silicon GPUs.
-  - **`transformers` on CUDA**: Leverages PyTorch and `bitsandbytes` for efficient inference on NVIDIA GPUs.
-- LLM‑driven extraction with chunking and normalization
-- Unified config with sane defaults and `.env` overrides
-- FastAPI endpoints + Streamlit UI for quick iteration
-- JSON logging with correlation IDs (request tracing)
-- Baseline pipeline + evaluator with reproducible metrics
-- Broad format support (PDF/DOCX/TXT/CSV/PPTX/Images/Audio)
+- **Dual-Backend LLM Inference** with an asynchronous worker pool:
+  - **`llama.cpp` on CUDA**: Runs local GGUF checkpoints, offloading all layers to each GPU.
+  - **`transformers`**: Optional PyTorch/BitsAndBytes fallback for CPU/MPS testing.
+- **Multi-GPU throughput** via configurable worker processes (split chunks/documents across 4× V100s or more).
+- **Prompt regimes P0–P3** (zero-shot, few-shot, CoT, schema-aware two-stage) selectable via config.
+- Semantic chunking suite (Fixed, Breakpoint Semantic, Dual Semantic) with shared abstractions.
+- Unified config with sane defaults and `.env` overrides.
+- FastAPI endpoints + Streamlit UI for quick iteration.
+- JSON logging with correlation IDs (request tracing).
+- Baseline pipeline + evaluator with reproducible Tier A/B metrics.
+- Broad format support (PDF/DOCX/TXT/CSV/PPTX/Images/Audio).
 
 ## Repository Layout
 - `main.py` — starts the FastAPI server with model checks
@@ -21,8 +23,10 @@ Streamlined system to extract structured procedural knowledge (steps, constraint
 - `scripts/` — preflight checks and metric plots
 - `src/`
   - `api/app.py` — FastAPI app, routes, models, middleware wiring
-  - `ai/knowledge_engine.py` — Dual-backend LLM integration (`llama.cpp` and `transformers`)
+  - `ai/knowledge_engine.py` — Prompt-aware multi-GPU worker pool for llama.cpp / transformers
+  - `ai/prompting.py` — Prompt strategies (P0–P3) and parsing helpers
   - `processors/streamlined_processor.py` — format‑aware loaders + knowledge engine orchestration
+  - `processors/chunkers/` — Fixed, breakpoint semantic, and dual-semantic chunkers
   - `core/unified_config.py` — single source of truth for all settings
   - `graph/` — pydantic graph models and JSON schema
 - `tests/` — unit + integration tests
@@ -89,11 +93,10 @@ streamlit run streamlit_app.py
   - Detects format and extracts text from various file types.
   - Chunks input and calls the `UnifiedKnowledgeEngine`.
 - `UnifiedKnowledgeEngine`
-  - **Detects the GPU backend** (`metal`, `cuda`, or `cpu`) from the configuration.
-  - **Initializes the appropriate strategy**:
-    - `LlamaCppStrategy`: For `metal`, uses `llama-cpp-python` to run a GGUF model.
-    - `TransformersStrategy`: For `cuda`, uses Hugging Face `transformers` to run a PyTorch model with `bitsandbytes` quantization.
-  - Prompts the model to return a single JSON object and robustly parses the output.
+  - Detects the GPU backend (`cuda`, `metal`, or `cpu`) and instantiates an inference worker pool.
+  - Each worker loads the configured backend (`llama.cpp` GGUF by default) and applies the selected prompt regime.
+  - Chunks are distributed across workers (one GPU per process) and merged with deterministic normalization.
+- `ai/prompting.py` exposes zero-shot, few-shot, CoT, and two-stage schema prompting templates.
 - **Infra**
   - JSON logging with correlation IDs and central error handling.
   - Unified configuration with environment profiles.
@@ -109,10 +112,20 @@ Set the `GPU_BACKEND` to `metal`, `cuda`, or `auto`.
 **`metal` Backend Settings (`llama.cpp`):**
 - `LLM_MODEL_PATH`: Path to your local `.gguf` model file.
 - `LLM_N_GPU_LAYERS`: Number of layers to offload to the GPU (`-1` for all).
+- `LLM_DEVICE_STRATEGY`: `single` (reuse first GPU) or `multi_gpu_parallel`.
 
 **`cuda` Backend Settings (`transformers`):**
 - `LLM_MODEL_ID`: Hugging Face model ID (e.g., `mistralai/Mistral-7B-Instruct-v0.2`).
 - `LLM_QUANTIZATION`: `4bit` or `8bit` for quantization on CUDA.
+
+**LLM Worker Pool Settings:**
+- `LLM_BACKEND`: `llama_cpp` (default) or `transformers`.
+- `LLM_NUM_WORKERS`: Number of concurrent inference workers (set to the number of GPUs on V100 nodes).
+- `LLM_DEVICE_STRATEGY`: `single` or `multi_gpu_parallel`.
+
+**Prompting & Chunking:**
+- `PROMPTING_STRATEGY`: `P0` (zero-shot), `P1` (few-shot), `P2` (CoT), `P3` (two-stage schema).
+- `CHUNKING_METHOD`: `fixed`, `breakpoint_semantic`, or `dual_semantic`.
 
 ## Evaluation & Baselines
 - Preflight checks (assets/deps):
@@ -167,6 +180,10 @@ python tools/evaluate.py \
   --tier A \
   --out_file logs/baseline_runs/run_1/eval_tierA.json
 ```
+- Or point the evaluator to a run directory (auto-detects `gold/` + `predictions/` when present):
+```
+python tools/evaluate.py --run-dir logs/run_2025-04-01 --tier both
+```
 - Evaluate Tier B (derived nodes/edges):
 ```
 python tools/evaluate.py \
@@ -190,7 +207,7 @@ Deterministic whitespace splitting with a strict char cap. Recommended for small
 ### Breakpoint Semantic
 ```
 CHUNKING_METHOD=breakpoint_semantic
-EMBEDDING_MODEL_PATH=models/embeddings/all-MiniLM-L6-v2
+EMBEDDING_MODEL_PATH=all-mpnet-base-v2
 SEM_MIN_SENTENCES_PER_CHUNK=2
 SEM_MAX_SENTENCES_PER_CHUNK=40
 SEM_LAMBDA=0.15
@@ -198,10 +215,53 @@ SEM_WINDOW_W=30
 ```
 Uses spaCy’s sentencizer, SBERT embeddings, and a dynamic-programming objective (`score = cohesion(i,j) – λ`) to maximize per-chunk mean cosine similarity while obeying min/max sentence constraints.
 
+### Dual Semantic
+```
+CHUNKING_METHOD=dual_semantic
+DSC_PARENT_MIN_SENTENCES=8
+DSC_PARENT_MAX_SENTENCES=120
+DSC_DELTA_WINDOW=25
+DSC_THRESHOLD_K=1.0
+```
+Builds coarse parent blocks using heading cues + local similarity deltas, then refines each block with breakpoint chunking. This maintains section-level structure while keeping local cohesion for long manuals.
+
+## Experiment Runner
+
+Use `scripts/run_experiments.py` to drive end-to-end runs (document ingestion → chunking → extraction → evaluation) from a JSON/YAML spec. Example:
+
+```yaml
+run_name: v100_semantic_run
+chunking:
+  method: dual_semantic
+  max_chars: 2400
+prompting:
+  strategy: P3
+llm:
+  backend: llama_cpp
+  num_workers: 4
+  device_strategy: multi_gpu_parallel
+documents:
+  - path: datasets/manuals/robotic_arm.pdf
+  - path: datasets/manuals/cooling_loop.docx
+evaluation:
+  gold_dir: datasets/gold/tier_a
+  tier: both
+```
+
+Execute the run:
+```bash
+python scripts/run_experiments.py --config configs/v100_semantic.yaml
+```
+Outputs:
+- `run_dir/predictions/*.json` – normalized per-document predictions.
+- `run_dir/logs/metrics.(json,csv)` – processing stats (time, counts, confidence).
+- Optional Tier A/B evaluation report if `evaluation.gold_dir` is specified.
+- `run_dir/logs/config_snapshot.json` – exact runtime configuration for reproducibility.
+
 ### Dual Semantic Chunking (DSC)
 ```
 CHUNKING_METHOD=dsc
-EMBEDDING_MODEL_PATH=models/embeddings/all-MiniLM-L6-v2
+EMBEDDING_MODEL_PATH=all-mpnet-base-v2
 DSC_PARENT_MIN_SENTENCES=10
 DSC_PARENT_MAX_SENTENCES=120
 DSC_DELTA_WINDOW=25
@@ -211,13 +271,15 @@ DSC_USE_HEADINGS=true
 Runs an adaptive parent-boundary detector that compares local cosine-distance deltas against `μ + k·σ`, optionally biased by heading regexes, then refines each parent via the breakpoint DP.
 
 ### Model Download
-Semantic methods require an SBERT checkpoint. Example using Hugging Face:
+Semantic methods require a SentenceTransformer checkpoint. By default we load `all-mpnet-base-v2`
+directly by model id, so HF downloads/caches it automatically on first use. To pin to an offline copy,
+download the model and point `EMBEDDING_MODEL_PATH` at the extracted directory:
 ```
-huggingface-cli download sentence-transformers/all-MiniLM-L6-v2 \
-  --local-dir models/embeddings/all-MiniLM-L6-v2 \
+huggingface-cli download sentence-transformers/all-mpnet-base-v2 \
+  --local-dir models/embeddings/all-mpnet-base-v2 \
   --local-dir-use-symlinks False
 ```
-Update `EMBEDDING_MODEL_PATH` to match the downloaded directory. `scripts/baseline_preflight.py` now fails if the path is missing when a semantic method is configured.
+Only override `EMBEDDING_MODEL_PATH` when pointing at an offline mirror; otherwise keep the default hub id and let SentenceTransformer populate the HF cache. The baseline preflight now just reports the chosen id instead of failing on missing folders.
 
 ### Troubleshooting
 - **Tokenizer mutex errors**: macOS Metal users should keep `TOKENIZERS_PARALLELISM=false` (already enforced in `llm_env_setup`). Re-enabling parallelism reintroduces the mutex crash.

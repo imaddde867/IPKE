@@ -1,0 +1,846 @@
+{
+  "document_id": "op_firesafety_guideline",
+  "document_type": "text",
+  "metadata": {},
+  "steps": [
+    {
+      "id": "S1",
+      "text": "Identify potential fire risks in working machines.",
+      "order": 1,
+      "confidence": 0.95
+    },
+    {
+      "id": "S2",
+      "text": "Evaluate each machine's operating environment.",
+      "order": 2,
+      "confidence": 0.9
+    },
+    {
+      "id": "S3",
+      "text": "Issue clear instructions for safety.",
+      "order": 3,
+      "confidence": 0.85
+    },
+    {
+      "id": "S4",
+      "text": "Supervise compliance with safety instructions.",
+      "order": 4,
+      "confidence": 0.9
+    },
+    {
+      "id": "S5",
+      "text": "Inspect and clean engine compartment at least once a week.",
+      "order": 5,
+      "confidence": 0.9
+    },
+    {
+      "id": "S6",
+      "text": "Clean with compressed air after shift.",
+      "order": 6,
+      "confidence": 0.9
+    },
+    {
+      "id": "S7",
+      "text": "Inspect for leaks after cleaning.",
+      "order": 7,
+      "confidence": 0.9
+    },
+    {
+      "id": "S8",
+      "text": "Visually inspect electrical systems at least once a year.",
+      "order": 8,
+      "confidence": 0.9
+    },
+    {
+      "id": "S9",
+      "text": "Service electrical systems daily on electric-powered and hybrid machines.",
+      "order": 9,
+      "confidence": 0.9
+    },
+    {
+      "id": "S10",
+      "text": "Use multimeter to measure voltage drops.",
+      "order": 10,
+      "confidence": 0.9
+    },
+    {
+      "id": "S11",
+      "text": "Use thermal imaging camera to detect anomalies.",
+      "order": 11,
+      "confidence": 0.9
+    },
+    {
+      "id": "S12",
+      "text": "Check emergency kill switch before starting the machine.",
+      "order": 12,
+      "confidence": 0.9
+    },
+    {
+      "id": "S13",
+      "text": "Repair any malfunction that required its use.",
+      "order": 13,
+      "confidence": 0.85
+    },
+    {
+      "id": "S14",
+      "text": "Inspect battery.",
+      "order": 14,
+      "confidence": 0.9
+    },
+    {
+      "id": "S15",
+      "text": "Repair any deviations in battery.",
+      "order": 15,
+      "confidence": 0.85
+    },
+    {
+      "id": "S16",
+      "text": "Ensure cable terminals are intact and attached.",
+      "order": 16,
+      "confidence": 0.9
+    },
+    {
+      "id": "S17",
+      "text": "Protect cables with terminal covers.",
+      "order": 17,
+      "confidence": 0.85
+    },
+    {
+      "id": "S18",
+      "text": "Check electric panel.",
+      "order": 18,
+      "confidence": 0.9
+    },
+    {
+      "id": "S19",
+      "text": "Repair any redundant or hanging wires.",
+      "order": 19,
+      "confidence": 0.85
+    },
+    {
+      "id": "S20",
+      "text": "Check attachment of cables in high-vibration engine compartment.",
+      "order": 20,
+      "confidence": 0.9
+    },
+    {
+      "id": "S21",
+      "text": "Inspect alternator.",
+      "order": 21,
+      "confidence": 0.9
+    },
+    {
+      "id": "S22",
+      "text": "Check fasteners, belts, and bearings in alternator.",
+      "order": 22,
+      "confidence": 0.85
+    },
+    {
+      "id": "S23",
+      "text": "Inspect exhaust pipe for leaks.",
+      "order": 23,
+      "confidence": 0.9
+    },
+    {
+      "id": "S24",
+      "text": "Ensure all thermal shields are in place.",
+      "order": 24,
+      "confidence": 0.85
+    },
+    {
+      "id": "S25",
+      "text": "Check ammable liquid hoses are not too close.",
+      "order": 25,
+      "confidence": 0.9
+    },
+    {
+      "id": "S26",
+      "text": "Ensure safe environment for diesel particulate filter regeneration.",
+      "order": 26,
+      "confidence": 0.95
+    },
+    {
+      "id": "S27",
+      "text": "Inspect swivelling joint hoses and electrical systems weekly.",
+      "order": 27,
+      "confidence": 0.9
+    },
+    {
+      "id": "S28",
+      "text": "Ensure all operating manuals are available and understandable.",
+      "order": 28,
+      "confidence": 0.9
+    },
+    {
+      "id": "S29",
+      "text": "Check auxiliary heater cleanliness and condition before winter.",
+      "order": 29,
+      "confidence": 0.9
+    },
+    {
+      "id": "S30",
+      "text": "Test hand-held fire extinguishers under supervision.",
+      "order": 30,
+      "confidence": 0.9
+    },
+    {
+      "id": "S31",
+      "text": "Ensure machines in dust or fire hazard environments have a fixed, fully automatic fire extinguishing system.",
+      "order": 31,
+      "confidence": 0.9
+    },
+    {
+      "id": "S32",
+      "text": "Provide at least three litres of extinguishing agent for each cubic meter of the engine or heater compartment.",
+      "order": 32,
+      "confidence": 0.9
+    },
+    {
+      "id": "S33",
+      "text": "Install detection system covering entire engine compartment and connect to non-fused cables.",
+      "order": 33,
+      "confidence": 0.9
+    },
+    {
+      "id": "S34",
+      "text": "Obtain installation certificate and compliance test report.",
+      "order": 34,
+      "confidence": 0.85
+    },
+    {
+      "id": "S35",
+      "text": "Confirm system operation at start-up and repair any malfunctions.",
+      "order": 35,
+      "confidence": 0.9
+    },
+    {
+      "id": "S36",
+      "text": "Service the system at least once a year.",
+      "order": 36,
+      "confidence": 0.9
+    },
+    {
+      "id": "S37",
+      "text": "Clean engine compartments daily in hazardous environments.",
+      "order": 37,
+      "confidence": 0.85
+    },
+    {
+      "id": "S38",
+      "text": "Check signs and markings.",
+      "order": 38,
+      "confidence": 0.9
+    },
+    {
+      "id": "S39",
+      "text": "Inspect machine electrical systems (battery cables, harnesses, main power switch, alternator).",
+      "order": 39,
+      "confidence": 0.9
+    },
+    {
+      "id": "S40",
+      "text": "Examine engine mechanics (fuel/oil/hydraulic lines, exhaust system).",
+      "order": 40,
+      "confidence": 0.9
+    },
+    {
+      "id": "S41",
+      "text": "Inspect first-aid extinguishing equipment (hand-held extinguishers, system log).",
+      "order": 41,
+      "confidence": 0.9
+    },
+    {
+      "id": "S42",
+      "text": "Check auxiliary heater (installation, fuel manifold, exhaust, electrical system).",
+      "order": 42,
+      "confidence": 0.9
+    },
+    {
+      "id": "S43",
+      "text": "Inspect mains power systems.",
+      "order": 43,
+      "confidence": 0.9
+    },
+    {
+      "id": "S44",
+      "text": "Assess general condition and cleanliness.",
+      "order": 44,
+      "confidence": 0.9
+    },
+    {
+      "id": "S45",
+      "text": "Repair any malfunctions that could lead to an accident without delay.",
+      "order": 45,
+      "confidence": 0.9
+    },
+    {
+      "id": "S46",
+      "text": "Arrange practical training on accident and fire procedures.",
+      "order": 46,
+      "confidence": 0.9
+    },
+    {
+      "id": "S47",
+      "text": "Check cables and fasteners for security, heat resistance, insulation, and lead-throughs.",
+      "order": 47,
+      "confidence": 0.85
+    },
+    {
+      "id": "S48",
+      "text": "Inspect the condition of non-fused cables and terminal covers in fuses and batteries.",
+      "order": 48,
+      "confidence": 0.8
+    },
+    {
+      "id": "S49",
+      "text": "Clean engine and heater compartments.",
+      "order": 49,
+      "confidence": 0.8
+    },
+    {
+      "id": "S50",
+      "text": "Check the availability, markings, and operator training for first-aid extinguishing equipment.",
+      "order": 50,
+      "confidence": 0.75
+    },
+    {
+      "id": "S51",
+      "text": "Identify the company name: Pohjola Insurance Ltd.",
+      "order": 51,
+      "confidence": 0.95
+    },
+    {
+      "id": "S52",
+      "text": "Determine the business ID: 1458359-3.",
+      "order": 52,
+      "confidence": 0.9
+    },
+    {
+      "id": "S53",
+      "text": "Locate the company address: Helsinki, Gebhardinaukio 1, 00013 OP, Finland.",
+      "order": 53,
+      "confidence": 0.9
+    },
+    {
+      "id": "S54",
+      "text": "Identify the domicile: Helsinki.",
+      "order": 54,
+      "confidence": 0.85
+    },
+    {
+      "id": "S55",
+      "text": "Determine the regulatory authority: Financial Supervisory Authority, www.fiva.fi.",
+      "order": 55,
+      "confidence": 0.9
+    }
+  ],
+  "constraints": [
+    {
+      "id": "C1",
+      "text": "Working machines must be evaluated for fire risks based on their operating conditions and environment.",
+      "confidence": 0.95,
+      "steps": [
+        "S51",
+        "S52"
+      ]
+    },
+    {
+      "id": "C2",
+      "text": "Shut down engine before inspecting for fuel leaks.",
+      "confidence": 0.85,
+      "steps": [
+        "S53"
+      ]
+    },
+    {
+      "id": "C3",
+      "text": "Protect hydraulic hoses from high temperatures.",
+      "confidence": 0.85,
+      "steps": [
+        "S53"
+      ]
+    },
+    {
+      "id": "C4",
+      "text": "Inspect electrical systems annually and document inspections.",
+      "confidence": 0.9,
+      "steps": [
+        "S54"
+      ]
+    },
+    {
+      "id": "C5",
+      "text": "Service electrical systems daily on electric-powered and hybrid machines.",
+      "confidence": 0.9,
+      "steps": [
+        "S55"
+      ]
+    },
+    {
+      "id": "C6",
+      "text": "Do not use emergency kill switch for normal shutdown.",
+      "confidence": 0.9,
+      "steps": [
+        "S51"
+      ]
+    },
+    {
+      "id": "C7",
+      "text": "Ensure sufficient ventilation in battery compartment.",
+      "confidence": 0.85,
+      "steps": [
+        "S53"
+      ]
+    },
+    {
+      "id": "C8",
+      "text": "Replace cables showing signs of abrasion or heat damage.",
+      "confidence": 0.9,
+      "steps": [
+        "S55"
+      ]
+    },
+    {
+      "id": "C9",
+      "text": "Fasteners and cable ties should withstand temperatures of 120\u00b0C.",
+      "confidence": 0.85,
+      "steps": [
+        "S20"
+      ]
+    },
+    {
+      "id": "C10",
+      "text": "Do not attach cables to pipes or hoses containing flammable material.",
+      "confidence": 0.9,
+      "steps": [
+        "S20"
+      ]
+    },
+    {
+      "id": "C11",
+      "text": "Ensure regeneration occurs in a safe outdoor environment away from flammable materials.",
+      "confidence": 0.95,
+      "steps": [
+        "S52"
+      ]
+    },
+    {
+      "id": "C12",
+      "text": "Delay regeneration if machine is in a fire-hazard environment.",
+      "confidence": 0.9,
+      "steps": [
+        "S52"
+      ]
+    },
+    {
+      "id": "C13",
+      "text": "Never leave machine unattended during regeneration.",
+      "confidence": 0.95,
+      "steps": [
+        "S52"
+      ]
+    },
+    {
+      "id": "C14",
+      "text": "Machines > 3,000 kg must have at least two hand-held fire extinguishers.",
+      "confidence": 0.9,
+      "steps": []
+    },
+    {
+      "id": "C15",
+      "text": "Machines for crushing timber or energy waste need four hand-held fire extinguishers.",
+      "confidence": 0.9,
+      "steps": []
+    },
+    {
+      "id": "C16",
+      "text": "Machines in dust or fire hazard environments must have a fixed, fully automatic fire extinguishing system.",
+      "confidence": 0.95,
+      "steps": [
+        "S51"
+      ]
+    },
+    {
+      "id": "C17",
+      "text": "Provide at least three litres of extinguishing agent for each cubic meter of the engine or heater compartment.",
+      "confidence": 0.95,
+      "steps": [
+        "S52"
+      ]
+    },
+    {
+      "id": "C18",
+      "text": "Install detection system covering entire engine compartment and connect to non-fused cables.",
+      "confidence": 0.95,
+      "steps": [
+        "S53"
+      ]
+    },
+    {
+      "id": "C19",
+      "text": "Obtain installation certificate and compliance test report.",
+      "confidence": 0.85,
+      "steps": [
+        "S54"
+      ]
+    },
+    {
+      "id": "C20",
+      "text": "Confirm system operation at start-up and repair any malfunctions.",
+      "confidence": 0.9,
+      "steps": [
+        "S55"
+      ]
+    },
+    {
+      "id": "C21",
+      "text": "Service the system at least once a year.",
+      "confidence": 0.9,
+      "steps": [
+        "S50"
+      ]
+    },
+    {
+      "id": "C22",
+      "text": "Clean engine compartments daily in hazardous environments.",
+      "confidence": 0.85,
+      "steps": [
+        "S44"
+      ]
+    },
+    {
+      "id": "C23",
+      "text": "Perform inspections in the order listed.",
+      "confidence": 0.95,
+      "steps": [
+        "S51",
+        "S52",
+        "S53",
+        "S54",
+        "S55",
+        "S50",
+        "S44"
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "content": "Company management is responsible for safety.",
+      "entity_type": "role",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "Pohjola Insurance\nFire safety guidelines for working machines\nValid as of 1 January 2021\n\n---\n\n### Page 1: Introduction\n\n**Risk management is more than just insurance**\n\n**Risk and risk management**\nA...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Fire risks can lead to personal injury.",
+      "entity_type": "risk_consequence",
+      "category": "general",
+      "confidence": 0.95,
+      "context": "Pohjola Insurance\nFire safety guidelines for working machines\nValid as of 1 January 2021\n\n---\n\n### Page 1: Introduction\n\n**Risk management is more than just insurance**\n\n**Risk and risk management**\nA...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Weekly engine compartment cleaning.",
+      "entity_type": "specification",
+      "category": "maintenance_schedule",
+      "confidence": 0.9,
+      "context": "nspect and clean at least once a week.\n* Cleaning should be done after a shift, using compressed air to remove dirt. After cleaning, inspect for leaks. A clean engine compartment prevents ignition and...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Compressed air for cleaning.",
+      "entity_type": "specification",
+      "category": "cleaning_tool",
+      "confidence": 0.9,
+      "context": "nspect and clean at least once a week.\n* Cleaning should be done after a shift, using compressed air to remove dirt. After cleaning, inspect for leaks. A clean engine compartment prevents ignition and...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Multimeter for measuring voltage drops.",
+      "entity_type": "specification",
+      "category": "electrical_tool",
+      "confidence": 0.9,
+      "context": "nspect and clean at least once a week.\n* Cleaning should be done after a shift, using compressed air to remove dirt. After cleaning, inspect for leaks. A clean engine compartment prevents ignition and...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Thermal imaging camera for detecting anomalies.",
+      "entity_type": "specification",
+      "category": "inspection_tool",
+      "confidence": 0.9,
+      "context": "nspect and clean at least once a week.\n* Cleaning should be done after a shift, using compressed air to remove dirt. After cleaning, inspect for leaks. A clean engine compartment prevents ignition and...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Emergency kill switch",
+      "entity_type": "machine_component",
+      "category": "safety_system",
+      "confidence": 0.9,
+      "context": "mergency kill switch before starting the machine. It typically shuts down the engine and cuts power.\n* Repair any malfunction that required its use before resuming operation. Never use it for a normal...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Battery",
+      "entity_type": "machine_component",
+      "category": "power_source",
+      "confidence": 0.9,
+      "context": "mergency kill switch before starting the machine. It typically shuts down the engine and cuts power.\n* Repair any malfunction that required its use before resuming operation. Never use it for a normal...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Cables",
+      "entity_type": "machine_component",
+      "category": "electrical",
+      "confidence": 0.9,
+      "context": "mergency kill switch before starting the machine. It typically shuts down the engine and cuts power.\n* Repair any malfunction that required its use before resuming operation. Never use it for a normal...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Electric panel",
+      "entity_type": "machine_component",
+      "category": "control_system",
+      "confidence": 0.9,
+      "context": "mergency kill switch before starting the machine. It typically shuts down the engine and cuts power.\n* Repair any malfunction that required its use before resuming operation. Never use it for a normal...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Alternator",
+      "entity_type": "machine_component",
+      "category": "electrical",
+      "confidence": 0.9,
+      "context": "mergency kill switch before starting the machine. It typically shuts down the engine and cuts power.\n* Repair any malfunction that required its use before resuming operation. Never use it for a normal...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Exhaust pipe",
+      "entity_type": "machine_component",
+      "category": "emission_system",
+      "confidence": 0.9,
+      "context": "mergency kill switch before starting the machine. It typically shuts down the engine and cuts power.\n* Repair any malfunction that required its use before resuming operation. Never use it for a normal...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Urea systems and diesel particulate filter",
+      "entity_type": "machine_component",
+      "category": "emission_control",
+      "confidence": 0.9,
+      "context": "mergency kill switch before starting the machine. It typically shuts down the engine and cuts power.\n* Repair any malfunction that required its use before resuming operation. Never use it for a normal...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Urea systems and diesel particulate filter",
+      "entity_type": "machine_component",
+      "category": "general",
+      "confidence": 0.95,
+      "context": "ammable liquid hoses should be too close.\n* **Urea systems and diesel particulate filter:** Urea systems themselves are not a fire risk, but leaks can cause corrosion and disrupt electrical equipment....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Flammable materials",
+      "entity_type": "hazard",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "ammable liquid hoses should be too close.\n* **Urea systems and diesel particulate filter:** Urea systems themselves are not a fire risk, but leaks can cause corrosion and disrupt electrical equipment....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Three litres of extinguishing agent for each cubic meter of the engine or heater compartment.",
+      "entity_type": "specification",
+      "category": "extinguishing_agent_quantity",
+      "confidence": 0.95,
+      "context": "available at ground level.\n    * Extinguishers must be easily available, clearly marked, and serviced at least annually.\n    * Operators must be trained in their use.\n* **Fire extinguishing systems in...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Fixed, fully automatic fire extinguishing system.",
+      "entity_type": "specification",
+      "category": "fire_extinguishing_system",
+      "confidence": 0.95,
+      "context": "available at ground level.\n    * Extinguishers must be easily available, clearly marked, and serviced at least annually.\n    * Operators must be trained in their use.\n* **Fire extinguishing systems in...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Machine electrical systems (battery cables, harnesses, main power switch, alternator).",
+      "entity_type": "equipment",
+      "category": null,
+      "confidence": 0.95,
+      "context": "ipment suppliers**\n* **Dafo:** Dafo Oy\n* **Fogmaker:** OEM Finland Oy\n* **Firestop:** YTM-industrial\n* **ExAct Guard:** Mikro-Pulssi\n* **Ceodeux Extinguisher Valves Technology S.A/Rotarex:** Teknosafe...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Engine mechanics (fuel/oil/hydraulic lines, exhaust system).",
+      "entity_type": "equipment",
+      "category": null,
+      "confidence": 0.95,
+      "context": "ipment suppliers**\n* **Dafo:** Dafo Oy\n* **Fogmaker:** OEM Finland Oy\n* **Firestop:** YTM-industrial\n* **ExAct Guard:** Mikro-Pulssi\n* **Ceodeux Extinguisher Valves Technology S.A/Rotarex:** Teknosafe...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "First-aid extinguishing equipment (hand-held extinguishers, system log).",
+      "entity_type": "equipment",
+      "category": null,
+      "confidence": 0.95,
+      "context": "ipment suppliers**\n* **Dafo:** Dafo Oy\n* **Fogmaker:** OEM Finland Oy\n* **Firestop:** YTM-industrial\n* **ExAct Guard:** Mikro-Pulssi\n* **Ceodeux Extinguisher Valves Technology S.A/Rotarex:** Teknosafe...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Auxiliary heater (installation, fuel manifold, exhaust, electrical system).",
+      "entity_type": "equipment",
+      "category": null,
+      "confidence": 0.95,
+      "context": "ipment suppliers**\n* **Dafo:** Dafo Oy\n* **Fogmaker:** OEM Finland Oy\n* **Firestop:** YTM-industrial\n* **ExAct Guard:** Mikro-Pulssi\n* **Ceodeux Extinguisher Valves Technology S.A/Rotarex:** Teknosafe...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Mains power systems.",
+      "entity_type": "system",
+      "category": null,
+      "confidence": 0.95,
+      "context": "ipment suppliers**\n* **Dafo:** Dafo Oy\n* **Fogmaker:** OEM Finland Oy\n* **Firestop:** YTM-industrial\n* **ExAct Guard:** Mikro-Pulssi\n* **Ceodeux Extinguisher Valves Technology S.A/Rotarex:** Teknosafe...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Pohjola Insurance Ltd",
+      "entity_type": "organization",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "marked.\n* Repair any malfunctions that could lead to an accident without delay.\n* Arrange practical training on accident and fire procedures.\n\n---\n\n### Pages 10-11: Inspection Checklists\n\nThese pages ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Business ID: 1458359-3",
+      "entity_type": "identifier",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "marked.\n* Repair any malfunctions that could lead to an accident without delay.\n* Arrange practical training on accident and fire procedures.\n\n---\n\n### Pages 10-11: Inspection Checklists\n\nThese pages ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Helsinki, Gebhardinaukio 1, 00013 OP, Finland",
+      "entity_type": "location",
+      "category": "general",
+      "confidence": 0.8,
+      "context": "marked.\n* Repair any malfunctions that could lead to an accident without delay.\n* Arrange practical training on accident and fire procedures.\n\n---\n\n### Pages 10-11: Inspection Checklists\n\nThese pages ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Financial Supervisory Authority, www.fiva.fi",
+      "entity_type": "organization",
+      "category": "general",
+      "confidence": 0.75,
+      "context": "marked.\n* Repair any malfunctions that could lead to an accident without delay.\n* Arrange practical training on accident and fire procedures.\n\n---\n\n### Pages 10-11: Inspection Checklists\n\nThese pages ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Pohjola Insurance Ltd",
+      "entity_type": "company_name",
+      "category": null,
+      "confidence": 1.0,
+      "context": ": Company Information\n\nPohjola Insurance Ltd\nBusiness ID: 1458359-3\nHelsinki, Gebhardinaukio 1, 00013 OP, Finland\nDomicile: Helsinki\nRegulatory authority: Financial Supervisory Authority, www.fiva.fi...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "1458359-3",
+      "entity_type": "business_id",
+      "category": null,
+      "confidence": 1.0,
+      "context": ": Company Information\n\nPohjola Insurance Ltd\nBusiness ID: 1458359-3\nHelsinki, Gebhardinaukio 1, 00013 OP, Finland\nDomicile: Helsinki\nRegulatory authority: Financial Supervisory Authority, www.fiva.fi...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Helsinki, Gebhardinaukio 1, 00013 OP, Finland",
+      "entity_type": "company_address",
+      "category": null,
+      "confidence": 1.0,
+      "context": ": Company Information\n\nPohjola Insurance Ltd\nBusiness ID: 1458359-3\nHelsinki, Gebhardinaukio 1, 00013 OP, Finland\nDomicile: Helsinki\nRegulatory authority: Financial Supervisory Authority, www.fiva.fi...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Financial Supervisory Authority",
+      "entity_type": "regulatory_authority",
+      "category": null,
+      "confidence": 1.0,
+      "context": ": Company Information\n\nPohjola Insurance Ltd\nBusiness ID: 1458359-3\nHelsinki, Gebhardinaukio 1, 00013 OP, Finland\nDomicile: Helsinki\nRegulatory authority: Financial Supervisory Authority, www.fiva.fi...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "www.fiva.fi",
+      "entity_type": "website_address",
+      "category": null,
+      "confidence": 0.95,
+      "context": ": Company Information\n\nPohjola Insurance Ltd\nBusiness ID: 1458359-3\nHelsinki, Gebhardinaukio 1, 00013 OP, Finland\nDomicile: Helsinki\nRegulatory authority: Financial Supervisory Authority, www.fiva.fi...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    }
+  ],
+  "confidence_score": 0.9209677419354837,
+  "processing_time": 402.9665479660034,
+  "strategy_used": "llama_cpp:P0",
+  "quality_metrics": {
+    "entity_count": 31,
+    "avg_confidence": 0.9209677419354837,
+    "chunks_processed": 9
+  }
+}

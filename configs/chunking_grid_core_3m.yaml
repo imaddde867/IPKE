@@ -1,0 +1,52 @@
+experiment_group: "chunking_grid_core"
+
+docs:
+  - id: "3M_OEM_SOP"
+    path: "../datasets/archive/test_data/text/3m_marine_oem_sop.txt"
+    gold_tier_a: "../datasets/archive/gold_human/3M_OEM_SOP.json"
+    gold_tier_b: "../datasets/archive/gold_human_tierb/3M_OEM_SOP.json"
+
+llm:
+  backend: "llama_cpp"
+  model_path: "../models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf"
+  n_ctx: 8192
+  temperature: 0.1
+  top_p: 0.9
+  max_tokens: 1536
+  repeat_penalty: 1.1
+  max_chunks: 0
+  num_workers: 4
+  device_strategy: "multi_gpu_parallel"
+  random_seed: 42
+
+prompting:
+  strategy: "P0"
+
+evaluation:
+  tier: "both"
+  threshold: 0.75
+  spacy_model: "en_core_web_sm"
+  embedding_model: "all-mpnet-base-v2"
+
+chunking_experiments:
+  - name: "fixed_2000_no_overlap"
+    method: "fixed"
+    params:
+      chunk_size_chars: 2000
+      chunk_overlap_chars: 0
+
+  - name: "breakpoint_semantic_lambda015"
+    method: "breakpoint_semantic"
+    params:
+      sem_lambda: 0.15
+      sem_window_w: 20
+      sem_min_sentences_per_chunk: 2
+      sem_max_sentences_per_chunk: 40
+
+  - name: "dual_semantic_block16"
+    method: "dual_semantic"
+    params:
+      dsc_parent_block_sentences: 16
+      dsc_child_sem_lambda: 0.10
+      dsc_child_window_w: 16
+      dsc_dynamic_threshold_k: 0.5

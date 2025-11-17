@@ -853,15 +853,61 @@ def compute_macro_average(results: Dict[str, Dict[str, Optional[float]]]) -> Dic
     return {metric: round3(float(np.mean(values))) if values else None for metric, values in aggregates.items()}
 
 
+def prepare_evaluator(
+    spacy_model: str = "en_core_web_sm",
+    embedding_model: str = "all-mpnet-base-v2",
+    *,
+    device: Optional[str] = None,
+) -> Tuple[TextPreprocessor, EmbeddingCache]:
+    """Instantiate reusable evaluation helpers."""
+    preprocessor = TextPreprocessor(spacy_model)
+    embedder = EmbeddingCache(model_name=embedding_model, device=device)
+    return preprocessor, embedder
+
+
+def run_evaluation(
+    gold: Any,
+    pred: Any,
+    *,
+    tiers: Iterable[str] = ("A", "B"),
+    threshold: float = 0.75,
+    preprocessor: Optional[TextPreprocessor] = None,
+    embedder: Optional[EmbeddingCache] = None,
+    spacy_model: str = "en_core_web_sm",
+    embedding_model: str = "all-mpnet-base-v2",
+    device: Optional[str] = None,
+    preserve_conflicts: bool = False,
+) -> Dict[str, Optional[float]]:
+    """Evaluate a single prediction/gold pair for the requested tiers."""
+    gold_doc = load_json(Path(gold)) if isinstance(gold, (str, Path)) else gold
+    pred_doc = load_json(Path(pred)) if isinstance(pred, (str, Path)) else pred
+    tiers_upper = {tier.upper() for tier in tiers} or {"A", "B"}
+    evaluator_pre = preprocessor or TextPreprocessor(spacy_model)
+    evaluator_emb = embedder or EmbeddingCache(model_name=embedding_model, device=device)
+
+    metrics: Dict[str, Optional[float]] = {}
+    if "A" in tiers_upper:
+        metrics.update(evaluate_tier_a_document(gold_doc, pred_doc, evaluator_pre, evaluator_emb, threshold))
+    if "B" in tiers_upper:
+        tier_b_metrics = evaluate_tier_b_document(gold_doc, pred_doc, evaluator_pre, evaluator_emb, threshold)
+        for key, value in tier_b_metrics.items():
+            if preserve_conflicts and key in metrics:
+                metrics[f"{key}_TierB"] = value
+            else:
+                metrics[key] = value
+    return metrics
+
+
 def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Evaluate procedural extraction quality.")
-    parser.add_argument("--gold_dir", type=str, required=True, help="Directory or file containing gold JSONs.")
-    parser.add_argument("--pred_dir", type=str, required=True, help="Directory or file containing prediction JSONs.")
+    parser.add_argument("--run-dir", type=str, default=None, help="Run directory containing predictions/gold.")
+    parser.add_argument("--gold_dir", type=str, default=None, help="Directory or file containing gold JSONs.")
+    parser.add_argument("--pred_dir", type=str, default=None, help="Directory or file containing prediction JSONs.")
     parser.add_argument("--tier", type=str, choices=["A", "B", "both"], default="both", help="Which tier to evaluate.")
     parser.add_argument("--threshold", type=float, default=0.75, help="Similarity threshold for alignment.")
     parser.add_argument("--subset", type=float, default=None, help="Optional fraction to sample for sanity checks.")
     parser.add_argument("--seed", type=int, default=13, help="Random seed used when sampling a subset.")
-    parser.add_argument("--out_file", type=str, default="evaluation_report.json", help="Path to save JSON report.")
+    parser.add_argument("--out_file", type=str, default=None, help="Path to save JSON report.")
     parser.add_argument("--spacy_model", type=str, default="en_core_web_sm", help="spaCy model name for lemmatization.")
     parser.add_argument(
         "--embedding_model",
@@ -870,29 +916,78 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
         help="SentenceTransformer model to use for semantic alignment.",
     )
     parser.add_argument("--device", type=str, default=None, help="SentenceTransformer device override.")
-    return parser.parse_args(argv)
+    args = parser.parse_args(argv)
+    if not args.run_dir and (args.gold_dir is None or args.pred_dir is None):
+        parser.error("Provide --run-dir or both --gold_dir and --pred_dir.")
+    return args
+
+
+def _guess_path(root: Path, candidates: Sequence[str]) -> Optional[Path]:
+    for name in candidates:
+        candidate = root / name
+        if candidate.exists():
+            return candidate
+        json_candidate = root / f"{name}.json"
+        if json_candidate.exists():
+            return json_candidate
+    return None
+
+
+def resolve_io_paths(args: argparse.Namespace) -> Tuple[Path, Path, Path]:
+    run_dir = Path(args.run_dir).resolve() if args.run_dir else None
+    gold_path = Path(args.gold_dir).resolve() if args.gold_dir else None
+    pred_path = Path(args.pred_dir).resolve() if args.pred_dir else None
+
+    if run_dir:
+        if not run_dir.exists():
+            raise FileNotFoundError(f"Run directory not found: {run_dir}")
+        if gold_path is None:
+            gold_path = _guess_path(run_dir, ["gold", "references", "labels", "ground_truth"])
+        if pred_path is None:
+            pred_path = _guess_path(run_dir, ["predictions", "preds", "outputs", "results"])
+        out_file = Path(args.out_file) if args.out_file else run_dir / f"evaluation_{args.tier.lower()}.json"
+    else:
+        out_file = Path(args.out_file or "evaluation_report.json")
+
+    if gold_path is None or pred_path is None:
+        raise FileNotFoundError("Unable to resolve gold/prediction paths; specify --gold_dir and --pred_dir explicitly.")
+    return gold_path, pred_path, out_file
 
 
 def main(argv: Optional[Sequence[str]] = None) -> int:
     args = parse_args(argv)
+    try:
+        gold_dir, pred_dir, out_file = resolve_io_paths(args)
+    except FileNotFoundError as exc:
+        logging.error("%s", exc)
+        return 1
+    args.gold_dir = str(gold_dir)
+    args.pred_dir = str(pred_dir)
+    args.out_file = str(out_file)
+
     logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
     pairs = load_pairs(args.gold_dir, args.pred_dir, args.subset, args.seed)
     if not pairs:
         logging.error("No document pairs to evaluate.")
         return 1
 
-    preprocessor = TextPreprocessor(args.spacy_model)
-    embedder = EmbeddingCache(model_name=args.embedding_model, device=args.device)
+    preprocessor, embedder = prepare_evaluator(args.spacy_model, args.embedding_model, device=args.device)
 
     doc_results: Dict[str, Dict[str, Optional[float]]] = {}
-    tiers = {"A", "B"} if args.tier == "both" else {args.tier}
+    if args.tier == "both":
+        tier_tuple: Tuple[str, ...] = ("A", "B")
+    else:
+        tier_tuple = (args.tier,)
 
     for doc_id, gold_doc, pred_doc in tqdm(pairs, desc="Evaluating documents"):
-        metrics: Dict[str, Optional[float]] = {}
-        if "A" in tiers:
-            metrics.update(evaluate_tier_a_document(gold_doc, pred_doc, preprocessor, embedder, args.threshold))
-        if "B" in tiers:
-            metrics.update(evaluate_tier_b_document(gold_doc, pred_doc, preprocessor, embedder, args.threshold))
+        metrics = run_evaluation(
+            gold_doc,
+            pred_doc,
+            tiers=tier_tuple,
+            threshold=args.threshold,
+            preprocessor=preprocessor,
+            embedder=embedder,
+        )
         doc_results[doc_id] = metrics
 
     macro = compute_macro_average(doc_results)

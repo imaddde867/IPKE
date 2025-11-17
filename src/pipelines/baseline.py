@@ -21,7 +21,7 @@ TIER_A_TEST_DOCS: Dict[str, Path] = {
 }
 
 DEFAULT_GOLD_DIR = Path("datasets/archive/gold_human")
-DEFAULT_EMBEDDING_MODEL = "models/embeddings/all-mpnet-base-v2"
+DEFAULT_EMBEDDING_MODEL = "all-mpnet-base-v2"
 
 
 def _normalise_path(path: Path | str, base_dir: Optional[Path] = None) -> Path:

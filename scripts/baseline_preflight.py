@@ -108,21 +108,17 @@ def checks() -> List[CheckResult]:
         results.append(_exists_check(f"Document {doc_id}", Path(path)))
 
     results.append(_exists_check("Gold annotations", DEFAULT_GOLD_DIR))
-    results.append(_exists_check("Embedding model", Path(DEFAULT_EMBEDDING_MODEL)))
+    results.append(CheckResult("Embedding model id", DEFAULT_EMBEDDING_MODEL, "ok", hint="Loaded via SentenceTransformer cache."))
     results.append(_exists_check("LLM model", Path(config.llm_model_path)))
 
     chunk_method = getattr(config, "chunking_method", "fixed")
     if chunk_method in {"breakpoint_semantic", "dsc"}:
-        embedding_path = Path(getattr(config, "embedding_model_path", DEFAULT_EMBEDDING_MODEL)).expanduser()
-        if not embedding_path.exists():
-            hint = (
-                f"Semantic chunking requires embeddings at {embedding_path}.\n"
-                f"Download via: huggingface-cli download sentence-transformers/all-MiniLM-L6-v2 "
-                f"--local-dir {embedding_path.parent} --local-dir-use-symlinks False"
-            )
-            results.append(CheckResult("Chunking embeddings", str(embedding_path), "missing", hint=hint))
-        else:
-            results.append(CheckResult("Chunking embeddings", str(embedding_path), "ok"))
+        embedding_model_id = getattr(config, "embedding_model_path", DEFAULT_EMBEDDING_MODEL) or DEFAULT_EMBEDDING_MODEL
+        hint = (
+            "Using SentenceTransformer hub id; the checkpoint will be pulled into the HF cache "
+            "the first time a semantic chunker runs."
+        )
+        results.append(CheckResult("Chunking embeddings", embedding_model_id, "ok", hint=hint))
 
     results.append(_import_check("llama-cpp-python", "llama_cpp"))
     results.append(_import_check("sentence-transformers", "sentence_transformers"))

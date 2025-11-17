@@ -22,7 +22,6 @@ class Environment(Enum):
     DEVELOPMENT = "development"
     TESTING = "testing"
     PRODUCTION = "production"
-    CLOUD = "cloud"
 
 
 def _get_env_value(*keys: str, default: Optional[str] = None) -> Optional[str]:
@@ -77,7 +76,7 @@ def _env_bool(*keys: str, default: bool = False) -> bool:
     return raw.strip().lower() in {"1", "true", "yes", "on"}
 
 
-CHUNKING_METHOD_CHOICES = {"fixed", "breakpoint_semantic", "dsc"}
+CHUNKING_METHOD_CHOICES = {"fixed", "breakpoint_semantic", "dual_semantic", "dsc"}
 
 
 def _sanitize_chunking_method(value: Optional[str], default: str) -> str:
@@ -122,7 +121,7 @@ class UnifiedConfig:
     whisper_model: str = "base"
 
     # LLM Configuration (Llama.cpp backend)
-    llm_model_path: str = "/app/models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf"
+    llm_model_path: str = "models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf"
     llm_n_gpu_layers: int = -1
     llm_f16_kv: bool = True
     llm_use_mlock: bool = True
@@ -136,11 +135,15 @@ class UnifiedConfig:
     llm_n_ctx: int = 8192
     llm_n_threads: int = 4
     llm_max_tokens: int = 1536
-    llm_cpu_max_tokens_cap: int = 512
     llm_temperature: float = 0.1
     llm_top_p: float = 0.9
     llm_repeat_penalty: float = 1.1
     llm_max_chunks: int = 0
+    llm_backend: str = "llama_cpp"
+    llm_device_strategy: str = "single"
+    llm_num_workers: int = 1
+    prompting_strategy: str = "P0"
+    llm_random_seed: int = 42
     
     # GPU Configuration
     gpu_backend: str = "auto"  # "metal", "cuda", "auto", or "cpu"
@@ -161,12 +164,20 @@ class UnifiedConfig:
     # Chunking configuration
     chunking_method: str = "fixed"
     chunk_max_chars: int = 2000
-    embedding_model_path: str = "models/embeddings/all-mpnet-base-v2"
+    chunk_overlap_chars: int = 0
+    chunk_overlap_dedup_ratio: float = 0.75
+    enable_chunk_dedup: bool = False
+    chunk_dedup_threshold: float = 0.9
+    chunk_dedup_overlap_ratio: float = 0.7
+    chunk_dedup_min_unique_chars: int = 320
+    chunk_dedup_embedding_model: str = ""
+    embedding_model_path: str = "all-mpnet-base-v2"
     sem_similarity: str = "cosine"
     sem_min_sentences_per_chunk: int = 2
     sem_max_sentences_per_chunk: int = 40
     sem_lambda: float = 0.15
     sem_window_w: int = 30
+    sem_preferred_sentences_per_chunk: int = 12
     dsc_parent_min_sentences: int = 10
     dsc_parent_max_sentences: int = 120
     dsc_delta_window: int = 25
@@ -185,33 +196,21 @@ class UnifiedConfig:
     @classmethod
     def from_environment(cls) -> 'UnifiedConfig':
         """Load configuration from environment variables"""
-        env_name_raw = _get_env_value(
-            'EXPLAINIUM_ENV', 'ENVIRONMENT', default=None
-        )
-        env_name = (env_name_raw or "development").lower()
-        if env_name in {"gcp", "google", "google_cloud"}:
-            env_name = "cloud"
-        env_override_requested = env_name_raw is not None
-
-        google_cloud_detected = any(
-            os.getenv(flag) for flag in ("GOOGLE_CLOUD_PROJECT", "GCE_INSTANCE_NAME", "KUBERNETES_SERVICE_HOST")
-        )
-
+        
+        env_name = _get_env_value(
+            'EXPLAINIUM_ENV', 'ENVIRONMENT', default='development'
+        ).lower()
         try:
             environment = Environment(env_name)
         except ValueError:
-            environment = Environment.CLOUD if google_cloud_detected else Environment.DEVELOPMENT
-        
-        if not env_override_requested and google_cloud_detected:
-            environment = Environment.CLOUD
+            environment = Environment.DEVELOPMENT
         
         if environment == Environment.PRODUCTION:
             return cls._production_config()
-        if environment == Environment.TESTING:
+        elif environment == Environment.TESTING:
             return cls._testing_config()
-        if environment == Environment.CLOUD:
-            return cls._cloud_config()
-        return cls._development_config()
+        else:
+            return cls._development_config()
     
     @classmethod
     def _development_config(cls) -> 'UnifiedConfig':
@@ -238,11 +237,14 @@ class UnifiedConfig:
             'llm_n_threads': _env_int('LLM_N_THREADS', default=cls.llm_n_threads, min_value=1),
             'llm_max_tokens': _env_int('LLM_MAX_TOKENS', default=cls.llm_max_tokens, min_value=64),
             'llm_max_chunks': _env_int('LLM_MAX_CHUNKS', default=cls.llm_max_chunks, min_value=0),
-            'llm_cpu_max_tokens_cap': _env_int('LLM_CPU_MAX_TOKENS_CAP', default=cls.llm_cpu_max_tokens_cap),
             'max_workers': _env_int('MAX_WORKERS', default=cls.max_workers, min_value=1),
             'llm_model_id': _get_env_value('LLM_MODEL_ID', default=cls.llm_model_id),
             'llm_quantization': _get_env_value('LLM_QUANTIZATION', default=cls.llm_quantization),
-            'llm_model_path': _get_env_value('LLM_MODEL_PATH', default=cls.llm_model_path),
+            'llm_backend': _get_env_value('LLM_BACKEND', default=cls.llm_backend),
+            'llm_device_strategy': _get_env_value('LLM_DEVICE_STRATEGY', default=cls.llm_device_strategy),
+            'llm_num_workers': _env_int('LLM_NUM_WORKERS', default=cls.llm_num_workers, min_value=1),
+            'prompting_strategy': _get_env_value('PROMPTING_STRATEGY', default=cls.prompting_strategy).upper(),
+            'llm_random_seed': _env_int('LLM_RANDOM_SEED', default=cls.llm_random_seed),
         }
         base_kwargs.update(chunk_kwargs)
         return cls(**base_kwargs)
@@ -262,8 +264,11 @@ class UnifiedConfig:
             'confidence_threshold': 0.5,
             'cache_size': 100,
             'llm_model_id': "sshleifer/tiny-gpt2",
-            'llm_model_path': _get_env_value('LLM_MODEL_PATH', default=cls.llm_model_path),
-            'llm_cpu_max_tokens_cap': _env_int('LLM_CPU_MAX_TOKENS_CAP', default=cls.llm_cpu_max_tokens_cap),
+            'llm_backend': "transformers",
+            'llm_device_strategy': "single",
+            'llm_num_workers': 1,
+            'prompting_strategy': "P0",
+            'llm_random_seed': cls.llm_random_seed,
         }
         base_kwargs.update(chunk_kwargs)
         return cls(**base_kwargs)
@@ -296,40 +301,11 @@ class UnifiedConfig:
             'llm_max_chunks': _env_int('LLM_MAX_CHUNKS', default=cls.llm_max_chunks, min_value=0),
             'llm_model_id': _get_env_value('LLM_MODEL_ID', default=cls.llm_model_id),
             'llm_quantization': _get_env_value('LLM_QUANTIZATION', default=cls.llm_quantization),
-            'llm_model_path': _get_env_value('LLM_MODEL_PATH', default=cls.llm_model_path),
-            'llm_cpu_max_tokens_cap': _env_int('LLM_CPU_MAX_TOKENS_CAP', default=cls.llm_cpu_max_tokens_cap),
-        }
-        base_kwargs.update(chunk_kwargs)
-        return cls(**base_kwargs)
-    
-    @classmethod
-    def _cloud_config(cls) -> 'UnifiedConfig':
-        """Google Cloud friendly configuration preset."""
-        chunk_kwargs = cls._chunking_overrides()
-        base_kwargs: Dict[str, Any] = {
-            'environment': Environment.CLOUD,
-            'debug': False,
-            'log_level': _get_env_value('LOG_LEVEL', default='INFO'),
-            'max_file_size_mb': _env_int('MAX_FILE_SIZE_MB', default=200, min_value=1),
-            'processing_timeout': _env_int('PROCESSING_TIMEOUT', default=600, min_value=60),
-            'api_host': _get_env_value('API_HOST', default='0.0.0.0'),
-            'gpu_backend': _get_env_value('GPU_BACKEND', default='cuda'),
-            'enable_gpu': _env_bool('ENABLE_GPU', default=True),
-            'llm_n_gpu_layers': _env_int('LLM_GPU_LAYERS', default=-1),
-            'gpu_memory_fraction': _env_float('GPU_MEMORY_FRACTION', default=0.9, min_value=0.0, max_value=1.0),
-            'confidence_threshold': _env_float('CONFIDENCE_THRESHOLD', default=0.8, min_value=0.0, max_value=1.0),
-            'quality_threshold': _env_float('QUALITY_THRESHOLD', default=0.8, min_value=0.0, max_value=1.0),
-            'llm_temperature': _env_float('LLM_TEMPERATURE', default=cls.llm_temperature),
-            'llm_top_p': _env_float('LLM_TOP_P', default=cls.llm_top_p),
-            'llm_repeat_penalty': _env_float('LLM_REPEAT_PENALTY', default=cls.llm_repeat_penalty),
-            'llm_n_threads': _env_int('LLM_N_THREADS', default=cls.llm_n_threads, min_value=1),
-            'llm_max_tokens': _env_int('LLM_MAX_TOKENS', default=cls.llm_max_tokens, min_value=64),
-            'llm_max_chunks': _env_int('LLM_MAX_CHUNKS', default=cls.llm_max_chunks, min_value=0),
-            'llm_cpu_max_tokens_cap': _env_int('LLM_CPU_MAX_TOKENS_CAP', default=cls.llm_cpu_max_tokens_cap),
-            'max_workers': _env_int('MAX_WORKERS', default=16, min_value=1),
-            'llm_model_id': _get_env_value('LLM_MODEL_ID', default=cls.llm_model_id),
-            'llm_quantization': _get_env_value('LLM_QUANTIZATION', default=cls.llm_quantization),
-            'llm_model_path': _get_env_value('LLM_MODEL_PATH', default=cls.llm_model_path),
+            'llm_backend': _get_env_value('LLM_BACKEND', default=cls.llm_backend),
+            'llm_device_strategy': _get_env_value('LLM_DEVICE_STRATEGY', default=cls.llm_device_strategy),
+            'llm_num_workers': _env_int('LLM_NUM_WORKERS', default=cls.llm_num_workers, min_value=1),
+            'prompting_strategy': _get_env_value('PROMPTING_STRATEGY', default=cls.prompting_strategy).upper(),
+            'llm_random_seed': _env_int('LLM_RANDOM_SEED', default=cls.llm_random_seed),
         }
         base_kwargs.update(chunk_kwargs)
         return cls(**base_kwargs)
@@ -344,6 +320,35 @@ class UnifiedConfig:
         overrides: Dict[str, Any] = {
             'chunking_method': method,
             'chunk_max_chars': _env_int('CHUNK_MAX_CHARS', default=cls.chunk_max_chars, min_value=200),
+            'chunk_overlap_chars': _env_int('CHUNK_OVERLAP_CHARS', default=cls.chunk_overlap_chars, min_value=0),
+            'chunk_overlap_dedup_ratio': _env_float(
+                'CHUNK_OVERLAP_DEDUP_RATIO',
+                default=cls.chunk_overlap_dedup_ratio,
+                min_value=0.0,
+                max_value=0.95
+            ),
+            'enable_chunk_dedup': _env_bool('ENABLE_CHUNK_DEDUP', default=cls.enable_chunk_dedup),
+            'chunk_dedup_threshold': _env_float(
+                'CHUNK_DEDUP_THRESHOLD',
+                default=cls.chunk_dedup_threshold,
+                min_value=0.0,
+                max_value=1.0
+            ),
+            'chunk_dedup_overlap_ratio': _env_float(
+                'CHUNK_DEDUP_OVERLAP_RATIO',
+                default=cls.chunk_dedup_overlap_ratio,
+                min_value=0.0,
+                max_value=1.0
+            ),
+            'chunk_dedup_min_unique_chars': _env_int(
+                'CHUNK_DEDUP_MIN_UNIQUE_CHARS',
+                default=cls.chunk_dedup_min_unique_chars,
+                min_value=32
+            ),
+            'chunk_dedup_embedding_model': _get_env_value(
+                'CHUNK_DEDUP_EMBEDDING_MODEL',
+                default=cls.chunk_dedup_embedding_model
+            ),
             'debug_chunking': _env_bool('DEBUG_CHUNKING', default=cls.debug_chunking),
         }
         if method != "fixed":
@@ -359,6 +364,11 @@ class UnifiedConfig:
                     'SEM_MAX_SENTENCES_PER_CHUNK',
                     default=cls.sem_max_sentences_per_chunk,
                     min_value=2
+                ),
+                'sem_preferred_sentences_per_chunk': _env_int(
+                    'SEM_PREFERRED_SENTENCES_PER_CHUNK',
+                    default=cls.sem_preferred_sentences_per_chunk,
+                    min_value=1
                 ),
             })
             if method == "breakpoint_semantic":
@@ -464,12 +474,16 @@ class UnifiedConfig:
             'top_p': self.llm_top_p,
             'repeat_penalty': self.llm_repeat_penalty,
             'max_chunks': self.llm_max_chunks,
-            'cpu_max_tokens_cap': self.llm_cpu_max_tokens_cap,
             'confidence_threshold': self.confidence_threshold,
             'enable_gpu': self.enable_gpu,
             'gpu_backend': self.gpu_backend,
             'gpu_memory_fraction': self.gpu_memory_fraction,
             'verbose': False,
+            'random_seed': self.llm_random_seed,
+            'backend': self.llm_backend,
+            'device_strategy': self.llm_device_strategy,
+            'num_workers': self.llm_num_workers,
+            'prompting_strategy': self.prompting_strategy,
 
             # Llama.cpp specific
             'model_path': self.llm_model_path,
@@ -498,6 +512,13 @@ class UnifiedConfig:
             'method': self.chunking_method,
             'chunk_size': self.chunk_size,
             'chunk_max_chars': self.chunk_max_chars,
+            'chunk_overlap_chars': self.chunk_overlap_chars,
+            'chunk_overlap_dedup_ratio': self.chunk_overlap_dedup_ratio,
+            'enable_chunk_dedup': self.enable_chunk_dedup,
+            'chunk_dedup_threshold': self.chunk_dedup_threshold,
+            'chunk_dedup_overlap_ratio': self.chunk_dedup_overlap_ratio,
+            'chunk_dedup_min_unique_chars': self.chunk_dedup_min_unique_chars,
+            'chunk_dedup_embedding_model': self.chunk_dedup_embedding_model,
             'debug_chunking': self.debug_chunking,
         }
         if self.chunking_method != "fixed":
@@ -506,6 +527,7 @@ class UnifiedConfig:
                 'sem_similarity': self.sem_similarity,
                 'sem_min_sentences_per_chunk': self.sem_min_sentences_per_chunk,
                 'sem_max_sentences_per_chunk': self.sem_max_sentences_per_chunk,
+                'sem_preferred_sentences_per_chunk': self.sem_preferred_sentences_per_chunk,
             })
             if self.chunking_method == "breakpoint_semantic":
                 config.update({

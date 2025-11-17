@@ -1,0 +1,326 @@
+{
+  "document_id": "3M_OEM_SOP",
+  "document_type": "text",
+  "metadata": {},
+  "steps": [
+    {
+      "id": "S1",
+      "text": "Clean new external composite surface with approved cleaner to remove mold release materials.",
+      "order": 1,
+      "confidence": 0.9
+    },
+    {
+      "id": "S2",
+      "text": "Sand old or new gelcoat with DA sander and grade 80+ abrasive discs to remove imperfections.",
+      "order": 2,
+      "confidence": 0.95
+    },
+    {
+      "id": "S3",
+      "text": "Apply dry guide coat and re-sand for even texture.",
+      "order": 3,
+      "confidence": 0.9
+    },
+    {
+      "id": "S4",
+      "text": "Mix Marine Blister Repair Filler and apply, then feather and sand.",
+      "order": 4,
+      "confidence": 0.9
+    },
+    {
+      "id": "S5",
+      "text": "Apply Marine Premium Filler in tight coat and sand with grade 120+ abrasive discs.",
+      "order": 5,
+      "confidence": 0.9
+    },
+    {
+      "id": "S6",
+      "text": "Finish by sanding repair area with grade 220+ abrasive discs.",
+      "order": 6,
+      "confidence": 0.9
+    },
+    {
+      "id": "S7",
+      "text": "Finish repair area with 3M Hookit 775L Cubitron II grade 220+.",
+      "order": 7,
+      "confidence": 0.9
+    },
+    {
+      "id": "S8",
+      "text": "Ensure surface is dry and mask areas with 3M tapes and Purple Premium Plus Masking Film.",
+      "order": 8,
+      "confidence": 0.9
+    },
+    {
+      "id": "S9",
+      "text": "Mix gelcoat in a 3M PPS Series 2.0 disposable spray cup.",
+      "order": 9,
+      "confidence": 0.9
+    },
+    {
+      "id": "S10",
+      "text": "Adjust settings on 3M Performance Spray Gun and apply gelcoat.",
+      "order": 10,
+      "confidence": 0.9
+    },
+    {
+      "id": "S11",
+      "text": "Refer to page 3 & 4 for the gelcoat finishing process.",
+      "order": 11,
+      "confidence": 0.8
+    },
+    {
+      "id": "S12",
+      "text": "Clean new external composite surface with approved cleaner.",
+      "order": 12,
+      "confidence": 0.9
+    },
+    {
+      "id": "S13",
+      "text": "Sand refinement with 3M Hookit 775L Cubitron II 320+ and then 400+.",
+      "order": 13,
+      "confidence": 0.9
+    },
+    {
+      "id": "S14",
+      "text": "Refine sand scratch with P1200 grade 3M Hookit Flexible Abrasive Foam Discs.",
+      "order": 14,
+      "confidence": 0.9
+    },
+    {
+      "id": "S15",
+      "text": "Compound surface with 3M Perfect-It Gelcoat Heavy Cutting Compound and a Rotary Polishing machine.",
+      "order": 15,
+      "confidence": 0.9
+    },
+    {
+      "id": "S16",
+      "text": "Polish with 3M Perfect-It Gelcoat Compound + Polish and wool compounding pad.",
+      "order": 16,
+      "confidence": 0.9
+    },
+    {
+      "id": "S17",
+      "text": "Apply 3M protective coating.",
+      "order": 17,
+      "confidence": 0.9
+    },
+    {
+      "id": "S18",
+      "text": "Ensure the surface is dry before starting.",
+      "order": 18,
+      "confidence": 0.9
+    },
+    {
+      "id": "S19",
+      "text": "Clean the surface with approved cleaner.",
+      "order": 19,
+      "confidence": 0.95
+    },
+    {
+      "id": "S20",
+      "text": "Using a DA sander, sand the surface with 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II 80+ grade abrasive discs.",
+      "order": 20,
+      "confidence": 0.9
+    },
+    {
+      "id": "S21",
+      "text": "Apply 3M\u2122 Marine Premium Filler.",
+      "order": 21,
+      "confidence": 0.9
+    },
+    {
+      "id": "S22",
+      "text": "After it sets, apply dry guide coat and sand with 120+ grade abrasive discs.",
+      "order": 22,
+      "confidence": 0.9
+    },
+    {
+      "id": "S23",
+      "text": "Finish sanding with 220+ grade abrasive discs.",
+      "order": 23,
+      "confidence": 0.9
+    },
+    {
+      "id": "S24",
+      "text": "Clean the surface.",
+      "order": 24,
+      "confidence": 0.9
+    },
+    {
+      "id": "S25",
+      "text": "Apply masking tapes and film as described in the gelcoat process.",
+      "order": 25,
+      "confidence": 0.9
+    },
+    {
+      "id": "S26",
+      "text": "Mix primer in a 3M\u2122 PPS\u2122 Series 2.0 cup and apply with a 3M\u2122 Performance Spray Gun held 15cm-20cm from the surface.",
+      "order": 26,
+      "confidence": 0.9
+    },
+    {
+      "id": "S27",
+      "text": "Apply dry guide coat and sand the primer with 320+ grade abrasive discs, then repeat with 400+ grade.",
+      "order": 27,
+      "confidence": 0.9
+    },
+    {
+      "id": "S28",
+      "text": "Clean the surface.",
+      "order": 28,
+      "confidence": 0.9
+    },
+    {
+      "id": "S29",
+      "text": "Mix marine paint in a 3M\u2122 PPS\u2122 Series 2.0 cup and apply with a 3M\u2122 Performance Spray Gun.",
+      "order": 29,
+      "confidence": 0.9
+    },
+    {
+      "id": "S30",
+      "text": "Refer to the following page for the marine paint finishing process.",
+      "order": 30,
+      "confidence": 0.85
+    },
+    {
+      "id": "S31",
+      "text": "Clean the surface with an approved cleaner.",
+      "order": 31,
+      "confidence": 0.9
+    },
+    {
+      "id": "S32",
+      "text": "Sand the bottom surface using a dual-action sander with 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II 220+ grade abrasive and clean the area.",
+      "order": 32,
+      "confidence": 0.9
+    },
+    {
+      "id": "S33",
+      "text": "Mix and apply 3M\u2122 Marine Premium Filler.",
+      "order": 33,
+      "confidence": 0.9
+    },
+    {
+      "id": "S34",
+      "text": "Allow the filler to cure and sand with 120+ grade abrasive, then finish with 220+ grade.",
+      "order": 34,
+      "confidence": 0.9
+    },
+    {
+      "id": "S35",
+      "text": "Apply masking tapes and film as described in previous processes.",
+      "order": 35,
+      "confidence": 0.9
+    },
+    {
+      "id": "S36",
+      "text": "Mix bottom paint in a 3M\u2122 PPS\u2122 Series 2.0 cup (remove lid filter) and apply using a 3M\u2122 Performance Spray Gun, holding it 15cm-20cm from the surface.",
+      "order": 36,
+      "confidence": 0.9
+    },
+    {
+      "id": "S37",
+      "text": "Apply paint 5cm-20cm from surface.",
+      "order": 37,
+      "confidence": 0.9
+    },
+    {
+      "id": "S38",
+      "text": "Evaluate product suitability and follow regulations.",
+      "order": 38,
+      "confidence": 0.85
+    }
+  ],
+  "constraints": [],
+  "entities": [
+    {
+      "content": "Approved cleaner for removing mold release materials.",
+      "entity_type": "specification",
+      "category": "cleaning_solution",
+      "confidence": 0.9,
+      "context": "Science. Applied to Life.\u2122\nStandard Operating Procedures for Marine OEM\n\n---\n\n### Page 2: Gelcoat Surface Preparation and Application Process\n\n**Health & Safety Recommendations:**\n* 3M E-A-R\u2122 Ultrafit...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M Hookit 775L Cubitron II abrasive discs for sanding.",
+      "entity_type": "specification",
+      "category": "abrasive_discs",
+      "confidence": 0.95,
+      "context": "Science. Applied to Life.\u2122\nStandard Operating Procedures for Marine OEM\n\n---\n\n### Page 2: Gelcoat Surface Preparation and Application Process\n\n**Health & Safety Recommendations:**\n* 3M E-A-R\u2122 Ultrafit...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M Marine Blister Repair Filler and Marine Premium Filler for filler application.",
+      "entity_type": "specification",
+      "category": "fillers",
+      "confidence": 0.9,
+      "context": "Science. Applied to Life.\u2122\nStandard Operating Procedures for Marine OEM\n\n---\n\n### Page 2: Gelcoat Surface Preparation and Application Process\n\n**Health & Safety Recommendations:**\n* 3M E-A-R\u2122 Ultrafit...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Approved cleaner.",
+      "entity_type": "specification",
+      "category": "cleaning_agent",
+      "confidence": 0.9,
+      "context": "ing Process\n\n1.  **Cleaning:** Clean the surface with approved cleaner.\n2.  **Sanding (Dry or Wet option):**\n    * **Dry:** Sand with 3M\u2122 Hookit\u2122 Purple Finishing Film Disc 260L+ P1200/1500 grade with...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M\u2122 Hookit\u2122 775L Cubitron\u2122 II 220+ grade abrasive.",
+      "entity_type": "specification",
+      "category": "sandpaper",
+      "confidence": 0.9,
+      "context": "ing Process\n\n1.  **Cleaning:** Clean the surface with approved cleaner.\n2.  **Sanding (Dry or Wet option):**\n    * **Dry:** Sand with 3M\u2122 Hookit\u2122 Purple Finishing Film Disc 260L+ P1200/1500 grade with...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M\u2122 Marine Premium Filler.",
+      "entity_type": "specification",
+      "category": "filler_material",
+      "confidence": 0.9,
+      "context": "ing Process\n\n1.  **Cleaning:** Clean the surface with approved cleaner.\n2.  **Sanding (Dry or Wet option):**\n    * **Dry:** Sand with 3M\u2122 Hookit\u2122 Purple Finishing Film Disc 260L+ P1200/1500 grade with...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M\u2122 PPS\u2122 Series 2.0 cup.",
+      "entity_type": "specification",
+      "category": "container",
+      "confidence": 0.9,
+      "context": "ing Process\n\n1.  **Cleaning:** Clean the surface with approved cleaner.\n2.  **Sanding (Dry or Wet option):**\n    * **Dry:** Sand with 3M\u2122 Hookit\u2122 Purple Finishing Film Disc 260L+ P1200/1500 grade with...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M\u2122 Performance Spray Gun.",
+      "entity_type": "specification",
+      "category": "spray_gun",
+      "confidence": 0.9,
+      "context": "ing Process\n\n1.  **Cleaning:** Clean the surface with approved cleaner.\n2.  **Sanding (Dry or Wet option):**\n    * **Dry:** Sand with 3M\u2122 Hookit\u2122 Purple Finishing Film Disc 260L+ P1200/1500 grade with...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    }
+  ],
+  "confidence_score": 0.9062500000000001,
+  "processing_time": 267.8930377960205,
+  "strategy_used": "llama_cpp:P0",
+  "quality_metrics": {
+    "entity_count": 8,
+    "avg_confidence": 0.9062500000000001,
+    "chunks_processed": 6
+  }
+}

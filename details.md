@@ -94,7 +94,7 @@ Repo‑specific notes and gotchas
 - .env template
   - See `.env.example` for commonly tuned runtime knobs (backend selection, chunk sizes, thresholds). Typical variables: `EXPLAINIUM_ENV`, `GPU_BACKEND`, `ENABLE_GPU`, `LLM_GPU_LAYERS`, `GPU_MEMORY_FRACTION`, `CHUNK_SIZE`, `QUALITY_THRESHOLD`.
 - Datasets and embeddings
-  - Gold annotations live under `datasets/archive/gold_human/` and an embedding model is expected under `models/embeddings/all-mpnet-base-v2` (present in repo). Preflight checks verify these.
+  - Gold annotations live under `datasets/archive/gold_human/` and semantic chunkers default to the SentenceTransformer hub id `all-mpnet-base-v2`, which downloads to the HF cache on first use (no manual directory required unless running fully offline).
 - Lint/format
   - No linter/formatter configuration is present in the repo; no commands are defined for linting.
 
