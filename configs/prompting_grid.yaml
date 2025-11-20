@@ -1,0 +1,45 @@
+# Configuration for prompting experiments
+
+out_root: logs/prompting_grid
+
+# LLM settings - using defaults from environment, can be overridden here
+llm:
+  backend: "cuda"
+  num_workers: 4
+  device_strategy: "round_robin"
+  # model_path is handled by transformers library for cuda backend
+
+# Documents to process
+documents:
+  - id: "3M_OEM_SOP"
+    path: "datasets/archive/test_data/text/3m_marine_oem_sop.txt"
+    gold: "datasets/archive/gold_human/3M_OEM_SOP.json"
+  - id: "DOA_Food_Proc"
+    path: "datasets/archive/test_data/text/DOA_Food_Man_Proc_Stor.txt"
+    gold: "datasets/archive/gold_human/DOA_Food_Man_Proc_Stor.json"
+  - id: "op_firesafety_guideline"
+    path: "datasets/archive/test_data/text/op_firesafety_guideline.txt"
+    gold: "datasets/archive/gold_human/op_firesafety_guideline.json"
+
+# Chunking settings (a default strategy for all experiments)
+chunking:
+  method: "dsc"
+  # Default DSC parameters will be used.
+
+# Prompting experiments to run
+prompting_experiments:
+  - name: "P0_zero_shot"
+    strategy: "P0"
+  - name: "P1_zero_shot_cot"
+    strategy: "P1"
+  - name: "P2_few_shot"
+    strategy: "P2"
+  - name: "P3_few_shot_cot"
+    strategy: "P3"
+
+# Evaluation settings
+evaluation:
+  tier: "A" # or "B" or "both"
+  threshold: 0.75
+  # embedding_model: "all-mpnet-base-v2" # keep default
+  # spacy_model: "en_core_web_sm" # keep default
