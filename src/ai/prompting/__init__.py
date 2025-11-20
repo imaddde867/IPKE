@@ -12,15 +12,22 @@ from src.ai.prompting.zero_shot import ZeroShotJSONStrategy
 
 
 def build_prompt_strategy(config: Any) -> PromptStrategy:
-    """Return the configured prompt strategy implementation."""
-
+    """Return the configured prompt strategy implementation.
+    
+    Strategy mapping (as per STRATEGIES.md):
+    - P0: ZeroShotJSONStrategy (baseline, zero-shot)
+    - P1: FewShotPromptStrategy (few-shot with examples)
+    - P2: CoTPromptStrategy (chain-of-thought reasoning)
+    - P3: TwoStageSchemaStrategy (two-stage schema extraction)
+    """
     strategy = getattr(config, "prompting_strategy", "P0").upper()
     if strategy == "P1":
         return FewShotPromptStrategy(config)
-    if strategy == "P2":
+    elif strategy == "P2":
         return CoTPromptStrategy(config)
-    if strategy == "P3":
+    elif strategy == "P3":
         return TwoStageSchemaStrategy(config)
+    # P0 or default
     return ZeroShotJSONStrategy(config)
 
 
