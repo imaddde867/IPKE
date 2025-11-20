@@ -1,0 +1,13 @@
+experiment,chunk_method,document_id,document_type,StepF1,AdjacencyF1,Kendall,ConstraintCoverage,ConstraintAttachmentF1,A_score,GraphF1,NEXT_EdgeF1,Logic_EdgeF1,ConstraintAttachmentF1_TierB,B_score
+fixed_2000_no_overlap,fixed,3M_OEM_SOP,unknown,0.246,0.0,0.929,0.0,0.0,0.172,0.0,0.0,0.0,,0.0
+fixed_2000_no_overlap,fixed,DOA_Food_Man_Proc_Stor,unknown,0.093,0.0,0.8,0.375,0.0,0.065,0.0,0.0,0.0,,0.0
+fixed_2000_no_overlap,fixed,op_firesafety_guideline,unknown,0.195,0.909,1.0,0.1,0.0,0.409,0.0,0.0,0.0,,0.0
+fixed_2000_overlap200,fixed,3M_OEM_SOP,unknown,0.147,0.0,0.9,0.0,0.0,0.103,0.0,0.0,0.0,,0.0
+fixed_2000_overlap200,fixed,DOA_Food_Man_Proc_Stor,unknown,0.059,0.0,1.0,0.25,0.0,0.041,0.0,0.0,0.0,,0.0
+fixed_2000_overlap200,fixed,op_firesafety_guideline,unknown,0.143,0.5,0.7,0.4,0.0,0.25,0.0,0.0,0.0,,0.0
+breakpoint_semantic_lambda015,breakpoint_semantic,3M_OEM_SOP,unknown,0.159,0.0,0.727,0.0,0.0,0.111,0.0,0.0,0.0,,0.0
+breakpoint_semantic_lambda015,breakpoint_semantic,DOA_Food_Man_Proc_Stor,unknown,0.025,0.0,0.6,0.25,0.0,0.018,0.0,0.0,0.0,,0.0
+breakpoint_semantic_lambda015,breakpoint_semantic,op_firesafety_guideline,unknown,0.095,0.333,0.861,0.3,0.0,0.166,0.0,0.0,0.0,,0.0
+dual_semantic_block16,dual_semantic,3M_OEM_SOP,unknown,0.105,0.0,0.929,0.0,0.0,0.074,0.0,0.0,0.0,,0.0
+dual_semantic_block16,dual_semantic,DOA_Food_Man_Proc_Stor,unknown,0.026,0.0,0.3,0.375,0.0,0.018,0.0,0.0,0.0,,0.0
+dual_semantic_block16,dual_semantic,op_firesafety_guideline,unknown,0.096,0.333,0.75,0.3,0.0,0.167,0.0,0.0,0.0,,0.0
