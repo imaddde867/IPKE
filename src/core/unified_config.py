@@ -22,6 +22,7 @@ class Environment(Enum):
     DEVELOPMENT = "development"
     TESTING = "testing"
     PRODUCTION = "production"
+    CLOUD = "cloud"
 
 
 def _get_env_value(*keys: str, default: Optional[str] = None) -> Optional[str]:

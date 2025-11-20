@@ -374,7 +374,11 @@ class UnifiedKnowledgeEngine:
             text = (constraint.get("text") or "").strip()
             if not text:
                 continue
-            raw_refs = constraint.get("steps", [])
+            # Support both "steps" (P0) and "attached_to" (P1/P2/P3) keys
+            raw_refs = constraint.get("steps") or constraint.get("attached_to") or []
+            if not isinstance(raw_refs, list):
+                raw_refs = [raw_refs]
+            
             attached_steps = [step_id_map[ref] for ref in raw_refs if ref in step_id_map]
             normalized.append(
                 {

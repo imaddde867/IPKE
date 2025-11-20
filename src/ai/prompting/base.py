@@ -23,6 +23,7 @@ class PromptStrategy(ABC):
     """Base interface for prompting regimes."""
 
     name: str = "P0"
+    stop_sequences: List[str] = ["</s>", "[/INST]"]
 
     def __init__(self, config) -> None:
         self.config = config
@@ -31,7 +32,19 @@ class PromptStrategy(ABC):
     def run(self, backend: LLMBackend, chunk: str, document_type: str) -> ChunkExtraction:
         """Execute the prompt logic for a chunk and return structured output."""
 
+    def _format_prompt(self, template: str, document_type: str, chunk: str) -> str:
+        """Format a prompt template with escaped document_type and chunk."""
+        return template.format(
+            document_type=_escape_braces(document_type),
+            chunk=_escape_braces(chunk)
+        )
+
     def _parse_json(self, response: str, chunk: str) -> ChunkExtraction:
+        """Parse LLM response into ChunkExtraction.
+        
+        All strategies should output constraints with "attached_to" array field
+        (not "steps") for consistency across P0, P1, P2, P3.
+        """
         payload = _extract_json_payload(response)
         if not payload:
             return ChunkExtraction()
