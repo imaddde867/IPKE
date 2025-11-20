@@ -7,6 +7,8 @@ import os
 import time
 from typing import Any, Dict, List, Optional, Tuple
 
+from copy import deepcopy
+
 import numpy as np
 
 from src.ai.types import ChunkExtraction, ExtractedEntity, ExtractionResult
@@ -370,24 +372,29 @@ class UnifiedKnowledgeEngine:
 
     def _normalize_constraints(self, constraints: List[Dict[str, Any]], step_id_map: Dict[str, str]) -> List[Dict[str, Any]]:
         normalized: List[Dict[str, Any]] = []
-        for idx, constraint in enumerate(constraints):
-            text = (constraint.get("text") or "").strip()
+        for constraint in constraints:
+            text = (
+                constraint.get("text")
+                or constraint.get("expression")
+                or constraint.get("description")
+                or ""
+            ).strip()
             if not text:
                 continue
-            # Support both "steps" (P0) and "attached_to" (P1/P2/P3) keys
             raw_refs = constraint.get("steps") or constraint.get("attached_to") or []
             if not isinstance(raw_refs, list):
                 raw_refs = [raw_refs]
-            
+
             attached_steps = [step_id_map[ref] for ref in raw_refs if ref in step_id_map]
-            normalized.append(
-                {
-                    "id": f"C{len(normalized) + 1}",
-                    "text": text,
-                    "confidence": self._coerce_confidence(constraint.get("confidence")),
-                    "steps": attached_steps,
-                }
-            )
+
+            normalized_constraint = deepcopy(constraint)
+            normalized_constraint.pop("steps", None)
+            normalized_constraint.pop("attached_to", None)
+            normalized_constraint["id"] = f"C{len(normalized) + 1}"
+            normalized_constraint["text"] = text
+            normalized_constraint["confidence"] = self._coerce_confidence(constraint.get("confidence"))
+            normalized_constraint["steps"] = attached_steps
+            normalized.append(normalized_constraint)
         return normalized
 
     def _update_stats(self, result: ExtractionResult):

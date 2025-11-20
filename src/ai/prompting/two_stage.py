@@ -8,9 +8,9 @@ P3 Strategy: Reduces cognitive load by splitting extraction into two stages:
 
 import json
 import textwrap
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 
-from src.ai.prompting.base import PromptStrategy, _escape_braces, _extract_json_payload
+from src.ai.prompting.base import PromptStrategy
 from src.ai.types import ChunkExtraction
 from src.logging_config import get_logger
 
@@ -78,7 +78,7 @@ From the text, extract:
 Respond ONLY with a JSON object:
 {{"steps": [], "constraints": [{{"id": "C1", "expression": "Condition", "type": "guard", "attached_to": ["S1"], "confidence": 0.85}}], "entities": [{{"content": "Item", "type": "material", "category": "material", "confidence": 0.9}}]}}
 
-Original text:
+Original {document_type} text:
 "{chunk}"
 [/INST]"""
         ).strip()
@@ -94,11 +94,11 @@ Original text:
 
         valid_step_ids = {step.get("id") for step in step_extraction.steps if step.get("id")}
         steps_json = json.dumps({"steps": step_extraction.steps}, ensure_ascii=False)
-        safe_steps_json = _escape_braces(steps_json)
-
-        stage2_prompt = self.stage2_template.format(
-            steps_json=safe_steps_json,
-            chunk=_escape_braces(chunk)
+        stage2_prompt = self._format_prompt(
+            self.stage2_template,
+            document_type,
+            chunk,
+            steps_json=steps_json,
         )
         combined_response = backend.generate(stage2_prompt, stop=self.stop_sequences)
         final = self._parse_json(combined_response, chunk)
