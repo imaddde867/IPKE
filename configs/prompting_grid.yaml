@@ -43,3 +43,5 @@ evaluation:
   threshold: 0.75
   # embedding_model: "all-mpnet-base-v2" # keep default
   # spacy_model: "en_core_web_sm" # keep default
+
+# Ready for execution on multi-GPU node.
