@@ -30,11 +30,11 @@ chunking:
 prompting_experiments:
   - name: "P0_zero_shot"
     strategy: "P0"
-  - name: "P1_zero_shot_cot"
+  - name: "P1_few_shot"
     strategy: "P1"
-  - name: "P2_few_shot"
+  - name: "P2_cot"
     strategy: "P2"
-  - name: "P3_few_shot_cot"
+  - name: "P3_two_stage"
     strategy: "P3"
 
 # Evaluation settings
