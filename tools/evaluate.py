@@ -412,7 +412,7 @@ def evaluate_tier_a_document(
         a_score = (
             0.5 * metrics.get("ConstraintCoverage", 0) +
             0.3 * metrics.get("StepF1", 0) +
-            0.2 * metrics.get("Kendall", 0)
+            0.2 * (metrics.get("Kendall") or 0)
         )
         metrics["A_score"] = round3(a_score)
     else:
@@ -756,7 +756,7 @@ def evaluate_tier_b_document(
         a_score = (
             0.5 * metrics.get("ConstraintCoverage", 0) +
             0.3 * metrics.get("StepF1", 0) +
-            0.2 * metrics.get("Kendall", 0)
+            0.2 * (metrics.get("Kendall") or 0)
         )
         metrics["A_score"] = round3(a_score)
     else:

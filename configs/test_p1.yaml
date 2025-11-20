@@ -1,0 +1,24 @@
+out_root: logs/test_p1
+
+llm:
+  backend: "transformers"
+  temperature: 0.25
+  max_tokens: 1536
+  num_workers: 1
+  device_strategy: "single"
+
+documents:
+  - id: "3M_OEM_SOP"
+    path: "datasets/archive/test_data/text/3m_marine_oem_sop.txt"
+    gold: "datasets/archive/gold_human/3M_OEM_SOP.json"
+
+chunking:
+  method: "dsc"
+
+prompting_experiments:
+  - name: "P1_few_shot"
+    strategy: "P1"
+
+evaluation:
+  tier: "A"
+  threshold: 0.75
