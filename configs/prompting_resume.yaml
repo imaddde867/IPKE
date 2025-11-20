@@ -1,16 +1,12 @@
-# Configuration for prompting experiments
-
 out_root: logs/prompting_grid
 
-# LLM settings - Use transformers (GPU-enabled)
 llm:
-  backend: "transformers"    # ✅ This uses GPU properly
+  backend: "transformers"
   temperature: 0.25
   max_tokens: 1536
   num_workers: 1
   device_strategy: "single"
 
-# Documents to process
 documents:
   - id: "3M_OEM_SOP"
     path: "datasets/archive/test_data/text/3m_marine_oem_sop.txt"
@@ -26,10 +22,7 @@ chunking:
   method: "dsc"
 
 prompting_experiments:
-  - name: "P0_zero_shot"
-    strategy: "P0"
-  - name: "P1_few_shot"
-    strategy: "P1"
+  # Skipping P0 and P1 because they are done/failed
   - name: "P2_cot"
     strategy: "P2"
   - name: "P3_two_stage"

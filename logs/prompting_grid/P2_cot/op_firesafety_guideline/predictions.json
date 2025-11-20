@@ -1,0 +1,16 @@
+{
+  "document_id": "op_firesafety_guideline",
+  "document_type": "text",
+  "metadata": {},
+  "steps": [],
+  "constraints": [],
+  "entities": [],
+  "confidence_score": 0.0,
+  "processing_time": 699.7443106174469,
+  "strategy_used": "transformers:P2",
+  "quality_metrics": {
+    "entity_count": 0,
+    "avg_confidence": 0.0,
+    "chunks_processed": 19
+  }
+}

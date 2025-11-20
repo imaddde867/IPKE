@@ -1,0 +1,826 @@
+{
+  "document_id": "3M_OEM_SOP",
+  "document_type": "text",
+  "metadata": {},
+  "steps": [
+    {
+      "id": "S1",
+      "text": "Ensure the surface is completely dry.",
+      "order": 1,
+      "confidence": 0.95
+    },
+    {
+      "id": "S2",
+      "text": "Mask areas with 3M\u2122 Precision Masking Tape first, then back it up with 3M\u2122 Performance Industrial Masking Tape 301E or 3M Scotch\u00ae Performance Masking Tape 244.",
+      "order": 2,
+      "confidence": 0.92
+    },
+    {
+      "id": "S3",
+      "text": "Mask the entire surface with 3M\u2122 Purple Premium Plus Masking Film.",
+      "order": 3,
+      "confidence": 0.93
+    },
+    {
+      "id": "S4",
+      "text": "Gelcoat application:",
+      "order": 4,
+      "confidence": 0.9
+    },
+    {
+      "id": "S5",
+      "text": "Ensure the surface is completely dry before starting gelcoat application.",
+      "order": 5,
+      "confidence": 0.91
+    },
+    {
+      "id": "S6",
+      "text": "Mix gelcoat in a 3M\u2122 PPS\u2122 Series 2.0 disposable spray cup.",
+      "order": 6,
+      "confidence": 0.91
+    },
+    {
+      "id": "S7",
+      "text": "Adjust 3M\u2122 Performance Spray Gun settings.",
+      "order": 7,
+      "confidence": 0.9
+    },
+    {
+      "id": "S8",
+      "text": "Hold spray gun 15cm-20cm from the surface and apply gelcoat.",
+      "order": 8,
+      "confidence": 0.92
+    },
+    {
+      "id": "S9",
+      "text": "Products: 3M\u2122 PPS\u2122 Series 2.0 Spray Cup System, 3M\u2122 Performance Spray Gun, 3M\u2122 Performance Gravity HVLP Atomising Head.",
+      "order": 9,
+      "confidence": 0.85
+    },
+    {
+      "id": "S10",
+      "text": "Clean the new external composite surface with approved cleaner",
+      "order": 10,
+      "confidence": 0.95
+    },
+    {
+      "id": "S11",
+      "text": "Sand with 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II 320+ and then 400+ grade abrasives with a Soft Interface Pad",
+      "order": 11,
+      "confidence": 0.92
+    },
+    {
+      "id": "S12",
+      "text": "Refine the P800 grade sand scratch using P1200 grade 3M\u2122 Hookit\u2122 Flexible Abrasive Foam Discs",
+      "order": 12,
+      "confidence": 0.9
+    },
+    {
+      "id": "S13",
+      "text": "Compound the surface with 3M\u2122 Perfect-It\u2122 Gelcoat Heavy Cutting Compound and a 3M\u2122 Perfect-It\u2122 Low Linting Wool Compounding Pad",
+      "order": 13,
+      "confidence": 0.93
+    },
+    {
+      "id": "S14",
+      "text": "Use a Rotary Polishing machine at 1400-1800 rpm",
+      "order": 14,
+      "confidence": 0.91
+    },
+    {
+      "id": "S15",
+      "text": "Polish with 3M\u2122 Perfect-It\u2122 Gelcoat Compound + Polish and a wool compounding pad at 1400-1800 rpm.",
+      "order": 15,
+      "confidence": 0.95
+    },
+    {
+      "id": "S16",
+      "text": "Apply 3M\u2122 Perfect-It\u2122 Boat Wax to a 10cm x 10cm area and wipe clean before it dries.",
+      "order": 16,
+      "confidence": 0.93
+    },
+    {
+      "id": "S17",
+      "text": "Compound the surface with 3M\u2122 Perfect-It\u2122 Gelcoat Compound + Polish and a 3M\u2122 Perfect-It\u2122 Low Linting Wool Compounding Pad. Use a Rotary Polishing machine at 1400-1800 rpm.",
+      "order": 17,
+      "confidence": 0.94
+    },
+    {
+      "id": "S18",
+      "text": "Cleaning: (Same as 6-step process)",
+      "order": 18,
+      "confidence": 0.9
+    },
+    {
+      "id": "S19",
+      "text": "Sanding: (Same as 6-step process)",
+      "order": 19,
+      "confidence": 0.91
+    },
+    {
+      "id": "S20",
+      "text": "Sand scratch refinement: (Same as 6-step process)",
+      "order": 20,
+      "confidence": 0.92
+    },
+    {
+      "id": "S21",
+      "text": "Clean the surface with approved cleaner",
+      "order": 21,
+      "confidence": 0.95
+    },
+    {
+      "id": "S22",
+      "text": "Using a DA sander with 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II 80+ grade abrasive discs, sand the surface",
+      "order": 22,
+      "confidence": 0.93
+    },
+    {
+      "id": "S23",
+      "text": "Apply 3M\u2122 Marine Premium Filler",
+      "order": 23,
+      "confidence": 0.92
+    },
+    {
+      "id": "S24",
+      "text": "After it sets, apply dry guide coat and sand with 120+ grade",
+      "order": 24,
+      "confidence": 0.91
+    },
+    {
+      "id": "S25",
+      "text": "Then finish sanding with 220+ grade",
+      "order": 25,
+      "confidence": 0.9
+    },
+    {
+      "id": "S26",
+      "text": "Clean the surface",
+      "order": 26,
+      "confidence": 0.89
+    },
+    {
+      "id": "S27",
+      "text": "Ensure the surface is dry.",
+      "order": 27,
+      "confidence": 0.95
+    },
+    {
+      "id": "S28",
+      "text": "Apply masking tapes and film as described in the gelcoat process.",
+      "order": 28,
+      "confidence": 0.92
+    },
+    {
+      "id": "S29",
+      "text": "Mix primer in a 3M\u2122 PPS\u2122 Series 2.0 cup and apply with a 3M\u2122 Performance Spray Gun.",
+      "order": 29,
+      "confidence": 0.93
+    },
+    {
+      "id": "S30",
+      "text": "Apply dry guide coat and sand the primer with 320+ grade abrasive discs, then repeat with 400+ grade.",
+      "order": 30,
+      "confidence": 0.91
+    },
+    {
+      "id": "S31",
+      "text": "Clean the surface.",
+      "order": 31,
+      "confidence": 0.9
+    },
+    {
+      "id": "S32",
+      "text": "Mix paint in a 3M\u2122 PPS\u2122 Series 2.0 cup and apply with a 3M\u2122 Performance Spray Gun.",
+      "order": 32,
+      "confidence": 0.94
+    },
+    {
+      "id": "S33",
+      "text": "Clean the surface with an approved cleaner",
+      "order": 33,
+      "confidence": 0.95
+    },
+    {
+      "id": "S34",
+      "text": "Compound the surface",
+      "order": 34,
+      "confidence": 0.92
+    },
+    {
+      "id": "S35",
+      "text": "Polish the surface",
+      "order": 35,
+      "confidence": 0.93
+    },
+    {
+      "id": "S36",
+      "text": "Apply protection by applying 3M\u2122 Perfect-It\u2122 Boat Wax to a 10cm x 10cm area and wiping clean before it dries",
+      "order": 36,
+      "confidence": 0.91
+    },
+    {
+      "id": "S37",
+      "text": "Sand the bottom surface using a dual-action sander with 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II 220+ grade abrasive",
+      "order": 37,
+      "confidence": 0.93
+    },
+    {
+      "id": "S38",
+      "text": "Clean the area",
+      "order": 38,
+      "confidence": 0.91
+    },
+    {
+      "id": "S39",
+      "text": "Mix and apply 3M\u2122 Marine Premium Filler",
+      "order": 39,
+      "confidence": 0.95
+    },
+    {
+      "id": "S40",
+      "text": "After it cures, sand with 120+ grade abrasive",
+      "order": 40,
+      "confidence": 0.92
+    },
+    {
+      "id": "S41",
+      "text": "Finish with 220+ grade",
+      "order": 41,
+      "confidence": 0.9
+    },
+    {
+      "id": "S42",
+      "text": "Ensure the surface is dry",
+      "order": 42,
+      "confidence": 0.94
+    },
+    {
+      "id": "S43",
+      "text": "Apply masking tapes and film",
+      "order": 43,
+      "confidence": 0.9
+    }
+  ],
+  "constraints": [],
+  "entities": [
+    {
+      "content": "3M\u2122 Precision Masking Tape",
+      "entity_type": "material",
+      "category": "tape",
+      "confidence": 0.95,
+      "context": "5. **Masking:**\n    * Ensure the surface is completely dry. * Mask areas with 3M\u2122 Precision Masking Tape first, then back it up with 3M\u2122 Performance Industrial Masking Tape 301E or 3M Scotch\u00ae Performa...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M\u2122 Performance Industrial Masking Tape 301E",
+      "entity_type": "material",
+      "category": "tape",
+      "confidence": 0.92,
+      "context": "5. **Masking:**\n    * Ensure the surface is completely dry. * Mask areas with 3M\u2122 Precision Masking Tape first, then back it up with 3M\u2122 Performance Industrial Masking Tape 301E or 3M Scotch\u00ae Performa...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M Scotch\u00ae Performance Masking Tape 244",
+      "entity_type": "material",
+      "category": "tape",
+      "confidence": 0.92,
+      "context": "5. **Masking:**\n    * Ensure the surface is completely dry. * Mask areas with 3M\u2122 Precision Masking Tape first, then back it up with 3M\u2122 Performance Industrial Masking Tape 301E or 3M Scotch\u00ae Performa...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M\u2122 Purple Premium Plus Masking Film",
+      "entity_type": "material",
+      "category": "film",
+      "confidence": 0.93,
+      "context": "5. **Masking:**\n    * Ensure the surface is completely dry. * Mask areas with 3M\u2122 Precision Masking Tape first, then back it up with 3M\u2122 Performance Industrial Masking Tape 301E or 3M Scotch\u00ae Performa...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M\u2122 Tapes",
+      "entity_type": "product",
+      "category": "product",
+      "confidence": 0.95,
+      "context": "5. **Masking:**\n    * Ensure the surface is completely dry. * Mask areas with 3M\u2122 Precision Masking Tape first, then back it up with 3M\u2122 Performance Industrial Masking Tape 301E or 3M Scotch\u00ae Performa...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M\u2122 PPS\u2122 Series 2.0 Disposable Spray Cup System",
+      "entity_type": "product",
+      "category": "product",
+      "confidence": 0.95,
+      "context": "5. **Masking:**\n    * Ensure the surface is completely dry. * Mask areas with 3M\u2122 Precision Masking Tape first, then back it up with 3M\u2122 Performance Industrial Masking Tape 301E or 3M Scotch\u00ae Performa...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M\u2122 Performance Spray Gun",
+      "entity_type": "product",
+      "category": "product",
+      "confidence": 0.9,
+      "context": "5. **Masking:**\n    * Ensure the surface is completely dry. * Mask areas with 3M\u2122 Precision Masking Tape first, then back it up with 3M\u2122 Performance Industrial Masking Tape 301E or 3M Scotch\u00ae Performa...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M\u2122 Performance Gravity HVLP Atomising Head",
+      "entity_type": "product",
+      "category": "product",
+      "confidence": 0.9,
+      "context": "5. **Masking:**\n    * Ensure the surface is completely dry. * Mask areas with 3M\u2122 Precision Masking Tape first, then back it up with 3M\u2122 Performance Industrial Masking Tape 301E or 3M Scotch\u00ae Performa...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M\u2122 Perfect-It\u2122 Gelcoat Compound + Polish",
+      "entity_type": "material",
+      "category": "material",
+      "confidence": 0.95,
+      "context": "5. **Polishing:** Polish with 3M\u2122 Perfect-It\u2122 Gelcoat Compound + Polish and a wool compounding pad at 1400-1800 rpm. 6. **Protection:** Apply 3M\u2122 Perfect-It\u2122 Boat Wax to a 10cm x 10cm area and wipe cl...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "wool compounding pad",
+      "entity_type": "tool",
+      "category": "tool",
+      "confidence": 0.9,
+      "context": "5. **Polishing:** Polish with 3M\u2122 Perfect-It\u2122 Gelcoat Compound + Polish and a wool compounding pad at 1400-1800 rpm. 6. **Protection:** Apply 3M\u2122 Perfect-It\u2122 Boat Wax to a 10cm x 10cm area and wipe cl...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Rotary Polishing machine",
+      "entity_type": "tool",
+      "category": "tool",
+      "confidence": 0.92,
+      "context": "5. **Polishing:** Polish with 3M\u2122 Perfect-It\u2122 Gelcoat Compound + Polish and a wool compounding pad at 1400-1800 rpm. 6. **Protection:** Apply 3M\u2122 Perfect-It\u2122 Boat Wax to a 10cm x 10cm area and wipe cl...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "10cm x 10cm area",
+      "entity_type": "specification",
+      "category": "parameter",
+      "confidence": 0.88,
+      "context": "5. **Polishing:** Polish with 3M\u2122 Perfect-It\u2122 Gelcoat Compound + Polish and a wool compounding pad at 1400-1800 rpm. 6. **Protection:** Apply 3M\u2122 Perfect-It\u2122 Boat Wax to a 10cm x 10cm area and wipe cl...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M\u2122 Perfect-It\u2122 Boat Wax",
+      "entity_type": "material",
+      "category": "material",
+      "confidence": 0.93,
+      "context": "5. **Polishing:** Polish with 3M\u2122 Perfect-It\u2122 Gelcoat Compound + Polish and a wool compounding pad at 1400-1800 rpm. 6. **Protection:** Apply 3M\u2122 Perfect-It\u2122 Boat Wax to a 10cm x 10cm area and wipe cl...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "1400-1800 rpm",
+      "entity_type": "specification",
+      "category": "parameter",
+      "confidence": 0.94,
+      "context": "5. **Polishing:** Polish with 3M\u2122 Perfect-It\u2122 Gelcoat Compound + Polish and a wool compounding pad at 1400-1800 rpm. 6. **Protection:** Apply 3M\u2122 Perfect-It\u2122 Boat Wax to a 10cm x 10cm area and wipe cl...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "approved cleaner",
+      "entity_type": "material",
+      "category": "cleaner",
+      "confidence": 0.9,
+      "context": "5. **Protection:** (Same as 6-step process)\n\n---\n\n### Page 5: Marine Paint Surface Preparation and Application Process\n\n1. **Cleaning:** Clean the surface with approved cleaner. 2. **Sanding:** Using ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "DA sander",
+      "entity_type": "tool",
+      "category": "power tool",
+      "confidence": 0.95,
+      "context": "5. **Protection:** (Same as 6-step process)\n\n---\n\n### Page 5: Marine Paint Surface Preparation and Application Process\n\n1. **Cleaning:** Clean the surface with approved cleaner. 2. **Sanding:** Using ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M\u2122 Hookit\u2122 775L Cubitron\u2122 II 80+ grade abrasive discs",
+      "entity_type": "tool",
+      "category": "abrasive disc",
+      "confidence": 0.95,
+      "context": "5. **Protection:** (Same as 6-step process)\n\n---\n\n### Page 5: Marine Paint Surface Preparation and Application Process\n\n1. **Cleaning:** Clean the surface with approved cleaner. 2. **Sanding:** Using ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M\u2122 Marine Premium Filler",
+      "entity_type": "material",
+      "category": "filler",
+      "confidence": 0.95,
+      "context": "5. **Protection:** (Same as 6-step process)\n\n---\n\n### Page 5: Marine Paint Surface Preparation and Application Process\n\n1. **Cleaning:** Clean the surface with approved cleaner. 2. **Sanding:** Using ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "dry guide coat",
+      "entity_type": "material",
+      "category": "coat",
+      "confidence": 0.9,
+      "context": "5. **Protection:** (Same as 6-step process)\n\n---\n\n### Page 5: Marine Paint Surface Preparation and Application Process\n\n1. **Cleaning:** Clean the surface with approved cleaner. 2. **Sanding:** Using ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "surface",
+      "entity_type": "component",
+      "category": "surface",
+      "confidence": 0.95,
+      "context": "5. **Protection:** (Same as 6-step process)\n\n---\n\n### Page 5: Marine Paint Surface Preparation and Application Process\n\n1. **Cleaning:** Clean the surface with approved cleaner. 2. **Sanding:** Using ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "surface",
+      "entity_type": "component",
+      "category": "component",
+      "confidence": 0.97,
+      "context": "4. **Masking:** Ensure the surface is dry. Apply masking tapes and film as described in the gelcoat process. 5. **Primer Application:** Mix primer in a 3M\u2122 PPS\u2122 Series 2.0 cup and apply with a 3M\u2122 Per...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "dry",
+      "entity_type": "specification",
+      "category": "condition",
+      "confidence": 0.96,
+      "context": "4. **Masking:** Ensure the surface is dry. Apply masking tapes and film as described in the gelcoat process. 5. **Primer Application:** Mix primer in a 3M\u2122 PPS\u2122 Series 2.0 cup and apply with a 3M\u2122 Per...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "gelcoat process",
+      "entity_type": "procedure",
+      "category": "procedure",
+      "confidence": 0.89,
+      "context": "4. **Masking:** Ensure the surface is dry. Apply masking tapes and film as described in the gelcoat process. 5. **Primer Application:** Mix primer in a 3M\u2122 PPS\u2122 Series 2.0 cup and apply with a 3M\u2122 Per...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "primer",
+      "entity_type": "material",
+      "category": "material",
+      "confidence": 0.91,
+      "context": "4. **Masking:** Ensure the surface is dry. Apply masking tapes and film as described in the gelcoat process. 5. **Primer Application:** Mix primer in a 3M\u2122 PPS\u2122 Series 2.0 cup and apply with a 3M\u2122 Per...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M\u2122 PPS\u2122 Series 2.0 cup",
+      "entity_type": "container",
+      "category": "tool",
+      "confidence": 0.93,
+      "context": "4. **Masking:** Ensure the surface is dry. Apply masking tapes and film as described in the gelcoat process. 5. **Primer Application:** Mix primer in a 3M\u2122 PPS\u2122 Series 2.0 cup and apply with a 3M\u2122 Per...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M\u2122 Performance Spray Gun",
+      "entity_type": "tool",
+      "category": "tool",
+      "confidence": 0.94,
+      "context": "4. **Masking:** Ensure the surface is dry. Apply masking tapes and film as described in the gelcoat process. 5. **Primer Application:** Mix primer in a 3M\u2122 PPS\u2122 Series 2.0 cup and apply with a 3M\u2122 Per...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "320+ grade abrasive discs",
+      "entity_type": "tool",
+      "category": "tool",
+      "confidence": 0.9,
+      "context": "4. **Masking:** Ensure the surface is dry. Apply masking tapes and film as described in the gelcoat process. 5. **Primer Application:** Mix primer in a 3M\u2122 PPS\u2122 Series 2.0 cup and apply with a 3M\u2122 Per...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "400+ grade abrasive discs",
+      "entity_type": "tool",
+      "category": "tool",
+      "confidence": 0.9,
+      "context": "4. **Masking:** Ensure the surface is dry. Apply masking tapes and film as described in the gelcoat process. 5. **Primer Application:** Mix primer in a 3M\u2122 PPS\u2122 Series 2.0 cup and apply with a 3M\u2122 Per...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "paint",
+      "entity_type": "material",
+      "category": "material",
+      "confidence": 0.92,
+      "context": "4. **Masking:** Ensure the surface is dry. Apply masking tapes and film as described in the gelcoat process. 5. **Primer Application:** Mix primer in a 3M\u2122 PPS\u2122 Series 2.0 cup and apply with a 3M\u2122 Per...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "approved cleaner",
+      "entity_type": "material",
+      "category": "cleaner",
+      "confidence": 0.9,
+      "context": "Clean the surface before compounding. 4. **Compounding:** Compound with 3M\u2122 Perfect-It\u2122 Fast Cut Plus Extreme and a 3M\u2122 wool or green foam compounding pad. Use a rotary polisher at 1400-1800 rpm. 5. *...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M\u2122 Perfect-It\u2122 Fast Cut Plus Extreme",
+      "entity_type": "material",
+      "category": "compound",
+      "confidence": 0.95,
+      "context": "Clean the surface before compounding. 4. **Compounding:** Compound with 3M\u2122 Perfect-It\u2122 Fast Cut Plus Extreme and a 3M\u2122 wool or green foam compounding pad. Use a rotary polisher at 1400-1800 rpm. 5. *...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M\u2122 wool or green foam compounding pad",
+      "entity_type": "tool",
+      "category": "pad",
+      "confidence": 0.92,
+      "context": "Clean the surface before compounding. 4. **Compounding:** Compound with 3M\u2122 Perfect-It\u2122 Fast Cut Plus Extreme and a 3M\u2122 wool or green foam compounding pad. Use a rotary polisher at 1400-1800 rpm. 5. *...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "rotary polisher",
+      "entity_type": "tool",
+      "category": "polisher",
+      "confidence": 0.91,
+      "context": "Clean the surface before compounding. 4. **Compounding:** Compound with 3M\u2122 Perfect-It\u2122 Fast Cut Plus Extreme and a 3M\u2122 wool or green foam compounding pad. Use a rotary polisher at 1400-1800 rpm. 5. *...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M\u2122 Perfect-It\u2122 Ultrafina SE Polish",
+      "entity_type": "material",
+      "category": "polish",
+      "confidence": 0.94,
+      "context": "Clean the surface before compounding. 4. **Compounding:** Compound with 3M\u2122 Perfect-It\u2122 Fast Cut Plus Extreme and a 3M\u2122 wool or green foam compounding pad. Use a rotary polisher at 1400-1800 rpm. 5. *...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M\u2122 wool or blue foam polishing pad",
+      "entity_type": "tool",
+      "category": "pad",
+      "confidence": 0.93,
+      "context": "Clean the surface before compounding. 4. **Compounding:** Compound with 3M\u2122 Perfect-It\u2122 Fast Cut Plus Extreme and a 3M\u2122 wool or green foam compounding pad. Use a rotary polisher at 1400-1800 rpm. 5. *...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M\u2122 Perfect-It\u2122 Boat Wax",
+      "entity_type": "material",
+      "category": "wax",
+      "confidence": 0.95,
+      "context": "Clean the surface before compounding. 4. **Compounding:** Compound with 3M\u2122 Perfect-It\u2122 Fast Cut Plus Extreme and a 3M\u2122 wool or green foam compounding pad. Use a rotary polisher at 1400-1800 rpm. 5. *...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "bottom surface",
+      "entity_type": "surface",
+      "category": "component",
+      "confidence": 0.95,
+      "context": "2. **Sanding:** Sand the bottom surface using a dual-action sander with 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II 220+ grade abrasive. Clean the area. 3. **Filler application:** Mix and apply 3M\u2122 Marine Premium F...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "dual-action sander",
+      "entity_type": "tool",
+      "category": "tool",
+      "confidence": 0.91,
+      "context": "2. **Sanding:** Sand the bottom surface using a dual-action sander with 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II 220+ grade abrasive. Clean the area. 3. **Filler application:** Mix and apply 3M\u2122 Marine Premium F...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M\u2122 Hookit\u2122 775L Cubitron\u2122 II 220+ grade abrasive",
+      "entity_type": "abrasive",
+      "category": "material",
+      "confidence": 0.92,
+      "context": "2. **Sanding:** Sand the bottom surface using a dual-action sander with 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II 220+ grade abrasive. Clean the area. 3. **Filler application:** Mix and apply 3M\u2122 Marine Premium F...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M\u2122 Marine Premium Filler",
+      "entity_type": "filler",
+      "category": "material",
+      "confidence": 0.95,
+      "context": "2. **Sanding:** Sand the bottom surface using a dual-action sander with 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II 220+ grade abrasive. Clean the area. 3. **Filler application:** Mix and apply 3M\u2122 Marine Premium F...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "masking tapes and film",
+      "entity_type": "masking_materials",
+      "category": "material",
+      "confidence": 0.9,
+      "context": "2. **Sanding:** Sand the bottom surface using a dual-action sander with 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II 220+ grade abrasive. Clean the area. 3. **Filler application:** Mix and apply 3M\u2122 Marine Premium F...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "dry surface",
+      "entity_type": "condition",
+      "category": "condition",
+      "confidence": 0.91,
+      "context": "2. **Sanding:** Sand the bottom surface using a dual-action sander with 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II 220+ grade abrasive. Clean the area. 3. **Filler application:** Mix and apply 3M\u2122 Marine Premium F...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M",
+      "entity_type": "company",
+      "category": "entity",
+      "confidence": 0.99,
+      "context": "3M, 3M Science. Applied to Life., Cubitron II, Finesse-It, Hookit, Perfect-It, PPS, Quick Connect, Roloc, Scotch, Stikit, Trizact, Wetordry are trademarks of the 3M Company....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "3M Science. Applied to Life.",
+      "entity_type": "brand",
+      "category": "entity",
+      "confidence": 0.95,
+      "context": "3M, 3M Science. Applied to Life., Cubitron II, Finesse-It, Hookit, Perfect-It, PPS, Quick Connect, Roloc, Scotch, Stikit, Trizact, Wetordry are trademarks of the 3M Company....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Cubitron II",
+      "entity_type": "product",
+      "category": "entity",
+      "confidence": 0.92,
+      "context": "3M, 3M Science. Applied to Life., Cubitron II, Finesse-It, Hookit, Perfect-It, PPS, Quick Connect, Roloc, Scotch, Stikit, Trizact, Wetordry are trademarks of the 3M Company....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Finesse-It",
+      "entity_type": "product",
+      "category": "entity",
+      "confidence": 0.88,
+      "context": "3M, 3M Science. Applied to Life., Cubitron II, Finesse-It, Hookit, Perfect-It, PPS, Quick Connect, Roloc, Scotch, Stikit, Trizact, Wetordry are trademarks of the 3M Company....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Hookit",
+      "entity_type": "product",
+      "category": "entity",
+      "confidence": 0.91,
+      "context": "3M, 3M Science. Applied to Life., Cubitron II, Finesse-It, Hookit, Perfect-It, PPS, Quick Connect, Roloc, Scotch, Stikit, Trizact, Wetordry are trademarks of the 3M Company....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Perfect-It",
+      "entity_type": "product",
+      "category": "entity",
+      "confidence": 0.87,
+      "context": "3M, 3M Science. Applied to Life., Cubitron II, Finesse-It, Hookit, Perfect-It, PPS, Quick Connect, Roloc, Scotch, Stikit, Trizact, Wetordry are trademarks of the 3M Company....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "PPS",
+      "entity_type": "product",
+      "category": "entity",
+      "confidence": 0.85,
+      "context": "3M, 3M Science. Applied to Life., Cubitron II, Finesse-It, Hookit, Perfect-It, PPS, Quick Connect, Roloc, Scotch, Stikit, Trizact, Wetordry are trademarks of the 3M Company....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Quick Connect",
+      "entity_type": "product",
+      "category": "entity",
+      "confidence": 0.9,
+      "context": "3M, 3M Science. Applied to Life., Cubitron II, Finesse-It, Hookit, Perfect-It, PPS, Quick Connect, Roloc, Scotch, Stikit, Trizact, Wetordry are trademarks of the 3M Company....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Roloc",
+      "entity_type": "product",
+      "category": "entity",
+      "confidence": 0.89,
+      "context": "3M, 3M Science. Applied to Life., Cubitron II, Finesse-It, Hookit, Perfect-It, PPS, Quick Connect, Roloc, Scotch, Stikit, Trizact, Wetordry are trademarks of the 3M Company....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Scotch",
+      "entity_type": "product",
+      "category": "entity",
+      "confidence": 0.93,
+      "context": "3M, 3M Science. Applied to Life., Cubitron II, Finesse-It, Hookit, Perfect-It, PPS, Quick Connect, Roloc, Scotch, Stikit, Trizact, Wetordry are trademarks of the 3M Company....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Stikit",
+      "entity_type": "product",
+      "category": "entity",
+      "confidence": 0.86,
+      "context": "3M, 3M Science. Applied to Life., Cubitron II, Finesse-It, Hookit, Perfect-It, PPS, Quick Connect, Roloc, Scotch, Stikit, Trizact, Wetordry are trademarks of the 3M Company....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Trizact",
+      "entity_type": "product",
+      "category": "entity",
+      "confidence": 0.84,
+      "context": "3M, 3M Science. Applied to Life., Cubitron II, Finesse-It, Hookit, Perfect-It, PPS, Quick Connect, Roloc, Scotch, Stikit, Trizact, Wetordry are trademarks of the 3M Company....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Wetordry",
+      "entity_type": "product",
+      "category": "entity",
+      "confidence": 0.83,
+      "context": "3M, 3M Science. Applied to Life., Cubitron II, Finesse-It, Hookit, Perfect-It, PPS, Quick Connect, Roloc, Scotch, Stikit, Trizact, Wetordry are trademarks of the 3M Company....",
+      "metadata": {
+        "llm_extracted": true
+      }
+    }
+  ],
+  "confidence_score": 0.9185454545454548,
+  "processing_time": 456.6295757293701,
+  "strategy_used": "transformers:P1",
+  "quality_metrics": {
+    "entity_count": 55,
+    "avg_confidence": 0.9185454545454548,
+    "chunks_processed": 12
+  }
+}

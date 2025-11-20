@@ -1,0 +1,1682 @@
+{
+  "document_id": "op_firesafety_guideline",
+  "document_type": "text",
+  "metadata": {},
+  "steps": [
+    {
+      "id": "S1",
+      "text": "Evaluate machine's fire risk",
+      "order": 1,
+      "confidence": 0.8
+    },
+    {
+      "id": "S2",
+      "text": "Issue clear instructions regarding safety",
+      "order": 2,
+      "confidence": 0.8
+    },
+    {
+      "id": "S3",
+      "text": "Supervise compliance with issued instructions",
+      "order": 3,
+      "confidence": 0.8
+    },
+    {
+      "id": "S4",
+      "text": "Perform scheduled maintenance according to manufacturer's instructions",
+      "order": 4,
+      "confidence": 0.9
+    },
+    {
+      "id": "S5",
+      "text": "Use authentic replacement parts from known manufacturers",
+      "order": 5,
+      "confidence": 0.8
+    },
+    {
+      "id": "S6",
+      "text": "Check joints of hoses and pipes",
+      "order": 6,
+      "confidence": 0.8
+    },
+    {
+      "id": "S7",
+      "text": "Inspect electrical systems",
+      "order": 7,
+      "confidence": 0.8
+    },
+    {
+      "id": "S8",
+      "text": "Use a multimeter to measure voltage drops",
+      "order": 8,
+      "confidence": 0.8
+    },
+    {
+      "id": "S9",
+      "text": "Visually inspect electrical systems at least once a year",
+      "order": 9,
+      "confidence": 0.8
+    },
+    {
+      "id": "S10",
+      "text": "Document electrical system inspections",
+      "order": 10,
+      "confidence": 0.8
+    },
+    {
+      "id": "S11",
+      "text": "Service electrical systems daily on electric-powered and hybrid machines",
+      "order": 11,
+      "confidence": 0.8
+    },
+    {
+      "id": "S12",
+      "text": "Inspect electrical systems with a thermal imaging camera",
+      "order": 12,
+      "confidence": 0.8
+    },
+    {
+      "id": "S13",
+      "text": "Compare readings with an intact machine.",
+      "order": 13,
+      "confidence": 0.9
+    },
+    {
+      "id": "S14",
+      "text": "Ensure power is cut off when switch is used.",
+      "order": 14,
+      "confidence": 0.8
+    },
+    {
+      "id": "S15",
+      "text": "Find emergency kill switch location and operation.",
+      "order": 15,
+      "confidence": 0.7
+    },
+    {
+      "id": "S16",
+      "text": "Repair any malfunctions before using it again.",
+      "order": 16,
+      "confidence": 0.7
+    },
+    {
+      "id": "S17",
+      "text": "Check battery condition.",
+      "order": 17,
+      "confidence": 0.9
+    },
+    {
+      "id": "S18",
+      "text": "Repair any deviations.",
+      "order": 18,
+      "confidence": 0.8
+    },
+    {
+      "id": "S19",
+      "text": "Ensure cable terminals are intact and covered.",
+      "order": 19,
+      "confidence": 0.8
+    },
+    {
+      "id": "S20",
+      "text": "Provide sufficient ventilation for the battery compartment.",
+      "order": 20,
+      "confidence": 0.8
+    },
+    {
+      "id": "S21",
+      "text": "Ensure fuses and their boxes are intact.",
+      "order": 21,
+      "confidence": 0.9
+    },
+    {
+      "id": "S22",
+      "text": "Investigate causes of blown fuses.",
+      "order": 22,
+      "confidence": 0.8
+    },
+    {
+      "id": "S23",
+      "text": "Attach cables in high-vibration engine compartment.",
+      "order": 23,
+      "confidence": 0.9
+    },
+    {
+      "id": "S24",
+      "text": "Fasteners and cable ties should be installed.",
+      "order": 24,
+      "confidence": 0.7
+    },
+    {
+      "id": "S25",
+      "text": "Fasteners and cable ties should withstand temperatures of 120\u00b0C.",
+      "order": 25,
+      "confidence": 0.8
+    },
+    {
+      "id": "S26",
+      "text": "Do not attach cables to pipes or hoses containing flammable material.",
+      "order": 26,
+      "confidence": 0.9
+    },
+    {
+      "id": "S27",
+      "text": "Firmly attach alternator with correct belt tension and have terminal covers.",
+      "order": 27,
+      "confidence": 0.9
+    },
+    {
+      "id": "S28",
+      "text": "Keep alternator filter clean.",
+      "order": 28,
+      "confidence": 0.9
+    },
+    {
+      "id": "S29",
+      "text": "Check exhaust pipe for leaks and ensure all thermal shields are in place.",
+      "order": 29,
+      "confidence": 0.8
+    },
+    {
+      "id": "S30",
+      "text": "Inspect all hoses and electrical systems in swivelling joint weekly.",
+      "order": 30,
+      "confidence": 0.9
+    },
+    {
+      "id": "S31",
+      "text": "Remove any rocks or twigs from swivelling joint immediately.",
+      "order": 31,
+      "confidence": 0.9
+    },
+    {
+      "id": "S32",
+      "text": "Ensure all operating manuals are available in machine and understood by operator.",
+      "order": 32,
+      "confidence": 0.8
+    },
+    {
+      "id": "S33",
+      "text": "Check cleanliness and condition of auxiliary heater and its compartment before winter.",
+      "order": 33,
+      "confidence": 0.8
+    },
+    {
+      "id": "S34",
+      "text": "Inspect heater's exhaust pipe to ensure it doesn't touch anything flammable.",
+      "order": 34,
+      "confidence": 0.7
+    },
+    {
+      "id": "S35",
+      "text": "Test heater under supervision before use.",
+      "order": 35,
+      "confidence": 0.7
+    },
+    {
+      "id": "S36",
+      "text": "Install a fixed fire extinguishing system in autonomous machines",
+      "order": 36,
+      "confidence": 0.9
+    },
+    {
+      "id": "S37",
+      "text": "Protect hot components, flammable liquid hoses/tanks, and electrical components with the system",
+      "order": 37,
+      "confidence": 0.9
+    },
+    {
+      "id": "S38",
+      "text": "Ensure the system covers the entire engine compartment",
+      "order": 38,
+      "confidence": 0.9
+    },
+    {
+      "id": "S39",
+      "text": "Use at least 6 liters of agent per protected cubic meter in non-hazardous environments",
+      "order": 39,
+      "confidence": 0.8
+    },
+    {
+      "id": "S40",
+      "text": "Use at least 3 liters of agent per cubic meter in hazardous environments",
+      "order": 40,
+      "confidence": 0.8
+    },
+    {
+      "id": "S41",
+      "text": "Connect the detection system to non-fused cables",
+      "order": 41,
+      "confidence": 0.8
+    },
+    {
+      "id": "S42",
+      "text": "Confirm engine fire.",
+      "order": 42,
+      "confidence": 0.9
+    },
+    {
+      "id": "S43",
+      "text": "Activate fire extinguishing system.",
+      "order": 43,
+      "confidence": 0.9
+    },
+    {
+      "id": "S44",
+      "text": "Evacuate personnel from the area.",
+      "order": 44,
+      "confidence": 0.9
+    },
+    {
+      "id": "S45",
+      "text": "Call emergency services.",
+      "order": 45,
+      "confidence": 0.9
+    },
+    {
+      "id": "S46",
+      "text": "Remain calm.",
+      "order": 46,
+      "confidence": 0.8
+    },
+    {
+      "id": "S47",
+      "text": "Shut down the engine.",
+      "order": 47,
+      "confidence": 0.9
+    },
+    {
+      "id": "S48",
+      "text": "Move the machine outdoors (if indoors).",
+      "order": 48,
+      "confidence": 0.8
+    },
+    {
+      "id": "S49",
+      "text": "Cut electricity from the main power switch.",
+      "order": 49,
+      "confidence": 0.9
+    },
+    {
+      "id": "S50",
+      "text": "Call for help (use emergency number 112).",
+      "order": 50,
+      "confidence": 0.9
+    },
+    {
+      "id": "S51",
+      "text": "Report all accidents and dangerous situations to a supervisor immediately.",
+      "order": 51,
+      "confidence": 0.9
+    },
+    {
+      "id": "S52",
+      "text": "Stop and leave the machine in place if possible.",
+      "order": 52,
+      "confidence": 0.9
+    },
+    {
+      "id": "S53",
+      "text": "Prevent further damage and minimize injuries.",
+      "order": 53,
+      "confidence": 0.9
+    },
+    {
+      "id": "S54",
+      "text": "Wear protective clothing and a helmet.",
+      "order": 54,
+      "confidence": 0.8
+    },
+    {
+      "id": "S55",
+      "text": "Use a hands-free device for phone calls.",
+      "order": 55,
+      "confidence": 0.8
+    },
+    {
+      "id": "S56",
+      "text": "Perform first-aid fire extinguishing.",
+      "order": 56,
+      "confidence": 0.7
+    },
+    {
+      "id": "S57",
+      "text": "Use stepladders and handrails while climbing, maintaining three points of contact.",
+      "order": 57,
+      "confidence": 0.8
+    },
+    {
+      "id": "S58",
+      "text": "Keep doors closed during operation.",
+      "order": 58,
+      "confidence": 0.8
+    },
+    {
+      "id": "S59",
+      "text": "Repair any malfunctions that could lead to an accident without delay.",
+      "order": 59,
+      "confidence": 0.8
+    }
+  ],
+  "constraints": [
+    {
+      "id": "C1",
+      "expression": "Machine's operating environment should be considered when evaluating its fire risk.",
+      "type": "precondition",
+      "confidence": 0.9,
+      "text": "Machine's operating environment should be considered when evaluating its fire risk.",
+      "steps": [
+        "S1"
+      ]
+    },
+    {
+      "id": "C2",
+      "expression": "Clear instructions regarding safety must be issued before commencing work.",
+      "type": "timing",
+      "confidence": 0.8,
+      "text": "Clear instructions regarding safety must be issued before commencing work.",
+      "steps": [
+        "S2"
+      ]
+    },
+    {
+      "id": "C3",
+      "expression": "Compliance with safety instructions must be supervised.",
+      "type": "frequency",
+      "confidence": 0.8,
+      "text": "Compliance with safety instructions must be supervised.",
+      "steps": [
+        "S3"
+      ]
+    },
+    {
+      "id": "C4",
+      "expression": "Machine functions properly after scheduled maintenance",
+      "type": "postcondition",
+      "confidence": 0.95,
+      "text": "Machine functions properly after scheduled maintenance",
+      "steps": [
+        "S57"
+      ]
+    },
+    {
+      "id": "C5",
+      "expression": "Authentic replacement parts are used during maintenance",
+      "type": "precondition",
+      "confidence": 0.9,
+      "text": "Authentic replacement parts are used during maintenance",
+      "steps": [
+        "S58"
+      ]
+    },
+    {
+      "id": "C6",
+      "expression": "High-quality materials are used for maintenance",
+      "type": "guard",
+      "confidence": 0.8,
+      "text": "High-quality materials are used for maintenance",
+      "steps": [
+        "S57"
+      ]
+    },
+    {
+      "id": "C7",
+      "expression": "The temperature of hydraulic hoses should not exceed 120\u00b0C.",
+      "type": "precondition",
+      "confidence": 0.95,
+      "text": "The temperature of hydraulic hoses should not exceed 120\u00b0C.",
+      "steps": [
+        "S6"
+      ]
+    },
+    {
+      "id": "C8",
+      "expression": "Perform visual electrical system inspections at least once a year.",
+      "type": "timing",
+      "confidence": 0.9,
+      "text": "Perform visual electrical system inspections at least once a year.",
+      "steps": [
+        "S9"
+      ]
+    },
+    {
+      "id": "C9",
+      "expression": "Voltage drops exceeding 20W indicate an increased fire risk.",
+      "type": "guard",
+      "confidence": 0.9,
+      "text": "Voltage drops exceeding 20W indicate an increased fire risk.",
+      "steps": [
+        "S8"
+      ]
+    },
+    {
+      "id": "C10",
+      "expression": "Use a thermal imaging camera for electrical system inspections.",
+      "type": "tool",
+      "confidence": 0.8,
+      "text": "Use a thermal imaging camera for electrical system inspections.",
+      "steps": [
+        "S10",
+        "S12"
+      ]
+    },
+    {
+      "id": "C11",
+      "expression": "Machine reading comparison is only valid with an intact machine.",
+      "type": "guard",
+      "confidence": 0.95,
+      "text": "Machine reading comparison is only valid with an intact machine.",
+      "steps": [
+        "S57"
+      ]
+    },
+    {
+      "id": "C12",
+      "expression": "Main power switch must be located outside engine compartment and visibly marked.",
+      "type": "precondition",
+      "confidence": 0.9,
+      "text": "Main power switch must be located outside engine compartment and visibly marked.",
+      "steps": [
+        "S58"
+      ]
+    },
+    {
+      "id": "C13",
+      "expression": "Power must be cut off when main power switch is used.",
+      "type": "guard",
+      "confidence": 0.9,
+      "text": "Power must be cut off when main power switch is used.",
+      "steps": [
+        "S58"
+      ]
+    },
+    {
+      "id": "C14",
+      "expression": "Know location and operation of emergency kill switch before starting machine.",
+      "type": "precondition",
+      "confidence": 0.9,
+      "text": "Know location and operation of emergency kill switch before starting machine.",
+      "steps": [
+        "S54"
+      ]
+    },
+    {
+      "id": "C15",
+      "expression": "Repair malfunctions before resuming operation after emergency kill switch usage.",
+      "type": "postcondition",
+      "confidence": 0.9,
+      "text": "Repair malfunctions before resuming operation after emergency kill switch usage.",
+      "steps": [
+        "S54"
+      ]
+    },
+    {
+      "id": "C16",
+      "expression": "Battery repair required for any deviations.",
+      "type": "precondition",
+      "confidence": 0.9,
+      "text": "Battery repair required for any deviations.",
+      "steps": [
+        "S56"
+      ]
+    },
+    {
+      "id": "C17",
+      "expression": "Cable terminals must be intact and covered.",
+      "type": "precondition",
+      "confidence": 0.9,
+      "text": "Cable terminals must be intact and covered.",
+      "steps": [
+        "S19"
+      ]
+    },
+    {
+      "id": "C18",
+      "expression": "Sufficient ventilation for battery compartment.",
+      "type": "precondition",
+      "confidence": 0.9,
+      "text": "Sufficient ventilation for battery compartment.",
+      "steps": [
+        "S20"
+      ]
+    },
+    {
+      "id": "C19",
+      "expression": "Check cables not protected by a fuse (battery, alternator, starter motor) at least once a year.",
+      "type": "timing",
+      "confidence": 0.95,
+      "text": "Check cables not protected by a fuse (battery, alternator, starter motor) at least once a year.",
+      "steps": [
+        "S6"
+      ]
+    },
+    {
+      "id": "C20",
+      "expression": "Check rubber collars on lead-through cables.",
+      "type": "guard",
+      "confidence": 0.9,
+      "text": "Check rubber collars on lead-through cables.",
+      "steps": [
+        "S6",
+        "S7"
+      ]
+    },
+    {
+      "id": "C21",
+      "expression": "Replace cables with signs of abrasion or heat damage.",
+      "type": "condition",
+      "confidence": 0.95,
+      "text": "Replace cables with signs of abrasion or heat damage.",
+      "steps": [
+        "S8"
+      ]
+    },
+    {
+      "id": "C22",
+      "expression": "Protect cables with a housing pipe.",
+      "type": "action",
+      "confidence": 0.9,
+      "text": "Protect cables with a housing pipe.",
+      "steps": [
+        "S9"
+      ]
+    },
+    {
+      "id": "C23",
+      "expression": "Keep cables clean of oil and dirt.",
+      "type": "precondition",
+      "confidence": 0.95,
+      "text": "Keep cables clean of oil and dirt.",
+      "steps": [
+        "S10"
+      ]
+    },
+    {
+      "id": "C24",
+      "expression": "Do not attach cables to hoses or pipes.",
+      "type": "prohibition",
+      "confidence": 0.9,
+      "text": "Do not attach cables to hoses or pipes.",
+      "steps": [
+        "S11"
+      ]
+    },
+    {
+      "id": "C25",
+      "expression": "Protect cable harnesses and attach firmly.",
+      "type": "requirement",
+      "confidence": 0.95,
+      "text": "Protect cable harnesses and attach firmly.",
+      "steps": [
+        "S12"
+      ]
+    },
+    {
+      "id": "C26",
+      "expression": "Ensure cable connections are tight and have terminal covers.",
+      "type": "verification",
+      "confidence": 0.95,
+      "text": "Ensure cable connections are tight and have terminal covers.",
+      "steps": []
+    },
+    {
+      "id": "C27",
+      "expression": "Check electric panel during maintenance.",
+      "type": "timing",
+      "confidence": 0.95,
+      "text": "Check electric panel during maintenance.",
+      "steps": []
+    },
+    {
+      "id": "C28",
+      "expression": "Repair any redundant or hanging wires in electric panel.",
+      "type": "action",
+      "confidence": 0.95,
+      "text": "Repair any redundant or hanging wires in electric panel.",
+      "steps": []
+    },
+    {
+      "id": "C29",
+      "expression": "Fuse boxes are intact and have lids.",
+      "type": "precondition",
+      "confidence": 0.95,
+      "text": "Fuse boxes are intact and have lids.",
+      "steps": [
+        "S57"
+      ]
+    },
+    {
+      "id": "C30",
+      "expression": "Cables in high-vibration engine compartment have fastening brackets no more than 150mm apart.",
+      "type": "timing",
+      "confidence": 0.9,
+      "text": "Cables in high-vibration engine compartment have fastening brackets no more than 150mm apart.",
+      "steps": [
+        "S59"
+      ]
+    },
+    {
+      "id": "C31",
+      "expression": "Fasteners and cable ties can withstand temperatures of 120\u00b0C.",
+      "type": "parameter",
+      "confidence": 0.9,
+      "text": "Fasteners and cable ties can withstand temperatures of 120\u00b0C.",
+      "steps": [
+        "S59"
+      ]
+    },
+    {
+      "id": "C32",
+      "expression": "Do not attach cables to pipes or hoses containing flammable material.",
+      "type": "guard",
+      "confidence": 0.95,
+      "text": "Do not attach cables to pipes or hoses containing flammable material.",
+      "steps": [
+        "S59"
+      ]
+    },
+    {
+      "id": "C33",
+      "expression": "The alternator is firmly attached with correct belt tension and has terminal covers.",
+      "type": "precondition",
+      "confidence": 0.95,
+      "text": "The alternator is firmly attached with correct belt tension and has terminal covers.",
+      "steps": [
+        "S57"
+      ]
+    },
+    {
+      "id": "C34",
+      "expression": "The alternator filter is kept clean.",
+      "type": "timing",
+      "confidence": 0.9,
+      "text": "The alternator filter is kept clean.",
+      "steps": [
+        "S58"
+      ]
+    },
+    {
+      "id": "C35",
+      "expression": "No exhaust leaks are present.",
+      "type": "guard",
+      "confidence": 0.8,
+      "text": "No exhaust leaks are present.",
+      "steps": [
+        "S59"
+      ]
+    },
+    {
+      "id": "C36",
+      "expression": "All thermal shields on the exhaust pipe are in place.",
+      "type": "postcondition",
+      "confidence": 0.9,
+      "text": "All thermal shields on the exhaust pipe are in place.",
+      "steps": [
+        "S59"
+      ]
+    },
+    {
+      "id": "C37",
+      "expression": "Weekly inspection of hoses and electrical systems in swivelling joint",
+      "type": "timing",
+      "confidence": 0.95,
+      "text": "Weekly inspection of hoses and electrical systems in swivelling joint",
+      "steps": [
+        "S57"
+      ]
+    },
+    {
+      "id": "C38",
+      "expression": "Immediate removal of rocks or twigs from swivelling joint",
+      "type": "timing",
+      "confidence": 0.95,
+      "text": "Immediate removal of rocks or twigs from swivelling joint",
+      "steps": [
+        "S58"
+      ]
+    },
+    {
+      "id": "C39",
+      "expression": "Availability of operating manuals in language understood by operator",
+      "type": "precondition",
+      "confidence": 0.8,
+      "text": "Availability of operating manuals in language understood by operator",
+      "steps": [
+        "S59"
+      ]
+    },
+    {
+      "id": "C40",
+      "expression": "Cleanliness and condition check of auxiliary heater and its compartment before winter",
+      "type": "frequency",
+      "confidence": 0.9,
+      "text": "Cleanliness and condition check of auxiliary heater and its compartment before winter",
+      "steps": [
+        "S54"
+      ]
+    },
+    {
+      "id": "C41",
+      "expression": "Heater compartment must be clean and free of fuel leaks",
+      "type": "guard",
+      "confidence": 0.85,
+      "text": "Heater compartment must be clean and free of fuel leaks",
+      "steps": [
+        "S54"
+      ]
+    },
+    {
+      "id": "C42",
+      "expression": "Exhaust pipe inspection to ensure it doesn't touch anything flammable",
+      "type": "guard",
+      "confidence": 0.75,
+      "text": "Exhaust pipe inspection to ensure it doesn't touch anything flammable",
+      "steps": [
+        "S55"
+      ]
+    },
+    {
+      "id": "C43",
+      "expression": "Supervision during heater testing",
+      "type": "environmental",
+      "confidence": 0.8,
+      "text": "Supervision during heater testing",
+      "steps": [
+        "S56"
+      ]
+    },
+    {
+      "id": "C44",
+      "expression": "Autonomous machines in non-hazardous environments require a fixed fire extinguishing system with minimum 6 liters of agent per cubic meter (S1)",
+      "type": "guard",
+      "confidence": 0.95,
+      "text": "Autonomous machines in non-hazardous environments require a fixed fire extinguishing system with minimum 6 liters of agent per cubic meter (S1)",
+      "steps": [
+        "S57"
+      ]
+    },
+    {
+      "id": "C45",
+      "expression": "Autonomous machines in hazardous environments require a fixed fire extinguishing system with minimum 3 liters of agent per cubic meter (S1)",
+      "type": "guard",
+      "confidence": 0.95,
+      "text": "Autonomous machines in hazardous environments require a fixed fire extinguishing system with minimum 3 liters of agent per cubic meter (S1)",
+      "steps": [
+        "S57"
+      ]
+    },
+    {
+      "id": "C46",
+      "expression": "Detection system in autonomous machines must cover the entire engine compartment (S1, S5)",
+      "type": "guard",
+      "confidence": 0.9,
+      "text": "Detection system in autonomous machines must cover the entire engine compartment (S1, S5)",
+      "steps": [
+        "S57",
+        "S55"
+      ]
+    },
+    {
+      "id": "C47",
+      "expression": "Machines in hazardous environments require a fixed, fully automatic fire extinguishing system (S2)",
+      "type": "guard",
+      "confidence": 0.9,
+      "text": "Machines in hazardous environments require a fixed, fully automatic fire extinguishing system (S2)",
+      "steps": [
+        "S58"
+      ]
+    },
+    {
+      "id": "C48",
+      "expression": "There must be at least 3 liters of extinguishing agent for each cubic meter of the engine or heater compartment in hazardous environments (S2)",
+      "type": "guard",
+      "confidence": 0.9,
+      "text": "There must be at least 3 liters of extinguishing agent for each cubic meter of the engine or heater compartment in hazardous environments (S2)",
+      "steps": [
+        "S58"
+      ]
+    },
+    {
+      "id": "C49",
+      "expression": "Detection system in autonomous machines must be connected to non-fused cables (S3, S6)",
+      "type": "guard",
+      "confidence": 0.9,
+      "text": "Detection system in autonomous machines must be connected to non-fused cables (S3, S6)",
+      "steps": [
+        "S59",
+        "S56"
+      ]
+    },
+    {
+      "id": "C50",
+      "expression": "The system's operation must be confirmed during start-up.",
+      "type": "guard",
+      "confidence": 0.95,
+      "text": "The system's operation must be confirmed during start-up.",
+      "steps": [
+        "S59"
+      ]
+    },
+    {
+      "id": "C51",
+      "expression": "Any malfunction MUST be repaired immediately.",
+      "type": "guard",
+      "confidence": 0.9,
+      "text": "Any malfunction MUST be repaired immediately.",
+      "steps": [
+        "S59"
+      ]
+    },
+    {
+      "id": "C52",
+      "expression": "The system MUST be serviced at least once a year.",
+      "type": "frequency",
+      "confidence": 0.9,
+      "text": "The system MUST be serviced at least once a year.",
+      "steps": [
+        "S59"
+      ]
+    },
+    {
+      "id": "C53",
+      "expression": "Engine compartments MUST be cleaned daily.",
+      "type": "timing",
+      "confidence": 0.9,
+      "text": "Engine compartments MUST be cleaned daily.",
+      "steps": [
+        "S59"
+      ]
+    },
+    {
+      "id": "C54",
+      "expression": "If indoors, move the machine outdoors before shutting down the engine.",
+      "type": "precondition",
+      "confidence": 0.95,
+      "text": "If indoors, move the machine outdoors before shutting down the engine.",
+      "steps": [
+        "S58"
+      ]
+    },
+    {
+      "id": "C55",
+      "expression": "Avoid moving the machine near flammable materials before shutting it down.",
+      "type": "guard",
+      "confidence": 0.85,
+      "text": "Avoid moving the machine near flammable materials before shutting it down.",
+      "steps": [
+        "S58"
+      ]
+    },
+    {
+      "id": "C56",
+      "expression": "Confirm fire is completely out before leaving the area.",
+      "type": "guard",
+      "confidence": 0.9,
+      "text": "Confirm fire is completely out before leaving the area.",
+      "steps": [
+        "S56"
+      ]
+    },
+    {
+      "id": "C57",
+      "expression": "Follow up with the fire department after initial fire control.",
+      "type": "postcondition",
+      "confidence": 0.8,
+      "text": "Follow up with the fire department after initial fire control.",
+      "steps": [
+        "S56"
+      ]
+    },
+    {
+      "id": "C58",
+      "expression": "Report the incident to relevant parties.",
+      "type": "postcondition",
+      "confidence": 0.8,
+      "text": "Report the incident to relevant parties.",
+      "steps": [
+        "S57",
+        "S56"
+      ]
+    },
+    {
+      "id": "C59",
+      "expression": "Ensure protective clothing is worn during operation.",
+      "type": "precondition",
+      "confidence": 0.9,
+      "text": "Ensure protective clothing is worn during operation.",
+      "steps": [
+        "S54"
+      ]
+    },
+    {
+      "id": "C60",
+      "expression": "Maintain proper safety measures while climbing.",
+      "type": "guard",
+      "confidence": 0.9,
+      "text": "Maintain proper safety measures while climbing.",
+      "steps": [
+        "S57"
+      ]
+    },
+    {
+      "id": "C61",
+      "expression": "Doors must be closed during equipment operation.",
+      "type": "guard",
+      "confidence": 0.9,
+      "text": "Doors must be closed during equipment operation.",
+      "steps": [
+        "S58"
+      ]
+    },
+    {
+      "id": "C62",
+      "expression": "Malfunctioning parts should be repaired promptly.",
+      "type": "guard",
+      "confidence": 0.9,
+      "text": "Malfunctioning parts should be repaired promptly.",
+      "steps": [
+        "S59"
+      ]
+    }
+  ],
+  "entities": [
+    {
+      "content": "machine",
+      "entity_type": "equipment",
+      "category": "mechanical",
+      "confidence": 0.95,
+      "context": "The focus should be on prevention through high-quality, ongoing service and maintenance. If a fire does break out, first-aid extinguishing equipment is crucial. **Servicing and maintenance to prevent ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "manufacturer's instructions",
+      "entity_type": "document",
+      "category": "procedural",
+      "confidence": 0.9,
+      "context": "The focus should be on prevention through high-quality, ongoing service and maintenance. If a fire does break out, first-aid extinguishing equipment is crucial. **Servicing and maintenance to prevent ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "authentic replacement parts",
+      "entity_type": "component",
+      "category": "replacement",
+      "confidence": 0.9,
+      "context": "The focus should be on prevention through high-quality, ongoing service and maintenance. If a fire does break out, first-aid extinguishing equipment is crucial. **Servicing and maintenance to prevent ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "known manufacturers",
+      "entity_type": "organization",
+      "category": "supplier",
+      "confidence": 0.85,
+      "context": "The focus should be on prevention through high-quality, ongoing service and maintenance. If a fire does break out, first-aid extinguishing equipment is crucial. **Servicing and maintenance to prevent ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "engine compartment",
+      "entity_type": "location",
+      "category": "environment",
+      "confidence": 0.9,
+      "context": "The focus should be on prevention through high-quality, ongoing service and maintenance. If a fire does break out, first-aid extinguishing equipment is crucial. **Servicing and maintenance to prevent ...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "hydraulic hoses",
+      "entity_type": "component",
+      "category": "pipe",
+      "confidence": 0.9,
+      "context": "Check joints of hoses and pipes. * **Oil and hydraulic oil leaks:** Check the engine compartment for oil leaks. Normal hydraulic hoses withstand about 120\u00b0C; protect them with thermal shields or tubes...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "oil",
+      "entity_type": "material",
+      "category": "lubricant",
+      "confidence": 0.9,
+      "context": "Check joints of hoses and pipes. * **Oil and hydraulic oil leaks:** Check the engine compartment for oil leaks. Normal hydraulic hoses withstand about 120\u00b0C; protect them with thermal shields or tubes...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "electrical systems",
+      "entity_type": "system",
+      "category": "electrical",
+      "confidence": 0.9,
+      "context": "Check joints of hoses and pipes. * **Oil and hydraulic oil leaks:** Check the engine compartment for oil leaks. Normal hydraulic hoses withstand about 120\u00b0C; protect them with thermal shields or tubes...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "multimeter",
+      "entity_type": "tool",
+      "category": "measurement",
+      "confidence": 0.9,
+      "context": "Check joints of hoses and pipes. * **Oil and hydraulic oil leaks:** Check the engine compartment for oil leaks. Normal hydraulic hoses withstand about 120\u00b0C; protect them with thermal shields or tubes...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "thermal imaging camera",
+      "entity_type": "tool",
+      "category": "imaging",
+      "confidence": 0.9,
+      "context": "Check joints of hoses and pipes. * **Oil and hydraulic oil leaks:** Check the engine compartment for oil leaks. Normal hydraulic hoses withstand about 120\u00b0C; protect them with thermal shields or tubes...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Intact machine",
+      "entity_type": "machine",
+      "category": "equipment",
+      "confidence": 0.9,
+      "context": "Compare readings with an intact machine. **Main power switch**\n* Working machines over 500 kg must have a main power switch located outside the engine compartment and visibly marked. * The switch pole...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Main power switch",
+      "entity_type": "switch",
+      "category": "electrical component",
+      "confidence": 0.9,
+      "context": "Compare readings with an intact machine. **Main power switch**\n* Working machines over 500 kg must have a main power switch located outside the engine compartment and visibly marked. * The switch pole...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Emergency kill switch",
+      "entity_type": "switch",
+      "category": "emergency component",
+      "confidence": 0.9,
+      "context": "Compare readings with an intact machine. **Main power switch**\n* Working machines over 500 kg must have a main power switch located outside the engine compartment and visibly marked. * The switch pole...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Battery",
+      "entity_type": "battery",
+      "category": "energy storage",
+      "confidence": 0.9,
+      "context": "Compare readings with an intact machine. **Main power switch**\n* Working machines over 500 kg must have a main power switch located outside the engine compartment and visibly marked. * The switch pole...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Cable terminals",
+      "entity_type": "terminal",
+      "category": "electrical connection",
+      "confidence": 0.9,
+      "context": "Compare readings with an intact machine. **Main power switch**\n* Working machines over 500 kg must have a main power switch located outside the engine compartment and visibly marked. * The switch pole...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "cables",
+      "entity_type": "component",
+      "category": "electrical",
+      "confidence": 0.95,
+      "context": "**Cables**\n* Check cables not protected by a fuse (battery, alternator, starter motor) several times a year, especially lead-throughs, which must have rubber collars. * Replace cables showing signs of...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "fuse",
+      "entity_type": "component",
+      "category": "electrical",
+      "confidence": 0.9,
+      "context": "**Cables**\n* Check cables not protected by a fuse (battery, alternator, starter motor) several times a year, especially lead-throughs, which must have rubber collars. * Replace cables showing signs of...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "rubber collars",
+      "entity_type": "component",
+      "category": "mechanical",
+      "confidence": 0.9,
+      "context": "**Cables**\n* Check cables not protected by a fuse (battery, alternator, starter motor) several times a year, especially lead-throughs, which must have rubber collars. * Replace cables showing signs of...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "housing pipe",
+      "entity_type": "component",
+      "category": "mechanical",
+      "confidence": 0.9,
+      "context": "**Cables**\n* Check cables not protected by a fuse (battery, alternator, starter motor) several times a year, especially lead-throughs, which must have rubber collars. * Replace cables showing signs of...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "oil",
+      "entity_type": "substance",
+      "category": "lubricant",
+      "confidence": 0.9,
+      "context": "**Cables**\n* Check cables not protected by a fuse (battery, alternator, starter motor) several times a year, especially lead-throughs, which must have rubber collars. * Replace cables showing signs of...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "dirt",
+      "entity_type": "substance",
+      "category": "contaminant",
+      "confidence": 0.9,
+      "context": "**Cables**\n* Check cables not protected by a fuse (battery, alternator, starter motor) several times a year, especially lead-throughs, which must have rubber collars. * Replace cables showing signs of...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "electric panel",
+      "entity_type": "component",
+      "category": "electrical",
+      "confidence": 0.95,
+      "context": "**Cables**\n* Check cables not protected by a fuse (battery, alternator, starter motor) several times a year, especially lead-throughs, which must have rubber collars. * Replace cables showing signs of...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "wires",
+      "entity_type": "component",
+      "category": "electrical",
+      "confidence": 0.95,
+      "context": "**Cables**\n* Check cables not protected by a fuse (battery, alternator, starter motor) several times a year, especially lead-throughs, which must have rubber collars. * Replace cables showing signs of...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Fuse box",
+      "entity_type": "component",
+      "category": "electrical",
+      "confidence": 0.9,
+      "context": "* Fuse boxes must be intact and have lids. Ensure fuses are the correct size. Investigate the cause of any blown fuse. **Attachment of cables**\n* Cables in the high-vibration engine compartment must h...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Lid",
+      "entity_type": "component",
+      "category": "mechanical",
+      "confidence": 0.9,
+      "context": "* Fuse boxes must be intact and have lids. Ensure fuses are the correct size. Investigate the cause of any blown fuse. **Attachment of cables**\n* Cables in the high-vibration engine compartment must h...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Cable",
+      "entity_type": "component",
+      "category": "electrical",
+      "confidence": 0.9,
+      "context": "* Fuse boxes must be intact and have lids. Ensure fuses are the correct size. Investigate the cause of any blown fuse. **Attachment of cables**\n* Cables in the high-vibration engine compartment must h...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "High-vibration engine compartment",
+      "entity_type": "location",
+      "category": "physical environment",
+      "confidence": 0.9,
+      "context": "* Fuse boxes must be intact and have lids. Ensure fuses are the correct size. Investigate the cause of any blown fuse. **Attachment of cables**\n* Cables in the high-vibration engine compartment must h...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Fastener",
+      "entity_type": "material",
+      "category": "hardware",
+      "confidence": 0.9,
+      "context": "* Fuse boxes must be intact and have lids. Ensure fuses are the correct size. Investigate the cause of any blown fuse. **Attachment of cables**\n* Cables in the high-vibration engine compartment must h...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Cable tie",
+      "entity_type": "material",
+      "category": "fastener",
+      "confidence": 0.9,
+      "context": "* Fuse boxes must be intact and have lids. Ensure fuses are the correct size. Investigate the cause of any blown fuse. **Attachment of cables**\n* Cables in the high-vibration engine compartment must h...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Flammable material",
+      "entity_type": "substance",
+      "category": "chemical",
+      "confidence": 0.9,
+      "context": "* Fuse boxes must be intact and have lids. Ensure fuses are the correct size. Investigate the cause of any blown fuse. **Attachment of cables**\n* Cables in the high-vibration engine compartment must h...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Pipe",
+      "entity_type": "component",
+      "category": "plumbing",
+      "confidence": 0.9,
+      "context": "* Fuse boxes must be intact and have lids. Ensure fuses are the correct size. Investigate the cause of any blown fuse. **Attachment of cables**\n* Cables in the high-vibration engine compartment must h...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Hose",
+      "entity_type": "component",
+      "category": "plumbing",
+      "confidence": 0.9,
+      "context": "* Fuse boxes must be intact and have lids. Ensure fuses are the correct size. Investigate the cause of any blown fuse. **Attachment of cables**\n* Cables in the high-vibration engine compartment must h...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "alternator",
+      "entity_type": "component",
+      "category": "electrical",
+      "confidence": 0.95,
+      "context": "**Alternator**\n* The alternator must be firmly attached with correct belt tension and have terminal covers. * Keep any alternator filter clean to prevent overheating. * Check for anomalies with a ther...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "belt",
+      "entity_type": "tool",
+      "category": "mechanical",
+      "confidence": 0.9,
+      "context": "**Alternator**\n* The alternator must be firmly attached with correct belt tension and have terminal covers. * Keep any alternator filter clean to prevent overheating. * Check for anomalies with a ther...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "terminal covers",
+      "entity_type": "component",
+      "category": "electrical",
+      "confidence": 0.9,
+      "context": "**Alternator**\n* The alternator must be firmly attached with correct belt tension and have terminal covers. * Keep any alternator filter clean to prevent overheating. * Check for anomalies with a ther...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "filter",
+      "entity_type": "component",
+      "category": "mechanical",
+      "confidence": 0.9,
+      "context": "**Alternator**\n* The alternator must be firmly attached with correct belt tension and have terminal covers. * Keep any alternator filter clean to prevent overheating. * Check for anomalies with a ther...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "exhaust pipe",
+      "entity_type": "component",
+      "category": "mechanical",
+      "confidence": 0.9,
+      "context": "**Alternator**\n* The alternator must be firmly attached with correct belt tension and have terminal covers. * Keep any alternator filter clean to prevent overheating. * Check for anomalies with a ther...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "thermal shields",
+      "entity_type": "material",
+      "category": "insulation",
+      "confidence": 0.9,
+      "context": "**Alternator**\n* The alternator must be firmly attached with correct belt tension and have terminal covers. * Keep any alternator filter clean to prevent overheating. * Check for anomalies with a ther...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "hoses and electrical systems",
+      "entity_type": "component",
+      "category": "mechanical",
+      "confidence": 0.9,
+      "context": "**Swivelling joint**\nIf the machine has a swivelling joint, inspect all hoses and electrical systems in it weekly. Remove any rocks or twigs immediately. **Operating manual**\n* Ensure all operating ma...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "rocks and twigs",
+      "entity_type": "material",
+      "category": "debris",
+      "confidence": 0.9,
+      "context": "**Swivelling joint**\nIf the machine has a swivelling joint, inspect all hoses and electrical systems in it weekly. Remove any rocks or twigs immediately. **Operating manual**\n* Ensure all operating ma...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "operating manuals",
+      "entity_type": "document",
+      "category": "information",
+      "confidence": 0.9,
+      "context": "**Swivelling joint**\nIf the machine has a swivelling joint, inspect all hoses and electrical systems in it weekly. Remove any rocks or twigs immediately. **Operating manual**\n* Ensure all operating ma...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "auxiliary heater",
+      "entity_type": "equipment",
+      "category": "heating",
+      "confidence": 0.9,
+      "context": "**Swivelling joint**\nIf the machine has a swivelling joint, inspect all hoses and electrical systems in it weekly. Remove any rocks or twigs immediately. **Operating manual**\n* Ensure all operating ma...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "wiring",
+      "entity_type": "component",
+      "category": "electrical",
+      "confidence": 0.8,
+      "context": "**Swivelling joint**\nIf the machine has a swivelling joint, inspect all hoses and electrical systems in it weekly. Remove any rocks or twigs immediately. **Operating manual**\n* Ensure all operating ma...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "fuel",
+      "entity_type": "material",
+      "category": "energy",
+      "confidence": 0.8,
+      "context": "**Swivelling joint**\nIf the machine has a swivelling joint, inspect all hoses and electrical systems in it weekly. Remove any rocks or twigs immediately. **Operating manual**\n* Ensure all operating ma...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "exhaust pipe",
+      "entity_type": "component",
+      "category": "emission",
+      "confidence": 0.8,
+      "context": "**Swivelling joint**\nIf the machine has a swivelling joint, inspect all hoses and electrical systems in it weekly. Remove any rocks or twigs immediately. **Operating manual**\n* Ensure all operating ma...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Fixed fire extinguishing system",
+      "entity_type": "system",
+      "category": "general",
+      "confidence": 0.95,
+      "context": "* **Fire extinguishing systems in autonomous working machines:**\n    * Autonomous machines must have a fixed fire extinguishing system protecting hot components, flammable liquid hoses/tanks, and elec...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Agent",
+      "entity_type": "material",
+      "category": "extinguishing agent",
+      "confidence": 0.95,
+      "context": "* **Fire extinguishing systems in autonomous working machines:**\n    * Autonomous machines must have a fixed fire extinguishing system protecting hot components, flammable liquid hoses/tanks, and elec...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Engine compartment",
+      "entity_type": "component",
+      "category": "general",
+      "confidence": 0.95,
+      "context": "* **Fire extinguishing systems in autonomous working machines:**\n    * Autonomous machines must have a fixed fire extinguishing system protecting hot components, flammable liquid hoses/tanks, and elec...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Non-fused cables",
+      "entity_type": "tool",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "* **Fire extinguishing systems in autonomous working machines:**\n    * Autonomous machines must have a fixed fire extinguishing system protecting hot components, flammable liquid hoses/tanks, and elec...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Fire extinguishing openings",
+      "entity_type": "component",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "* Installation requires a certificate, and compliance requires a test report. * The system's operation must be confirmed at start-up. Any malfunction must be repaired immediately by an authorized shop...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Dafo Oy",
+      "entity_type": "approved_extinguishing_equipment_supplier",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "* Installation requires a certificate, and compliance requires a test report. * The system's operation must be confirmed at start-up. Any malfunction must be repaired immediately by an authorized shop...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "OEM Finland Oy",
+      "entity_type": "approved_extinguishing_equipment_supplier",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "* Installation requires a certificate, and compliance requires a test report. * The system's operation must be confirmed at start-up. Any malfunction must be repaired immediately by an authorized shop...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "YTM-industrial",
+      "entity_type": "approved_extinguishing_equipment_supplier",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "* Installation requires a certificate, and compliance requires a test report. * The system's operation must be confirmed at start-up. Any malfunction must be repaired immediately by an authorized shop...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Mikro-Pulssi",
+      "entity_type": "approved_extinguishing_equipment_supplier",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "* Installation requires a certificate, and compliance requires a test report. * The system's operation must be confirmed at start-up. Any malfunction must be repaired immediately by an authorized shop...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Teknosafe Oy",
+      "entity_type": "approved_extinguishing_equipment_supplier",
+      "category": "general",
+      "confidence": 0.9,
+      "context": "* Installation requires a certificate, and compliance requires a test report. * The system's operation must be confirmed at start-up. Any malfunction must be repaired immediately by an authorized shop...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "engine",
+      "entity_type": "component",
+      "category": "mechanical",
+      "confidence": 0.9,
+      "context": "Remain calm. Shut down the engine as quickly as possible. If indoors, move the machine outdoors first. If near flammable material, move the machine before shutting down. 2. Cut electricity from the ma...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "machine",
+      "entity_type": "tool",
+      "category": "equipment",
+      "confidence": 0.9,
+      "context": "Remain calm. Shut down the engine as quickly as possible. If indoors, move the machine outdoors first. If near flammable material, move the machine before shutting down. 2. Cut electricity from the ma...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "main power switch",
+      "entity_type": "switch",
+      "category": "electrical",
+      "confidence": 0.9,
+      "context": "Remain calm. Shut down the engine as quickly as possible. If indoors, move the machine outdoors first. If near flammable material, move the machine before shutting down. 2. Cut electricity from the ma...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "emergency number 112",
+      "entity_type": "number",
+      "category": "communication",
+      "confidence": 0.9,
+      "context": "Remain calm. Shut down the engine as quickly as possible. If indoors, move the machine outdoors first. If near flammable material, move the machine before shutting down. 2. Cut electricity from the ma...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "smartphone app",
+      "entity_type": "application",
+      "category": "software",
+      "confidence": 0.8,
+      "context": "Remain calm. Shut down the engine as quickly as possible. If indoors, move the machine outdoors first. If near flammable material, move the machine before shutting down. 2. Cut electricity from the ma...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "flammable material",
+      "entity_type": "material",
+      "category": "hazardous",
+      "confidence": 0.9,
+      "context": "Remain calm. Shut down the engine as quickly as possible. If indoors, move the machine outdoors first. If near flammable material, move the machine before shutting down. 2. Cut electricity from the ma...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Fire",
+      "entity_type": "hazard",
+      "category": "environmental",
+      "confidence": 0.9,
+      "context": "Perform first-aid fire extinguishing. 5. Even if the fire seems controlled, have the fire department confirm it is out. 6. Report the incident to the safety officer, site manager, coworkers, and insur...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Supervisor",
+      "entity_type": "personnel",
+      "category": "role",
+      "confidence": 0.9,
+      "context": "Perform first-aid fire extinguishing. 5. Even if the fire seems controlled, have the fire department confirm it is out. 6. Report the incident to the safety officer, site manager, coworkers, and insur...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Machine",
+      "entity_type": "equipment",
+      "category": "tool",
+      "confidence": 0.9,
+      "context": "Perform first-aid fire extinguishing. 5. Even if the fire seems controlled, have the fire department confirm it is out. 6. Report the incident to the safety officer, site manager, coworkers, and insur...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Insurance company",
+      "entity_type": "organization",
+      "category": "entity",
+      "confidence": 0.8,
+      "context": "Perform first-aid fire extinguishing. 5. Even if the fire seems controlled, have the fire department confirm it is out. 6. Report the incident to the safety officer, site manager, coworkers, and insur...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Protective clothing",
+      "entity_type": "material",
+      "category": "material",
+      "confidence": 0.9,
+      "context": "Perform first-aid fire extinguishing. 5. Even if the fire seems controlled, have the fire department confirm it is out. 6. Report the incident to the safety officer, site manager, coworkers, and insur...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Helmet",
+      "entity_type": "equipment",
+      "category": "tool",
+      "confidence": 0.9,
+      "context": "Perform first-aid fire extinguishing. 5. Even if the fire seems controlled, have the fire department confirm it is out. 6. Report the incident to the safety officer, site manager, coworkers, and insur...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Hands-free device",
+      "entity_type": "equipment",
+      "category": "tool",
+      "confidence": 0.8,
+      "context": "Perform first-aid fire extinguishing. 5. Even if the fire seems controlled, have the fire department confirm it is out. 6. Report the incident to the safety officer, site manager, coworkers, and insur...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    },
+    {
+      "content": "Safety belt",
+      "entity_type": "equipment",
+      "category": "tool",
+      "confidence": 0.8,
+      "context": "Perform first-aid fire extinguishing. 5. Even if the fire seems controlled, have the fire department confirm it is out. 6. Report the incident to the safety officer, site manager, coworkers, and insur...",
+      "metadata": {
+        "llm_extracted": true
+      }
+    }
+  ],
+  "confidence_score": 0.8949275362318831,
+  "processing_time": 457.5372247695923,
+  "strategy_used": "transformers:P3",
+  "quality_metrics": {
+    "entity_count": 69,
+    "avg_confidence": 0.8949275362318831,
+    "chunks_processed": 19
+  }
+}

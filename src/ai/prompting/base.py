@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Protocol
 
@@ -44,67 +45,89 @@ class PromptStrategy(ABC):
     def _parse_json(self, response: str, chunk: str) -> ChunkExtraction:
         """Parse LLM response into ChunkExtraction.
         
-        All strategies should output constraints with "attached_to" array field
-        (not "steps") for consistency across P0, P1, P2, P3.
+        Robustly attempts to find JSON in the response.
         """
         payload = _extract_json_payload(response)
         if not payload:
+            logger.warning("No JSON found in response. Response length: %d", len(response))
             return ChunkExtraction()
+            
         try:
             data = json.loads(payload)
         except json.JSONDecodeError:
-            logger.warning("Failed to parse JSON payload from response: %.80s", response)
-            return ChunkExtraction()
-        steps = _ensure_dict_list(data.get("steps"))
-        constraints = _ensure_dict_list(data.get("constraints"))
-        entities = _build_entities(_ensure_dict_list(data.get("entities")), chunk)
+            # Try to repair common JSON errors (like trailing commas)
+            try:
+                cleaned = re.sub(r",\s*([\]}])", r"\1", payload)
+                data = json.loads(cleaned)
+            except json.JSONDecodeError:
+                logger.warning("Failed to parse JSON payload from response: %.80s...", payload.replace("\n", " "))
+                return ChunkExtraction()
+        
+        # flexible key matching
+        steps_key = next((k for k in data.keys() if k.lower() in ["steps", "procedures", "actions"]), "steps")
+        constraints_key = next((k for k in data.keys() if k.lower() in ["constraints", "conditions", "rules"]), "constraints")
+        entities_key = next((k for k in data.keys() if k.lower() in ["entities", "items", "objects"]), "entities")
+
+        steps = _ensure_dict_list(data.get(steps_key))
+        constraints = _ensure_dict_list(data.get(constraints_key))
+        entities = _build_entities(_ensure_dict_list(data.get(entities_key)), chunk)
+        
         return ChunkExtraction(entities=entities, steps=steps, constraints=constraints)
 
 
 def _extract_json_payload(text: str) -> Optional[str]:
-    """Return the JSON portion from an LLM response."""
+    """Return the JSON portion from an LLM response.
+    
+    Priority:
+    1. Content between <json> and </json> tags (explicit)
+    2. Content between ```json and ``` (code blocks)
+    3. The last valid {...} or [...] block in the text (heuristic for CoT)
+    """
     if not text:
         return None
 
-    lower = text.lower()
-    start_tag = lower.find("<json>")
-    end_tag = lower.find("</json>")
-    if start_tag != -1 and end_tag != -1 and end_tag > start_tag:
-        payload = text[start_tag + len("<json>"):end_tag].strip()
-        return payload or None
+    # 1. Explicit tags (highest priority)
+    pattern_tags = r"<json>(.*?)</json>"
+    match = re.search(pattern_tags, text, re.DOTALL | re.IGNORECASE)
+    if match:
+        return match.group(1).strip()
 
-    opening = text.find("{")
-    if opening == -1:
-        opening = text.find("[")
-    if opening == -1:
-        return None
+    # 2. Markdown code blocks
+    pattern_code = r"```(?:json)?(.*?)```"
+    match = re.search(pattern_code, text, re.DOTALL | re.IGNORECASE)
+    if match:
+        return match.group(1).strip()
 
+    # 3. Brute force: Find the largest valid JSON object
+    # This is useful when the model outputs "Reasoning... {JSON}" without tags
+    candidates = []
     stack = []
-    in_string = False
-    escape = False
-    for idx in range(opening, len(text)):
-        ch = text[idx]
-        if escape:
-            escape = False
-            continue
-        if ch == "\\":
-            escape = True
-            continue
-        if ch == "\"":
-            in_string = not in_string
-            continue
-        if in_string:
-            continue
-        if ch in "{[":
-            stack.append(ch)
-        elif ch in "}]":
+    start = -1
+    
+    for i, char in enumerate(text):
+        if char == '{':
             if not stack:
-                return None
-            opener = stack.pop()
-            if (opener, ch) not in {("{", "}"), ("[", "]")}:
-                return None
-            if not stack:
-                return text[opening : idx + 1]
+                start = i
+            stack.append(char)
+        elif char == '}':
+            if stack:
+                stack.pop()
+                if not stack:
+                    candidates.append(text[start : i + 1])
+    
+    # If we found candidates, try to parse them backwards (assuming the last one is the result)
+    for candidate in reversed(candidates):
+        try:
+            json.loads(candidate)
+            return candidate
+        except json.JSONDecodeError:
+            continue
+
+    # Fallback for simple errors (trailing characters)
+    clean_text = text.strip()
+    if clean_text.startswith("{") and clean_text.endswith("}"):
+        return clean_text
+        
     return None
 
 
