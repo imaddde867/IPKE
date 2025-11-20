@@ -18,8 +18,10 @@ class CoTPromptStrategy(PromptStrategy):
 
     name = "P2"
 
-    template = textwrap.dedent(
-        """[INST]You are an expert technical analyst specializing in procedural knowledge extraction.
+    @property
+    def template(self) -> str:
+        return textwrap.dedent(
+            """[INST]You are an expert technical analyst specializing in procedural knowledge extraction.
 Your goal is to extract a structured procedural graph from industrial documents.
 
 Perform the following reasoning steps in natural language BEFORE generating the final JSON:
@@ -67,18 +69,12 @@ Now provide your reasoning (1-2 sentences for each step), then output ONLY the J
 {{ "steps": [], "constraints": [], "entities": [] }}
 </json>
 [/INST]"""
-    ).strip()
+        ).strip()
 
     def run(self, backend, chunk: str, document_type: str) -> ChunkExtraction:
-        prompt = self.template.format(document_type=_escape_braces(document_type), chunk=_escape_braces(chunk))
-        response = backend.generate(prompt, stop=["</s>", "[/INST]"])
-        payload = response
-        if "<json" in response.lower():
-            start = response.lower().find("<json")
-            closing = response.lower().rfind("</json>")
-            if closing != -1:
-                payload = response[start:closing]
-        return self._parse_json(payload, chunk)
+        prompt = self._format_prompt(self.template, document_type, chunk)
+        response = backend.generate(prompt, stop=self.stop_sequences)
+        return self._parse_json(response, chunk)
 
 
 __all__ = ["CoTPromptStrategy"]

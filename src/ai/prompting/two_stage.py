@@ -10,7 +10,7 @@ import json
 import textwrap
 from typing import List, Dict, Any, Optional
 
-from src.ai.prompting.base import PromptStrategy, _escape_braces
+from src.ai.prompting.base import PromptStrategy, _escape_braces, _extract_json_payload
 from src.ai.types import ChunkExtraction
 from src.logging_config import get_logger
 
@@ -84,11 +84,8 @@ Original text:
         ).strip()
 
     def run(self, backend, chunk: str, document_type: str) -> ChunkExtraction:
-        stage1_prompt = self.stage1_template.format(
-            document_type=_escape_braces(document_type),
-            chunk=_escape_braces(chunk)
-        )
-        step_response = backend.generate(stage1_prompt, stop=["</s>", "[/INST]"])
+        stage1_prompt = self._format_prompt(self.stage1_template, document_type, chunk)
+        step_response = backend.generate(stage1_prompt, stop=self.stop_sequences)
         step_extraction = self._parse_json(step_response, chunk)
 
         if not step_extraction.steps:
@@ -97,13 +94,13 @@ Original text:
 
         valid_step_ids = {step.get("id") for step in step_extraction.steps if step.get("id")}
         steps_json = json.dumps({"steps": step_extraction.steps}, ensure_ascii=False)
-        safe_steps_json = steps_json.replace("{", "{{").replace("}", "}}")
+        safe_steps_json = _escape_braces(steps_json)
 
         stage2_prompt = self.stage2_template.format(
             steps_json=safe_steps_json,
             chunk=_escape_braces(chunk)
         )
-        combined_response = backend.generate(stage2_prompt, stop=["</s>", "[/INST]"])
+        combined_response = backend.generate(stage2_prompt, stop=self.stop_sequences)
         final = self._parse_json(combined_response, chunk)
 
         final.constraints = self._validate_constraints(final.constraints, valid_step_ids)

@@ -96,8 +96,8 @@ Now process the following {{document_type}} text and output ONLY JSON:
         return base.format(examples=self.examples)
 
     def run(self, backend, chunk: str, document_type: str) -> ChunkExtraction:
-        prompt = self.template.format(document_type=_escape_braces(document_type), chunk=_escape_braces(chunk))
-        response = backend.generate(prompt, stop=["</s>", "[/INST]"])
+        prompt = self._format_prompt(self.template, document_type, chunk)
+        response = backend.generate(prompt, stop=self.stop_sequences)
         return self._parse_json(response, chunk)
 
 
