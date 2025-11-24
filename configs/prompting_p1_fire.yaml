@@ -1,7 +1,7 @@
 out_root: logs/prompting_grid
 
 llm:
-  backend: "llama_cpp"
+  backend: "transformers"
   model_path: "models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf"
   temperature: 0.25
   max_tokens: 1536
