@@ -78,3 +78,5 @@ uploaded_files/*
 thesis/
 PRE_DEPLOYMENT_CHECKLIST.md
 Thesis.pdf
+models/**/tf_model.h5
+models/**/*.msgpack
