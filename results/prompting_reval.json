@@ -80,6 +80,22 @@
     "stats_confidence_score":0.90444
   },
   {
+    "prompt":"P1_few_shot",
+    "document":"op_firesafety_guideline",
+    "StepF1":0.133,
+    "AdjacencyF1":0.8,
+    "Kendall":0.933,
+    "ConstraintCoverage":0.4,
+    "ConstraintAttachmentF1":0.0,
+    "A_score":0.427,
+    "stats_processing_time":1033.6621763706,
+    "stats_file_size":13428,
+    "stats_entity_count":111,
+    "stats_step_count":75,
+    "stats_constraint_count":56,
+    "stats_confidence_score":0.9079279279
+  },
+  {
     "prompt":"P2_cot",
     "document":"3M_OEM_SOP",
     "StepF1":0.0,
