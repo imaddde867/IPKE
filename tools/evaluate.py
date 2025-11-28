@@ -379,6 +379,76 @@ def derive_sequence_order(ids: List[str]) -> Dict[str, int]:
     return {identifier: idx for idx, identifier in enumerate(ids)}
 
 
+def sort_steps_for_graph(steps: Sequence[Dict[str, Any]]) -> List[Dict[str, Any]]:
+    ordered: List[Tuple[Tuple[float, int, int], Dict[str, Any]]] = []
+    for idx, step in enumerate(steps):
+        raw_order = step.get("order")
+        order_value: Optional[float] = None
+        if isinstance(raw_order, (int, float)):
+            order_value = float(raw_order)
+        elif isinstance(raw_order, str):
+            try:
+                order_value = float(raw_order.strip())
+            except ValueError:
+                order_value = None
+        if order_value is not None:
+            key = (0.0, int(order_value), idx)
+        else:
+            key = (1.0, idx, 0)
+        ordered.append((key, step))
+    ordered.sort(key=lambda item: item[0])
+    return [item[1] for item in ordered]
+
+
+def build_tier_b_graph(doc: Dict[str, Any]) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+    nodes: List[Dict[str, Any]] = []
+    edges: List[Dict[str, Any]] = []
+    steps = doc.get("steps") or []
+    constraints = doc.get("constraints") or []
+
+    ordered_steps = sort_steps_for_graph(steps)
+    step_ids: List[str] = []
+    for idx, step in enumerate(ordered_steps):
+        raw_id = step.get("id") or f"step_{idx + 1}"
+        step_id = normalize_field(raw_id) or f"step_{idx + 1}"
+        step_ids.append(step_id)
+        nodes.append(
+            {
+                "id": step_id,
+                "type": "step",
+                "text": extract_step_text(step),
+            },
+        )
+    for src, tgt in zip(step_ids, step_ids[1:]):
+        edges.append({"type": "next", "source": src, "target": tgt})
+
+    step_id_set = set(step_ids)
+    seen_condition_edges: Set[Tuple[str, str]] = set()
+    for idx, constraint in enumerate(constraints):
+        raw_id = constraint.get("id") or f"constraint_{idx + 1}"
+        constraint_id = normalize_field(raw_id) or f"constraint_{idx + 1}"
+        nodes.append(
+            {
+                "id": constraint_id,
+                "type": "constraint",
+                "text": extract_constraint_text(constraint),
+            },
+        )
+        for target in sorted(collect_constraint_links(constraint)):
+            target_id = normalize_field(target)
+            if target_id in step_id_set and (constraint_id, target_id) not in seen_condition_edges:
+                edges.append({"type": "condition_on", "source": constraint_id, "target": target_id})
+                seen_condition_edges.add((constraint_id, target_id))
+
+    return nodes, edges
+
+
+def get_edge_endpoints(edge: Dict[str, Any]) -> Tuple[str, str]:
+    src = edge.get("source") or edge.get("from") or ""
+    tgt = edge.get("target") or edge.get("to") or ""
+    return normalize_field(src), normalize_field(tgt)
+
+
 def evaluate_tier_a_document(
     gold_doc: Dict[str, Any],
     pred_doc: Dict[str, Any],
@@ -439,8 +509,7 @@ def adjacency_from_edges(edges: Sequence[Dict[str, Any]], id_to_index: Dict[str,
         relation = normalize_field(edge.get("type", "")).lower()
         if relation != "next":
             continue
-        src = normalize_field(edge.get("source"))
-        tgt = normalize_field(edge.get("target"))
+        src, tgt = get_edge_endpoints(edge)
         if src in id_to_index and tgt in id_to_index:
             adjacency.add((id_to_index[src], id_to_index[tgt]))
     return adjacency
@@ -453,8 +522,7 @@ def derive_order_from_next_edges(step_ids: List[str], edges: Sequence[Dict[str, 
         relation = normalize_field(edge.get("type", "")).lower()
         if relation != "next":
             continue
-        src = normalize_field(edge.get("source"))
-        tgt = normalize_field(edge.get("target"))
+        src, tgt = get_edge_endpoints(edge)
         if src in graph and tgt in graph:
             graph.add_edge(src, tgt)
     try:
@@ -537,37 +605,30 @@ def expand_node_mapping(
 def build_graph_triples(
     nodes: Sequence[Dict[str, Any]],
     edges: Sequence[Dict[str, Any]],
-    preprocessor: TextPreprocessor,
-) -> Set[Tuple[str, str, str]]:
-    triples: Set[Tuple[str, str, str]] = set()
+) -> Set[Tuple[str, str, str, str]]:
+    type_lookup: Dict[str, str] = {}
     for node in nodes:
         node_id = normalize_field(node.get("id", ""))
         if not node_id:
             continue
-        node_type = normalize_field(node.get("type", ""))
-        if node_type:
-            triples.add((node_id, "type", node_type.lower()))
-        label = preprocessor(extract_node_label(node))
-        if label:
-            triples.add((node_id, "instance", label))
+        type_lookup[node_id] = normalize_field(node.get("type", "")).lower()
+    triples: Set[Tuple[str, str, str, str]] = set()
     for edge in edges:
         relation = normalize_field(edge.get("type", "")).lower()
-        src = normalize_field(edge.get("source", ""))
-        tgt = normalize_field(edge.get("target", ""))
-        if relation and src and tgt:
-            triples.add((src, relation, tgt))
+        if not relation:
+            continue
+        src, tgt = get_edge_endpoints(edge)
+        if src and tgt:
+            triples.add((type_lookup.get(src, ""), relation, src, tgt))
     return triples
 
 
-def remap_triples(triples: Set[Tuple[str, str, str]], mapping: Dict[str, str]) -> Set[Tuple[str, str, str]]:
-    remapped: Set[Tuple[str, str, str]] = set()
-    for head, relation, tail in triples:
-        new_head = mapping.get(head, f"pred::{head}")
-        if relation in {"type", "instance"}:
-            remapped.add((new_head, relation, tail))
-        else:
-            new_tail = mapping.get(tail, f"pred::{tail}")
-            remapped.add((new_head, relation, new_tail))
+def remap_triples(triples: Set[Tuple[str, str, str, str]], mapping: Dict[str, str]) -> Set[Tuple[str, str, str, str]]:
+    remapped: Set[Tuple[str, str, str, str]] = set()
+    for node_type, relation, src, tgt in triples:
+        new_src = mapping.get(src, f"pred::{src}")
+        new_tgt = mapping.get(tgt, f"pred::{tgt}")
+        remapped.add((node_type, relation, new_src, new_tgt))
     return remapped
 
 
@@ -582,8 +643,7 @@ def compute_edge_metrics(
         relation = normalize_field(edge.get("type", "")).lower()
         if not relation_filter(relation):
             continue
-        src = normalize_field(edge.get("source", ""))
-        tgt = normalize_field(edge.get("target", ""))
+        src, tgt = get_edge_endpoints(edge)
         if src and tgt:
             gold_set.add((src, relation, tgt))
 
@@ -593,8 +653,7 @@ def compute_edge_metrics(
         relation = normalize_field(edge.get("type", "")).lower()
         if not relation_filter(relation):
             continue
-        src = normalize_field(edge.get("source", ""))
-        tgt = normalize_field(edge.get("target", ""))
+        src, tgt = get_edge_endpoints(edge)
         if not src or not tgt:
             unmatched_pred += 1
             continue
@@ -624,8 +683,7 @@ def compute_constraint_attachment_f1_tier_b(
     attachments_gold: Set[Tuple[str, str, str]] = set()
     for edge in edges_gold:
         relation = normalize_field(edge.get("type", "")).lower()
-        src = normalize_field(edge.get("source", ""))
-        tgt = normalize_field(edge.get("target", ""))
+        src, tgt = get_edge_endpoints(edge)
         if not src or not tgt:
             continue
         src_type = type_map_gold.get(src, "")
@@ -639,8 +697,7 @@ def compute_constraint_attachment_f1_tier_b(
     unmatched_pred = 0
     for edge in edges_pred:
         relation = normalize_field(edge.get("type", "")).lower()
-        src = normalize_field(edge.get("source", ""))
-        tgt = normalize_field(edge.get("target", ""))
+        src, tgt = get_edge_endpoints(edge)
         if not src or not tgt:
             unmatched_pred += 1
             continue
@@ -675,10 +732,8 @@ def evaluate_tier_b_document(
     embedder: EmbeddingCache,
     threshold: float,
 ) -> Dict[str, Optional[float]]:
-    gold_nodes = gold_doc.get("nodes", [])
-    pred_nodes = pred_doc.get("nodes", [])
-    gold_edges = gold_doc.get("edges", [])
-    pred_edges = pred_doc.get("edges", [])
+    gold_nodes, gold_edges = build_tier_b_graph(gold_doc)
+    pred_nodes, pred_edges = build_tier_b_graph(pred_doc)
 
     gold_steps = [node for node in gold_nodes if is_step_type(normalize_field(node.get("type", "")))]
     pred_steps = [node for node in pred_nodes if is_step_type(normalize_field(node.get("type", "")))]
@@ -725,8 +780,8 @@ def evaluate_tier_b_document(
         {**step_mapping, **constraint_mapping},
     )
 
-    graph_gold_triples = build_graph_triples(gold_nodes, gold_edges, preprocessor)
-    graph_pred_triples = build_graph_triples(pred_nodes, pred_edges, preprocessor)
+    graph_gold_triples = build_graph_triples(gold_nodes, gold_edges)
+    graph_pred_triples = build_graph_triples(pred_nodes, pred_edges)
     remapped_pred_triples = remap_triples(graph_pred_triples, node_mapping)
     tp = len(graph_gold_triples & remapped_pred_triples)
     precision, recall, graph_f1 = compute_prf(tp, len(remapped_pred_triples), len(graph_gold_triples))
