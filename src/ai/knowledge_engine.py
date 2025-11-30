@@ -3,8 +3,11 @@ from src.ai.llm_env_setup import *  # Must be first!
 
 import asyncio
 import hashlib
+import json
 import os
 import time
+from datetime import datetime
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 from copy import deepcopy
@@ -16,6 +19,7 @@ from src.ai.worker_pool import ChunkTask, LLMWorkerPool
 from src.core.unified_config import UnifiedConfig, get_config
 from src.logging_config import get_logger
 from src.processors.chunkers import Chunk, get_chunker
+from src.validation import validate_extraction
 from src.graph.canonicalizer import assign_canonical_ids
 
 logger = get_logger(__name__)
@@ -38,6 +42,8 @@ class UnifiedKnowledgeEngine:
         self._backend_name: Optional[str] = None
         self._chunk_dedup_model = None
         self._chunk_dedup_device: Optional[str] = None
+        log_path = getattr(self.config, "validation_error_log", "logs/validation_errors.jsonl")
+        self.validation_log_path = Path(log_path)
 
     def _determine_backend(self) -> str:
         requested = getattr(self.config, "llm_backend", None)
@@ -79,10 +85,15 @@ class UnifiedKnowledgeEngine:
         return await loop.run_in_executor(None, self._pool.process, chunk_tasks)
 
     async def extract_knowledge(
-        self, content: str, document_type: str = "unknown", quality_threshold: Optional[float] = None
+        self,
+        content: str,
+        document_type: str = "unknown",
+        quality_threshold: Optional[float] = None,
+        document_id: Optional[str] = None,
     ) -> ExtractionResult:
         final_threshold = quality_threshold if quality_threshold is not None else self.config.quality_threshold
         content_hash = hashlib.md5(content.encode()).hexdigest()
+        doc_id = document_id or f"doc_{content_hash[:8]}"
         cache_key = f"{content_hash}_{document_type}_{final_threshold}"
 
         async with self.cache_lock:
@@ -126,7 +137,10 @@ class UnifiedKnowledgeEngine:
                 "avg_confidence": confidence_score,
                 "chunks_processed": len(chunk_objects),
             },
+            metadata={"document_id": doc_id},
         )
+
+        self._validate_against_schema(extraction, doc_id, document_type)
 
         if extraction.confidence_score < final_threshold:
             logger.warning(
@@ -350,6 +364,111 @@ class UnifiedKnowledgeEngine:
             if key not in unique_entities:
                 unique_entities[key] = entity
         return list(unique_entities.values()), raw_steps, raw_constraints
+
+    def _validate_against_schema(
+        self,
+        extraction: ExtractionResult,
+        document_id: str,
+        document_type: str,
+    ) -> None:
+        payload = self._build_validation_payload(document_id, document_type, extraction)
+        autofix = getattr(self.config, "schema_autofix_enabled", True)
+        is_valid, issues = validate_extraction(payload, autofix=autofix)
+        if issues:
+            self._log_validation_messages(document_id, issues, is_valid)
+        if not is_valid:
+            message = f"Schema validation failed for {document_id}"
+            if getattr(self.config, "strict_schema_validation", False):
+                raise ValueError(f"{message}: {'; '.join(issues)}")
+            logger.warning(message, extra={"document_id": document_id, "issues": issues})
+
+    def _build_validation_payload(
+        self,
+        document_id: str,
+        document_type: str,
+        extraction: ExtractionResult,
+    ) -> Dict[str, Any]:
+        step_nodes: List[Dict[str, Any]] = []
+        for step in extraction.steps:
+            step_nodes.append(
+                {
+                    "id": str(step.get("id")) if step.get("id") is not None else None,
+                    "order": step.get("order"),
+                    "text": step.get("text") or "",
+                    "section": step.get("section"),
+                    "context": step.get("context"),
+                    "references": step.get("references"),
+                }
+            )
+
+        condition_nodes: List[Dict[str, Any]] = []
+        for constraint in extraction.constraints:
+            expression = (
+                constraint.get("text")
+                or constraint.get("expression")
+                or constraint.get("description")
+                or ""
+            )
+            condition_nodes.append(
+                {
+                    "id": str(constraint.get("id")) if constraint.get("id") is not None else None,
+                    "type": constraint.get("type"),
+                    "expression": expression,
+                    "context": constraint.get("context"),
+                }
+            )
+
+        edges: List[Dict[str, Any]] = []
+        ordered_ids = [str(step["id"]) for step in step_nodes if step.get("id")]
+        for current, nxt in zip(ordered_ids, ordered_ids[1:]):
+            edges.append({"from_id": current, "to_id": nxt, "type": "NEXT"})
+
+        constraint_step_refs = {}
+        for constraint in extraction.constraints:
+            cid = constraint.get("id")
+            if not cid:
+                continue
+            cid = str(cid)
+            refs = constraint.get("steps") or []
+            if not isinstance(refs, list):
+                refs = [refs]
+            normalized_refs = []
+            for ref in refs:
+                if isinstance(ref, dict):
+                    ref_id = ref.get("id")
+                else:
+                    ref_id = ref
+                if ref_id:
+                    normalized_refs.append(str(ref_id))
+            if normalized_refs:
+                constraint_step_refs[cid] = normalized_refs
+
+        for cid, targets in constraint_step_refs.items():
+            for target in targets:
+                edges.append({"from_id": cid, "to_id": target, "type": "CONDITION_ON"})
+
+        return {
+            "document_id": document_id or "unknown_document",
+            "document_type": document_type,
+            "title": None,
+            "steps": step_nodes,
+            "conditions": condition_nodes,
+            "equipment": [],
+            "parameters": [],
+            "edges": edges,
+            "metadata": {"source": "knowledge_engine"},
+        }
+
+    def _log_validation_messages(self, document_id: str, issues: List[str], is_valid: bool) -> None:
+        self.validation_log_path.parent.mkdir(parents=True, exist_ok=True)
+        entry = {
+            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "document_id": document_id,
+            "is_valid": is_valid,
+            "issues": issues,
+        }
+        with self.validation_log_path.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(entry) + "\n")
 
     def _coerce_confidence(self, value: Any) -> float:
         try:
