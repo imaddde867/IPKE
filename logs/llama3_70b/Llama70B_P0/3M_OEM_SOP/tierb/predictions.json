@@ -1,0 +1,706 @@
+{
+  "document_id": "3M_OEM_SOP",
+  "nodes": [
+    {
+      "id": "S1",
+      "type": "step",
+      "text": "Clean the new external composite surface with approved cleaners to remove all mold release materials.",
+      "order": 1
+    },
+    {
+      "id": "S2",
+      "type": "step",
+      "text": "Sand the old or new gelcoat to remove surface imperfections using a DA sander and 3M Hookit 775L Cubitron II abrasive discs, grade 80+.",
+      "order": 2
+    },
+    {
+      "id": "S3",
+      "type": "step",
+      "text": "Apply dry guide coat to the surface and re-sand to ensure an even texture.",
+      "order": 3
+    },
+    {
+      "id": "S4",
+      "type": "step",
+      "text": "Clean the repair area with approved cleaner or blow off using pressured air.",
+      "order": 4
+    },
+    {
+      "id": "S5",
+      "type": "step",
+      "text": "Mix and apply 3M\u2122 Marine Blister Repair Filler, filling 85% of the cavity.",
+      "order": 5
+    },
+    {
+      "id": "S6",
+      "type": "step",
+      "text": "Wait 30 minutes.",
+      "order": 6
+    },
+    {
+      "id": "S7",
+      "type": "step",
+      "text": "Feather the repair with 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II abrasive disc, grade 80+.",
+      "order": 7
+    },
+    {
+      "id": "S8",
+      "type": "step",
+      "text": "Apply dry guide coat and re-sand.",
+      "order": 8
+    },
+    {
+      "id": "S9",
+      "type": "step",
+      "text": "Mix and apply 3M\u2122 Marine Premium Filler.",
+      "order": 9
+    },
+    {
+      "id": "S10",
+      "type": "step",
+      "text": "After filler has cured, sand with 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II grade 120+ abrasive discs.",
+      "order": 10
+    },
+    {
+      "id": "S11",
+      "type": "step",
+      "text": "Finally, sand the repair area with 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II grade 220+.",
+      "order": 11
+    },
+    {
+      "id": "S12",
+      "type": "step",
+      "text": "Ensure the surface is completely dry.",
+      "order": 12
+    },
+    {
+      "id": "S13",
+      "type": "step",
+      "text": "Mask areas with 3M\u2122 Precision Masking Tape.",
+      "order": 13
+    },
+    {
+      "id": "S14",
+      "type": "step",
+      "text": "Back up masked areas with 3M\u2122 Performance Industrial Masking Tape or 3M Scotch\u00ae Performance Masking Tape.",
+      "order": 14
+    },
+    {
+      "id": "S15",
+      "type": "step",
+      "text": "Mask the entire surface with 3M\u2122 Purple Premium Plus Masking Film.",
+      "order": 15
+    },
+    {
+      "id": "S16",
+      "type": "step",
+      "text": "Mix gelcoat in a 3M\u2122 PPS\u2122 Series 2.0 disposable spray cup.",
+      "order": 16
+    },
+    {
+      "id": "S17",
+      "type": "step",
+      "text": "Adjust 3M\u2122 Performance Spray Gun settings.",
+      "order": 17
+    },
+    {
+      "id": "S18",
+      "type": "step",
+      "text": "Hold spray gun 15cm-20cm from the surface and apply gelcoat.",
+      "order": 18
+    },
+    {
+      "id": "S19",
+      "type": "step",
+      "text": "Clean the new external composite surface with approved cleaner.",
+      "order": 19
+    },
+    {
+      "id": "S20",
+      "type": "step",
+      "text": "Sand with 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II 320+ and then 400+ grade abrasives using a Soft Interface Pad.",
+      "order": 20
+    },
+    {
+      "id": "S21",
+      "type": "step",
+      "text": "If the surface is in good condition, sand with P800 grade 3M\u2122 Hookit\u2122 Flexible Abrasive Foam Discs.",
+      "order": 21
+    },
+    {
+      "id": "S22",
+      "type": "step",
+      "text": "Refine the P800 grade sand scratch using P1200 grade 3M\u2122 Hookit\u2122 Flexible Abrasive Foam Discs.",
+      "order": 22
+    },
+    {
+      "id": "S23",
+      "type": "step",
+      "text": "Compound the surface with 3M\u2122 Perfect-It\u2122 Gelcoat Heavy Cutting Compound and a 3M\u2122 Perfect-It\u2122 Low Linting Wool Compounding Pad.",
+      "order": 23
+    },
+    {
+      "id": "S24",
+      "type": "step",
+      "text": "Use a Rotary Polishing machine at 1400-1800 rpm.",
+      "order": 24
+    },
+    {
+      "id": "S25",
+      "type": "step",
+      "text": "Clean the surface using the same 6-step process.",
+      "order": 25
+    },
+    {
+      "id": "S26",
+      "type": "step",
+      "text": "Sand the surface following the 6-step process.",
+      "order": 26
+    },
+    {
+      "id": "S27",
+      "type": "step",
+      "text": "Refine scratches through sanding.",
+      "order": 27
+    },
+    {
+      "id": "S28",
+      "type": "step",
+      "text": "Compound the surface with 3M\u2122 Perfect-It\u2122 Gelcoat Compound + Polish and a 3M\u2122 Perfect-It\u2122 Low Linting Wool Compounding Pad.",
+      "order": 28
+    },
+    {
+      "id": "S29",
+      "type": "step",
+      "text": "Use a Rotary Polishing machine at 1400-1800 rpm for polishing.",
+      "order": 29
+    },
+    {
+      "id": "S30",
+      "type": "step",
+      "text": "Apply 3M\u2122 Perfect-It\u2122 Boat Wax to a 10cm x 10cm area and wipe clean before it dries.",
+      "order": 30
+    },
+    {
+      "id": "S31",
+      "type": "step",
+      "text": "Clean the surface with approved cleaner.",
+      "order": 31
+    },
+    {
+      "id": "S32",
+      "type": "step",
+      "text": "Sand the surface using a DA sander and 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II 80+ grade abrasive discs.",
+      "order": 32
+    },
+    {
+      "id": "S33",
+      "type": "step",
+      "text": "Apply 3M\u2122 Marine Premium Filler.",
+      "order": 33
+    },
+    {
+      "id": "S34",
+      "type": "step",
+      "text": "After it sets, apply dry guide coat and sand with 120+ grade.",
+      "order": 34
+    },
+    {
+      "id": "S35",
+      "type": "step",
+      "text": "Finally, sand the surface with 220+ grade.",
+      "order": 35
+    },
+    {
+      "id": "S36",
+      "type": "step",
+      "text": "Clean the surface.",
+      "order": 36
+    },
+    {
+      "id": "S37",
+      "type": "step",
+      "text": "Ensure the surface is dry.",
+      "order": 37
+    },
+    {
+      "id": "S38",
+      "type": "step",
+      "text": "Apply masking tapes and film as described in the gelcoat process.",
+      "order": 38
+    },
+    {
+      "id": "S39",
+      "type": "step",
+      "text": "Mix primer in a 3M\u2122 PPS\u2122 Series 2.0 cup.",
+      "order": 39
+    },
+    {
+      "id": "S40",
+      "type": "step",
+      "text": "Apply primer with a 3M\u2122 Performance Spray Gun held 15cm-20cm from the surface.",
+      "order": 40
+    },
+    {
+      "id": "S41",
+      "type": "step",
+      "text": "Apply dry guide coat and sand the primer with 320+ grade abrasive discs.",
+      "order": 41
+    },
+    {
+      "id": "S42",
+      "type": "step",
+      "text": "Repeat with 400+ grade.",
+      "order": 42
+    },
+    {
+      "id": "S43",
+      "type": "step",
+      "text": "Clean the surface.",
+      "order": 43
+    },
+    {
+      "id": "S44",
+      "type": "step",
+      "text": "Mix marine paint in a 3M\u2122 PPS\u2122 Series 2.0 cup.",
+      "order": 44
+    },
+    {
+      "id": "S45",
+      "type": "step",
+      "text": "Apply marine paint with a 3M\u2122 Performance Spray Gun.",
+      "order": 45
+    },
+    {
+      "id": "S46",
+      "type": "step",
+      "text": "Clean the surface with approved cleaner.",
+      "order": 46
+    },
+    {
+      "id": "S47",
+      "type": "step",
+      "text": "Sand the surface using 3M\u2122 Hookit\u2122 Purple Finishing Film Disc 260L+ P1200/1500 grade with a DA sander and soft interface pad (Dry option).",
+      "order": 47
+    },
+    {
+      "id": "S48",
+      "type": "step",
+      "text": "Alternatively, sand the surface using 3M\u2122 Trizact\u2122 Hookit\u2122 Clear Coat Sanding Disc grade 1500 with a DA sander and soft interface pad, adding a light mist of water (Wet option).",
+      "order": 48
+    },
+    {
+      "id": "S49",
+      "type": "step",
+      "text": "Refine scratches using 3M\u2122 Hookit\u2122 Flexible Abrasive Foam Disc P2000 grade (Dry option).",
+      "order": 49
+    },
+    {
+      "id": "S50",
+      "type": "step",
+      "text": "Alternatively, refine scratches using 3M\u2122 Trizact\u2122 Hookit\u2122 Foam Abrasive Disc 443SA grade 3000 with a light mist of water (Wet option).",
+      "order": 50
+    },
+    {
+      "id": "S51",
+      "type": "step",
+      "text": "Clean the surface.",
+      "order": 51
+    },
+    {
+      "id": "S52",
+      "type": "step",
+      "text": "Use an approved cleaner.",
+      "order": 52
+    },
+    {
+      "id": "S53",
+      "type": "step",
+      "text": "Clean the surface before compounding.",
+      "order": 53
+    },
+    {
+      "id": "S54",
+      "type": "step",
+      "text": "Compound with 3M\u2122 Perfect-It\u2122 Fast Cut Plus Extreme and a 3M\u2122 wool or green foam compounding pad.",
+      "order": 54
+    },
+    {
+      "id": "S55",
+      "type": "step",
+      "text": "Use a rotary polisher at 1400-1800 rpm.",
+      "order": 55
+    },
+    {
+      "id": "S56",
+      "type": "step",
+      "text": "Polish the surface with 3M\u2122 Perfect-It\u2122 Ultrafina SE Polish and a 3M\u2122 wool or blue foam polishing pad at 1400-1800 rpm.",
+      "order": 56
+    },
+    {
+      "id": "S57",
+      "type": "step",
+      "text": "Apply 3M\u2122 Perfect-It\u2122 Boat Wax to a 10cm x 10cm area and wipe clean before it dries.",
+      "order": 57
+    },
+    {
+      "id": "S58",
+      "type": "step",
+      "text": "Sand the bottom surface using a dual-action sander with 3M\u2122 Hookit\u2122 775L Cubitron\u00b2 II 220+ grade abrasive. Clean the area.",
+      "order": 58
+    },
+    {
+      "id": "S59",
+      "type": "step",
+      "text": "Mix and apply 3M\u2122 Marine Premium Filler. After it cures, sand with 120+ grade abrasive, then finish with 220+ grade.",
+      "order": 59
+    },
+    {
+      "id": "S60",
+      "type": "step",
+      "text": "Ensure the surface is dry. Apply masking tapes and film.",
+      "order": 60
+    },
+    {
+      "id": "S61",
+      "type": "step",
+      "text": "Mix bottom paint in a 3M\u2122 PPS\u2122 Series 2.0 cup.",
+      "order": 61
+    },
+    {
+      "id": "S62",
+      "type": "step",
+      "text": "Remove lid filter.",
+      "order": 62
+    },
+    {
+      "id": "S63",
+      "type": "step",
+      "text": "Use a 3M\u2122 Performance Spray Gun.",
+      "order": 63
+    },
+    {
+      "id": "S64",
+      "type": "step",
+      "text": "Hold spray gun 15cm-20cm from surface.",
+      "order": 64
+    }
+  ],
+  "edges": [
+    {
+      "source": "S1",
+      "target": "S2",
+      "type": "next"
+    },
+    {
+      "source": "S2",
+      "target": "S3",
+      "type": "next"
+    },
+    {
+      "source": "S3",
+      "target": "S4",
+      "type": "next"
+    },
+    {
+      "source": "S4",
+      "target": "S5",
+      "type": "next"
+    },
+    {
+      "source": "S5",
+      "target": "S6",
+      "type": "next"
+    },
+    {
+      "source": "S6",
+      "target": "S7",
+      "type": "next"
+    },
+    {
+      "source": "S7",
+      "target": "S8",
+      "type": "next"
+    },
+    {
+      "source": "S8",
+      "target": "S9",
+      "type": "next"
+    },
+    {
+      "source": "S9",
+      "target": "S10",
+      "type": "next"
+    },
+    {
+      "source": "S10",
+      "target": "S11",
+      "type": "next"
+    },
+    {
+      "source": "S11",
+      "target": "S12",
+      "type": "next"
+    },
+    {
+      "source": "S12",
+      "target": "S13",
+      "type": "next"
+    },
+    {
+      "source": "S13",
+      "target": "S14",
+      "type": "next"
+    },
+    {
+      "source": "S14",
+      "target": "S15",
+      "type": "next"
+    },
+    {
+      "source": "S15",
+      "target": "S16",
+      "type": "next"
+    },
+    {
+      "source": "S16",
+      "target": "S17",
+      "type": "next"
+    },
+    {
+      "source": "S17",
+      "target": "S18",
+      "type": "next"
+    },
+    {
+      "source": "S18",
+      "target": "S19",
+      "type": "next"
+    },
+    {
+      "source": "S19",
+      "target": "S20",
+      "type": "next"
+    },
+    {
+      "source": "S20",
+      "target": "S21",
+      "type": "next"
+    },
+    {
+      "source": "S21",
+      "target": "S22",
+      "type": "next"
+    },
+    {
+      "source": "S22",
+      "target": "S23",
+      "type": "next"
+    },
+    {
+      "source": "S23",
+      "target": "S24",
+      "type": "next"
+    },
+    {
+      "source": "S24",
+      "target": "S25",
+      "type": "next"
+    },
+    {
+      "source": "S25",
+      "target": "S26",
+      "type": "next"
+    },
+    {
+      "source": "S26",
+      "target": "S27",
+      "type": "next"
+    },
+    {
+      "source": "S27",
+      "target": "S28",
+      "type": "next"
+    },
+    {
+      "source": "S28",
+      "target": "S29",
+      "type": "next"
+    },
+    {
+      "source": "S29",
+      "target": "S30",
+      "type": "next"
+    },
+    {
+      "source": "S30",
+      "target": "S31",
+      "type": "next"
+    },
+    {
+      "source": "S31",
+      "target": "S32",
+      "type": "next"
+    },
+    {
+      "source": "S32",
+      "target": "S33",
+      "type": "next"
+    },
+    {
+      "source": "S33",
+      "target": "S34",
+      "type": "next"
+    },
+    {
+      "source": "S34",
+      "target": "S35",
+      "type": "next"
+    },
+    {
+      "source": "S35",
+      "target": "S36",
+      "type": "next"
+    },
+    {
+      "source": "S36",
+      "target": "S37",
+      "type": "next"
+    },
+    {
+      "source": "S37",
+      "target": "S38",
+      "type": "next"
+    },
+    {
+      "source": "S38",
+      "target": "S39",
+      "type": "next"
+    },
+    {
+      "source": "S39",
+      "target": "S40",
+      "type": "next"
+    },
+    {
+      "source": "S40",
+      "target": "S41",
+      "type": "next"
+    },
+    {
+      "source": "S41",
+      "target": "S42",
+      "type": "next"
+    },
+    {
+      "source": "S42",
+      "target": "S43",
+      "type": "next"
+    },
+    {
+      "source": "S43",
+      "target": "S44",
+      "type": "next"
+    },
+    {
+      "source": "S44",
+      "target": "S45",
+      "type": "next"
+    },
+    {
+      "source": "S45",
+      "target": "S46",
+      "type": "next"
+    },
+    {
+      "source": "S46",
+      "target": "S47",
+      "type": "next"
+    },
+    {
+      "source": "S47",
+      "target": "S48",
+      "type": "next"
+    },
+    {
+      "source": "S48",
+      "target": "S49",
+      "type": "next"
+    },
+    {
+      "source": "S49",
+      "target": "S50",
+      "type": "next"
+    },
+    {
+      "source": "S50",
+      "target": "S51",
+      "type": "next"
+    },
+    {
+      "source": "S51",
+      "target": "S52",
+      "type": "next"
+    },
+    {
+      "source": "S52",
+      "target": "S53",
+      "type": "next"
+    },
+    {
+      "source": "S53",
+      "target": "S54",
+      "type": "next"
+    },
+    {
+      "source": "S54",
+      "target": "S55",
+      "type": "next"
+    },
+    {
+      "source": "S55",
+      "target": "S56",
+      "type": "next"
+    },
+    {
+      "source": "S56",
+      "target": "S57",
+      "type": "next"
+    },
+    {
+      "source": "S57",
+      "target": "S58",
+      "type": "next"
+    },
+    {
+      "source": "S58",
+      "target": "S59",
+      "type": "next"
+    },
+    {
+      "source": "S59",
+      "target": "S60",
+      "type": "next"
+    },
+    {
+      "source": "S60",
+      "target": "S61",
+      "type": "next"
+    },
+    {
+      "source": "S61",
+      "target": "S62",
+      "type": "next"
+    },
+    {
+      "source": "S62",
+      "target": "S63",
+      "type": "next"
+    },
+    {
+      "source": "S63",
+      "target": "S64",
+      "type": "next"
+    }
+  ]
+}
