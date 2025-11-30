@@ -19,6 +19,7 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Set, Union
 
 from .models import Condition, Edge, Graph, Step
+from src.validation.constraint_validator import ValidationReport, validate_constraints
 from .neo4j_connector import Neo4jConnector
 
 
@@ -40,6 +41,7 @@ class ProceduralGraphBuilder:
 
     def __init__(self) -> None:
         self.graph: Optional[Graph] = None
+        self.validation_report: Optional[ValidationReport] = None
 
     # --------------------------------------------------------------------- #
     # Public API
@@ -51,9 +53,11 @@ class ProceduralGraphBuilder:
 
     def build_from_payload(self, payload: Payload) -> Graph:
         """Build a Graph directly from an in-memory payload."""
+        raw_constraints = payload.get("constraints") or []
         steps = self._build_steps(payload.get("steps") or [])
-        conditions = self._build_conditions(payload.get("constraints") or [])
-        edges = self._build_edges(steps, conditions, payload.get("constraints") or [])
+        self.validation_report = validate_constraints(raw_constraints)
+        conditions = self._build_conditions(raw_constraints)
+        edges = self._build_edges(steps, conditions, raw_constraints)
 
         raw_metadata = payload.get("metadata")
         metadata = self._coerce_metadata(raw_metadata if isinstance(raw_metadata, dict) else {})
@@ -72,6 +76,11 @@ class ProceduralGraphBuilder:
 
         self.graph = graph
         return graph
+
+    def get_validation_report(self) -> ValidationReport:
+        if self.validation_report is None:
+            raise RuntimeError("ProceduralGraphBuilder.build_from_* must be called before accessing validation report.")
+        return self.validation_report
 
     def persist_to_neo4j(
         self,

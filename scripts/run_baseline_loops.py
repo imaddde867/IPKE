@@ -17,8 +17,9 @@ import argparse
 import asyncio
 import json
 import os
+from datetime import datetime
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, Iterable, List
 
 # Ensure project root is on sys.path when running from scripts/
 import sys
@@ -37,6 +38,7 @@ from src.pipelines.baseline import (
     summarise_metrics,
 )
 from src.processors.streamlined_processor import StreamlinedDocumentProcessor
+from src.graph.builder import ProceduralGraphBuilder
 
 
 async def run_extraction(run_dir: Path) -> None:
@@ -115,6 +117,40 @@ def generate_visualizations(run_dir: Path) -> None:
         print(f"[visualize] Failed to generate plots: {e}")
 
 
+def collect_constraint_reports(run_dir: Path, doc_ids: Iterable[str]) -> Dict[str, Dict[str, List]]:
+    builder = ProceduralGraphBuilder()
+    reports: Dict[str, Dict[str, List]] = {}
+    for doc_id in doc_ids:
+        doc_path = run_dir / f"{doc_id}.json"
+        if not doc_path.exists():
+            continue
+        payload = json.loads(doc_path.read_text(encoding="utf-8"))
+        builder.build_from_payload(payload)
+        reports[doc_id] = builder.get_validation_report().to_dict()
+    return reports
+
+
+def write_validation_report(run_dir: Path, documents: Dict[str, Dict[str, List]]) -> None:
+    entry = {
+        "run_dir": str(run_dir),
+        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "documents": documents,
+    }
+    report_path = Path("results/validation_report.json")
+    existing: List[Dict[str, object]]
+    if report_path.exists():
+        try:
+            data = json.loads(report_path.read_text(encoding="utf-8"))
+            existing = data if isinstance(data, list) else [data]
+        except json.JSONDecodeError:
+            existing = []
+    else:
+        existing = []
+    existing.append(entry)
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    report_path.write_text(json.dumps(existing, indent=2), encoding="utf-8")
+
+
 async def orchestrate(runs: int, out_root: Path, visualize: bool = False) -> None:
     """Execute multiple extraction/evaluation runs and summarise the results."""
     accumulator: Dict[str, Dict[str, List[float]]] = {}
@@ -126,7 +162,10 @@ async def orchestrate(runs: int, out_root: Path, visualize: bool = False) -> Non
         report_path = run_dir / "evaluation_report.json"
         metrics = run_evaluation(run_dir, report_path)
         accumulate_metrics(accumulator, metrics)
-        
+
+        doc_reports = collect_constraint_reports(run_dir, TIER_A_TEST_DOCS.keys())
+        write_validation_report(run_dir, doc_reports)
+
         # Generate visualizations if requested and on last run
         if visualize and run_idx == runs:
             generate_visualizations(run_dir)
