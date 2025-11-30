@@ -155,6 +155,9 @@ class UnifiedConfig:
     confidence_threshold: float = 0.8
     quality_threshold: float = 0.7
     production_threshold: float = 0.85
+    strict_schema_validation: bool = False
+    schema_autofix_enabled: bool = True
+    validation_error_log: str = "logs/validation_errors.jsonl"
     
     # Performance
     max_workers: int = 8
@@ -246,6 +249,9 @@ class UnifiedConfig:
             'llm_num_workers': _env_int('LLM_NUM_WORKERS', default=cls.llm_num_workers, min_value=1),
             'prompting_strategy': _get_env_value('PROMPTING_STRATEGY', default=cls.prompting_strategy).upper(),
             'llm_random_seed': _env_int('LLM_RANDOM_SEED', default=cls.llm_random_seed),
+            'strict_schema_validation': _env_bool('STRICT_SCHEMA_VALIDATION', default=cls.strict_schema_validation),
+            'schema_autofix_enabled': _env_bool('SCHEMA_AUTOFIX_ENABLED', default=cls.schema_autofix_enabled),
+            'validation_error_log': _get_env_value('VALIDATION_ERROR_LOG', default=cls.validation_error_log),
         }
         base_kwargs.update(chunk_kwargs)
         return cls(**base_kwargs)
@@ -270,6 +276,9 @@ class UnifiedConfig:
             'llm_num_workers': 1,
             'prompting_strategy': "P0",
             'llm_random_seed': cls.llm_random_seed,
+            'strict_schema_validation': _env_bool('STRICT_SCHEMA_VALIDATION', default=cls.strict_schema_validation),
+            'schema_autofix_enabled': _env_bool('SCHEMA_AUTOFIX_ENABLED', default=cls.schema_autofix_enabled),
+            'validation_error_log': _get_env_value('VALIDATION_ERROR_LOG', default=cls.validation_error_log),
         }
         base_kwargs.update(chunk_kwargs)
         return cls(**base_kwargs)
@@ -307,6 +316,9 @@ class UnifiedConfig:
             'llm_num_workers': _env_int('LLM_NUM_WORKERS', default=cls.llm_num_workers, min_value=1),
             'prompting_strategy': _get_env_value('PROMPTING_STRATEGY', default=cls.prompting_strategy).upper(),
             'llm_random_seed': _env_int('LLM_RANDOM_SEED', default=cls.llm_random_seed),
+            'strict_schema_validation': _env_bool('STRICT_SCHEMA_VALIDATION', default=cls.strict_schema_validation),
+            'schema_autofix_enabled': _env_bool('SCHEMA_AUTOFIX_ENABLED', default=cls.schema_autofix_enabled),
+            'validation_error_log': _get_env_value('VALIDATION_ERROR_LOG', default=cls.validation_error_log),
         }
         base_kwargs.update(chunk_kwargs)
         return cls(**base_kwargs)

@@ -156,7 +156,8 @@ class StreamlinedDocumentProcessor:
             extraction_result = await self.knowledge_engine.extract_knowledge(
                 content=content,
                 document_type=document_type,
-                quality_threshold=self.config.quality_threshold
+                quality_threshold=self.config.quality_threshold,
+                document_id=document_id,
             )
             
             processing_time = time.time() - start_time

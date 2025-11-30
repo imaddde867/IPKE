@@ -12,6 +12,7 @@ sentence-transformers>=2.2.2
 torch>=2.1.0
 requests>=2.31.0
 neo4j==5.14.0
+jsonschema==4.20.0
 
 # Web Framework
 fastapi>=0.104.0

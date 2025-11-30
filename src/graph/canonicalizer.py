@@ -204,6 +204,8 @@ def _get_embedder():  # pragma: no cover - exercised via integration
         return _EMBEDDER
     if SentenceTransformer is None:
         return None
+    if os.environ.get("ENTITY_CANONICALIZER_ENABLE_ENCODER", "0").lower() not in {"1", "true", "yes"}:
+        return None
     model_id = os.environ.get("ENTITY_CANONICALIZER_MODEL", "all-mpnet-base-v2")
     _EMBEDDER = SentenceTransformer(model_id)
     return _EMBEDDER

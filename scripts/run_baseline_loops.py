@@ -151,11 +151,18 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--runs", type=int, default=1, help="Number of runs to execute (default: 1)")
     parser.add_argument("--out", type=Path, default=Path("logs/extraction"), help="Output directory (default: logs/extraction)")
     parser.add_argument("--visualize", action="store_true", help="Generate visualizations")
+    parser.add_argument(
+        "--strict-validation",
+        action="store_true",
+        help="Fail the run if schema validation errors occur",
+    )
     return parser.parse_args()
 
 
 def main() -> None:
     args = parse_args()
+    if args.strict_validation:
+        os.environ["STRICT_SCHEMA_VALIDATION"] = "1"
     asyncio.run(orchestrate(args.runs, args.out, args.visualize))
 
 
