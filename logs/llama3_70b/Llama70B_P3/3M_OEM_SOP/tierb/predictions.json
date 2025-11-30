@@ -1,0 +1,998 @@
+{
+  "document_id": "3M_OEM_SOP",
+  "nodes": [
+    {
+      "id": "S1",
+      "type": "step",
+      "text": "Clean new external composite surface with approved cleaner.",
+      "order": 1
+    },
+    {
+      "id": "S2",
+      "type": "step",
+      "text": "Use approved cleaner to remove mold release materials.",
+      "order": 2
+    },
+    {
+      "id": "S3",
+      "type": "step",
+      "text": "Sand old or new gelcoat to remove imperfections.",
+      "order": 3
+    },
+    {
+      "id": "S4",
+      "type": "step",
+      "text": "Apply dry guide coat and re-sand to ensure even texture.",
+      "order": 4
+    },
+    {
+      "id": "S5",
+      "type": "step",
+      "text": "Clean repair area with approved cleaner or blow off using pressured air.",
+      "order": 5
+    },
+    {
+      "id": "S6",
+      "type": "step",
+      "text": "Mix and apply 3M\u2122 Marine Blister Repair Filler, fill 85% of the cavity.",
+      "order": 6
+    },
+    {
+      "id": "S7",
+      "type": "step",
+      "text": "Wait 30 minutes.",
+      "order": 7
+    },
+    {
+      "id": "S8",
+      "type": "step",
+      "text": "Feather the repair with 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II abrasive disc, grade 80+.",
+      "order": 8
+    },
+    {
+      "id": "S9",
+      "type": "step",
+      "text": "Apply dry guide coat and re-sand.",
+      "order": 9
+    },
+    {
+      "id": "S10",
+      "type": "step",
+      "text": "Clean the area.",
+      "order": 10
+    },
+    {
+      "id": "S11",
+      "type": "step",
+      "text": "Mix and apply 3M\u2122 Marine Premium Filler.",
+      "order": 11
+    },
+    {
+      "id": "S12",
+      "type": "step",
+      "text": "Wait for filler to cure.",
+      "order": 12
+    },
+    {
+      "id": "S13",
+      "type": "step",
+      "text": "Sand with 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II grade 120+ abrasive discs.",
+      "order": 13
+    },
+    {
+      "id": "S14",
+      "type": "step",
+      "text": "Sand the repair area with 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II grade 220+.",
+      "order": 14
+    },
+    {
+      "id": "S15",
+      "type": "step",
+      "text": "Ensure surface is dry.",
+      "order": 15
+    },
+    {
+      "id": "S16",
+      "type": "step",
+      "text": "Mask areas with 3M\u2122 Precision Masking Tape.",
+      "order": 16
+    },
+    {
+      "id": "S17",
+      "type": "step",
+      "text": "Back up masking tape with 3M\u2122 Performance Industrial Masking Tape or 3M Scotch\u00ae Performance Masking Tape.",
+      "order": 17
+    },
+    {
+      "id": "S18",
+      "type": "step",
+      "text": "Mask entire surface with 3M\u2122 Purple Premium Plus Masking Film.",
+      "order": 18
+    },
+    {
+      "id": "S19",
+      "type": "step",
+      "text": "Mix gelcoat in 3M\u2122 PPS\u2122 Series 2.0 disposable spray cup.",
+      "order": 19
+    },
+    {
+      "id": "S20",
+      "type": "step",
+      "text": "Adjust 3M\u2122 Performance Spray Gun settings.",
+      "order": 20
+    },
+    {
+      "id": "S21",
+      "type": "step",
+      "text": "Hold spray gun 15cm-20cm from surface and apply gelcoat.",
+      "order": 21
+    },
+    {
+      "id": "S22",
+      "type": "step",
+      "text": "Clean the new external composite surface with approved cleaner.",
+      "order": 22
+    },
+    {
+      "id": "S23",
+      "type": "step",
+      "text": "Sand with 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II 320+ and then 400+ grade abrasives using a Soft Interface Pad.",
+      "order": 23
+    },
+    {
+      "id": "S24",
+      "type": "step",
+      "text": "Refine scratches using P800 grade 3M\u2122 Hookit\u2122 Flexible Abrasive Foam Discs.",
+      "order": 24
+    },
+    {
+      "id": "S25",
+      "type": "step",
+      "text": "Compound the surface with 3M\u2122 Perfect-It\u2122 Gelcoat Heavy Cutting Compound and a 3M\u2122 Perfect-It\u2122 Low Linting Wool Compounding Pad.",
+      "order": 25
+    },
+    {
+      "id": "S26",
+      "type": "step",
+      "text": "Use a Rotary Polishing machine at 1400-1800 rpm.",
+      "order": 26
+    },
+    {
+      "id": "S27",
+      "type": "step",
+      "text": "Polish with 3M\u2122 Perfect-It\u2122 Gelcoat Compound + Polish and a wool compounding pad at 1400-1800 rpm.",
+      "order": 27
+    },
+    {
+      "id": "S28",
+      "type": "step",
+      "text": "Apply 3M\u2122 Perfect-It\u2122 Boat Wax to a 10cm x 10cm area and wipe clean before it dries.",
+      "order": 28
+    },
+    {
+      "id": "S29",
+      "type": "step",
+      "text": "Clean the surface with approved cleaner.",
+      "order": 29
+    },
+    {
+      "id": "S30",
+      "type": "step",
+      "text": "Sand the surface using a DA sander and 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II 80+ grade abrasive discs.",
+      "order": 30
+    },
+    {
+      "id": "S31",
+      "type": "step",
+      "text": "Apply 3M\u2122 Marine Premium Filler.",
+      "order": 31
+    },
+    {
+      "id": "S32",
+      "type": "step",
+      "text": "After it sets, apply dry guide coat and sand with 120+ grade, then finish sanding with 220+ grade.",
+      "order": 32
+    },
+    {
+      "id": "S33",
+      "type": "step",
+      "text": "Clean the surface.",
+      "order": 33
+    },
+    {
+      "id": "S34",
+      "type": "step",
+      "text": "Clean the surface with an approved cleaner before any other step.",
+      "order": 34
+    },
+    {
+      "id": "S35",
+      "type": "step",
+      "text": "Compound the surface.",
+      "order": 35
+    },
+    {
+      "id": "S36",
+      "type": "step",
+      "text": "Compound with 3M\u2122 Perfect-It\u2122 Fast Cut Plus Extreme and a 3M\u2122 wool or green foam compounding pad using a rotary polisher at 1400-1800 rpm.",
+      "order": 36
+    },
+    {
+      "id": "S37",
+      "type": "step",
+      "text": "Polish the surface.",
+      "order": 37
+    },
+    {
+      "id": "S38",
+      "type": "step",
+      "text": "Polish the surface with 3M\u2122 Perfect-It\u2122 Ultrafina SE Polish and a 3M\u2122 wool or blue foam polishing pad at 1400-1800 rpm.",
+      "order": 38
+    },
+    {
+      "id": "S39",
+      "type": "step",
+      "text": "Apply 3M\u2122 Perfect-It\u2122 Boat Wax to a 10cm x 10cm area and wipe clean before it dries.",
+      "order": 39
+    },
+    {
+      "id": "S40",
+      "type": "step",
+      "text": "Mix bottom paint in a 3M\u2122 PPS\u2122 Series 2.0 cup (remove lid filter)",
+      "order": 40
+    },
+    {
+      "id": "S41",
+      "type": "step",
+      "text": "Use a 3M\u2122 Performance Spray Gun, holding it 15cm-20cm from the surface to apply the paint",
+      "order": 41
+    },
+    {
+      "id": "C1",
+      "type": "condition",
+      "text": "Approved cleaners must be used for cleaning the composite surface before sanding."
+    },
+    {
+      "id": "C2",
+      "type": "condition",
+      "text": "The repair area should be free of moisture before sanding."
+    },
+    {
+      "id": "C3",
+      "type": "condition",
+      "text": "Use only 3M\u2122 Perfect-It\u2122 Boat Wash and 3M\u2122 Perfect-It\u2122 High Performance Cloth for cleaning."
+    },
+    {
+      "id": "C4",
+      "type": "condition",
+      "text": "Use only 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II abrasive discs, grade 80+ for sanding."
+    },
+    {
+      "id": "C5",
+      "type": "condition",
+      "text": "Dry guide coat must be applied and re-sanded before final application of gelcoat."
+    },
+    {
+      "id": "C6",
+      "type": "condition",
+      "text": "Pressurized air can be used instead of approved cleaner for blowing off the repair area."
+    },
+    {
+      "id": "C7",
+      "type": "condition",
+      "text": "The filler should be applied in two stages: blister repair filler and premium filler."
+    },
+    {
+      "id": "C8",
+      "type": "condition",
+      "text": "Wait 30 minutes after applying the first filler before feathering the repair."
+    },
+    {
+      "id": "C9",
+      "type": "condition",
+      "text": "Use only 3M\u2122 Marine Blister Repair Filler for the initial fill stage."
+    },
+    {
+      "id": "C10",
+      "type": "condition",
+      "text": "Use only 3M\u2122 Marine Premium Filler for the final fill stage."
+    },
+    {
+      "id": "C11",
+      "type": "condition",
+      "text": "Use only 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II abrasive discs for sanding."
+    },
+    {
+      "id": "C12",
+      "type": "condition",
+      "text": "Ensure the area is clean before applying filler."
+    },
+    {
+      "id": "C13",
+      "type": "condition",
+      "text": "Surface must be dry before masking."
+    },
+    {
+      "id": "C14",
+      "type": "condition",
+      "text": "Use 3M\u2122 Precision Masking Tape for initial masking."
+    },
+    {
+      "id": "C15",
+      "type": "condition",
+      "text": "Apply 3M\u2122 Performance Industrial Masking Tape or 3M Scotch\u00ae Performance Masking Tape over the 3M\u2122 Precision Masking Tape."
+    },
+    {
+      "id": "C16",
+      "type": "condition",
+      "text": "Use 3M\u2122 Purple Premium Plus Masking Film for final masking."
+    },
+    {
+      "id": "C17",
+      "type": "condition",
+      "text": "Mix gelcoat in a 3M\u2122 PPS\u2122 Series 2.0 disposable spray cup."
+    },
+    {
+      "id": "C18",
+      "type": "condition",
+      "text": "Adjust 3M\u2122 Performance Spray Gun settings."
+    },
+    {
+      "id": "C19",
+      "type": "condition",
+      "text": "Keep spray gun 15cm-20cm from surface while applying gelcoat."
+    },
+    {
+      "id": "C20",
+      "type": "condition",
+      "text": "The surface must be cleaned before sanding."
+    },
+    {
+      "id": "C21",
+      "type": "condition",
+      "text": "Use only approved cleaners for cleaning the surface."
+    },
+    {
+      "id": "C22",
+      "type": "condition",
+      "text": "If the surface has scratches, use P800 grade abrasives for sanding."
+    },
+    {
+      "id": "C23",
+      "type": "condition",
+      "text": "Use a soft interface pad when sanding."
+    },
+    {
+      "id": "C24",
+      "type": "condition",
+      "text": "Use 3M\u2122 Perfect-It\u2122 Gelcoat Heavy Cutting Compound for compounding."
+    },
+    {
+      "id": "C25",
+      "type": "condition",
+      "text": "Use a 3M\u2122 Perfect-It\u2122 Low Linting Wool Compounding Pad for compounding."
+    },
+    {
+      "id": "C26",
+      "type": "condition",
+      "text": "Use a rotary polishing machine for polishing."
+    },
+    {
+      "id": "C27",
+      "type": "condition",
+      "text": "Operate the rotary polishing machine between 1400-1800 rpm."
+    },
+    {
+      "id": "C28",
+      "type": "condition",
+      "text": "The gelcoat compounding and polishing step (S1) must be performed at a speed between 1400 and 1800 rpm."
+    },
+    {
+      "id": "C29",
+      "type": "condition",
+      "text": "The boat wax application step (S2) must be done before the wax dries."
+    },
+    {
+      "id": "C30",
+      "type": "condition",
+      "text": "The surface must be cleaned before sanding."
+    },
+    {
+      "id": "C31",
+      "type": "condition",
+      "text": "Use only approved cleaners for cleaning the surface."
+    },
+    {
+      "id": "C32",
+      "type": "condition",
+      "text": "Use 3M\u2122 Hookit\u2122 775L Cubitron\u2122 II 80+ grade abrasive discs for sanding."
+    },
+    {
+      "id": "C33",
+      "type": "condition",
+      "text": "Apply 3M\u2122 Marine Premium Filler and allow it to set before applying dry guide coat."
+    },
+    {
+      "id": "C34",
+      "type": "condition",
+      "text": "Sand the surface after applying dry guide coat with 120+ grade sandpaper."
+    },
+    {
+      "id": "C35",
+      "type": "condition",
+      "text": "Finally, sand the surface with 220+ grade sandpaper."
+    },
+    {
+      "id": "C36",
+      "type": "condition",
+      "text": "Clean the surface after each sanding step."
+    },
+    {
+      "id": "C37",
+      "type": "condition",
+      "text": "Surface must be dry before applying masking tapes and film."
+    },
+    {
+      "id": "C38",
+      "type": "condition",
+      "text": "Primer should be applied within 24 hours after mixing."
+    },
+    {
+      "id": "C39",
+      "type": "condition",
+      "text": "Use only 3M\u2122 PPS\u2122 Series 2.0 cups for mixing materials."
+    },
+    {
+      "id": "C40",
+      "type": "condition",
+      "text": "Keep a minimum distance of 15cm-20cm between the spray gun and the surface during application."
+    },
+    {
+      "id": "C41",
+      "type": "condition",
+      "text": "The surface must be cleaned before compounding."
+    },
+    {
+      "id": "C42",
+      "type": "condition",
+      "text": "Use 3M\u2122 Perfect-It\u2122 Fast Cut Plus Extreme for compounding."
+    },
+    {
+      "id": "C43",
+      "type": "condition",
+      "text": "Use a 3M\u2122 wool or green foam compounding pad for compounding."
+    },
+    {
+      "id": "C44",
+      "type": "condition",
+      "text": "Use a rotary polisher at 1400-1800 rpm for compounding."
+    },
+    {
+      "id": "C45",
+      "type": "condition",
+      "text": "Use 3M\u2122 Perfect-It\u2122 Ultrafina SE Polish for polishing."
+    },
+    {
+      "id": "C46",
+      "type": "condition",
+      "text": "Use a 3M\u2122 wool or blue foam polishing pad for polishing."
+    },
+    {
+      "id": "C47",
+      "type": "condition",
+      "text": "Use a rotary polisher at 1400-1800 rpm for polishing."
+    },
+    {
+      "id": "C48",
+      "type": "condition",
+      "text": "Apply 3M\u2122 Perfect-It\u2122 Boat Wax only after polishing."
+    },
+    {
+      "id": "C49",
+      "type": "condition",
+      "text": "Wipe off the wax before it dries."
+    },
+    {
+      "id": "C50",
+      "type": "condition",
+      "text": "The 3M\u2122 PPS\u2122 Series 2.0 cup should be free of impurities before mixing the bottom paint."
+    },
+    {
+      "id": "C51",
+      "type": "condition",
+      "text": "The 3M\u2122 Performance Spray Gun should be held at a distance of 15cm-20cm from the surface during painting."
+    }
+  ],
+  "edges": [
+    {
+      "source": "S1",
+      "target": "S2",
+      "type": "next"
+    },
+    {
+      "source": "S2",
+      "target": "S3",
+      "type": "next"
+    },
+    {
+      "source": "S3",
+      "target": "S4",
+      "type": "next"
+    },
+    {
+      "source": "S4",
+      "target": "S5",
+      "type": "next"
+    },
+    {
+      "source": "S5",
+      "target": "S6",
+      "type": "next"
+    },
+    {
+      "source": "S6",
+      "target": "S7",
+      "type": "next"
+    },
+    {
+      "source": "S7",
+      "target": "S8",
+      "type": "next"
+    },
+    {
+      "source": "S8",
+      "target": "S9",
+      "type": "next"
+    },
+    {
+      "source": "S9",
+      "target": "S10",
+      "type": "next"
+    },
+    {
+      "source": "S10",
+      "target": "S11",
+      "type": "next"
+    },
+    {
+      "source": "S11",
+      "target": "S12",
+      "type": "next"
+    },
+    {
+      "source": "S12",
+      "target": "S13",
+      "type": "next"
+    },
+    {
+      "source": "S13",
+      "target": "S14",
+      "type": "next"
+    },
+    {
+      "source": "S14",
+      "target": "S15",
+      "type": "next"
+    },
+    {
+      "source": "S15",
+      "target": "S16",
+      "type": "next"
+    },
+    {
+      "source": "S16",
+      "target": "S17",
+      "type": "next"
+    },
+    {
+      "source": "S17",
+      "target": "S18",
+      "type": "next"
+    },
+    {
+      "source": "S18",
+      "target": "S19",
+      "type": "next"
+    },
+    {
+      "source": "S19",
+      "target": "S20",
+      "type": "next"
+    },
+    {
+      "source": "S20",
+      "target": "S21",
+      "type": "next"
+    },
+    {
+      "source": "S21",
+      "target": "S22",
+      "type": "next"
+    },
+    {
+      "source": "S22",
+      "target": "S23",
+      "type": "next"
+    },
+    {
+      "source": "S23",
+      "target": "S24",
+      "type": "next"
+    },
+    {
+      "source": "S24",
+      "target": "S25",
+      "type": "next"
+    },
+    {
+      "source": "S25",
+      "target": "S26",
+      "type": "next"
+    },
+    {
+      "source": "S26",
+      "target": "S27",
+      "type": "next"
+    },
+    {
+      "source": "S27",
+      "target": "S28",
+      "type": "next"
+    },
+    {
+      "source": "S28",
+      "target": "S29",
+      "type": "next"
+    },
+    {
+      "source": "S29",
+      "target": "S30",
+      "type": "next"
+    },
+    {
+      "source": "S30",
+      "target": "S31",
+      "type": "next"
+    },
+    {
+      "source": "S31",
+      "target": "S32",
+      "type": "next"
+    },
+    {
+      "source": "S32",
+      "target": "S33",
+      "type": "next"
+    },
+    {
+      "source": "S33",
+      "target": "S34",
+      "type": "next"
+    },
+    {
+      "source": "S34",
+      "target": "S35",
+      "type": "next"
+    },
+    {
+      "source": "S35",
+      "target": "S36",
+      "type": "next"
+    },
+    {
+      "source": "S36",
+      "target": "S37",
+      "type": "next"
+    },
+    {
+      "source": "S37",
+      "target": "S38",
+      "type": "next"
+    },
+    {
+      "source": "S38",
+      "target": "S39",
+      "type": "next"
+    },
+    {
+      "source": "S39",
+      "target": "S40",
+      "type": "next"
+    },
+    {
+      "source": "S40",
+      "target": "S41",
+      "type": "next"
+    },
+    {
+      "source": "C1",
+      "target": "S6",
+      "type": "condition_on"
+    },
+    {
+      "source": "C1",
+      "target": "S9",
+      "type": "condition_on"
+    },
+    {
+      "source": "C2",
+      "target": "S7",
+      "type": "condition_on"
+    },
+    {
+      "source": "C3",
+      "target": "S6",
+      "type": "condition_on"
+    },
+    {
+      "source": "C3",
+      "target": "S9",
+      "type": "condition_on"
+    },
+    {
+      "source": "C4",
+      "target": "S7",
+      "type": "condition_on"
+    },
+    {
+      "source": "C5",
+      "target": "S8",
+      "type": "condition_on"
+    },
+    {
+      "source": "C6",
+      "target": "S9",
+      "type": "condition_on"
+    },
+    {
+      "source": "C7",
+      "target": "S11",
+      "type": "condition_on"
+    },
+    {
+      "source": "C8",
+      "target": "S8",
+      "type": "condition_on"
+    },
+    {
+      "source": "C9",
+      "target": "S6",
+      "type": "condition_on"
+    },
+    {
+      "source": "C10",
+      "target": "S11",
+      "type": "condition_on"
+    },
+    {
+      "source": "C11",
+      "target": "S8",
+      "type": "condition_on"
+    },
+    {
+      "source": "C11",
+      "target": "S13",
+      "type": "condition_on"
+    },
+    {
+      "source": "C11",
+      "target": "S14",
+      "type": "condition_on"
+    },
+    {
+      "source": "C12",
+      "target": "S6",
+      "type": "condition_on"
+    },
+    {
+      "source": "C12",
+      "target": "S11",
+      "type": "condition_on"
+    },
+    {
+      "source": "C13",
+      "target": "S15",
+      "type": "condition_on"
+    },
+    {
+      "source": "C14",
+      "target": "S16",
+      "type": "condition_on"
+    },
+    {
+      "source": "C15",
+      "target": "S17",
+      "type": "condition_on"
+    },
+    {
+      "source": "C16",
+      "target": "S18",
+      "type": "condition_on"
+    },
+    {
+      "source": "C17",
+      "target": "S19",
+      "type": "condition_on"
+    },
+    {
+      "source": "C18",
+      "target": "S20",
+      "type": "condition_on"
+    },
+    {
+      "source": "C19",
+      "target": "S21",
+      "type": "condition_on"
+    },
+    {
+      "source": "C20",
+      "target": "S40",
+      "type": "condition_on"
+    },
+    {
+      "source": "C21",
+      "target": "S40",
+      "type": "condition_on"
+    },
+    {
+      "source": "C22",
+      "target": "S41",
+      "type": "condition_on"
+    },
+    {
+      "source": "C23",
+      "target": "S41",
+      "type": "condition_on"
+    },
+    {
+      "source": "C24",
+      "target": "S38",
+      "type": "condition_on"
+    },
+    {
+      "source": "C25",
+      "target": "S38",
+      "type": "condition_on"
+    },
+    {
+      "source": "C26",
+      "target": "S39",
+      "type": "condition_on"
+    },
+    {
+      "source": "C27",
+      "target": "S39",
+      "type": "condition_on"
+    },
+    {
+      "source": "C28",
+      "target": "S40",
+      "type": "condition_on"
+    },
+    {
+      "source": "C29",
+      "target": "S41",
+      "type": "condition_on"
+    },
+    {
+      "source": "C30",
+      "target": "S30",
+      "type": "condition_on"
+    },
+    {
+      "source": "C31",
+      "target": "S29",
+      "type": "condition_on"
+    },
+    {
+      "source": "C32",
+      "target": "S30",
+      "type": "condition_on"
+    },
+    {
+      "source": "C33",
+      "target": "S31",
+      "type": "condition_on"
+    },
+    {
+      "source": "C33",
+      "target": "S32",
+      "type": "condition_on"
+    },
+    {
+      "source": "C34",
+      "target": "S32",
+      "type": "condition_on"
+    },
+    {
+      "source": "C35",
+      "target": "S32",
+      "type": "condition_on"
+    },
+    {
+      "source": "C36",
+      "target": "S30",
+      "type": "condition_on"
+    },
+    {
+      "source": "C36",
+      "target": "S33",
+      "type": "condition_on"
+    },
+    {
+      "source": "C38",
+      "target": "S39",
+      "type": "condition_on"
+    },
+    {
+      "source": "C39",
+      "target": "S39",
+      "type": "condition_on"
+    },
+    {
+      "source": "C40",
+      "target": "S15",
+      "type": "condition_on"
+    },
+    {
+      "source": "C41",
+      "target": "S40",
+      "type": "condition_on"
+    },
+    {
+      "source": "C42",
+      "target": "S41",
+      "type": "condition_on"
+    },
+    {
+      "source": "C43",
+      "target": "S41",
+      "type": "condition_on"
+    },
+    {
+      "source": "C44",
+      "target": "S41",
+      "type": "condition_on"
+    },
+    {
+      "source": "C45",
+      "target": "S37",
+      "type": "condition_on"
+    },
+    {
+      "source": "C46",
+      "target": "S37",
+      "type": "condition_on"
+    },
+    {
+      "source": "C47",
+      "target": "S37",
+      "type": "condition_on"
+    },
+    {
+      "source": "C48",
+      "target": "S37",
+      "type": "condition_on"
+    },
+    {
+      "source": "C48",
+      "target": "S39",
+      "type": "condition_on"
+    },
+    {
+      "source": "C49",
+      "target": "S39",
+      "type": "condition_on"
+    },
+    {
+      "source": "C50",
+      "target": "S40",
+      "type": "condition_on"
+    },
+    {
+      "source": "C51",
+      "target": "S41",
+      "type": "condition_on"
+    }
+  ]
+}
