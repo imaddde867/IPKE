@@ -6,7 +6,7 @@ import sys
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Set, Tuple
+from typing import Any, Callable, Dict, Iterable, List, Optional, Sequence, Set, Tuple, Union
 
 import networkx as nx
 import numpy as np
@@ -25,6 +25,8 @@ HEADLINE_METRICS_ORDER = [
     "ConstraintAttachmentF1",
     "A_score",
     "GraphF1",
+    "AlignedGraphF1",
+    "AlignedEdgeAccuracy",
     "NEXT_EdgeF1",
     "Logic_EdgeF1",
     "B_score",
@@ -225,6 +227,18 @@ class AlignmentResult:
         return {p: g for g, p, _ in self.matches}
 
 
+def alignment_to_id_map(alignment: AlignmentResult) -> Dict[str, str]:
+    mapping: Dict[str, str] = {}
+    for gold_idx, pred_idx, _ in alignment.matches:
+        if gold_idx >= len(alignment.gold_ids) or pred_idx >= len(alignment.pred_ids):
+            continue
+        gold_id = normalize_field(alignment.gold_ids[gold_idx])
+        pred_id = normalize_field(alignment.pred_ids[pred_idx])
+        if pred_id:
+            mapping[pred_id] = gold_id
+    return mapping
+
+
 def align_by_text(
     gold_items: Sequence[Dict[str, Any]],
     pred_items: Sequence[Dict[str, Any]],
@@ -401,6 +415,28 @@ def sort_steps_for_graph(steps: Sequence[Dict[str, Any]]) -> List[Dict[str, Any]
 
 
 def build_tier_b_graph(doc: Dict[str, Any]) -> Tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+    nodes_field = doc.get("nodes")
+    edges_field = doc.get("edges")
+    if nodes_field:
+        nodes: List[Dict[str, Any]] = []
+        for idx, node in enumerate(nodes_field or []):
+            cleaned = dict(node)
+            cleaned_id = normalize_field(cleaned.get("id") or f"node_{idx + 1}")
+            cleaned_type = normalize_field(cleaned.get("type", "") or cleaned.get("category", ""))
+            cleaned["id"] = cleaned_id
+            cleaned["type"] = cleaned_type or "node"
+            if not cleaned.get("text"):
+                cleaned["text"] = extract_node_label(cleaned)
+            nodes.append(cleaned)
+        edges: List[Dict[str, Any]] = []
+        for edge in edges_field or []:
+            src, tgt = get_edge_endpoints(edge)
+            relation = normalize_field(edge.get("type") or edge.get("relation", "")).lower()
+            if not relation or not src or not tgt:
+                continue
+            edges.append({"type": relation, "source": src, "target": tgt})
+        return nodes, edges
+
     nodes: List[Dict[str, Any]] = []
     edges: List[Dict[str, Any]] = []
     steps = doc.get("steps") or []
@@ -455,7 +491,8 @@ def evaluate_tier_a_document(
     preprocessor: TextPreprocessor,
     embedder: EmbeddingCache,
     threshold: float,
-) -> Dict[str, Optional[float]]:
+    return_alignment_map: bool = False,
+) -> Union[Dict[str, Optional[float]], Tuple[Dict[str, Optional[float]], Dict[str, str]]]:
     gold_steps = gold_doc.get("steps", [])
     pred_steps = pred_doc.get("steps", [])
     step_alignment = align_by_text(gold_steps, pred_steps, extract_step_text, preprocessor, embedder, threshold)
@@ -487,6 +524,8 @@ def evaluate_tier_a_document(
         metrics["A_score"] = round3(a_score)
     else:
         metrics["A_score"] = None
+    if return_alignment_map:
+        return metrics, alignment_to_id_map(step_alignment)
     return metrics
 
 
@@ -731,6 +770,7 @@ def evaluate_tier_b_document(
     preprocessor: TextPreprocessor,
     embedder: EmbeddingCache,
     threshold: float,
+    step_id_map: Optional[Dict[str, str]] = None,
 ) -> Dict[str, Optional[float]]:
     gold_nodes, gold_edges = build_tier_b_graph(gold_doc)
     pred_nodes, pred_edges = build_tier_b_graph(pred_doc)
@@ -758,11 +798,14 @@ def evaluate_tier_b_document(
     coverage = None if total_gold_constraints == 0 else safe_ratio(constraint_matches, total_gold_constraints)
     metrics["ConstraintCoverage"] = round3(coverage) if coverage is not None else None
 
-    step_mapping = {
-        normalize_field(pred_step_ids[p_idx]): normalize_field(gold_step_ids[g_idx])
-        for g_idx, p_idx, _ in step_alignment.matches
-        if g_idx < len(gold_step_ids) and p_idx < len(pred_step_ids)
-    }
+    step_mapping: Dict[str, str] = dict(step_id_map) if step_id_map else {}
+    for g_idx, p_idx, _ in step_alignment.matches:
+        if g_idx >= len(gold_step_ids) or p_idx >= len(pred_step_ids):
+            continue
+        gold_id = normalize_field(gold_step_ids[g_idx])
+        pred_id = normalize_field(pred_step_ids[p_idx])
+        if pred_id and gold_id and pred_id not in step_mapping:
+            step_mapping[pred_id] = gold_id
     constraint_gold_nodes = [node for node in gold_nodes if is_constraint_type(normalize_field(node.get("type", "")))]
     constraint_pred_nodes = [node for node in pred_nodes if is_constraint_type(normalize_field(node.get("type", "")))]
     constraint_mapping = {
@@ -785,7 +828,10 @@ def evaluate_tier_b_document(
     remapped_pred_triples = remap_triples(graph_pred_triples, node_mapping)
     tp = len(graph_gold_triples & remapped_pred_triples)
     precision, recall, graph_f1 = compute_prf(tp, len(remapped_pred_triples), len(graph_gold_triples))
-    metrics["GraphF1"] = round3(graph_f1)
+    graph_f1_value = round3(graph_f1)
+    metrics["GraphF1"] = graph_f1_value
+    metrics["AlignedGraphF1"] = graph_f1_value
+    metrics["AlignedEdgeAccuracy"] = round3(precision)
     metrics["NEXT_EdgeF1"] = compute_edge_metrics(
         gold_edges,
         pred_edges,
@@ -952,10 +998,30 @@ def run_evaluation(
     evaluator_emb = embedder or EmbeddingCache(model_name=embedding_model, device=device)
 
     metrics: Dict[str, Optional[float]] = {}
+    step_alignment_map: Optional[Dict[str, str]] = None
     if "A" in tiers_upper:
-        metrics.update(evaluate_tier_a_document(gold_doc, pred_doc, evaluator_pre, evaluator_emb, threshold))
+        tier_a_result = evaluate_tier_a_document(
+            gold_doc,
+            pred_doc,
+            evaluator_pre,
+            evaluator_emb,
+            threshold,
+            return_alignment_map="B" in tiers_upper,
+        )
+        if isinstance(tier_a_result, tuple):
+            tier_a_metrics, step_alignment_map = tier_a_result
+        else:
+            tier_a_metrics = tier_a_result
+        metrics.update(tier_a_metrics)
     if "B" in tiers_upper:
-        tier_b_metrics = evaluate_tier_b_document(gold_doc, pred_doc, evaluator_pre, evaluator_emb, threshold)
+        tier_b_metrics = evaluate_tier_b_document(
+            gold_doc,
+            pred_doc,
+            evaluator_pre,
+            evaluator_emb,
+            threshold,
+            step_id_map=step_alignment_map,
+        )
         for key, value in tier_b_metrics.items():
             if preserve_conflicts and key in metrics:
                 metrics[f"{key}_TierB"] = value
