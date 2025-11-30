@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 
 @dataclass
@@ -14,6 +14,7 @@ class ExtractedEntity:
     confidence: float
     context: str = ""
     metadata: Dict[str, Any] = field(default_factory=dict)
+    canonical_id: Optional[str] = None
 
 
 @dataclass

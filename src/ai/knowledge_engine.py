@@ -16,6 +16,7 @@ from src.ai.worker_pool import ChunkTask, LLMWorkerPool
 from src.core.unified_config import UnifiedConfig, get_config
 from src.logging_config import get_logger
 from src.processors.chunkers import Chunk, get_chunker
+from src.graph.canonicalizer import assign_canonical_ids
 
 logger = get_logger(__name__)
 
@@ -333,16 +334,22 @@ class UnifiedKnowledgeEngine:
     def _merge_chunk_results(
         self, chunk_results: List[ChunkExtraction]
     ) -> Tuple[List[ExtractedEntity], List[Dict[str, Any]], List[Dict[str, Any]]]:
-        all_entities: List[ExtractedEntity] = []
+        raw_entities: List[ExtractedEntity] = []
         raw_steps: List[Dict[str, Any]] = []
         raw_constraints: List[Dict[str, Any]] = []
         for result in chunk_results:
             if not result:
                 continue
-            all_entities.extend(result.entities)
+            raw_entities.extend(result.entities)
             raw_steps.extend(result.steps)
             raw_constraints.extend(result.constraints)
-        return all_entities, raw_steps, raw_constraints
+        merged_entities = assign_canonical_ids(raw_entities)
+        unique_entities: Dict[str, ExtractedEntity] = {}
+        for entity in merged_entities:
+            key = entity.canonical_id or entity.content
+            if key not in unique_entities:
+                unique_entities[key] = entity
+        return list(unique_entities.values()), raw_steps, raw_constraints
 
     def _coerce_confidence(self, value: Any) -> float:
         try:
