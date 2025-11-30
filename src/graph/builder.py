@@ -7,14 +7,19 @@ derives default IDs/text when necessary, stitches together simple procedural
 ``NEXT`` edges from the ordered steps, and links constraint nodes back to the
 steps they guard.  It also exposes a ``get_topology_stats`` helper that is
 handy for descriptive analysis inside notebooks or ad-hoc scripts.
+
+This file now also doubles as a CLI utility that can optionally persist a
+built graph into a locally running Neo4j instance (see ``--persist-neo4j``).
 """
 from __future__ import annotations
 
+import argparse
 import json
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Set, Union
 
 from .models import Condition, Edge, Graph, Step
+from .neo4j_connector import Neo4jConnector
 
 
 ConditionType = Optional[str]
@@ -67,6 +72,20 @@ class ProceduralGraphBuilder:
 
         self.graph = graph
         return graph
+
+    def persist_to_neo4j(
+        self,
+        graph: Graph,
+        clear_existing: bool = False,
+        connector: Optional[Neo4jConnector] = None,
+    ) -> None:
+        """Persist the given graph into the configured Neo4j instance."""
+
+        if connector is None:
+            with Neo4jConnector() as managed:
+                managed.create_graph(graph, clear_existing=clear_existing)
+        else:
+            connector.create_graph(graph, clear_existing=clear_existing)
 
     def get_graph(self) -> Graph:
         """Return the last built Graph or raise if build() has not been called."""
@@ -270,3 +289,36 @@ class ProceduralGraphBuilder:
             else:
                 meta[str(key)] = str(value)
         return meta
+
+
+def _parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Build and optionally persist procedural graphs")
+    parser.add_argument("input", help="Path to a prediction JSON file")
+    parser.add_argument(
+        "--persist-neo4j",
+        action="store_true",
+        help="Persist the built graph to the configured Neo4j instance",
+    )
+    parser.add_argument(
+        "--neo4j-clear",
+        action="store_true",
+        help="Clear the Neo4j database before persisting (implies --persist-neo4j)",
+    )
+    return parser.parse_args()
+
+
+def main() -> None:
+    args = _parse_args()
+    builder = ProceduralGraphBuilder()
+    graph = builder.build_from_json(args.input)
+    stats = builder.get_topology_stats()
+    print(json.dumps(stats, indent=2))
+
+    if args.persist_neo4j or args.neo4j_clear:
+        connector = Neo4jConnector()
+        builder.persist_to_neo4j(graph, clear_existing=args.neo4j_clear, connector=connector)
+        print(f"Persisted graph to Neo4j at {connector.uri}")
+
+
+if __name__ == "__main__":  # pragma: no cover - CLI utility
+    main()
