@@ -11,6 +11,7 @@ en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_
 sentence-transformers>=2.2.2
 torch>=2.1.0
 requests>=2.31.0
+neo4j==5.14.0
 
 # Web Framework
 fastapi>=0.104.0
