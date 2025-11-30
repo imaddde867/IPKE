@@ -63,10 +63,10 @@ async def run_prompting_experiment(
 
     for doc in docs:
         doc_out_dir = experiment_dir / doc["id"]
-        result, prediction_path = await process_document(processor, doc, doc_out_dir)
+        result, prediction_path, tierb_path = await process_document(processor, doc, doc_out_dir)
         metrics = None
         if evaluate_flag:
-            metrics = evaluate_document(doc, prediction_path, eval_ctx)
+            metrics = evaluate_document(doc, prediction_path, eval_ctx, tierb_path=tierb_path)
         summary_row = {
             "experiment": exp_name,
             "prompting_strategy": config.prompting_strategy,
@@ -95,6 +95,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--out-root", default=None, help="Optional override for the output directory.")
     parser.add_argument("--evaluate", default="true", help="Whether to run evaluation (true/false).")
+    parser.add_argument("--tier", default="both", choices=["A", "B", "both"], help="Tier(s) to evaluate (overrides config)")
     parser.add_argument("--log-level", default="INFO", help="Logging verbosity.")
     return parser.parse_args()
 
@@ -108,6 +109,9 @@ async def main_async() -> None:
         raise FileNotFoundError(f"Config not found: {spec_path}")
     spec = load_spec(spec_path)
     out_root = ensure_out_root(spec, args.out_root, ROOT)
+
+    if args.tier:
+        spec.setdefault("evaluation", {})["tier"] = args.tier
 
     docs = normalize_documents(spec, ROOT)
     prompting_experiments = spec.get("prompting_experiments")
@@ -146,6 +150,8 @@ async def main_async() -> None:
             "ConstraintCoverage",
             "ConstraintAttachmentF1",
             "A_score",
+            "GraphPrecision",
+            "GraphRecall",
             "GraphF1",
             "NEXT_EdgeF1",
             "Logic_EdgeF1",

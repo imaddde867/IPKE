@@ -16,6 +16,8 @@ from scipy.stats import kendalltau
 from sentence_transformers import SentenceTransformer
 from tqdm import tqdm
 
+from src.evaluation.smatch import compute_smatch
+
 
 HEADLINE_METRICS_ORDER = [
     "StepF1",
@@ -23,7 +25,10 @@ HEADLINE_METRICS_ORDER = [
     "Kendall",
     "ConstraintCoverage",
     "ConstraintAttachmentF1",
+    "ConstraintAttachmentF1_TierB",
     "A_score",
+    "GraphPrecision",
+    "GraphRecall",
     "GraphF1",
     "AlignedGraphF1",
     "AlignedEdgeAccuracy",
@@ -641,34 +646,32 @@ def expand_node_mapping(
     return mapping
 
 
-def build_graph_triples(
+def graph_to_smatch_triples(
     nodes: Sequence[Dict[str, Any]],
     edges: Sequence[Dict[str, Any]],
-) -> Set[Tuple[str, str, str, str]]:
-    type_lookup: Dict[str, str] = {}
+) -> Tuple[Set[Tuple[str, str, str]], Set[str]]:
+    triples: Set[Tuple[str, str, str]] = set()
+    node_ids: Set[str] = set()
     for node in nodes:
         node_id = normalize_field(node.get("id", ""))
         if not node_id:
             continue
-        type_lookup[node_id] = normalize_field(node.get("type", "")).lower()
-    triples: Set[Tuple[str, str, str, str]] = set()
+        node_ids.add(node_id)
+        node_type = normalize_field(node.get("type", ""))
+        label = extract_node_label(node)
+        descriptor = f"{node_type}:{label}" if node_type else label
+        triples.add((node_id, "instance", descriptor))
+
     for edge in edges:
         relation = normalize_field(edge.get("type", "")).lower()
         if not relation:
             continue
         src, tgt = get_edge_endpoints(edge)
-        if src and tgt:
-            triples.add((type_lookup.get(src, ""), relation, src, tgt))
-    return triples
+        if not src or not tgt:
+            continue
+        triples.add((src, relation, tgt))
 
-
-def remap_triples(triples: Set[Tuple[str, str, str, str]], mapping: Dict[str, str]) -> Set[Tuple[str, str, str, str]]:
-    remapped: Set[Tuple[str, str, str, str]] = set()
-    for node_type, relation, src, tgt in triples:
-        new_src = mapping.get(src, f"pred::{src}")
-        new_tgt = mapping.get(tgt, f"pred::{tgt}")
-        remapped.add((node_type, relation, new_src, new_tgt))
-    return remapped
+    return triples, node_ids
 
 
 def compute_edge_metrics(
@@ -774,64 +777,29 @@ def evaluate_tier_b_document(
 ) -> Dict[str, Optional[float]]:
     gold_nodes, gold_edges = build_tier_b_graph(gold_doc)
     pred_nodes, pred_edges = build_tier_b_graph(pred_doc)
+    gold_triples, gold_node_ids = graph_to_smatch_triples(gold_nodes, gold_edges)
+    pred_triples, pred_node_ids = graph_to_smatch_triples(pred_nodes, pred_edges)
 
-    gold_steps = [node for node in gold_nodes if is_step_type(normalize_field(node.get("type", "")))]
-    pred_steps = [node for node in pred_nodes if is_step_type(normalize_field(node.get("type", "")))]
-    step_alignment = align_by_text(gold_steps, pred_steps, extract_step_text, preprocessor, embedder, threshold)
+    initial_mapping: Dict[str, str] = {}
+    if step_id_map:
+        for pred_id, gold_id in step_id_map.items():
+            if pred_id in pred_node_ids and gold_id in gold_node_ids:
+                initial_mapping[pred_id] = gold_id
 
-    gold_step_ids = [normalize_field(node.get("id", "")) for node in gold_steps]
-    pred_step_ids = [normalize_field(node.get("id", "")) for node in pred_steps]
-    gold_step_lookup = {sid: idx for idx, sid in enumerate(gold_step_ids)}
-    pred_step_lookup = {sid: idx for idx, sid in enumerate(pred_step_ids)}
-
-    gold_adj = adjacency_from_edges(gold_edges, gold_step_lookup)
-    pred_adj = adjacency_from_edges(pred_edges, pred_step_lookup)
-
-    gold_order = derive_order_from_next_edges(gold_step_ids, gold_edges)
-    pred_order = derive_order_from_next_edges(pred_step_ids, pred_edges)
-
-    metrics = compute_step_metrics(step_alignment, gold_adj, pred_adj, gold_order, pred_order)
-
-    constraint_alignment = align_constraint_nodes(gold_nodes, pred_nodes, preprocessor, embedder, threshold)
-    constraint_matches = len(constraint_alignment.matches)
-    total_gold_constraints = len(constraint_alignment.gold_ids)
-    coverage = None if total_gold_constraints == 0 else safe_ratio(constraint_matches, total_gold_constraints)
-    metrics["ConstraintCoverage"] = round3(coverage) if coverage is not None else None
-
-    step_mapping: Dict[str, str] = dict(step_id_map) if step_id_map else {}
-    for g_idx, p_idx, _ in step_alignment.matches:
-        if g_idx >= len(gold_step_ids) or p_idx >= len(pred_step_ids):
-            continue
-        gold_id = normalize_field(gold_step_ids[g_idx])
-        pred_id = normalize_field(pred_step_ids[p_idx])
-        if pred_id and gold_id and pred_id not in step_mapping:
-            step_mapping[pred_id] = gold_id
-    constraint_gold_nodes = [node for node in gold_nodes if is_constraint_type(normalize_field(node.get("type", "")))]
-    constraint_pred_nodes = [node for node in pred_nodes if is_constraint_type(normalize_field(node.get("type", "")))]
-    constraint_mapping = {
-        normalize_field(constraint_pred_nodes[p_idx].get("id", "")): normalize_field(constraint_gold_nodes[g_idx].get("id", ""))
-        for g_idx, p_idx, _ in constraint_alignment.matches
-        if g_idx < len(constraint_gold_nodes) and p_idx < len(constraint_pred_nodes)
-    }
-
-    node_mapping = expand_node_mapping(
-        gold_nodes,
-        pred_nodes,
-        preprocessor,
-        embedder,
-        threshold,
-        {**step_mapping, **constraint_mapping},
+    smatch_result = compute_smatch(
+        gold_triples,
+        pred_triples,
+        gold_node_ids,
+        pred_node_ids,
+        initial_mapping=initial_mapping,
     )
+    node_mapping = smatch_result.mapping
 
-    graph_gold_triples = build_graph_triples(gold_nodes, gold_edges)
-    graph_pred_triples = build_graph_triples(pred_nodes, pred_edges)
-    remapped_pred_triples = remap_triples(graph_pred_triples, node_mapping)
-    tp = len(graph_gold_triples & remapped_pred_triples)
-    precision, recall, graph_f1 = compute_prf(tp, len(remapped_pred_triples), len(graph_gold_triples))
-    graph_f1_value = round3(graph_f1)
-    metrics["GraphF1"] = graph_f1_value
-    metrics["AlignedGraphF1"] = graph_f1_value
-    metrics["AlignedEdgeAccuracy"] = round3(precision)
+    metrics: Dict[str, Optional[float]] = {
+        "GraphPrecision": round3(smatch_result.precision),
+        "GraphRecall": round3(smatch_result.recall),
+        "GraphF1": round3(smatch_result.f1),
+    }
     metrics["NEXT_EdgeF1"] = compute_edge_metrics(
         gold_edges,
         pred_edges,
@@ -844,24 +812,15 @@ def evaluate_tier_b_document(
         node_mapping,
         relation_filter=lambda rel: rel != "next",
     )
-    metrics["ConstraintAttachmentF1"] = compute_constraint_attachment_f1_tier_b(
+    attachment_f1 = compute_constraint_attachment_f1_tier_b(
         gold_nodes,
         gold_edges,
         pred_nodes,
         pred_edges,
         node_mapping,
     )
-
-    # New A_score: 0.5*ConstraintCoverage + 0.3*StepF1 + 0.2*Kendall
-    if all(k in metrics for k in ["ConstraintCoverage", "StepF1", "Kendall"]):
-        a_score = (
-            0.5 * metrics.get("ConstraintCoverage", 0) +
-            0.3 * metrics.get("StepF1", 0) +
-            0.2 * (metrics.get("Kendall") or 0)
-        )
-        metrics["A_score"] = round3(a_score)
-    else:
-        metrics["A_score"] = None
+    if attachment_f1 is not None:
+        metrics["ConstraintAttachmentF1_TierB"] = attachment_f1
     metrics["B_score"] = metrics.get("GraphF1")
     return metrics
 

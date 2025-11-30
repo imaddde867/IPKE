@@ -16,6 +16,7 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 from src.core.unified_config import UnifiedConfig
 from src.processors.streamlined_processor import ProcessingResult, StreamlinedDocumentProcessor
 from src.ai.types import ExtractionResult, ExtractedEntity
+from src.graph.adapter import convert_to_tierb
 from tools import evaluate as evaluator
 
 LOGGER = logging.getLogger(__name__)
@@ -57,13 +58,21 @@ def normalize_documents(spec: Dict[str, Any], base_dir: Path) -> List[Dict[str, 
             raise ValueError(f"Document entries must be objects with id/path: {entry}")
         if "id" not in entry or "path" not in entry:
             raise ValueError(f"Document entries require 'id' and 'path': {entry}")
+        gold_path = resolve_path(entry["gold"], base_dir) if entry.get("gold") else None
+        if entry.get("gold_tier_b"):
+            gold_b_path: Optional[Path] = resolve_path(entry["gold_tier_b"], base_dir)
+        elif gold_path and "gold_human" in str(gold_path):
+            candidate = Path(str(gold_path).replace("gold_human", "gold_human_tierb"))
+            gold_b_path = candidate if candidate.exists() else None
+        else:
+            gold_b_path = None
         normalized.append(
             {
                 "id": entry["id"],
                 "path": str(resolve_path(entry["path"], base_dir)),
-                "gold": str(resolve_path(entry["gold"], base_dir)) if entry.get("gold") else None,
-                "gold_tier_a": str(resolve_path(entry["gold_tier_a"], base_dir)) if entry.get("gold_tier_a") else None,
-                "gold_tier_b": str(resolve_path(entry["gold_tier_b"], base_dir)) if entry.get("gold_tier_b") else None,
+                "gold": str(gold_path) if gold_path else None,
+                "gold_tier_a": str(resolve_path(entry["gold_tier_a"], base_dir)) if entry.get("gold_tier_a") else (str(gold_path) if gold_path else None),
+                "gold_tier_b": str(gold_b_path) if gold_b_path else None,
                 "type": entry.get("type", "unknown"),
             }
         )
@@ -225,7 +234,7 @@ def write_summary_csv(out_root: Path, rows: List[Dict[str, Any]], fieldnames: Li
     LOGGER.info("Summary CSV written to %s", summary_path)
 
 
-def save_prediction(doc_out_dir: Path, result: ProcessingResult) -> Path:
+def save_prediction(doc_out_dir: Path, result: ProcessingResult) -> Tuple[Path, Dict[str, Any]]:
     doc_out_dir.mkdir(parents=True, exist_ok=True)
     payload = {
         "document_id": result.document_id,
@@ -235,7 +244,16 @@ def save_prediction(doc_out_dir: Path, result: ProcessingResult) -> Path:
     }
     prediction_path = doc_out_dir / "predictions.json"
     prediction_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
-    return prediction_path
+    return prediction_path, payload
+
+
+def save_tierb_prediction(doc_out_dir: Path, payload: Dict[str, Any]) -> Path:
+    tierb_dir = doc_out_dir / "tierb"
+    tierb_dir.mkdir(parents=True, exist_ok=True)
+    tierb_payload = convert_to_tierb(payload)
+    tierb_path = tierb_dir / "predictions.json"
+    tierb_path.write_text(json.dumps(tierb_payload, indent=2), encoding="utf-8")
+    return tierb_path
 
 
 def prepare_evaluation_context(eval_spec: Dict[str, Any]) -> Optional[EvaluationContext]:
@@ -260,10 +278,11 @@ async def process_document(
     processor: StreamlinedDocumentProcessor,
     doc: Dict[str, Any],
     doc_out_dir: Path,
-) -> Tuple[ProcessingResult, Path]:
+) -> Tuple[ProcessingResult, Path, Path]:
     LOGGER.info("Processing %s (%s)", doc["id"], doc["path"])
     result = await processor.process_document(doc["path"], document_id=doc["id"])
-    prediction_path = save_prediction(doc_out_dir, result)
+    prediction_path, payload = save_prediction(doc_out_dir, result)
+    tierb_path = save_tierb_prediction(doc_out_dir, payload)
     stats_path = doc_out_dir / "extraction_stats.json"
     stats_payload = {
         "document_id": result.document_id,
@@ -276,13 +295,14 @@ async def process_document(
         "confidence_score": result.extraction_result.confidence_score,
     }
     stats_path.write_text(json.dumps(stats_payload, indent=2), encoding="utf-8")
-    return result, prediction_path
+    return result, prediction_path, tierb_path
 
 
 def evaluate_document(
     doc: Dict[str, Any],
     prediction_path: Path,
     eval_ctx: Optional[EvaluationContext],
+    tierb_path: Optional[Path] = None,
 ) -> Optional[Dict[str, Any]]:
     if not eval_ctx:
         return None
@@ -308,9 +328,12 @@ def evaluate_document(
         if not gold_b:
             LOGGER.warning("Missing Tier B gold for %s; skipping Tier B evaluation.", doc["id"])
         else:
+            tierb_source = tierb_path or prediction_path
+            if tierb_path is None:
+                LOGGER.warning("Tier-B prediction missing for %s; falling back to flat prediction.", doc["id"])
             tier_b_metrics = evaluator.run_evaluation(
                 gold_b,
-                str(prediction_path),
+                str(tierb_source),
                 tiers=("B",),
                 threshold=eval_ctx.threshold,
                 preprocessor=eval_ctx.preprocessor,
