@@ -503,6 +503,23 @@ class UnifiedKnowledgeEngine:
 
     def _normalize_constraints(self, constraints: List[Dict[str, Any]], step_id_map: Dict[str, str]) -> List[Dict[str, Any]]:
         normalized: List[Dict[str, Any]] = []
+        def _coerce_ref(value: Any) -> Optional[str]:
+            if value is None:
+                return None
+            if isinstance(value, dict):
+                for key in ("id", "step_id", "step", "target"):
+                    candidate = value.get(key)
+                    if candidate:
+                        return str(candidate)
+                return None
+            if isinstance(value, (list, tuple, set)):
+                for item in value:
+                    coerced = _coerce_ref(item)
+                    if coerced:
+                        return coerced
+                return None
+            text = str(value).strip()
+            return text or None
         for constraint in constraints:
             text = (
                 constraint.get("text")
@@ -512,11 +529,18 @@ class UnifiedKnowledgeEngine:
             ).strip()
             if not text:
                 continue
-            raw_refs = constraint.get("steps") or constraint.get("attached_to") or []
+            raw_refs = constraint.get("steps") or constraint.get("attached_to") or constraint.get("targets") or []
             if not isinstance(raw_refs, list):
                 raw_refs = [raw_refs]
 
-            attached_steps = [step_id_map[ref] for ref in raw_refs if ref in step_id_map]
+            attached_steps: List[str] = []
+            for ref in raw_refs:
+                ref_id = _coerce_ref(ref)
+                if not ref_id:
+                    continue
+                mapped = step_id_map.get(ref_id)
+                if mapped:
+                    attached_steps.append(mapped)
 
             normalized_constraint = deepcopy(constraint)
             normalized_constraint.pop("steps", None)
