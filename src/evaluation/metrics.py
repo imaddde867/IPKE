@@ -525,10 +525,17 @@ def evaluate_tier_a_document(
 
     # New Procedural_Fidelity_Score: 0.5*ConstraintCoverage + 0.3*StepF1 + 0.2*Kendall
     if all(k in metrics for k in ["ConstraintCoverage", "StepF1", "Kendall"]):
+        constraint_coverage = metrics.get("ConstraintCoverage")
+        constraint_coverage = 0.0 if constraint_coverage is None else constraint_coverage
+        step_f1 = metrics.get("StepF1")
+        step_f1 = 0.0 if step_f1 is None else step_f1
+        normalized_kendall = metrics.get("Kendall")
+        normalized_kendall = 0.0 if normalized_kendall is None else normalized_kendall
+
         pfs = (
-            0.5 * metrics.get("ConstraintCoverage", 0) +
-            0.3 * metrics.get("StepF1", 0) +
-            0.2 * (metrics.get("Kendall") or 0)
+            0.5 * constraint_coverage +
+            0.3 * step_f1 +
+            0.2 * normalized_kendall
         )
         metrics["Procedural_Fidelity_Score"] = round3(pfs)
     else:
