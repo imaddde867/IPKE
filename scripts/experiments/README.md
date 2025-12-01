@@ -42,6 +42,7 @@ Other common options:
 - `--service-name / --container-name`: override compose identifiers if you renamed them.
 - `--compose-file`: point to an alternate compose stack.
 - `--host / --port`: target a remote deployment rather than `localhost`.
+- `--no-docker`: skip docker-compose restarts/log capture and assume the service is already running (useful on clusters where Docker is unavailable).
 
 ### General methodology baked into the scripts
 

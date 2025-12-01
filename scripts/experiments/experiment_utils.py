@@ -65,6 +65,7 @@ class ServiceConfig:
     health_path: str = "/health"
     health_timeout: int = 240
     health_interval: float = 5.0
+    use_docker: bool = True
 
 
 @dataclass
@@ -106,6 +107,9 @@ def write_override_file(service: str, env_overrides: Dict[str, str], override_di
 
 
 def restart_service(service_cfg: ServiceConfig, override_file: Path) -> None:
+    if not service_cfg.use_docker:
+        LOGGER.info("Docker disabled; skipping restart for %s.", service_cfg.name)
+        return
     cmd = [
         "docker",
         "compose",
@@ -140,7 +144,10 @@ def wait_for_health(service_cfg: ServiceConfig) -> None:
     raise RuntimeError(f"Service {service_cfg.name} did not become healthy within timeout. Last error: {last_error}")
 
 
-def capture_docker_logs(container_name: str, since: datetime, destination: Path) -> None:
+def capture_docker_logs(container_name: str, since: datetime, destination: Path, *, enabled: bool = True) -> None:
+    if not enabled:
+        LOGGER.info("Docker disabled; skipping log capture for %s.", container_name)
+        return
     destination.parent.mkdir(parents=True, exist_ok=True)
     timestamp = since.astimezone(timezone.utc).isoformat()
     cmd = ["docker", "logs", container_name, "--since", timestamp]

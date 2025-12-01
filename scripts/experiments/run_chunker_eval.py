@@ -111,6 +111,11 @@ def parse_args() -> argparse.Namespace:
         help="Directory containing Tier B gold annotations.",
     )
     parser.add_argument("--doc-id-map", type=Path, help="Optional JSON mapping: doc stem -> gold id override.")
+    parser.add_argument(
+        "--no-docker",
+        action="store_true",
+        help="Assume the service is already running and skip docker-compose restarts/log capture.",
+    )
     return parser.parse_args()
 
 
@@ -145,11 +150,20 @@ def main() -> None:
         override_dir=args.override_dir,
         health_timeout=args.health_timeout,
         health_interval=args.health_interval,
+        use_docker=not args.no_docker,
     )
 
     run_paths: EvaluationPaths = prepare_run_dirs(run_dir)
-    override_file = write_override_file(service_cfg.name, env_overrides, service_cfg.override_dir)
-    restart_service(service_cfg, override_file)
+    if service_cfg.use_docker:
+        override_file = write_override_file(service_cfg.name, env_overrides, service_cfg.override_dir)
+        restart_service(service_cfg, override_file)
+    else:
+        LOGGER.info(
+            "Docker disabled; assuming %s is already running at %s:%s",
+            service_cfg.name,
+            service_cfg.host,
+            service_cfg.port,
+        )
     wait_for_health(service_cfg)
 
     LOGGER.info("Running extraction for %s", args.config_id)
@@ -172,7 +186,7 @@ def main() -> None:
     wall_time = time.time() - run_start
 
     log_file = run_paths.logs_dir / "docker.log"
-    capture_docker_logs(args.container_name, log_since, log_file)
+    capture_docker_logs(args.container_name, log_since, log_file, enabled=service_cfg.use_docker)
 
     metadata = {
         "config_id": args.config_id,
