@@ -11,7 +11,7 @@ import time
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Optional, Sequence
+from typing import Any, Dict, List, Optional, Sequence
 
 import requests
 
@@ -20,14 +20,6 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from scripts.archive.run_thesis_experiments import (  # noqa: E402
-    DEFAULT_DOCUMENTS,
-    ensure_documents_exist,
-    make_service_url,
-    run_single_request,
-    save_result,
-    env_to_method_form_fields,
-)
 from src.graph.adapter import flat_to_tierb  # noqa: E402
 
 LOGGER = logging.getLogger("experiment_utils")
@@ -38,6 +30,58 @@ DEFAULT_RESULTS_ROOT = REPO_ROOT / "results" / "experiments"
 DEFAULT_GOLD_TIER_A = REPO_ROOT / "datasets" / "archive" / "gold_human"
 DEFAULT_GOLD_TIER_B = REPO_ROOT / "datasets" / "archive" / "gold_human_tierb"
 DEFAULT_TIMEOUT = 2000
+# Canonical documents used across sweeps
+DEFAULT_DOCUMENTS = [
+    REPO_ROOT / "datasets" / "archive" / "test_data" / "text" / "3m_marine_oem_sop.txt",
+    REPO_ROOT / "datasets" / "archive" / "test_data" / "text" / "DOA_Food_Man_Proc_Stor.txt",
+    REPO_ROOT / "datasets" / "archive" / "test_data" / "text" / "op_firesafety_guideline.txt",
+]
+
+METHOD_FORM_FIELD_DEFAULTS: Dict[str, Dict[str, Any]] = {
+    "fixed": {
+        "chunking_method": "fixed",
+        "chunk_max_chars": 2000,
+    },
+    "breakpoint_semantic": {
+        "chunking_method": "breakpoint_semantic",
+        "chunk_max_chars": 2000,
+        "sem_lambda": 0.15,
+        "sem_window_w": 30,
+        "sem_min_sentences_per_chunk": 2,
+        "sem_max_sentences_per_chunk": 40,
+    },
+    "dsc": {
+        "chunking_method": "dsc",
+        "chunk_max_chars": 2000,
+        "dsc_parent_min_sentences": 10,
+        "dsc_parent_max_sentences": 120,
+        "dsc_delta_window": 25,
+        "dsc_threshold_k": 1.0,
+        "dsc_use_headings": True,
+    },
+}
+
+ENV_TO_METHOD_FORM_FIELD_MAPPING: Dict[str, Dict[str, str]] = {
+    "fixed": {
+        "CHUNK_MAX_CHARS": "chunk_max_chars",
+        "CHUNK_STRIDE_CHARS": "chunk_stride_chars",
+    },
+    "breakpoint_semantic": {
+        "CHUNK_MAX_CHARS": "chunk_max_chars",
+        "SEM_LAMBDA": "sem_lambda",
+        "SEM_WINDOW_W": "sem_window_w",
+        "SEM_MIN_SENTENCES_PER_CHUNK": "sem_min_sentences_per_chunk",
+        "SEM_MAX_SENTENCES_PER_CHUNK": "sem_max_sentences_per_chunk",
+    },
+    "dsc": {
+        "CHUNK_MAX_CHARS": "chunk_max_chars",
+        "DSC_PARENT_MIN_SENTENCES": "dsc_parent_min_sentences",
+        "DSC_PARENT_MAX_SENTENCES": "dsc_parent_max_sentences",
+        "DSC_DELTA_WINDOW": "dsc_delta_window",
+        "DSC_THRESHOLD_K": "dsc_threshold_k",
+        "DSC_USE_HEADINGS": "dsc_use_headings",
+    },
+}
 
 # Some document stems do not match their gold filenames; normalise them here.
 DOC_ID_OVERRIDES = {
@@ -45,11 +89,80 @@ DOC_ID_OVERRIDES = {
 }
 
 
+def ensure_documents_exist(documents: Sequence[str | Path]) -> List[Path]:
+    """Resolve ``documents`` relative to the repo and ensure each exists."""
+    resolved: List[Path] = []
+    for doc in documents:
+        path = Path(doc).expanduser()
+        if not path.is_absolute():
+            path = (REPO_ROOT / path).resolve()
+        if not path.exists():
+            raise FileNotFoundError(f"Document not found: {path}")
+        resolved.append(path)
+    return resolved
+
+
+def make_service_url(host: str, port: int) -> str:
+    """Normalise host/port to a fully qualified base URL."""
+    base = host.rstrip("/")
+    if base.endswith(f":{port}"):
+        return base
+    if "://" not in base:
+        base = f"http://{base}"
+    return f"{base}:{port}"
+
+
+def _stringify_form_value(value: Any) -> str:
+    if isinstance(value, bool):
+        return "true" if value else "false"
+    return str(value)
+
+
+def build_chunk_request_fields(method: str, overrides: Optional[Dict[str, Any]] = None) -> Dict[str, str]:
+    base = METHOD_FORM_FIELD_DEFAULTS.get(method, {"chunking_method": method})
+    payload: Dict[str, Any] = dict(base)
+    payload.setdefault("chunking_method", method)
+    if overrides:
+        payload.update(overrides)
+    return {key: _stringify_form_value(value) for key, value in payload.items() if value is not None}
+
+
+def env_to_method_form_fields(method: str, env_overrides: Dict[str, str]) -> Dict[str, str]:
+    mapping = ENV_TO_METHOD_FORM_FIELD_MAPPING.get(method, {})
+    return {target: env_overrides[key] for key, target in mapping.items() if key in env_overrides}
+
+
 def request_form_fields_from_env(method: str, env_overrides: Optional[Dict[str, str]]) -> Dict[str, str]:
     """Translate docker env overrides into request form fields expected by /extract."""
     if not env_overrides:
         return {}
     return env_to_method_form_fields(method, env_overrides)
+
+
+def run_single_request(
+    session: requests.Session,
+    url: str,
+    doc_path: Path,
+    timeout: int,
+    method: str,
+    form_overrides: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    """Send ``doc_path`` to ``url`` and return the parsed JSON response."""
+    endpoint = f"{url}/extract"
+    LOGGER.debug("Posting %s to %s", doc_path, endpoint)
+    form_fields = build_chunk_request_fields(method, form_overrides)
+    request_data = form_fields or None
+    path_obj = Path(doc_path)
+    with path_obj.open("rb") as stream:
+        files = {"file": (path_obj.name, stream, "text/plain")}
+        response = session.post(endpoint, files=files, data=request_data, timeout=timeout)
+    response.raise_for_status()
+    return response.json()
+
+
+def save_result(payload: Dict[str, Any], output_path: Path) -> None:
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
 
 @dataclass

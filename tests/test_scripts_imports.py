@@ -10,15 +10,15 @@ import pytest
 
 
 @pytest.mark.integration
-def test_run_experiments_sys_path_allows_project_imports(tmp_path):
+def test_fixed_sweep_sys_path_allows_project_imports(tmp_path):
     """
-    Ensure that importing scripts/run_experiments.py modifies sys.path to include
+    Ensure that importing scripts/experiments/fixed_sweep.py modifies sys.path to include
     the repository root so that imports like `src.*` succeed even when the repo
     root was deliberately removed from sys.path.
     """
     repo_root = Path(__file__).resolve().parents[1]
-    script_path = repo_root / "scripts" / "run_experiments.py"
-    assert script_path.exists(), "scripts/run_experiments.py should exist"
+    script_path = repo_root / "scripts" / "experiments" / "fixed_sweep.py"
+    assert script_path.exists(), "scripts/experiments/fixed_sweep.py should exist"
 
     # Python program to run in a clean subprocess
     program = f"""
@@ -29,7 +29,7 @@ repo_root = Path({str(repo_root)!r})
 sys.path = [p for p in sys.path if Path(p).resolve() != repo_root.resolve()]
 
 # Import the script as a module (not __main__), so it won't execute main()
-spec = importlib.util.spec_from_file_location("run_experiments", str(Path({str(script_path)!r})))
+spec = importlib.util.spec_from_file_location("fixed_sweep", str(Path({str(script_path)!r})))
 mod = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(mod)  # This should add repo_root back to sys.path
 
