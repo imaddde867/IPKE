@@ -4,8 +4,10 @@
 from __future__ import annotations
 
 import argparse
+import concurrent.futures
 import json
 import logging
+import os
 import sys
 import time
 from datetime import datetime, timezone
@@ -103,16 +105,16 @@ def load_doc_map(path: Path | None) -> Dict[str, str]:
         return json.load(handle)
 
 
-def execute_run(
+def process_single_run(
     config_id: str,
     env_overrides: Dict[str, str],
     service_cfg: ServiceConfig,
     documents: List[Path],
     args: argparse.Namespace,
     doc_id_overrides: Dict[str, str],
-    summary_rows: List[Dict[str, object]],
-) -> None:
+) -> Dict[str, object]:
     run_dir = args.output_root / config_id
+    os.makedirs(run_dir, exist_ok=True)
     run_paths: EvaluationPaths = prepare_run_dirs(run_dir)
     if service_cfg.use_docker:
         override_file = write_override_file(service_cfg.name, env_overrides, service_cfg.override_dir)
@@ -167,14 +169,12 @@ def execute_run(
         "doc_summaries": doc_summaries,
     }
     save_metadata(run_paths, metadata)
-    summary_rows.append(
-        aggregate_metric_row(
-            config_id=config_id,
-            parameters=env_overrides,
-            tier_a_metrics=tier_a_metrics,
-            tier_b_metrics=tier_b_metrics,
-            wall_time=wall_time,
-        )
+    return aggregate_metric_row(
+        config_id=config_id,
+        parameters=env_overrides,
+        tier_a_metrics=tier_a_metrics,
+        tier_b_metrics=tier_b_metrics,
+        wall_time=wall_time,
     )
 
 
@@ -216,33 +216,41 @@ def main() -> None:
     summary_rows: List[Dict[str, object]] = []
     seen: set[str] = set()
     failures: List[Tuple[str, str]] = []
-    for param_name, values in grids:
-        for value in values:
-            env = defaults.copy()
-            env[param_name] = value
-            config_id = f"{param_name.lower()}_{value}"
-            if config_id in seen:
-                continue
-            seen.add(config_id)
-            try:
-                execute_run(
-                    config_id=config_id,
-                    env_overrides=env,
-                    service_cfg=service_cfg,
-                    documents=documents,
-                    args=args,
-                    doc_id_overrides=doc_id_overrides,
-                    summary_rows=summary_rows,
+    future_to_config: Dict[concurrent.futures.Future[Dict[str, object]], str] = {}
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+        for param_name, values in grids:
+            for value in values:
+                env = defaults.copy()
+                env[param_name] = value
+                config_id = f"{param_name.lower()}_{value}"
+                if config_id in seen:
+                    continue
+                seen.add(config_id)
+                future = executor.submit(
+                    process_single_run,
+                    config_id,
+                    env,
+                    service_cfg,
+                    documents,
+                    args,
+                    doc_id_overrides,
                 )
+                future_to_config[future] = config_id
+
+        for future in concurrent.futures.as_completed(future_to_config):
+            config_id = future_to_config[future]
+            try:
+                summary_rows.append(future.result())
             except KeyboardInterrupt:
+                executor.shutdown(wait=False, cancel_futures=True)
                 raise
             except Exception as exc:  # noqa: PERF203
                 LOGGER.error("Configuration %s failed: %s", config_id, exc)
                 LOGGER.debug("Detailed error for %s", config_id, exc_info=True)
                 failures.append((config_id, str(exc)))
                 if args.fail_fast:
+                    executor.shutdown(wait=False, cancel_futures=True)
                     raise
-                continue
 
     summary_path = args.output_root / "dsc_sweep_summary.csv"
     write_summary_table(summary_rows, summary_path)
