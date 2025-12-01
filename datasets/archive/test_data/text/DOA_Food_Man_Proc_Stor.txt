@@ -1,0 +1,311 @@
+Food Manufacturing, Processing and Storage Pest Control
+Training Manual
+Classification 7
+University of Arkansas System, Division of Agriculture, Research & Extension
+
+---
+
+### Page 3: Preface & Acknowledgments
+
+**Preface**
+This manual provides information for the Arkansas commercial pesticide applicator wishing to become certified in Food Manufacturing, Processing and Storage Pest Control - Classification 7. Certification requires passing both a general standards exam and an exam based on this manual and the Arkansas Pest Control Law (Act 488 of 1975, as amended). Study materials for the general standards exam are in "A Guide for Private and Commercial Applicators: Applying Pesticides Correctly."
+
+The Arkansas State Plant Board administers the examinations. Study materials can be obtained from the Arkansas State Plant Board, #1 Natural Resources Drive (P.O. Box 1069), Little Rock, AR 72203-1069, phone (501) 225-1598. Additional information is available from the University of Arkansas Cooperative Extension Service, pesticide labels, and manufacturers.
+
+**Acknowledgments**
+Information in this manual has been adapted from training manuals developed by the Oklahoma Cooperative Extension Service, Texas Agricultural Extension Service, and University of Nebraska Cooperative Extension. The pesticide information was current at the time of printing, but the user is responsible for ensuring their intended use is consistent with the product label. Always use pesticides safely and follow label directions.
+
+---
+
+### Page 5-6: Overview of Managing Pest Problems in Food Related Facilities
+
+Pest management in food processing facilities requires professional knowledge and experience, integrating chemical, physical, cultural, and biological controls to minimize health, economic, and environmental hazards (IPM). Pesticides are often used as a last resort.
+
+A well-constructed building is the first step in managing pests. Preventive design and maintenance are crucial. Food plants must have daily pest management programs, including record-keeping. The program must address pests not only within the facility but also from surrounding areas and incoming materials. The applicator must be aware of federal and state regulations from agencies like the FDA, USDA-FSIS, EPA, OSHA, DOT, Arkansas State Plant Board, Arkansas Department of Health (ADH), and Arkansas Department of Environmental Quality (ADEQ).
+
+**Building Design**
+Proper engineering design makes pest prevention easier. This includes exterior landscaping, drainage, and storage for both usable and trash materials.
+* **Exterior:** Short grass, trimmed shrubs, paved access, and proper drainage reduce pest shelter. An 18- to 24-inch strip of gravel around the foundation discourages rodents. Night-lights should be at least 30 feet away from doors to attract insects away from entry points.
+* **Framing and Materials:** Keep framing at least four inches from walls to avoid creating inaccessible voids. Fill necessary voids with materials like polyurethane foam. Concrete floors are suitable but should be coated to aid sanitation. Wet processing areas require acid-proof or brick floors.
+* **Walls:** Wall materials like concrete, brick, or tile should be sealed and easy to clean. Hollow panel-type walls must be well-sealed to prevent them from becoming insect quarters.
+* **Roofs:** Roofs should be smooth and free of standing water. Pitch and gravel or corrugated metal roofs can harbor insects.
+* **Windows and Doors:** Use as few windows as possible; transparent glass block is a good option. Doors should be metal and tight-fitting. Air curtains can prevent pest entry at large doors.
+* **Lighting and Utilities:** Good lighting with dust-tight fixtures aids inspection. Electrical and plumbing services should be installed for easy access and cleaning. All control panels should be insect-proof.
+* **Equipment:** Equipment should be roomy, accessible for cleaning, and either raised at least six inches off the floor or sealed to it.
+
+**Three Successive Steps of Pest Management:**
+1.  Preventive maintenance
+2.  Other non-chemical management options
+3.  Pesticide management options
+
+---
+
+### Page 7-8: Procedural Guides for Pest Management
+
+**Grounds**
+* **Preventive Maintenance:** Eliminate litter, waste, and uncut grass. Pave dusty roads and maintain lawns. Ensure proper drainage. Position lighting away from buildings. Reduce bird harborage and outside food spillage.
+* **Nonchemical Management:** Use rodent, insect, and bird traps. Maintain housekeeping and implement pest monitoring programs (e.g., pheromone traps).
+* **Pesticide Management:** (Rodents) Maintain bait stations. (Insects) Use insecticidal baits and approved insecticides near breeding sites. (Birds) Use chemical repellents and avicides where appropriate.
+
+**Buildings**
+* **Preventive Maintenance:** Rodent-proof all openings. Screen windows. Eliminate cracks, crevices, and ledges. Block bird access to ledges. Locate equipment off the floor or sealed to it.
+* **Nonchemical Management:** Keep all areas free of loose materials. Clean structures and equipment frequently. Use electrified grids inside for insect attraction.
+
+**Incoming Ingredients and Material Storage Warehouse**
+* **Preventive Maintenance:** Inspect all incoming vehicles and materials.
+* **Nonchemical Controls:** Store materials away from walls for inspection access. Use rodent traps near doors and map their locations. Use air curtains at doors. Use deterrents for birds on roosting sites.
+* **Pesticide Management:** Use rodent bait stations where policy permits. Use space treatments with nonresiduals, crack and crevice treatments with residuals, spot treatments, and fumigation for raw commodities.
+
+**Processing Area**
+* **Preventive Maintenance:** Implement a detailed monitoring program and a total facility IPM program.
+* **Nonchemical Management:** Use rodent traps near doors if needed. Ensure proper sanitation.
+* **Pesticide Management:** Use space, spot, crack and crevice, and contact treatments as appropriate.
+
+**Packaging Areas**
+This is the most critical area as finished foods are exposed. Packaging materials can be a source of pests. Pest management procedures are similar to other areas.
+
+**Finished Products Warehouse**
+Management requirements are similar to the receiving warehouse. The risk of pests being introduced via carriers is lower if pest management programs are effective.
+
+**Vehicles**
+An effective vehicle inspection program is essential. Carriers (boxcars, trucks) must be clean and free of infestation before loading the final product. Treatments before loading include space treatment and crack and crevice treatment.
+
+---
+
+### Page 9-12: In-Plant Sanitation and Inspection
+
+**Creation of In-Plant Sanitation Program**
+A successful program requires support from all personnel, including upper management. The process involves five steps:
+1.  **Organization:** Form an inspection committee with the highest company official as chairman, including all department heads.
+2.  **Goal:** The primary goal is to review existing activities and compile a list of deficiencies categorized under: Pest Control (PC), Operational Methods (OM), Personnel Practices (PP), Maintenance for Sanitation (M), and Cleaning Practices (C).
+3.  **Inspection:** The committee should wear identifiable uniforms and carry necessary tools (flashlights, scrapers). Inspections should be thorough, looking in new places and not just areas with a history of problems. All defects must be recorded completely and specifically. Notes should be distributed to department heads for immediate action.
+4.  **Utilization:** Departments should correct defects immediately. The committee meets at the end of an inspection cycle to review notes, address uncorrected items, and assign realistic correction dates.
+5.  **Follow-up:** Sanitation is the responsibility of everyone in the plant.
+
+**Inspection Observation Routine**
+* Start by looking in obscure places, using a flashlight to detect insect trails or mouse footprints in dust.
+* Observe suspect stock by spreading it on a flat surface and watching for movement.
+* Inspect areas most likely to produce results, such as under and inside equipment. Problem areas are often on the side opposite from where cleaning is done.
+* Suspect any unaccounted-for voids in equipment or structures.
+* Observe employee actions and in-plant practices.
+* Reward good sanitation to encourage plant-wide cooperation.
+* Consider periodic inspections by an outside firm for a fresh perspective.
+
+**Specialized Plant Inspections**
+* **Warehouse:** Require an 18-inch space between pallets and walls for inspection. This space is also unattractive to rodents.
+* **Raw Product Receiving:** A written inspection procedure for incoming raw products is required by law and is crucial for preventing pest problems. The procedure should include guidelines for acceptance of vehicles, checks for products, a recording form for problems, housekeeping standards, a pallet-cleaning program, stock storage specifications, and a reliable stock rotation method. Quick removal of spills and trash is critical.
+
+---
+
+### Page 13-16: Integrated Pest Management (IPM)
+
+IPM is a systematic approach to commodity protection that emphasizes increased information for improved decision-making. It integrates control measures like natural enemies, cultural management, temperature, sanitation, and pesticides. Action is taken only when potential losses exceed the costs of control (the "economic threshold" concept).
+
+**What regulates storability?**
+Postharvest systems are regulated by moisture content, temperature, pest access, and time.
+* **Moisture Content:** Different pests have different moisture requirements. Most processed goods are low in moisture, which helps reduce pest development.
+* **Temperature:** This is the most important factor. Temperatures below 65°F and above 95°F are unfavorable for most insects and molds. A rapid temperature drop (e.g., from 90°F to 60°F) can cause high mortality.
+* **Time:** Stored product pests have an exponential growth curve. Good sanitation and temperature control can slow this growth.
+* **Access:** Most stored product insects can fly. Minimizing their movement is key. This involves carefully inspecting all incoming materials and designing buildings to minimize entry points.
+
+**Monitoring Tools**
+* **Visual Inspection:** A key method. Focus on high-risk foods (oldest, from a high-risk firm, in warmest areas). Visual inspection also helps identify open packages and poor sanitation.
+* **Lights:** Many stored product insects are attracted to lights. Finding insects near lights can indicate a nearby population. Using yellow or sodium arc lights outdoors can reduce attraction.
+
+**Trap Design and Attractants**
+* **Pheromones:** These are chemical attractants released by insects. Sex pheromones (e.g., for Indianmeal moth) and aggregation pheromones (e.g., for confused flour beetle) are commonly used in traps.
+* **Food Attractants:** These attract a wide range of species but may compete with food odors in a warehouse.
+* **Trap Placement:** Placement depends on the time of year and temperature profiles. A rule of thumb is one trap per 4,000-5,000 square feet, focusing on high-risk areas.
+
+**Interpreting Trap Catch**
+There are no hard rules. Examine trends in trap catches over time to modify management practices and reduce populations.
+
+**Future Applications**
+With fewer pesticide alternatives, the industry will need to use alternatives like heat treatments, temperature manipulation, and improved monitoring, based on the ecology of the system.
+
+**How to Use Insect Traps in a Warehouse**
+Pheromone-baited traps are excellent tools for:
+1.  Inspecting bagged commodities.
+2.  Identifying pests.
+3.  Determining the extent of a problem.
+4.  Evaluating a treatment method.
+
+Knowing the pest is crucial for interpreting trapping results. Long-lived insects like flour beetles are less attracted to pheromone traps than short-lived ones like Indianmeal moths.
+
+---
+
+### Page 17-20: Common Pests and Pest Management Plans
+
+**Common Insect Pests**
+* **In Raw Grain:** The most frequently found are the Indianmeal moth, sawtoothed grain beetle, and red flour beetle.
+* **In Processed Food:** The most frequently found are the Indianmeal moth, sawtoothed grain beetle, and red flour beetle.
+
+**Traps**
+Match the trap type to the environment (e.g., dusty vs. clean, hot vs. cold). In dusty areas, use pitfall traps or traps that deflect dust. Trap placement should adapt to changing temperature gradients throughout the year.
+
+**Outdoor Trapping**
+Placing traps on the outer perimeter of a facility can intercept pests or lure them away from the building, helping to predict and prevent indoor infestations.
+
+**Trap Placement & Interpretation**
+The number of traps depends on factors like quality assurance standards and the goal (mass trapping vs. monitoring).
+* Start with a wide grid (e.g., one trap per 100,000 cubic feet).
+* If pests are detected, move traps or add more to the suspect area to pinpoint the infestation.
+* Visually search areas where the most insects were captured.
+* The key to interpreting catches is to look for increases in numbers from one period to the next.
+
+**A Plan for Pest Management for the Popcorn and Seed Industry**
+An example plan includes:
+* **I. Monitoring and Inspection:** Pheromone traps, glue boards, visual inspections for insects, rodents, and birds.
+* **II. Building to Keep Out Pests:** Structural modifications.
+* **III. Non-chemical Control:** Cold storage (50°F), proper lighting placement, beneficial insects.
+* **IV. Chemical Control of Bulk Seed Storage:** Timed pyrethrin dispensers, pheromone traps, routine fumigation, empty bin treatments, and perimeter control (weeds, insecticides).
+* **V. Chemical Control in Warehouses:** ULD (Ultra Low Dosage) treatments based on pheromone trap thresholds, and fumigation with proper safety measures.
+* **VI. Rodent Control Program:** Outdoor bait stations, rodenticides, and structural exclusion.
+* **VII. Bird Control:** Netting, sticky repellents, avicides, and closing doors.
+
+**Limitations of Pheromone Traps**
+Traps are sensitive to target insects but may not detect other species present. Not all pests have effective commercial pheromones available, especially beetles.
+
+---
+
+### Page 21-25: Pesticide Labels, Applications, and Regulations
+
+**Labels**
+The label is the information printed on the pesticide container; labeling includes the label plus all other accompanying materials. Reading the label is the most important step in pest control. Federal law (FIFRA) makes it illegal to use a pesticide in a manner inconsistent with its labeling.
+
+**Applications in Food-Handling Establishments**
+* **Food:** Includes items for human or animal consumption, chewing gum, and their components.
+* **Food Processing Facilities:** Places where food is held, processed, packaged, or stored in bulk (e.g., dairies, bakeries, grain storage).
+* **Nonfood Areas:** Garbage rooms, lavatories, offices, locker rooms, etc.
+* **Food Areas:** Receiving, serving, storage, packaging, and preparing areas.
+
+**Types of Residual Applications**
+* **General:** Application to broad surfaces like walls and floors. Permitted only in nonfood areas.
+* **Spot:** Application to limited areas (not exceeding two square feet) where insects are likely to occur but will not contact food or workers.
+* **Crack and Crevice:** Application of small amounts of insecticide into cracks, crevices, expansion joints, and voids. This is the only type of residual application permitted in food areas.
+
+**Pesticide Regulations**
+* Nationally, pesticides are regulated by the EPA through FIFRA.
+* In Arkansas, the Arkansas State Plant Board regulates pesticide applications.
+
+**Pesticide Residues and Tolerances**
+* A pesticide used on a food product must have a tolerance (a legal limit for residue) or be exempt.
+* EPA sets tolerances under the Federal Food, Drug, and Cosmetic Act (FFDCA), as amended by the Food Quality and Protection Act (FQPA) of 1996.
+* The FDA enforces tolerances for food and feed, while the USDA enforces them for meat.
+* A food product containing an unapproved pesticide or a residue above the tolerance level is considered adulterated and must be destroyed.
+
+**Site Names**
+Pesticide labels specify where the product can be used, called "sites." Using a pesticide on a site not listed on its label is illegal. An applicator must understand what the site wording means to avoid misapplication. The Code of Federal Regulations lists site groups, such as "Food and feed processing plants," which includes bakeries, canneries, dairies, etc.
+
+**USDA Meat Plants**
+* Pesticides used in federally inspected meat plants must be on a USDA-approved list, which is obtained from the plant's federal inspector.
+* Residuals cannot be used in production areas where the product is exposed or where they might be "carried" into the production area (on shoes, through air currents, etc.).
+* Residuals can be used in production areas only as a crack and crevice treatment if the opening is sealed after application.
+
+**Safety**
+The employer and applicator are responsible for the safety of other workers, facility employees, and the food product. Information can be found on the label and the Material Safety Data Sheet (MSDS). Conduct a survey of the facility before application to consider all possibilities and potential interactions with the facility's own practices (e.g., cleaning, sanitation).
+
+---
+
+### Page 26-38: Insect Pests and Control
+
+**Beetles and Moths**
+* **Life Cycle:** Both have four life stages: egg, larva, pupa, and adult (complete metamorphosis).
+* **Larva:** The "worm" or "grub" stage. Both have chewing mouthparts and feed on raw or processed food. Moth larvae have legs on the back half of their body; beetle larvae do not.
+* **Adults:** Adult beetles have chewing mouthparts and feed on food products. Adult moths have sucking mouthparts and do not feed on solid food but can contaminate products.
+
+**Moths**
+* **Almond Moth:** Forewings are brown-gray. Larvae are dirty white. Found in dried fruits, nuts, pet foods, and candies.
+* **Indianmeal Moth:** Most common stored product pest. Forewings are gray near the body and reddish at the tip. Larvae leave a silken thread (webbing) on food surfaces. Feed on a wide range of products like flour, cornmeal, seeds, nuts, and pet food.
+* **Mediterranean Flour Moth:** Pale gray wings with wavy black markings. Larvae spin silken threads that web and mat food particles together. Prefers flour.
+* **Mealmoth:** Light brown forewings with dark patches. Larvae are whitish with a black head. Found in damp or spoiled grain.
+* **Control for Moths:** Avoidance (inspect incoming goods), sanitation (remove infested food and dust), heat treatment (140°F for one hour), cold treatment, residual insecticides, space sprays, and fumigation.
+
+**Beetles and Weevils**
+* **Lesser Grain Borer:** Small, cylindrical, dark brown beetle. Both adults and larvae damage whole grains and can penetrate packaging.
+* **Cigarette Beetle:** Small, oval, reddish-brown beetle with a "humped" appearance. Primary pest of stored tobacco but also attacks grains and cereal products.
+* **Drugstore Beetle:** Similar to the cigarette beetle. Feeds on almost any dry organic substance.
+* **Confused and Red Flour Beetles:** Shiny, reddish-brown beetles. General feeders on cereal products. The red flour beetle can fly; the confused cannot.
+* **Sawtoothed Grain Beetle:** Slender, flat, brown beetle with six "sawtooth" projections on each side of its thorax. Attacks all food of vegetable origin.
+* **Merchant Grain Beetle:** Often confused with the sawtoothed grain beetle but prefers oilseed products. It can fly.
+* **Foreign Grain Beetle:** Found in moldy or mildewed products, indicating high moisture.
+* **Rusty Grain Beetle:** Secondary pest that prefers high moisture conditions but can survive in dry grain.
+* **Spider Beetles:** Scavengers that can contaminate products with frass and silk. Active at night in dark, damp areas.
+* **Warehouse Beetle / Dermestid Beetles:** Oval, black beetles with variable patterns. Larvae are tapered with prominent bristles. Feed on a wide variety of materials including grain dust, powdered milk, and woolen products. Their cast larval skins are a sign of infestation.
+
+**Cockroaches**
+* They contaminate food with droppings and bacteria (e.g., Salmonella, Staphylococcus). They are nocturnal, general feeders, and prefer cracks and crevices. They have gradual metamorphosis (egg, nymph, adult). Signs of infestation include cast skins, egg cases (ootheca), and a musty odor.
+* **German Cockroach:** Most common. Light brown with two black streaks behind the head. Prefers warm, moist areas like kitchens.
+* **American Cockroach:** Large and reddish-brown. Prefers basements and sewers.
+* **Oriental Cockroach ("waterbug"):** Dark brown to black. Prefers dark, damp areas like crawl spaces and drains.
+* **Brown-banded Cockroach:** Small, light brown with two lighter bands. Found high on walls, ceilings, and in appliances.
+* **Control for Cockroaches:** Sanitation is key. Use crack and crevice or spot treatments with residual pesticides, supplemented by dusts and contact sprays.
+
+**Other Pests**
+* **Flies:** Have one pair of wings. Undergo complete metamorphosis. Larvae are legless maggots. Attracted to garbage, manure, and decaying organic matter. Control starts with sanitation and removal of breeding sites.
+* **Ants:** Social insects that nest in the ground or in structures. Control involves direct treatment of the nest, barrier sprays, and baits.
+* **Bees and Wasps:** Pose a threat to workers. Control involves treating nests at night with sprays or dusts. Protective clothing is necessary.
+* **Booklice (Psocids):** Tiny, soft-bodied insects that feed on microscopic mold in damp locations. Control involves lowering humidity and sanitation.
+* **Silverfish and Firebrats:** Wingless, flat insects that damage paper and stored foods. Silverfish are found in damp areas; firebrats prefer hot, dry situations.
+* **Crickets:** Can become numerous in the fall, attracted to lights. Proper lighting management can reduce entry.
+* **Ground Beetles:** Soil-dwelling predators that may wander inside but do no damage.
+* **Sowbugs and Pillbugs:** Arthropods found in damp areas. Control involves removing decaying vegetation and moisture sources near foundations.
+
+---
+
+### Page 39-55: Rodents and Their Control
+
+Rats and mice contaminate more food than they eat with their urine, feces, and hair. Control requires understanding their behavior.
+* **Senses:** Keen sense of touch (whiskers), smell, taste, and hearing. Poor, colorblind vision.
+* **Reactions:** Rats may avoid new objects for days ("new object shyness"). Mice are more curious.
+* **Agility:** All are good climbers. Rats can jump nearly 2 feet vertically, swim, and gnaw through materials like wood and cinder block.
+
+**Recognizing Rat and Mouse Signs**
+* **Droppings:** Fresh droppings are soft and dark; old ones are dull and hard. Shape helps identify the species.
+* **Runways:** Rats use the same paths along walls. Look for cleared paths outdoors or greasy runways indoors.
+* **Rubmarks:** Dark, greasy marks from the rodent's body along runways.
+* **Burrows:** Norway rats prefer to burrow in earth banks or under concrete.
+* **Tracks:** Can be seen in dust or tracking patches (flour, talc).
+* **Urine:** Fluoresces under a blacklight.
+
+**Rodent Management**
+* **Sanitation and Habitat Modification:** Clean, orderly facilities support fewer rodents. Eliminate food, water, and shelter. Store products on pallets away from walls. A strip of gravel around buildings can deter burrowing.
+* **Rodent-Proof Construction:** Seal all openings larger than 1/4 inch for mice and 1/2 inch for rats. Use rodent-resistant materials like hardware cloth, sheet metal, and concrete. Pay attention to doors, windows, vents, drainpipes, foundations, and utility lines.
+* **Tracking Powders:** Toxic dust placed in runways. Rodents ingest it while grooming. Cannot be used where it might contaminate food. Most are Restricted Use pesticides.
+* **Baits and Baiting:** Selection of a proper bait is critical.
+    * **Toxicants:** Anticoagulants are slow-acting and require multiple feedings (first-generation) or can be effective in a single dose (second-generation, e.g., brodifacoum). Single-dose non-anticoagulants include bromethalin, cholecalciferol (Vitamin D3), and zinc phosphide.
+    * **Food Base:** Norway rats prefer meat and fish; roof rats prefer fruits and nuts; mice prefer seeds. Cereal grains are most common for baits.
+    * **Prebaiting:** Offering unpoisoned bait for several days to overcome shyness is recommended when using acute toxicants for rats.
+    * **Placement:** Use tamper-proof bait stations to protect bait and prevent access by children and non-target animals. Place stations along walls and runways, every 10 feet for mice and 20 feet for rats.
+* **Traps and Trapping:**
+    * **Types:** Snap traps, live-capture cage traps, and wind-up multiple-catch traps (for mice).
+    * **Placement:** Place traps where rodents will encounter them—along walls, in dark corners, behind objects. Use many traps, placed close together for mice.
+    * **Baiting:** Good baits include peanut butter, raisins, nutmeats, and bacon. Secure bait to the trigger.
+* **Rodent Glues:** Sticky glue boards that entangle rodents. Effective for mice but can be messy and are affected by temperature and dust.
+* **Predators:** Cats and dogs are generally not effective for controlling established rodent populations.
+
+---
+
+### Page 56-67: Equipment, Application Techniques, and Respiratory Protection
+
+**Sprayers**
+* **Compressed Air Sprayer:** The "workhorse" of pest control, used for crack and crevice, spot, and general sprays. Consists of a tank, pump, hose, valve, and nozzle. Proper maintenance is essential for safety and effectiveness. Clean after each use, check gaskets and valves regularly, and never leave pressurized when unattended.
+* **Nozzles:** The most important part, determining the spray pattern (solid stream, flat spray, cone). Solid stream nozzles are for crack and crevice; fan nozzles are for surfaces.
+
+**Dusters**
+Used to apply dusts into voids, cracks, and burrows. Types include hand shakers, bulb dusters, hand plunger dusters, and rotary/power dusters. Maintenance involves keeping them clean and dry.
+
+**Space Treating Equipment**
+Used for quick knockdown of flying insects by creating fine particles (aerosols, fogs, mists). Effectiveness depends on droplet size (measured in microns).
+* **Aerosols:** Gas-propelled or thermally released. Available in disposable cans or reusable containers. Used for flushing, space treatments, and crack and crevice applications.
+* **Fogs:** Produced thermally or mechanically. Can be used in warehouses. Thermal fogging can create a fire or explosion hazard if not done correctly (turn off pilot lights, know cubic footage).
+* **Mists:** Larger droplets than fogs (10-80 microns). Settle out more rapidly.
+* **Ultra Low Dosage (ULD):** Uses high concentrations of insecticide in very fine droplets at reduced rates. Requires specialized equipment and careful application to avoid hazards.
+
+**Respiratory Protection**
+Inhalation is a serious hazard. Respirators should be worn as indicated on the label, especially in enclosed spaces.
+* **Types:**
+    1.  **Air-Purifying:** Use filters for particulates (dusts, mists) and sorbent cartridges/canisters for vapors/gases. Chemical cartridge respirators are for low concentrations. Gas masks (canisters) are for higher concentrations and fumigants.
+    2.  **Air-Supplying:** Supply clean air from an external source or a tank.
+* **Approval:** Respirators for pesticides must be approved by MSHA and NIOSH (will have a TC approval number).
+* **Fit and Care:** A proper fit is essential. Perform daily negative and positive pressure checks. Beards can interfere with a tight seal. Wash respirators regularly and store them in a clean, protected place.

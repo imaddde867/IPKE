@@ -1,0 +1,232 @@
+Pohjola Insurance
+Fire safety guidelines for working machines
+Valid as of 1 January 2021
+
+---
+
+### Page 1: Introduction
+
+**Risk management is more than just insurance**
+
+**Risk and risk management**
+A risk is a potentially harmful event. Business operations always involve different types of risks that affect a company's success, relating to assets, personnel, market position, or environment. The magnitude of a risk is usually a combination of the severity of the loss and the probability of the event.
+
+Risk management involves systematically identifying, analyzing, assessing, and processing an organization's risks. At its best, risk management is a natural part of daily operations and helps in decision-making.
+
+**Risks are interrelated**
+Different types of risks are connected. For example, a working machine fire can paralyze company operations, leading to long-term financial consequences. Business continuity planning is good risk management. A company can transfer risks through subcontracting or insurance, but the entrepreneur still bears responsibility according to the insurance terms and safety regulations.
+
+---
+
+### Page 2: Fire Risks and Prevention
+
+**It is important to look after safety**
+Company management is responsible for safety and must issue clear instructions and supervise compliance. A good safety culture helps in identifying and preventing risks.
+
+**Fire risks of working machines**
+These guidelines help identify where fire risks may occur in working machines. A machine's fire risk must be evaluated on a case-by-case basis, considering its operating environment. A fire always poses a risk of personal injury.
+
+**Operating conditions and environment**
+Working machines are designed for normal conditions. Using them for other purposes or in dangerous environments heightens risks. The operating environment (e.g., populated areas vs. remote locations, sawmills, peat production areas) affects the potential impact of a fire. Toxic fumes can be especially hazardous in underground and indoor sites.
+
+**Tools to help assess the risk of fire**
+To assess fire risks, consider:
+* Impact on the company's other risks.
+* The level of risk the company is taking.
+* Employee actions in an accident.
+* Adequacy of preventive maintenance for business continuity and fire risk management.
+* How fire risks are managed in daily work.
+
+**Fire risk arises as soon as a working machine is taken into service**
+The "fire timeline" begins when a machine is put into service. Operation causes rising temperatures, vibration, and wear, which can lead to leaks, voltage drops, or short circuits, eventually resulting in smoke and fire. The focus should be on prevention through high-quality, ongoing service and maintenance. If a fire does break out, first-aid extinguishing equipment is crucial.
+
+**Servicing and maintenance to prevent fire losses**
+Scheduled maintenance, performed according to the manufacturer's instructions, is essential to ensure a machine functions without problems. It is advisable to always participate in manufacturer recall campaigns.
+
+---
+
+### Page 3: Maintenance, Leaks, and Electrical Systems
+
+**Replacement parts**
+Always use authentic replacement parts from known manufacturers. They are designed for the specific machine and can withstand the high temperatures in the engine compartment.
+
+**Inspecting and cleaning a working machine**
+* **Daily:** Inspect and clean the engine compartment and surroundings when operating in dusty or fire-hazard conditions (e.g., timber industry, peat processing).
+* **Weekly:** In other environments, inspect and clean at least once a week.
+* Cleaning should be done after a shift, using compressed air to remove dirt. After cleaning, inspect for leaks. A clean engine compartment prevents ignition and improves cooling.
+
+**Liquids and leaks**
+Flammable liquids like hydraulic oil, diesel fuel, and motor oil pose a fire risk when hot surfaces reach about 240°C. The risk increases if the liquid is pressurized, as a leak can create a flammable oil mist.
+* **Fuel leaks:** Shut down the engine before inspecting for fuel leaks. Check joints of hoses and pipes.
+* **Oil and hydraulic oil leaks:** Check the engine compartment for oil leaks. Normal hydraulic hoses withstand about 120°C; protect them with thermal shields or tubes if they are near hot surfaces or when handling high-temperature materials. Repair any leaks immediately.
+
+**Electrical equipment**
+Electrical fires are the most common type. Prevent them by:
+* Visually inspecting electrical systems at least once a year, preferably during maintenance, and documenting the inspections.
+* Servicing electrical systems daily on electric-powered and hybrid machines.
+
+**Inspecting electrical systems**
+* Use a multimeter to measure voltage drops. A drop exceeding 20W indicates an increased fire risk.
+* A thermal imaging camera is a good tool for detecting anomalies in alternators, cables, and earthing points. Compare readings with an intact machine.
+
+**Main power switch**
+* Working machines over 500 kg must have a main power switch located outside the engine compartment and visibly marked.
+* The switch poles must have terminal covers. Check that power is cut off when the switch is used.
+
+---
+
+### Page 4: Electrical Systems and Other Components
+
+**Emergency kill switch**
+* Know the location and operation of the emergency kill switch before starting the machine. It typically shuts down the engine and cuts power.
+* Repair any malfunction that required its use before resuming operation. Never use it for a normal shutdown.
+
+**Battery**
+* Repair any deviations immediately.
+* Cable terminals must be intact, firmly attached, and protected with terminal covers to prevent overheating.
+* The battery compartment needs sufficient ventilation.
+
+**Cables**
+* Check cables not protected by a fuse (battery, alternator, starter motor) several times a year, especially lead-throughs, which must have rubber collars.
+* Replace cables showing signs of abrasion or heat damage. Protect them with a housing pipe.
+* Keep cables clean of oil and dirt. Do not attach them to hoses or pipes.
+* Cable harnesses must be protected and firmly attached.
+* Cable connections must be tight and have terminal covers.
+
+**Electric panel**
+* Check the electric panel during maintenance. Repair any redundant or hanging wires.
+* Fuse boxes must be intact and have lids. Ensure fuses are the correct size. Investigate the cause of any blown fuse.
+
+**Attachment of cables**
+* Cables in the high-vibration engine compartment must have fastening brackets no more than 150 mm apart.
+* Fasteners and cable ties should withstand temperatures of 120°C.
+* Do not attach cables to pipes or hoses containing flammable material.
+
+**Alternator**
+* The alternator must be firmly attached with correct belt tension and have terminal covers.
+* Keep any alternator filter clean to prevent overheating.
+* Check for anomalies with a thermal camera. During maintenance, check fasteners, belts, and bearings. Replace noisy bearings.
+
+**Other parts of a working machine**
+* **Exhaust pipe:** Check for leaks and ensure all thermal shields are in place. No flammable liquid hoses should be too close.
+* **Urea systems and diesel particulate filter:** Urea systems themselves are not a fire risk, but leaks can cause corrosion and disrupt electrical equipment. Take care to prevent contamination during refuelling.
+
+---
+
+### Page 5: Regeneration, Heaters, and Extinguishing Equipment
+
+**Regeneration**
+The diesel particulate filter is cleaned via regeneration, a combustion process.
+* When the machine indicates regeneration is needed, ensure it occurs in a safe outdoor environment away from flammable materials.
+* During regeneration, exhaust temperatures rise. Delay the process if the machine is in a fire-hazard environment (e.g., underground, indoors).
+* Never leave the machine unattended during regeneration.
+
+**Swivelling joint**
+If the machine has a swivelling joint, inspect all hoses and electrical systems in it weekly. Remove any rocks or twigs immediately.
+
+**Operating manual**
+* Ensure all operating manuals are available in the machine in a language the operator understands.
+* Manuals provide instructions for safe use and what to do in case of a malfunction, which could be an early sign of a fire hazard.
+
+**Fire caused by auxiliary heater**
+* Before winter, check the cleanliness and condition of the auxiliary heater, its compartment, and its wiring.
+* The heater compartment must be clean and free of fuel leaks.
+* Inspect the heater's exhaust pipe to ensure it doesn't touch anything flammable.
+* Test the heater under supervision before use.
+
+**First-aid extinguishing equipment**
+* **Hand-held fire extinguishers:**
+    * Machines > 3,000 kg must have at least two 34A233B extinguishers. Frost-resistant liquid-based extinguishers are recommended.
+    * Machines for crushing timber or energy waste need four 34A233B extinguishers, available at ground level.
+    * Extinguishers must be easily available, clearly marked, and serviced at least annually.
+    * Operators must be trained in their use.
+* **Fire extinguishing systems in autonomous working machines:**
+    * Autonomous machines must have a fixed fire extinguishing system protecting hot components, flammable liquid hoses/tanks, and electrical components.
+    * The system requires six litres of agent per protected cubic metre.
+    * The detection system must cover the entire engine compartment.
+    * Hydraulic hoses in the engine compartment must be protected with thermal protection tubes.
+
+---
+
+### Page 6: Fire Extinguishing Systems Requirements
+
+**Requirements for fire extinguishing systems**
+Finance Finland (FFI) has special requirements for fire extinguishing systems in working machines (Safety regulation FA-127).
+
+**The requirements of Pohjola Insurance**
+* Machines in environments with dust or fire hazards (e.g., timber, peat processing) must have a fixed, fully automatic fire extinguishing system.
+* There must be at least three litres of extinguishing agent for each cubic meter of the engine or heater compartment.
+* The detection system must cover the entire engine compartment and be connected to non-fused cables.
+* Installation requires a certificate, and compliance requires a test report.
+* The system's operation must be confirmed at start-up. Any malfunction must be repaired immediately by an authorized shop.
+* The system must be serviced at least once a year.
+* Engine compartments in these environments must be cleaned daily.
+
+**Fire extinguishing openings**
+Pohjola Insurance recommends all working machines have clearly marked fire extinguishing openings to the engine and auxiliary heater compartments.
+
+**Approved extinguishing equipment suppliers**
+* **Dafo:** Dafo Oy
+* **Fogmaker:** OEM Finland Oy
+* **Firestop:** YTM-industrial
+* **ExAct Guard:** Mikro-Pulssi
+* **Ceodeux Extinguisher Valves Technology S.A/Rotarex:** Teknosafe Oy
+
+---
+
+### Page 7-8: Fire Safety Inspection Forms
+
+These pages contain checklists for fire safety inspections, covering:
+* Signs and markings
+* Machine electrical systems (battery cables, harnesses, main power switch, alternator)
+* Engine mechanics (fuel/oil/hydraulic lines, exhaust system)
+* First-aid extinguishing equipment (hand-held extinguishers, system log)
+* Auxiliary heater (installation, fuel manifold, exhaust, electrical system)
+* Mains power systems
+* General condition and cleanliness
+
+---
+
+### Page 9: Emergency Procedures
+
+**In the event of an engine fire**
+1.  Remain calm. Shut down the engine as quickly as possible. If indoors, move the machine outdoors first. If near flammable material, move the machine before shutting down.
+2.  Cut electricity from the main power switch.
+3.  Call for help (emergency number 112). Use the 112 smartphone app if possible.
+4.  Perform first-aid fire extinguishing.
+5.  Even if the fire seems controlled, have the fire department confirm it is out.
+6.  Report the incident to the safety officer, site manager, coworkers, and insurance company.
+
+**Other accident**
+* Report all accidents and dangerous situations to a supervisor immediately.
+* Stop and leave the machine in place if possible. Prevent further damage and minimize injuries.
+
+**Operator's safety**
+* Wear protective clothing and a helmet.
+* Use a hands-free device for phone calls.
+* Wear a safety belt.
+* Use stepladders and handrails, maintaining three points of contact when climbing.
+* Keep doors closed during operation.
+* Ensure tools are secure and emergency exits are marked.
+* Repair any malfunctions that could lead to an accident without delay.
+* Arrange practical training on accident and fire procedures.
+
+---
+
+### Pages 10-11: Inspection Checklists
+
+These pages provide templates for regular inspection checklists, organized by frequency (each use, weekly, as part of regular maintenance). Items to check include:
+* **Cables and fasteners:** Security, heat resistance, insulation, lead-throughs.
+* **Fuses and batteries:** Condition of non-fused cables, terminal covers.
+* **Engine and heater compartments:** Cleanliness, leaks.
+* **First-aid extinguishing equipment:** Availability, markings, operator training.
+
+---
+
+### Page 12: Company Information
+
+Pohjola Insurance Ltd
+Business ID: 1458359-3
+Helsinki, Gebhardinaukio 1, 00013 OP, Finland
+Domicile: Helsinki
+Regulatory authority: Financial Supervisory Authority, www.fiva.fi
