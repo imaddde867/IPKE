@@ -191,7 +191,12 @@ def run_method_extraction(
     skip_existing: bool = False,
     doc_id_overrides: Optional[Dict[str, str]] = None,
     request_form_fields: Optional[Dict[str, object]] = None,
+    max_attempts: int = 1,
+    retry_delay: float = 10.0,
 ) -> List[Dict[str, object]]:
+    """Send documents to the chunking API, optionally retrying on transient errors."""
+    if max_attempts < 1:
+        raise ValueError("max_attempts must be at least 1")
     session = requests.Session()
     service_url = make_service_url(service_cfg.host, service_cfg.port)
     summaries: List[Dict[str, object]] = []
@@ -212,15 +217,46 @@ def run_method_extraction(
             continue
 
         LOGGER.info("Requesting %s via %s", doc_id, service_url)
-        start = time.time()
-        payload = run_single_request(
-            session,
-            service_url,
-            doc_path,
-            request_timeout,
-            method=method,
-            form_overrides=request_form_fields,
-        )
+        attempt = 0
+        last_error: Optional[Exception] = None
+        while attempt < max_attempts:
+            attempt += 1
+            start = time.time()
+            try:
+                payload = run_single_request(
+                    session,
+                    service_url,
+                    doc_path,
+                    request_timeout,
+                    method=method,
+                    form_overrides=request_form_fields,
+                )
+                break
+            except requests.Timeout as exc:
+                last_error = exc
+                LOGGER.warning(
+                    "Request for %s timed out (attempt %s/%s, timeout=%ss).",
+                    doc_id,
+                    attempt,
+                    max_attempts,
+                    request_timeout,
+                )
+            except requests.RequestException as exc:  # noqa: PERF203
+                last_error = exc
+                LOGGER.warning(
+                    "Request for %s failed (attempt %s/%s): %s",
+                    doc_id,
+                    attempt,
+                    max_attempts,
+                    exc,
+                )
+            if attempt >= max_attempts:
+                raise RuntimeError(f"Failed to process {doc_id} after {max_attempts} attempts.") from last_error
+            if retry_delay > 0:
+                LOGGER.info("Retrying %s in %.1f seconds...", doc_id, retry_delay)
+                time.sleep(retry_delay)
+        else:  # pragma: no cover - loop always breaks or raises
+            continue
         elapsed = time.time() - start
         save_result(payload, output_path)
         tierb_payload = flat_to_tierb(payload)

@@ -10,7 +10,7 @@ import sys
 import time
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, List, Tuple
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
@@ -72,6 +72,23 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--skip-existing", action="store_true", help="Reuse prediction JSONs if present.")
     parser.add_argument("--doc-id-map", type=Path, help="Optional JSON mapping doc stem -> gold id.")
     parser.add_argument(
+        "--request-retries",
+        type=int,
+        default=2,
+        help="Number of times to retry each /extract request after a timeout or connection error.",
+    )
+    parser.add_argument(
+        "--request-retry-wait",
+        type=float,
+        default=15.0,
+        help="Seconds to wait between request retries.",
+    )
+    parser.add_argument(
+        "--fail-fast",
+        action="store_true",
+        help="Stop the sweep after the first configuration failure instead of continuing.",
+    )
+    parser.add_argument(
         "--no-docker",
         action="store_true",
         help="Assume the service is already running and skip docker-compose restarts/log capture.",
@@ -122,6 +139,8 @@ def execute_run(
         skip_existing=args.skip_existing,
         doc_id_overrides=doc_id_overrides,
         request_form_fields=form_fields,
+        max_attempts=max(1, args.request_retries + 1),
+        retry_delay=args.request_retry_wait,
     )
     tier_a_metrics = run_evaluation_cli("A", args.gold_tier_a, run_paths.predictions_dir, run_paths.metrics_dir / "tier_a.json")
     tier_b_metrics = run_evaluation_cli("B", args.gold_tier_b, run_paths.tierb_dir, run_paths.metrics_dir / "tier_b.json")
@@ -193,6 +212,7 @@ def main() -> None:
     ]
     summary_rows: List[Dict[str, object]] = []
     seen: set[str] = set()
+    failures: List[Tuple[str, str]] = []
     for param_name, values in grids:
         for value in values:
             env = defaults.copy()
@@ -201,19 +221,32 @@ def main() -> None:
             if config_id in seen:
                 continue
             seen.add(config_id)
-            execute_run(
-                config_id=config_id,
-                env_overrides=env,
-                service_cfg=service_cfg,
-                documents=documents,
-                args=args,
-                doc_id_overrides=doc_id_overrides,
-                summary_rows=summary_rows,
-            )
+            try:
+                execute_run(
+                    config_id=config_id,
+                    env_overrides=env,
+                    service_cfg=service_cfg,
+                    documents=documents,
+                    args=args,
+                    doc_id_overrides=doc_id_overrides,
+                    summary_rows=summary_rows,
+                )
+            except KeyboardInterrupt:
+                raise
+            except Exception as exc:  # noqa: PERF203
+                LOGGER.error("Configuration %s failed: %s", config_id, exc)
+                LOGGER.debug("Detailed error for %s", config_id, exc_info=True)
+                failures.append((config_id, str(exc)))
+                if args.fail_fast:
+                    raise
+                continue
 
     summary_path = args.output_root / "dsc_sweep_summary.csv"
     write_summary_table(summary_rows, summary_path)
     LOGGER.info("DSC sweep finished. Summary stored at %s", summary_path)
+    if failures:
+        failed_ids = ", ".join(cfg for cfg, _ in failures)
+        LOGGER.warning("Failed configurations (%d): %s", len(failures), failed_ids)
 
 
 if __name__ == "__main__":
