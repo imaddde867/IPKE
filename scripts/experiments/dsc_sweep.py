@@ -183,6 +183,9 @@ def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
     args.output_root.mkdir(parents=True, exist_ok=True)
     documents = ensure_documents_exist(args.documents)
+    for label, gold_path in (("Tier A", args.gold_tier_a), ("Tier B", args.gold_tier_b)):
+        if not gold_path.exists():
+            raise FileNotFoundError(f"{label} gold directory not found: {gold_path}")
     doc_id_overrides = load_doc_map(args.doc_id_map)
     service_cfg = ServiceConfig(
         name=args.service_name,
