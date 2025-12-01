@@ -2,7 +2,7 @@
 Thesis System - Streamlined FastAPI app (Industrial Procedural Knowledge Extraction)
 """
 
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 from datetime import datetime
 import tempfile
 import os
@@ -34,7 +34,7 @@ class HealthResponse(BaseModel):
 class EntityResponse(BaseModel):
     content: str
     entity_type: str
-    category: str
+    category: Optional[str] = None
     confidence: float
     context: str
 
