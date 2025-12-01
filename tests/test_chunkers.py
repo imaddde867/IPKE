@@ -143,6 +143,57 @@ def test_dual_semantic_parent_boundaries(monkeypatch):
     assert spans.count((0, 2)) >= 1
     assert spans.count((2, 4)) >= 1
     assert spans.count((4, 7)) >= 1
+
+
+@pytest.mark.integration
+def test_parent_only_mode_builds_parent_chunks(monkeypatch):
+    monkeypatch.setenv("EXPLAINIUM_ENV", "testing")
+
+    class ParentCfg(DummyCfg):
+        chunking_method = "parent_only"
+        dsc_parent_min_sentences = 2
+        dsc_parent_max_sentences = 4
+
+    chunker = DualSemanticChunker(ParentCfg(), parent_only=True)
+
+    sentences = [
+        "Heading A. Prep PPE.",
+        "Ensure respirator is sealed.",
+        "Heading B. Calibration.",
+        "Attach probes and record offsets.",
+        "Heading C. Cleanup.",
+        "Dispose of solvents per SOP."
+    ]
+    spans = []
+    text = ""
+    cursor = 0
+    for idx, sent in enumerate(sentences):
+        text += sent
+        spans.append((cursor, cursor + len(sent)))
+        cursor += len(sent)
+        if idx < len(sentences) - 1:
+            text += "\n"
+            cursor += 1
+
+    embeddings = np.array([
+        [1.0, 0.0],
+        [0.95, 0.05],
+        [-0.85, -0.4],
+        [-0.83, -0.45],
+        [0.2, 0.98],
+        [0.18, 0.99],
+    ], dtype=float)
+    embeddings = embeddings / np.linalg.norm(embeddings, axis=1, keepdims=True)
+
+    monkeypatch.setattr(chunker.base, "_sentences", lambda _: (sentences, spans))
+    monkeypatch.setattr(chunker.base, "_embeddings", lambda sents: embeddings[:len(sents)])
+
+    chunks = chunker.chunk(text)
+    assert len(chunks) == 3
+    assert all(chunk.meta.get("strategy") == "parent_only" for chunk in chunks)
+    lengths = [chunk.sentence_span for chunk in chunks]
+    assert (0, 2) in lengths and (2, 4) in lengths and (4, 6) in lengths
+
 def test_fixed_chunker_respects_char_cap():
     chunker = FixedChunker(max_chars=500)
     text = " ".join(f"sentence_{i}" for i in range(1500))  # ~15000 chars

@@ -17,9 +17,10 @@ LOGGER = logging.getLogger(__name__)
 class DualSemanticChunker(BaseChunker):
     """Hierarchical semantic chunker using parent sections + breakpoint refinement."""
 
-    def __init__(self, cfg):
+    def __init__(self, cfg, *, parent_only: bool = False):
         self.cfg = cfg
         self.base = BreakpointSemanticChunker(cfg)
+        self.parent_only = parent_only
 
     def chunk(self, text: str) -> List[Chunk]:
         sentences, spans = self.base._sentences(text)
@@ -45,6 +46,9 @@ class DualSemanticChunker(BaseChunker):
 
         self._log_parent_summary(parents, spans, len(text))
 
+        if self.parent_only:
+            return self._emit_parent_chunks(parents, sentences, spans, prefix_sims, len(text))
+
         chunks: List[Chunk] = []
         for start, end in parents:
             if start >= end:
@@ -66,6 +70,30 @@ class DualSemanticChunker(BaseChunker):
 
         refined = self.base._enforce_char_cap(chunks, sentences, spans, prefix_sims)
         self.base._log_chunk_summary(refined, len(text))
+        return refined
+
+    def _emit_parent_chunks(
+        self,
+        parents: List[Tuple[int, int]],
+        sentences: List[str],
+        spans: List[Tuple[int, int]],
+        prefix_sims: np.ndarray,
+        text_len: int,
+    ) -> List[Chunk]:
+        parent_chunks: List[Chunk] = []
+        for start, end in parents:
+            chunk = self.base._build_chunk(sentences, spans, start, end, prefix_sims)
+            if chunk is None:
+                continue
+            if isinstance(chunk.meta, dict):
+                chunk.meta["strategy"] = "parent_only"
+                chunk.meta["sentences"] = (start, end)
+                chunk.meta["parent"] = (start, end)
+                chunk.meta["parent_cohesion"] = self.base._mean_similarity(prefix_sims, start, end)
+            parent_chunks.append(chunk)
+
+        refined = self.base._enforce_char_cap(parent_chunks, sentences, spans, prefix_sims)
+        self.base._log_chunk_summary(refined, text_len)
         return refined
 
     def _parent_boundaries(self, distances, sentences, spans, text):
