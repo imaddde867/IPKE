@@ -28,9 +28,7 @@ Developed as part of my thesis research, IPKE introduces novel methodologies at 
 │   ├── pipelines/          # Extraction Pipelines
 │   └── utils/              # Analytical Utilities
 ├── scripts/                # Experimentation Harness
-│   ├── experiments/        # Dockerized Research Experiments
-│   ├── run_experiments.py  # Main Experiment Runner
-│   └── archive/            # Legacy Artifacts
+│   └── experiments/        # Dockerized Research Experiments
 ├── configs/                # Experimental Configurations
 └── assets/                 # Research Figures
 ```
@@ -79,10 +77,13 @@ python main.py
 To replicate the thesis findings regarding chunking and prompting efficacy:
 
 ```bash
-python scripts/run_experiments.py --config configs/archive/chunking_grid_core.yaml
+python scripts/experiments/run_all_chunking_experiments.py \
+  --documents datasets/archive/test_data/text/3m_marine_oem_sop.txt \
+              datasets/archive/test_data/text/DOA_Food_Man_Proc_Stor.txt \
+              datasets/archive/test_data/text/op_firesafety_guideline.txt
 ```
 
-Key performance indicators include **StepF1** (Step Recognition), **GraphF1** (Topology Alignment), and **A-Score** (Composite Fidelity Metric).
+Key performance indicators include **StepF1** (Step Recognition), **GraphF1** (Topology Alignment), and **A-Score** (Composite Fidelity Metric). See `scripts/experiments/README.md` for detailed sweep instructions.
 
 ## License
 
