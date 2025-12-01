@@ -1,8 +1,0 @@
-{
-  "StepF1": 0.054,
-  "AdjacencyF1": 0.0,
-  "Kendall": 1.0,
-  "ConstraintCoverage": 0.375,
-  "ConstraintAttachmentF1": 0.0,
-  "A_score": 0.404
-}

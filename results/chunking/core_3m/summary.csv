@@ -1,4 +1,0 @@
-experiment,chunk_method,document_id,document_type,StepF1,AdjacencyF1,Kendall,ConstraintCoverage,ConstraintAttachmentF1,A_score,GraphF1,NEXT_EdgeF1,Logic_EdgeF1,ConstraintAttachmentF1_TierB,B_score
-fixed_2000_no_overlap,fixed,3M_OEM_SOP,unknown,0.25,0.0,0.893,0.0,0.0,0.175,0.0,0.0,0.0,,0.0
-breakpoint_semantic_lambda015,breakpoint_semantic,3M_OEM_SOP,unknown,0.146,0.0,0.836,0.0,0.0,0.102,0.0,0.0,0.0,,0.0
-dual_semantic_block16,dual_semantic,3M_OEM_SOP,unknown,0.122,0.0,0.833,0.0,0.0,0.085,0.0,0.0,0.0,,0.0

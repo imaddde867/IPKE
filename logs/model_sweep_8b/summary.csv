@@ -1,5 +1,0 @@
-experiment,prompting_strategy,document_id,document_type,StepF1,AdjacencyF1,Kendall,ConstraintCoverage,ConstraintAttachmentF1,A_score,GraphF1,NEXT_EdgeF1,Logic_EdgeF1,ConstraintAttachmentF1_TierB,B_score
-Llama3_P0,P0,3M_OEM_SOP,unknown,0.174,0.0,0.607,0.0,0.0,0.174,,,,,
-Llama3_P0,P0,DOA_Food_Proc,unknown,0.042,0.0,0.333,0.0,0.0,0.079,,,,,
-Llama3_P3,P3,3M_OEM_SOP,unknown,0.152,0.0,0.4,0.5,0.0,0.376,,,,,
-Llama3_P3,P3,DOA_Food_Proc,unknown,0.024,0.0,1.0,0.5,0.0,0.457,,,,,

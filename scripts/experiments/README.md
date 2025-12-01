@@ -5,7 +5,7 @@ The `scripts/experiments` directory provides reproducible sweeps for every chunk
 - Writes a docker-compose override with the chosen hyper-parameters.
 - Restarts **only** the target container (`--service-name` / `--container-name`) so the other methods stay untouched.
 - Waits for `/health`, runs HTTP extraction on the selected documents, converts the payload to Tier‑B graphs, and stores everything under `results/experiments/<method>/<config_id>/`.
-- Captures Tier‑A and Tier‑B metrics with `tools/evaluate.py`, logs docker output, and records provenance metadata (git SHA, command line, env overrides, duration, document-level chunk stats).
+- Captures Tier‑A and Tier‑B metrics with `src/evaluation/metrics.py`, logs docker output, and records provenance metadata (git SHA, command line, env overrides, duration, document-level chunk stats).
 - Appends a CSV summary with the clean headline metrics you requested: `StepF1`, `AdjacencyF1`, `Kendall`, `ConstraintCoverage`, `ConstraintAttachmentF1`, `A_score`, `GraphF1`, `NEXT_EdgeF1`, `Logic_EdgeF1`, `ConstraintAttachmentF1`, `B_score`.
 
 > Tier-A headline: `A_score = 0.5 * ConstraintCoverage + 0.3 * StepF1 + 0.2 * Kendall`  
@@ -48,7 +48,7 @@ Other common options:
 1. **Reset per configuration** – `docker compose up -d --force-recreate <service>` is executed after writing the override to guarantee a clean graph-state for the chunker being tuned.
 2. **Isolate externals** – other services stay untouched, satisfying the “keep all other services at baseline values” constraint.
 3. **Archive provenance** – `metadata.json` contains the git SHA, CLI invocation, env overrides, wall-clock time, prediction/tier-B file paths, evaluator reports, docker log path, and per-document chunk statistics.
-4. **Clean outputs** – predictions follow gold filenames so `tools/evaluate.py` can be run directly; Tier‑B conversions live under `<run_dir>/tierb/`.
+4. **Clean outputs** – predictions follow gold filenames so `src/evaluation/metrics.py` can be run directly; Tier‑B conversions live under `<run_dir>/tierb/`.
 5. **Evaluation coverage** – Tier A + Tier B metrics are always generated, and the summary CSV collates the requested KPIs plus the derived `A_score` and `B_score`.
 6. **Docker logs** – each configuration stores the relevant container logs (starting from the moment before extraction) under `<run_dir>/logs/docker.log` for traceability.
 

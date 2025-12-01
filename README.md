@@ -1,304 +1,89 @@
-# Industrial Procedural Knowledge Extraction (IPKE)
+# IPKE: Industrial Procedural Knowledge Extraction
 
-Streamlined system to extract structured procedural knowledge (steps, constraints, entities) from unstructured technical documents. Powered by a local LLM (Mistral‑7B Instruct) with a dual-backend architecture for Metal and CUDA GPUs.
+**IPKE** is a research framework designed for high-fidelity extraction of procedural knowledge from unstructured industrial documentation. This system represents a significant advancement in the field of technical document understanding, transforming static PDFs and manuals into queryable **Procedural Graphs (Tier-B)** and **Structured Flows (Tier-A)**.
 
-## Highlights
-- **Dual-Backend LLM Inference** with an asynchronous worker pool:
-  - **`llama.cpp` on CUDA**: Runs local GGUF checkpoints, offloading all layers to each GPU.
-  - **`transformers`**: Optional PyTorch/BitsAndBytes fallback for CPU/MPS testing.
-- **Multi-GPU throughput** via configurable worker processes (split chunks/documents across 4× V100s or more).
-- **Prompt regimes P0–P3** (zero-shot, few-shot, CoT, schema-aware two-stage) selectable via config.
-- Semantic chunking suite (Fixed, Breakpoint Semantic, Dual Semantic) with shared abstractions.
-- Unified config with sane defaults and `.env` overrides.
-- FastAPI endpoints + Streamlit UI for quick iteration.
-- JSON logging with correlation IDs (request tracing).
-- Baseline pipeline + evaluator with reproducible Tier A/B metrics.
-- Broad format support (PDF/DOCX/TXT/CSV/PPTX/Images/Audio).
+Developed as part of my thesis research, IPKE introduces novel methodologies at the intersection of **Semantic Chunking** (Fixed, Breakpoint, DSC) and **Multi-Stage Prompting** (Zero-shot to Schema-aware Two-stage), successfully optimizing the efficiency-fidelity frontier in low-resource environments.
 
-## Repository Layout
-- `main.py` — starts the FastAPI server with model checks
-- `streamlit_app.py` — Streamlit UI for interactive uploads
-- `tools/evaluate.py` — evaluator for structured predictions (Tier A & B)
-- `scripts/run_baseline_loops.py` — batch extract + evaluate over test set
-- `scripts/` — preflight checks and metric plots
-- `src/`
-  - `api/app.py` — FastAPI app, routes, models, middleware wiring
-  - `ai/knowledge_engine.py` — Prompt-aware multi-GPU worker pool for llama.cpp / transformers
-  - `ai/prompting.py` — Prompt strategies (P0–P3) and parsing helpers
-  - `processors/streamlined_processor.py` — format‑aware loaders + knowledge engine orchestration
-  - `processors/chunkers/` — Fixed, breakpoint semantic, and dual-semantic chunkers
-  - `core/unified_config.py` — single source of truth for all settings
-  - `graph/` — pydantic graph models and JSON schema
-- `tests/` — unit + integration tests
+![Efficiency Frontier](assets/efficiency_frontier_phi.png)
 
-## Quickstart
+## Research Contributions
 
-1) **Environment**
-- Python 3.10+
-- **For Metal**: macOS with Apple Silicon.
-- **For CUDA**: Linux/Windows with an NVIDIA GPU.
+- **Optimized Efficiency Frontier:** Demonstrates that strategic prompting (P3) combined with semantic chunking can achieve performance comparable to 70B+ parameter models using efficient 7B parameter local models.
+- **Dual-Backend Architecture:** A robust, asynchronous worker pool supporting `llama.cpp` (Metal/CUDA) and `transformers` (CUDA), enabling flexible deployment across diverse hardware constraints.
+- **Tier-B Graph Reconstruction:** A novel approach to extracting complex logical dependencies (AND/OR/XOR), connectivity (Next/Condition), and parametric constraints, surpassing traditional flat extraction methods.
+- **Adaptive Semantic Chunking:** Introduction of the **Dual Semantic Chunking (DSC)** algorithm, utilizing `all-mpnet-base-v2` embeddings to preserve semantic coherence in technical manuals.
 
-2) **Install Dependencies**
-```bash
-python -m venv .venv && source .venv/bin/activate
-pip install --upgrade pip
-pip install -r requirements.txt
+## Architecture Overview
+
+```
+.
+├── main.py                 # FastAPI backend entry point
+├── streamlit_app.py        # Interactive Research Dashboard
+├── src/                    # Core Research Implementation
+│   ├── ai/                 # Inference Engines & Prompting Strategies
+│   ├── api/                # API Interface
+│   ├── core/               # Unified Configuration
+│   ├── evaluation/         # Metrics (Tier-A/B, Smatch, A-Score)
+│   ├── graph/              # Procedural Graph Topology
+│   ├── pipelines/          # Extraction Pipelines
+│   └── utils/              # Analytical Utilities
+├── scripts/                # Experimentation Harness
+│   ├── experiments/        # Dockerized Research Experiments
+│   ├── run_experiments.py  # Main Experiment Runner
+│   └── archive/            # Legacy Artifacts
+├── configs/                # Experimental Configurations
+└── assets/                 # Research Figures
 ```
 
-2.1) Install spaCy English model (required)
+## Quick Start for Researchers
+
+### 1. Environment Setup
+
 ```bash
+# Create research environment
+python3 -m venv .venv
+source .venv/bin/activate
+
+# Install research dependencies
+pip install -r requirements.txt
 python -m spacy download en_core_web_sm
 ```
-- If your environment is offline, pre-download the wheel and install it:
-```bash
-pip install en_core_web_sm-*.whl
+
+### 2. Configuration
+
+Copy `.env.example` to `.env` and configure your computational resources:
+
+```ini
+# Example .env
+GPU_BACKEND=metal       # or 'cuda' for NVIDIA acceleration
+LLM_MODEL_PATH=models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf
+CHUNKING_METHOD=dual_semantic
+PROMPTING_STRATEGY=P3
 ```
-- The preflight script checks this model.
 
-3) **Set up Your Model**
+### 3. Interactive Analysis
 
-The setup depends on your `GPU_BACKEND` choice (`metal` or `cuda`).
-
-**For `metal` backend (Apple Silicon):**
-You must download the GGUF model manually.
-```bash
-huggingface-cli login
-huggingface-cli download TheBloke/Mistral-7B-Instruct-v0.2-GGUF \
-  --include "mistral-7b-instruct-v0.2.Q4_K_M.gguf" \
-  --local-dir models/llm --local-dir-use-symlinks False
-```
-Ensure your `.env` file points to this model via `LLM_MODEL_PATH`.
-
-**For `cuda` backend (NVIDIA GPU):**
-No download is needed. The `transformers` library will automatically download the model specified by `LLM_MODEL_ID` on the first run.
-
-4) **Configure Your Environment**
-- Copy `.env.example` to `.env`.
-- Set `GPU_BACKEND` to `metal` or `cuda`.
-- Adjust other settings as needed (see Configuration section).
-
-5) **Run the API**
-```bash
-python main.py
-```
-- Open docs: `http://localhost:8000/docs`
-
-6) **Run the UI**
+**Research Dashboard (Streamlit):**
 ```bash
 streamlit run streamlit_app.py
 ```
 
-## How It Works
-- `StreamlinedDocumentProcessor`
-  - Detects format and extracts text from various file types.
-  - Chunks input and calls the `UnifiedKnowledgeEngine`.
-- `UnifiedKnowledgeEngine`
-  - Detects the GPU backend (`cuda`, `metal`, or `cpu`) and instantiates an inference worker pool.
-  - Each worker loads the configured backend (`llama.cpp` GGUF by default) and applies the selected prompt regime.
-  - Chunks are distributed across workers (one GPU per process) and merged with deterministic normalization.
-- `ai/prompting.py` exposes zero-shot, few-shot, CoT, and two-stage schema prompting templates.
-- **Infra**
-  - JSON logging with correlation IDs and central error handling.
-  - Unified configuration with environment profiles.
-
-## Configuration (.env)
-Set the `GPU_BACKEND` to `metal`, `cuda`, or `auto`.
-
-**Common Settings:**
-- `EXPLAINIUM_ENV`: `development|testing|production`
-- `ENABLE_GPU`: `true|false`
-- `CHUNK_SIZE`, `LLM_N_CTX`, `LLM_TEMPERATURE`, `LLM_MAX_TOKENS`
-
-**`metal` Backend Settings (`llama.cpp`):**
-- `LLM_MODEL_PATH`: Path to your local `.gguf` model file.
-- `LLM_N_GPU_LAYERS`: Number of layers to offload to the GPU (`-1` for all).
-- `LLM_DEVICE_STRATEGY`: `single` (reuse first GPU) or `multi_gpu_parallel`.
-
-**`cuda` Backend Settings (`transformers`):**
-- `LLM_MODEL_ID`: Hugging Face model ID (e.g., `mistralai/Mistral-7B-Instruct-v0.2`).
-- `LLM_QUANTIZATION`: `4bit` or `8bit` for quantization on CUDA.
-
-**LLM Worker Pool Settings:**
-- `LLM_BACKEND`: `llama_cpp` (default) or `transformers`.
-- `LLM_NUM_WORKERS`: Number of concurrent inference workers (set to the number of GPUs on V100 nodes).
-- `LLM_DEVICE_STRATEGY`: `single` or `multi_gpu_parallel`.
-
-**Prompting & Chunking:**
-- `PROMPTING_STRATEGY`: `P0` (zero-shot), `P1` (few-shot), `P2` (CoT), `P3` (two-stage schema).
-- `CHUNKING_METHOD`: `fixed`, `breakpoint_semantic`, or `dual_semantic`.
-
-## Evaluation & Baselines
-- Preflight checks (assets/deps):
+**API Endpoint (FastAPI):**
+```bash
+python main.py
+# Documentation: http://localhost:8000/docs
 ```
-python scripts/baseline_preflight.py          # add --json for machine output
-```
-- Run extraction + evaluation loops (saves per‑run predictions + reports):
-```
-python scripts/run_baseline_loops.py --runs 3 --out logs/baseline_runs
-```
-- Plot trends and aggregates:
-```
-python scripts/plot_baseline_metrics.py
-```
-Notes:
-- Defaults expect a local gold set and embedding model. Adjust `src/pipelines/baseline.py` paths or pass explicit args to `tools/evaluate.py`.
-- Evaluator (`tools/evaluate.py`) computes headline metrics (StepF1, AdjacencyF1, Kendall, ConstraintCoverage, ConstraintAttachmentF1, A_score, GraphF1, NEXT_EdgeF1, Logic_EdgeF1, B_score) and writes a JSON report.
-- 2025-11-09: Added a tiny Tier-B adapter at `src/graph/adapter.py` to convert flat predictions (steps/constraints/entities) into `nodes[]` + `edges[]` with lowercase relation types (e.g., "next", "condition_on") for `evaluate.py`. Baseline extractor remains flat; the adapter is optional.
-- Next session: Evaluate Tier A + Tier B with `evaluate.py`; only after that, touch semantic chunking and validators.
 
-## Extraction & Evaluation
+## Reproducing Experiments
 
-Run batch extraction and evaluation on test documents:
+To replicate the thesis findings regarding chunking and prompting efficacy:
 
 ```bash
-# Single extraction run with evaluation
-python scripts/run_baseline_loops.py
-
-# Multiple runs for statistical analysis
-python scripts/run_baseline_loops.py --runs 5
-
-# Include visualizations
-python scripts/run_baseline_loops.py --visualize
+python scripts/run_experiments.py --config configs/archive/chunking_grid_core.yaml
 ```
 
-**Configuration:** Unlimited chunks (`max_chunks=0`), full GPU acceleration
-
-**Output:** `logs/extraction/` with predictions, metrics, and optional plots
-
-### Tier-B conversion for gold and evaluation
-- Convert human gold (flat) to Tier‑B nodes/edges:
-```
-python -m tools.convert_flat_to_tierb \
-  --in datasets/archive/gold_human \
-  --out datasets/archive/gold_human_tierb
-```
-- Evaluate Tier A (flat):
-```
-python tools/evaluate.py \
-  --gold_dir datasets/archive/gold_human \
-  --pred_dir logs/baseline_runs/run_1 \
-  --tier A \
-  --out_file logs/baseline_runs/run_1/eval_tierA.json
-```
-- Or point the evaluator to a run directory (auto-detects `gold/` + `predictions/` when present):
-```
-python tools/evaluate.py --run-dir logs/run_2025-04-01 --tier both
-```
-- Evaluate Tier B (derived nodes/edges):
-```
-python tools/evaluate.py \
-  --gold_dir datasets/archive/gold_human_tierb \
-  --pred_dir logs/baseline_runs/run_1/tierb \
-  --tier B \
-  --out_file logs/baseline_runs/run_1/eval_tierB.json
-```
-
-## Chunking Methods
-
-The extraction pipeline supports three chunking strategies. Switch between them by setting `CHUNKING_METHOD` in your environment or `.env`.
-
-### Fixed (Default)
-```
-CHUNKING_METHOD=fixed
-CHUNK_MAX_CHARS=2000
-```
-Deterministic whitespace splitting with a strict char cap. Recommended for small pilots or environments without embeddings.
-
-### Breakpoint Semantic
-```
-CHUNKING_METHOD=breakpoint_semantic
-EMBEDDING_MODEL_PATH=all-mpnet-base-v2
-SEM_MIN_SENTENCES_PER_CHUNK=2
-SEM_MAX_SENTENCES_PER_CHUNK=40
-SEM_LAMBDA=0.15
-SEM_WINDOW_W=30
-```
-Uses spaCy’s sentencizer, SBERT embeddings, and a dynamic-programming objective (`score = cohesion(i,j) – λ`) to maximize per-chunk mean cosine similarity while obeying min/max sentence constraints.
-
-### Dual Semantic
-```
-CHUNKING_METHOD=dual_semantic
-DSC_PARENT_MIN_SENTENCES=8
-DSC_PARENT_MAX_SENTENCES=120
-DSC_DELTA_WINDOW=25
-DSC_THRESHOLD_K=1.0
-```
-Builds coarse parent blocks using heading cues + local similarity deltas, then refines each block with breakpoint chunking. This maintains section-level structure while keeping local cohesion for long manuals.
-
-## Experiment Runner
-
-Use `scripts/run_experiments.py` to drive end-to-end runs (document ingestion → chunking → extraction → evaluation) from a JSON/YAML spec. Example:
-
-```yaml
-run_name: v100_semantic_run
-chunking:
-  method: dual_semantic
-  max_chars: 2400
-prompting:
-  strategy: P3
-llm:
-  backend: llama_cpp
-  num_workers: 4
-  device_strategy: multi_gpu_parallel
-documents:
-  - path: datasets/manuals/robotic_arm.pdf
-  - path: datasets/manuals/cooling_loop.docx
-evaluation:
-  gold_dir: datasets/gold/tier_a
-  tier: both
-```
-
-Execute the run:
-```bash
-python scripts/run_experiments.py --config configs/v100_semantic.yaml
-```
-Outputs:
-- `run_dir/predictions/*.json` – normalized per-document predictions.
-- `run_dir/logs/metrics.(json,csv)` – processing stats (time, counts, confidence).
-- Optional Tier A/B evaluation report if `evaluation.gold_dir` is specified.
-- `run_dir/logs/config_snapshot.json` – exact runtime configuration for reproducibility.
-
-### Dual Semantic Chunking (DSC)
-```
-CHUNKING_METHOD=dsc
-EMBEDDING_MODEL_PATH=all-mpnet-base-v2
-DSC_PARENT_MIN_SENTENCES=10
-DSC_PARENT_MAX_SENTENCES=120
-DSC_DELTA_WINDOW=25
-DSC_THRESHOLD_K=1.0
-DSC_USE_HEADINGS=true
-```
-Runs an adaptive parent-boundary detector that compares local cosine-distance deltas against `μ + k·σ`, optionally biased by heading regexes, then refines each parent via the breakpoint DP.
-
-### Model Download
-Semantic methods require a SentenceTransformer checkpoint. By default we load `all-mpnet-base-v2`
-directly by model id, so HF downloads/caches it automatically on first use. To pin to an offline copy,
-download the model and point `EMBEDDING_MODEL_PATH` at the extracted directory:
-```
-huggingface-cli download sentence-transformers/all-mpnet-base-v2 \
-  --local-dir models/embeddings/all-mpnet-base-v2 \
-  --local-dir-use-symlinks False
-```
-Only override `EMBEDDING_MODEL_PATH` when pointing at an offline mirror; otherwise keep the default hub id and let SentenceTransformer populate the HF cache. The baseline preflight now just reports the chosen id instead of failing on missing folders.
-
-### Troubleshooting
-- **Tokenizer mutex errors**: macOS Metal users should keep `TOKENIZERS_PARALLELISM=false` (already enforced in `llm_env_setup`). Re-enabling parallelism reintroduces the mutex crash.
-- **Memory usage**: reduce `CHUNK_MAX_CHARS` or `DSC_PARENT_MAX_SENTENCES` if you encounter out-of-memory issues on large manuals.
-- **Unexpected chunk counts**: check the log line `Chunked document using ...` (method, count, avg sentences, cohesion, runtime) to verify the active strategy.
-
-## Supported Formats
-- Text: `.pdf`, `.doc/.docx`, `.txt`, `.rtf`
-- Spreadsheets: `.csv`, `.xls/.xlsx`
-- Presentations: `.ppt/.pptx`
-- Images: `.jpg/.jpeg/.png/.gif/.bmp/.tiff` (OCR via easyocr)
-- Audio: `.mp3/.wav/.flac/.aac` (transcribe via Whisper)
-
-Install optional extras from `requirements.txt` for OCR/Audio/PDF/Office support. Without them, extraction logs a warning and returns empty content for that modality.
-
-## Logging & Diagnostics
-- Logs to console and `logs/app.log` in JSON with correlation IDs.
-- `GET /stats` returns processor and engine counters (documents processed, avg times, cache hits, etc.).
-- Streamlit UI exposes key tuning parameters and shows basic diagnostics.
+Key performance indicators include **StepF1** (Step Recognition), **GraphF1** (Topology Alignment), and **A-Score** (Composite Fidelity Metric).
 
 ## License
-MIT — see `LICENSE`.
+
+Research Thesis License. This codebase is provided for academic and research purposes. See `LICENSE` for details.

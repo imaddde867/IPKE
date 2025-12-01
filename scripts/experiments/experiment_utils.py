@@ -248,7 +248,7 @@ def run_evaluation_cli(
 ) -> Dict[str, float]:
     cmd = [
         sys.executable,
-        str(REPO_ROOT / "tools" / "evaluate.py"),
+        str(REPO_ROOT / "src" / "evaluation" / "metrics.py"),
         "--gold_dir",
         str(gold_dir),
         "--pred_dir",
