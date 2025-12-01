@@ -448,7 +448,7 @@ def aggregate_metric_row(
         "Kendall",
         "ConstraintCoverage",
         "ConstraintAttachmentF1",
-        "A_score",
+        "Phi",
     ]
     for metric in important_metrics:
         row[f"A_{metric}"] = tier_a_metrics.get(metric)
@@ -457,7 +457,6 @@ def aggregate_metric_row(
         "NEXT_EdgeF1",
         "Logic_EdgeF1",
         "ConstraintAttachmentF1",
-        "B_score",
     ]:
         row[f"B_{metric}"] = tier_b_metrics.get(metric)
     return row
