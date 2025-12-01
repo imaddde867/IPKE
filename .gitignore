@@ -69,8 +69,8 @@ tests/outputs/
 server.log
 
 # Large model files
-models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf
-models/llm/*.gguf
+models/
+!models/.gitkeep
 
 # Uploaded files
 uploaded_files/*
@@ -80,5 +80,3 @@ uploaded_files/*
 thesis/
 PRE_DEPLOYMENT_CHECKLIST.md
 Thesis.pdf
-models/**/tf_model.h5
-models/**/*.msgpack
