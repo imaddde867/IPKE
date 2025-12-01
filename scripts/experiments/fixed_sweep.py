@@ -94,6 +94,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--health-interval", type=float, default=5.0, help="Seconds between health polls.")
     parser.add_argument("--skip-existing", action="store_true", help="Reuse predictions if they already exist.")
     parser.add_argument("--doc-id-map", type=Path, help="Optional JSON mapping file: doc stem -> gold id.")
+    parser.add_argument(
+        "--no-docker",
+        action="store_true",
+        help="Assume the service is already running and skip docker-compose restarts/log capture.",
+    )
     return parser.parse_args()
 
 
@@ -116,8 +121,16 @@ def run_configuration(
     run_dir = args.output_root / config_id
     run_paths: EvaluationPaths = prepare_run_dirs(run_dir)
 
-    override_file = write_override_file(service_cfg.name, env_overrides, service_cfg.override_dir)
-    restart_service(service_cfg, override_file)
+    if service_cfg.use_docker:
+        override_file = write_override_file(service_cfg.name, env_overrides, service_cfg.override_dir)
+        restart_service(service_cfg, override_file)
+    else:
+        LOGGER.info(
+            "Docker disabled; assuming %s is already running at %s:%s",
+            service_cfg.name,
+            service_cfg.host,
+            service_cfg.port,
+        )
     wait_for_health(service_cfg)
 
     LOGGER.info("Starting extraction for %s", config_id)
@@ -137,7 +150,7 @@ def run_configuration(
     wall_time = time.time() - run_start
 
     log_file = run_paths.logs_dir / "docker.log"
-    capture_docker_logs(args.container_name, log_since, log_file)
+    capture_docker_logs(args.container_name, log_since, log_file, enabled=service_cfg.use_docker)
 
     metadata = {
         "config_id": config_id,
@@ -184,6 +197,7 @@ def main() -> None:
         compose_file=args.compose_file,
         health_timeout=args.health_timeout,
         health_interval=args.health_interval,
+        use_docker=not args.no_docker,
     )
 
     summary_rows: List[Dict[str, object]] = []
