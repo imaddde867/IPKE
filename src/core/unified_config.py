@@ -163,7 +163,7 @@ class UnifiedConfig:
     max_workers: int = 8
     chunk_size: int = 2000
     cache_size: int = 1000
-    processing_timeout: int = 300
+    processing_timeout: int = 3600
 
     # Chunking configuration
     chunking_method: str = "fixed"
@@ -226,7 +226,7 @@ class UnifiedConfig:
             'debug': True,
             'log_level': "INFO",
             'max_file_size_mb': _env_int('MAX_FILE_SIZE_MB', default=50, min_value=1),
-            'processing_timeout': _env_int('PROCESSING_TIMEOUT', default=180, min_value=1),
+            'processing_timeout': _env_int('PROCESSING_TIMEOUT', default=3600, min_value=1),
             'api_host': _get_env_value('API_HOST', default='127.0.0.1'),
             'gpu_backend': _get_env_value('GPU_BACKEND', default='auto'),
             'enable_gpu': _env_bool('ENABLE_GPU', default=True),
@@ -299,7 +299,7 @@ class UnifiedConfig:
             'max_file_size_mb': _env_int('MAX_FILE_SIZE_MB', default=200, min_value=1),
             'confidence_threshold': _env_float('CONFIDENCE_THRESHOLD', default=0.8, min_value=0.0, max_value=1.0),
             'quality_threshold': _env_float('QUALITY_THRESHOLD', default=0.85, min_value=0.0, max_value=1.0),
-            'processing_timeout': _env_int('PROCESSING_TIMEOUT', default=600, min_value=60),
+            'processing_timeout': _env_int('PROCESSING_TIMEOUT', default=3600, min_value=60),
             'api_host': _get_env_value('API_HOST', default='0.0.0.0'),
             'cors_origins': cors_origins,
             'gpu_backend': _get_env_value('GPU_BACKEND', default='auto'),
