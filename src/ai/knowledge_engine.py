@@ -58,8 +58,12 @@ class UnifiedKnowledgeEngine:
         if self._pool is not None:
             return
         backend_name = self._determine_backend()
-        worker_count = max(1, getattr(self.config, "llm_num_workers", self.config.max_workers))
-        device_strategy = getattr(self.config, "llm_device_strategy", "single")
+        worker_setting = getattr(self.config, "llm_num_workers", 0)
+        try:
+            worker_count = int(worker_setting)
+        except (TypeError, ValueError):
+            worker_count = 0
+        device_strategy = getattr(self.config, "llm_device_strategy", "auto")
         self._pool = LLMWorkerPool(
             config=self.config,
             backend_name=backend_name,
@@ -68,10 +72,11 @@ class UnifiedKnowledgeEngine:
             timeout=self.config.processing_timeout,
         )
         self._backend_name = backend_name
+        resolved_workers = getattr(self._pool, "num_workers", worker_count)
         logger.info(
             "Initialized LLM worker pool backend=%s workers=%s device_strategy=%s prompting=%s",
             backend_name,
-            worker_count,
+            resolved_workers,
             device_strategy,
             getattr(self.config, "prompting_strategy", "P0"),
         )

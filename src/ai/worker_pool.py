@@ -47,6 +47,19 @@ def _available_cuda_devices() -> List[int]:
     return []
 
 
+def _resolve_worker_count(requested_workers: int, devices: Sequence[int], max_cap: Optional[int]) -> int:
+    if requested_workers and requested_workers > 0:
+        worker_count = requested_workers
+    elif devices:
+        worker_count = len(devices)
+    else:
+        cpu_count = os.cpu_count() or 1
+        worker_count = min(cpu_count, 4)
+    if max_cap:
+        worker_count = min(worker_count, max_cap)
+    return max(1, worker_count)
+
+
 def _worker_entry(task_queue, result_queue, config, backend_name: str, strategy_name: str, device_id: Optional[int]):
     if device_id is not None:
         os.environ["CUDA_VISIBLE_DEVICES"] = str(device_id)
@@ -80,24 +93,45 @@ class LLMWorkerPool:
     ):
         self.config = config
         self.backend_name = backend_name
-        self.num_workers = max(1, num_workers)
-        self.device_strategy = device_strategy
+        self.available_devices = _available_cuda_devices()
+        resolved_strategy = (device_strategy or "single").strip().lower()
+        if resolved_strategy == "auto":
+            resolved_strategy = "round_robin" if len(self.available_devices) > 1 else "single"
+        self.device_strategy = resolved_strategy
+        max_cap = getattr(config, "max_workers", None)
+        requested = int(num_workers) if num_workers is not None else 0
+        auto_mode = requested <= 0
+        self.num_workers = _resolve_worker_count(requested, self.available_devices, max_cap)
         self.timeout = timeout or getattr(config, "processing_timeout", 300)
         self.ctx = get_context("spawn")
         self.task_queue = self.ctx.Queue(maxsize=self.num_workers * 2)
         self.result_queue = self.ctx.Queue()
         self.workers: List[Process] = []
         self._start_workers()
+        if auto_mode:
+            if self.available_devices:
+                logger.info(
+                    "Auto-configured %s LLM worker%s across %s CUDA device%s.",
+                    self.num_workers,
+                    "" if self.num_workers == 1 else "s",
+                    len(self.available_devices),
+                    "" if len(self.available_devices) == 1 else "s",
+                )
+            else:
+                logger.info(
+                    "Auto-configured %s CPU LLM worker%s (no CUDA devices detected).",
+                    self.num_workers,
+                    "" if self.num_workers == 1 else "s",
+                )
 
     def _assign_devices(self) -> List[Optional[int]]:
-        devices = _available_cuda_devices()
-        if not devices:
+        if not self.available_devices:
             return [None] * self.num_workers
         if self.device_strategy == "single":
-            return [devices[0]] * self.num_workers
+            return [self.available_devices[0]] * self.num_workers
         assigned = []
         for idx in range(self.num_workers):
-            assigned.append(devices[idx % len(devices)])
+            assigned.append(self.available_devices[idx % len(self.available_devices)])
         return assigned
 
     def _start_workers(self):

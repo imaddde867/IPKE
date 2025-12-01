@@ -41,11 +41,17 @@ def log_runtime_settings(config: UnifiedConfig):
     """Log runtime configuration useful for thesis experiments."""
     backend_requested = config.gpu_backend
     backend_resolved = config.detect_gpu_backend()
+    llm_backend = getattr(config, "llm_backend", "transformers")
+    if llm_backend.lower().startswith("llama"):
+        llm_label = "llama.cpp"
+    else:
+        llm_label = llm_backend
+    device_label = backend_resolved if backend_resolved in {"cuda", "metal"} else "cpu"
     print("\nRuntime configuration:")
     print(f"   Chunking method: {config.chunking_method}")
     print(f"   Requested GPU backend: {backend_requested}")
     print(f"   Resolved backend: {backend_resolved}")
-    print(f"   LLM strategy: {'llama.cpp' if backend_resolved == 'metal' else 'transformers/CPU'}")
+    print(f"   LLM strategy: {llm_label}/{device_label}")
     print(f"   LLM model path: {config.llm_model_path}")
     print(f"   Embedding model path: {config.embedding_model_path}")
     print(f"   Upload directory: {config.upload_directory}")

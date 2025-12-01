@@ -141,8 +141,8 @@ class UnifiedConfig:
     llm_repeat_penalty: float = 1.1
     llm_max_chunks: int = 0
     llm_backend: str = "llama_cpp"
-    llm_device_strategy: str = "single"
-    llm_num_workers: int = 1
+    llm_device_strategy: str = "auto"
+    llm_num_workers: int = 0  # 0 -> auto scale with available devices
     prompting_strategy: str = "P0"
     llm_random_seed: int = 42
     
@@ -220,6 +220,7 @@ class UnifiedConfig:
     def _development_config(cls) -> 'UnifiedConfig':
         """Development environment configuration"""
         chunk_kwargs = cls._chunking_overrides()
+        llm_workers = max(0, _env_int('LLM_NUM_WORKERS', default=cls.llm_num_workers))
         base_kwargs: Dict[str, Any] = {
             'environment': Environment.DEVELOPMENT,
             'debug': True,
@@ -246,7 +247,7 @@ class UnifiedConfig:
             'llm_quantization': _get_env_value('LLM_QUANTIZATION', default=cls.llm_quantization),
             'llm_backend': _get_env_value('LLM_BACKEND', default=cls.llm_backend),
             'llm_device_strategy': _get_env_value('LLM_DEVICE_STRATEGY', default=cls.llm_device_strategy),
-            'llm_num_workers': _env_int('LLM_NUM_WORKERS', default=cls.llm_num_workers, min_value=1),
+            'llm_num_workers': llm_workers,
             'prompting_strategy': _get_env_value('PROMPTING_STRATEGY', default=cls.prompting_strategy).upper(),
             'llm_random_seed': _env_int('LLM_RANDOM_SEED', default=cls.llm_random_seed),
             'strict_schema_validation': _env_bool('STRICT_SCHEMA_VALIDATION', default=cls.strict_schema_validation),
@@ -290,6 +291,7 @@ class UnifiedConfig:
         cors_origins = cors_origins_raw.split(',') if cors_origins_raw else []
         
         chunk_kwargs = cls._chunking_overrides()
+        llm_workers = max(0, _env_int('LLM_NUM_WORKERS', default=cls.llm_num_workers))
         base_kwargs: Dict[str, Any] = {
             'environment': Environment.PRODUCTION,
             'debug': False,
@@ -313,7 +315,7 @@ class UnifiedConfig:
             'llm_quantization': _get_env_value('LLM_QUANTIZATION', default=cls.llm_quantization),
             'llm_backend': _get_env_value('LLM_BACKEND', default=cls.llm_backend),
             'llm_device_strategy': _get_env_value('LLM_DEVICE_STRATEGY', default=cls.llm_device_strategy),
-            'llm_num_workers': _env_int('LLM_NUM_WORKERS', default=cls.llm_num_workers, min_value=1),
+            'llm_num_workers': llm_workers,
             'prompting_strategy': _get_env_value('PROMPTING_STRATEGY', default=cls.prompting_strategy).upper(),
             'llm_random_seed': _env_int('LLM_RANDOM_SEED', default=cls.llm_random_seed),
             'strict_schema_validation': _env_bool('STRICT_SCHEMA_VALIDATION', default=cls.strict_schema_validation),
