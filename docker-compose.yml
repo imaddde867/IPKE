@@ -3,7 +3,7 @@ version: "3.9"
 services:
   neo4j:
     image: neo4j:5.14
-    container_name: explainium-neo4j
+    container_name: ipke-neo4j
     restart: unless-stopped
     environment:
       - NEO4J_AUTH=${NEO4J_AUTH:-neo4j/password}
