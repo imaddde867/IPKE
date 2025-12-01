@@ -25,6 +25,8 @@ The `scripts/experiments` directory provides reproducible sweeps for every chunk
 | `semantic_sweep.py` | Vary breakpoint semantic parameters one axis at a time. | `SEM_LAMBDA = {0.05, 0.15, 0.25}`, `SEM_WINDOW_W = {20,30,40}`, `SEM_MIN_SENTENCES_PER_CHUNK = {1,2,3}`, `SEM_MAX_SENTENCES_PER_CHUNK = {30,40,60}` |
 | `dsc_sweep.py` | Explore DSC hierarchy settings (parent span bounds, delta window, threshold, heading toggle). | `DSC_PARENT_MIN_SENTENCES = {5,10,15}`, `DSC_PARENT_MAX_SENTENCES = {80,120,160}`, `DSC_DELTA_WINDOW = {15,25,35}`, `DSC_THRESHOLD_K = {0.8,1.0,1.2}`, `DSC_USE_HEADINGS = {true,false}` |
 
+> Need an ablation between the DSC parents and the semantic refinement? Launch the API with `CHUNKING_METHOD=parent_only` to evaluate heading-aware parent blocks without intra-parent breakpoint splits.
+
 Each script shares the same ergonomic flags:
 
 ```

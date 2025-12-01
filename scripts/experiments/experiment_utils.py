@@ -81,6 +81,14 @@ ENV_TO_METHOD_FORM_FIELD_MAPPING: Dict[str, Dict[str, str]] = {
         "DSC_THRESHOLD_K": "dsc_threshold_k",
         "DSC_USE_HEADINGS": "dsc_use_headings",
     },
+    "parent_only": {
+        "CHUNK_MAX_CHARS": "chunk_max_chars",
+        "DSC_PARENT_MIN_SENTENCES": "dsc_parent_min_sentences",
+        "DSC_PARENT_MAX_SENTENCES": "dsc_parent_max_sentences",
+        "DSC_DELTA_WINDOW": "dsc_delta_window",
+        "DSC_THRESHOLD_K": "dsc_threshold_k",
+        "DSC_USE_HEADINGS": "dsc_use_headings",
+    },
 }
 
 # Some document stems do not match their gold filenames; normalise them here.

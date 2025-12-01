@@ -77,7 +77,7 @@ def _env_bool(*keys: str, default: bool = False) -> bool:
     return raw.strip().lower() in {"1", "true", "yes", "on"}
 
 
-CHUNKING_METHOD_CHOICES = {"fixed", "breakpoint_semantic", "dual_semantic", "dsc"}
+CHUNKING_METHOD_CHOICES = {"fixed", "breakpoint_semantic", "dual_semantic", "dsc", "parent_only"}
 
 
 def _sanitize_chunking_method(value: Optional[str], default: str) -> str:
@@ -391,7 +391,7 @@ class UnifiedConfig:
                     'sem_lambda': _env_float('SEM_LAMBDA', default=cls.sem_lambda, min_value=0.0),
                     'sem_window_w': _env_int('SEM_WINDOW_W', default=cls.sem_window_w, min_value=1),
                 })
-            elif method == "dsc":
+            elif method in {"dsc", "parent_only"}:
                 overrides.update({
                     'dsc_parent_min_sentences': _env_int(
                         'DSC_PARENT_MIN_SENTENCES',

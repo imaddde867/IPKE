@@ -24,6 +24,8 @@ def get_chunker(cfg: Any) -> BaseChunker:
         return BreakpointSemanticChunker(cfg)
     if method in {"dual_semantic", "dsc"}:
         return DualSemanticChunker(cfg)
+    if method == "parent_only":
+        return DualSemanticChunker(cfg, parent_only=True)
     raise NotImplementedError(f"Chunking method '{method}' is not supported.")
 
 
