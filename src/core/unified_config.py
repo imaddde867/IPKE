@@ -202,7 +202,7 @@ class UnifiedConfig:
         """Load configuration from environment variables"""
         
         env_name = _get_env_value(
-            'EXPLAINIUM_ENV', 'ENVIRONMENT', default='development'
+            'IPKE_ENV', 'ENVIRONMENT', default='development'
         ).lower()
         try:
             environment = Environment(env_name)

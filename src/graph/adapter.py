@@ -19,8 +19,11 @@ Notes
 """
 from __future__ import annotations
 
+import logging
 from typing import Any, Dict, Iterable, List, Optional, Sequence, Set, Tuple
 
+
+logger = logging.getLogger(__name__)
 
 LOWER_REL_MAP = {
     "NEXT": "next",
@@ -151,11 +154,16 @@ def convert_to_tierb(doc: Dict[str, Any]) -> Dict[str, Any]:
     nodes: List[Dict[str, Any]] = []
     edges: List[Dict[str, Any]] = []
     existing_ids: Set[str] = set()
+    logger.debug("convert_to_tierb: document %s includes %d constraint(s)", document_id or "unknown", len(constraints))
 
     # Step nodes (preserve text for label extraction in evaluator)
+    step_alias_map: Dict[str, str] = {}
     for s in steps:
-        sid = _norm_id(s.get("id")) or f"S{len(nodes)+1}"
+        raw_sid = _norm_id(s.get("id"))
+        sid = raw_sid or f"S{len(nodes)+1}"
         sid = _unique_id(sid, existing_ids)
+        if raw_sid and raw_sid not in step_alias_map:
+            step_alias_map[raw_sid] = sid
         nodes.append({
             "id": sid,
             "type": "step",
@@ -164,9 +172,11 @@ def convert_to_tierb(doc: Dict[str, Any]) -> Dict[str, Any]:
         })
 
     # Condition nodes
-    for c in constraints:
+    constraint_node_ids: Dict[int, str] = {}
+    for idx, c in enumerate(constraints):
         cid = _norm_id(c.get("id")) or f"C{len(nodes)+1}"
         cid = _unique_id(cid, existing_ids)
+        constraint_node_ids[idx] = cid
         nodes.append({
             "id": cid,
             "type": "condition",
@@ -187,21 +197,62 @@ def convert_to_tierb(doc: Dict[str, Any]) -> Dict[str, Any]:
 
     # condition_on edges if constraint references exist
     # We read references from constraint["steps"] which may be list[str] or list[dict]
-    constraint_nodes = [n for n in nodes if n.get("type") == "condition"]
-    constraint_by_id = {n["id"]: n for n in constraint_nodes}
+    condition_edge_type = LOWER_REL_MAP["CONDITION_ON"]
+    condition_edge_count = 0
+    constraints_missing_valid: List[str] = []
+    constraints_missing_attachment_field: List[str] = []
 
-    for c in constraints:
-        cid = _norm_id(c.get("id"))
-        if not cid or cid not in constraint_by_id:
+    for idx, c in enumerate(constraints):
+        cid = constraint_node_ids.get(idx)
+        if not cid:
             continue
-        for sid in _collect_step_refs(c):
+
+        attached_field_present = "attached_to" in c
+        if not attached_field_present:
+            constraints_missing_attachment_field.append(cid)
+        attached_field = c.get("attached_to")
+        attached_refs = _flatten_refs(attached_field)
+        # Fall back to other reference keys if attached_to is missing or empty.
+        refs = attached_refs or _collect_step_refs(c)
+        valid_targets: List[str] = []
+
+        for sid in refs:
             sid_norm = _norm_id(sid)
-            if sid_norm in step_id_set:
-                edges.append({
-                    "source": cid,
-                    "target": sid_norm,
-                    "type": "condition_on",
-                })
+            if not sid_norm:
+                continue
+            resolved = step_alias_map.get(sid_norm, sid_norm)
+            if resolved not in step_id_set:
+                continue
+            valid_targets.append(resolved)
+            edges.append({
+                "source": cid,
+                "target": resolved,
+                "type": condition_edge_type,
+            })
+            condition_edge_count += 1
+
+        if attached_field_present and (not attached_refs or not valid_targets):
+            constraints_missing_valid.append(cid)
+
+    if constraints_missing_attachment_field:
+        sample_missing = ", ".join(constraints_missing_attachment_field[:5])
+        if len(constraints_missing_attachment_field) > 5:
+            sample_missing = f"{sample_missing}, ..."
+        logger.debug(
+            "convert_to_tierb: %d constraint(s) lacked an 'attached_to' field (ids: %s)",
+            len(constraints_missing_attachment_field),
+            sample_missing,
+        )
+    if constraints_missing_valid:
+        sample = ", ".join(constraints_missing_valid[:5])
+        if len(constraints_missing_valid) > 5:
+            sample = f"{sample}, ..."
+        logger.debug(
+            "convert_to_tierb: %d constraint(s) lacked valid attachments (ids: %s)",
+            len(constraints_missing_valid),
+            sample,
+        )
+    logger.debug("convert_to_tierb: created %d '%s' edge(s)", condition_edge_count, condition_edge_type)
 
     # Equipment / parameter nodes from top-level payloads
     equipment_nodes = _convert_equipment_entries(equipment, step_id_set, existing_ids, edges)

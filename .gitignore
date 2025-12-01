@@ -32,7 +32,9 @@ venv.bak/
 # Environment files
 .env
 
-# Logs
+# Logs and Results
+logs/
+results/
 *.log
 
 # IDE

@@ -17,7 +17,7 @@ from src.core.unified_config import UnifiedConfig
 from src.processors.streamlined_processor import ProcessingResult, StreamlinedDocumentProcessor
 from src.ai.types import ExtractionResult, ExtractedEntity
 from src.graph.adapter import convert_to_tierb
-from tools import evaluate as evaluator
+from src.evaluation import metrics as evaluator
 
 LOGGER = logging.getLogger(__name__)
 
