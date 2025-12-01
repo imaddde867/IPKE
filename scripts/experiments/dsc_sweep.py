@@ -50,7 +50,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--documents", nargs="+", default=DEFAULT_DOCUMENTS, help="Documents to process.")
     parser.add_argument("--host", default="http://localhost", help="Base host for the DSC service.")
     parser.add_argument("--port", type=int, default=8002, help="Service port.")
-    parser.add_argument("--timeout", type=int, default=DEFAULT_TIMEOUT, help="HTTP timeout.")
+    parser.add_argument("--timeout", type=int, default=7200, help="HTTP timeout (seconds).")
     parser.add_argument(
         "--output-root",
         type=Path,
