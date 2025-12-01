@@ -30,7 +30,7 @@ HEADLINE_METRICS_ORDER = [
     "ConstraintCoverage",
     "ConstraintAttachmentF1",
     "ConstraintAttachmentF1_TierB",
-    "A_score",
+    "Phi",
     "GraphPrecision",
     "GraphRecall",
     "GraphF1",
@@ -38,7 +38,6 @@ HEADLINE_METRICS_ORDER = [
     "AlignedEdgeAccuracy",
     "NEXT_EdgeF1",
     "Logic_EdgeF1",
-    "B_score",
 ]
 
 
@@ -523,23 +522,15 @@ def evaluate_tier_a_document(
     )
     metrics.update(constraints_metrics)
 
-    # New Procedural_Fidelity_Score: 0.5*ConstraintCoverage + 0.3*StepF1 + 0.2*Kendall
+    # Procedural Fidelity Score (Phi): 0.5*Coverage + 0.3*StepF1 + 0.2*Kendall
     if all(k in metrics for k in ["ConstraintCoverage", "StepF1", "Kendall"]):
-        constraint_coverage = metrics.get("ConstraintCoverage")
-        constraint_coverage = 0.0 if constraint_coverage is None else constraint_coverage
-        step_f1 = metrics.get("StepF1")
-        step_f1 = 0.0 if step_f1 is None else step_f1
-        normalized_kendall = metrics.get("Kendall")
-        normalized_kendall = 0.0 if normalized_kendall is None else normalized_kendall
-
-        pfs = (
-            0.5 * constraint_coverage +
-            0.3 * step_f1 +
-            0.2 * normalized_kendall
-        )
-        metrics["Procedural_Fidelity_Score"] = round3(pfs)
+        constraint_coverage = 0.0 if metrics.get("ConstraintCoverage") is None else metrics["ConstraintCoverage"]
+        step_f1 = 0.0 if metrics.get("StepF1") is None else metrics["StepF1"]
+        kendall = 0.0 if metrics.get("Kendall") is None else metrics["Kendall"]
+        phi = 0.5 * constraint_coverage + 0.3 * step_f1 + 0.2 * kendall
+        metrics["Phi"] = round3(phi)
     else:
-        metrics["Procedural_Fidelity_Score"] = None
+        metrics["Phi"] = None
     if return_alignment_map:
         return metrics, alignment_to_id_map(step_alignment)
     return metrics
@@ -832,7 +823,6 @@ def evaluate_tier_b_document(
     )
     if attachment_f1 is not None:
         metrics["ConstraintAttachmentF1_TierB"] = attachment_f1
-    metrics["B_score"] = metrics.get("GraphF1")
     return metrics
 
 

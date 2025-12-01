@@ -6,14 +6,13 @@ The `scripts/experiments` directory provides reproducible sweeps for every chunk
 - Restarts **only** the target container (`--service-name` / `--container-name`) so the other methods stay untouched.
 - Waits for `/health`, runs HTTP extraction on the selected documents, converts the payload to Tier‑B graphs, and stores everything under `results/experiments/<method>/<config_id>/`.
 - Captures Tier‑A and Tier‑B metrics with `src/evaluation/metrics.py`, logs docker output, and records provenance metadata (git SHA, command line, env overrides, duration, document-level chunk stats).
-- Appends a CSV summary with the clean headline metrics you requested: `StepF1`, `AdjacencyF1`, `Kendall`, `ConstraintCoverage`, `ConstraintAttachmentF1`, `A_score`, `GraphF1`, `NEXT_EdgeF1`, `Logic_EdgeF1`, `ConstraintAttachmentF1`, `B_score`.
+- Appends a CSV summary with the clean headline metrics you requested: `StepF1`, `AdjacencyF1`, `Kendall`, `ConstraintCoverage`, `ConstraintAttachmentF1`, `Φ` (Procedural Fidelity Score), `GraphF1`, `NEXT_EdgeF1`, `Logic_EdgeF1`, `ConstraintAttachmentF1_TierB`.
 
-> Tier-A headline: `A_score = 0.5 * ConstraintCoverage + 0.3 * StepF1 + 0.2 * Kendall`  
-> Tier-B headline: `B_score = GraphF1`
+> Procedural Fidelity Score: `Φ = 0.5 * ConstraintCoverage + 0.3 * StepF1 + 0.2 * Kendall`
 
 ### Metric details
 
-- **Tier A (flat extraction):** StepF1, AdjacencyF1, Kendall τ_b, Constraint Coverage, Constraint Attachment F1, and the composite `A_score`. Constraint metrics follow Carriero et al. (2024) and Xu et al. (2024) to decouple detection vs. linkage accuracy.
+- **Tier A (flat extraction):** StepF1, AdjacencyF1, Kendall τ_b, Constraint Coverage, Constraint Attachment F1, and the composite Procedural Fidelity Score `Φ`. Constraint metrics follow Carriero et al. (2024) and Xu et al. (2024) to decouple detection vs. linkage accuracy.
 - **Tier B (graph extraction):** GraphF1 (Smatch-style), NEXT EdgeF1, Logic EdgeF1, Constraint Attachment F1, AdjacencyF1, Kendall. Predictions are auto-converted to Tier‑B via `src.graph.adapter.flat_to_tierb`.
 - All reports are written to `<run_dir>/metrics/tier_a.json` and `tier_b.json`, and macro averages feed the summary CSVs.
 
@@ -52,13 +51,13 @@ Other common options:
 2. **Isolate externals** – other services stay untouched, satisfying the “keep all other services at baseline values” constraint.
 3. **Archive provenance** – `metadata.json` contains the git SHA, CLI invocation, env overrides, wall-clock time, prediction/tier-B file paths, evaluator reports, docker log path, and per-document chunk statistics.
 4. **Clean outputs** – predictions follow gold filenames so `src/evaluation/metrics.py` can be run directly; Tier‑B conversions live under `<run_dir>/tierb/`.
-5. **Evaluation coverage** – Tier A + Tier B metrics are always generated, and the summary CSV collates the requested KPIs plus the derived `A_score` and `B_score`.
+5. **Evaluation coverage** – Tier A + Tier B metrics are always generated, and the summary CSV collates the requested KPIs plus the derived Procedural Fidelity Score `Φ`.
 6. **Docker logs** – each configuration stores the relevant container logs (starting from the moment before extraction) under `<run_dir>/logs/docker.log` for traceability.
 
 ### Recommended workflow
 
 1. **Fixed sweep:** `python scripts/experiments/fixed_sweep.py --timeout 2000`. Inspect the CSV to pick the chunk size/stride pair balancing chunk count, confidence, and Tier-A/Tier-B accuracy.
-2. **Breakpoint semantic sweep:** `python scripts/experiments/semantic_sweep.py` while noting the macro averages; plot `SEM_LAMBDA` vs `A_score` if needed.
+2. **Breakpoint semantic sweep:** `python scripts/experiments/semantic_sweep.py` while noting the macro averages; plot `SEM_LAMBDA` vs `Φ` if needed.
 3. **DSC sweep:** `python scripts/experiments/dsc_sweep.py` (or rerun with restricted `--documents` if you want Doc‑specific Latin-square assignments).
 4. **Document the winning settings:** copy the env tuples from `metadata.json` into your lab notebook / thesis appendix.
 5. **Final 3×3 grid:** Once the “best” configuration per method is fixed, restart all three services with those env values and run `python scripts/experiments/run_all_chunking_experiments.py --documents datasets/archive/test_data/text/3m_marine_oem_sop.txt datasets/archive/test_data/text/DOA_Food_Man_Proc_Stor.txt datasets/archive/test_data/text/op_firesafety_guideline.txt`. The resulting timestamped directory under `results/` plus the evaluation summaries from the sweep form the clean experimental record for your research chapter.

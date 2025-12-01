@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Re-evaluate existing extraction results with the updated A_score formula (0.5*ConstraintCoverage + 0.3*StepF1 + 0.2*Kendall)."""
+"""Re-evaluate existing extraction results with the updated Procedural Fidelity Score Φ (0.5*Coverage + 0.3*StepF1 + 0.2*Kendall)."""
 
 import json
 import sys
@@ -102,7 +102,7 @@ def main():
                 first_metrics_after = final_metrics
 
             print(f"✅ Updated: {experiment}/{document}")
-            print(f"   New A_score: {final_metrics.get('A_score'):.3f}")
+            print(f"   New Φ: {final_metrics.get('Phi'):.3f}")
             
             # Prepare row for summary csv
             chunk_method = "unknown"
@@ -129,9 +129,9 @@ def main():
     
     headers = [
         "experiment", "chunk_method", "document_id", "document_type",
-        "StepF1", "AdjacencyF1", "Kendall", "ConstraintCoverage", 
-        "ConstraintAttachmentF1", "A_score", "GraphF1", "NEXT_EdgeF1", 
-        "Logic_EdgeF1", "ConstraintAttachmentF1_TierB", "B_score"
+        "StepF1", "AdjacencyF1", "Kendall", "ConstraintCoverage",
+        "ConstraintAttachmentF1", "Phi", "GraphF1", "NEXT_EdgeF1",
+        "Logic_EdgeF1", "ConstraintAttachmentF1_TierB"
     ]
     
     filtered_rows = []
@@ -151,9 +151,9 @@ def main():
 
     macro_scores = defaultdict(list)
     for row in all_metrics_rows:
-        macro_scores[row['chunk_method']].append(row.get('A_score') or 0.0)
-    
-    print("\n📈 Macro-average A_scores:")
+        macro_scores[row['chunk_method']].append(row.get('Phi') or 0.0)
+
+    print("\n📈 Macro-average Φ:")
     for method, scores in macro_scores.items():
         avg_score = sum(scores) / len(scores) if scores else 0.0
         print(f"- {method}: {avg_score:.3f}")

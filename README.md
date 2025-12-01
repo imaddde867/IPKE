@@ -23,7 +23,7 @@ Developed as part of my thesis research, IPKE introduces novel methodologies at 
 │   ├── ai/                 # Inference Engines & Prompting Strategies
 │   ├── api/                # API Interface
 │   ├── core/               # Unified Configuration
-│   ├── evaluation/         # Metrics (Tier-A/B, Smatch, A-Score)
+│   ├── evaluation/         # Metrics (Tier-A/B, Smatch, Procedural Fidelity Score)
 │   ├── graph/              # Procedural Graph Topology
 │   ├── pipelines/          # Extraction Pipelines
 │   └── utils/              # Analytical Utilities
@@ -83,7 +83,7 @@ python scripts/experiments/run_all_chunking_experiments.py \
               datasets/archive/test_data/text/op_firesafety_guideline.txt
 ```
 
-Key performance indicators include **StepF1** (Step Recognition), **GraphF1** (Topology Alignment), and **A-Score** (Composite Fidelity Metric). See `scripts/experiments/README.md` for detailed sweep instructions.
+Key performance indicators include **StepF1** (Step Recognition), **GraphF1** (Topology Alignment), and the **Procedural Fidelity Score (Φ)** (composite Tier-A fidelity). See `scripts/experiments/README.md` for detailed sweep instructions.
 
 ## License
 

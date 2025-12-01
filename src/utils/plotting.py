@@ -31,14 +31,14 @@ A_METRICS = [
     "Kendall",
     "ConstraintCoverage",
     "ConstraintAttachmentF1",
-    "Procedural_Fidelity_Score",
+    "Phi",
 ]
 
 B_METRICS = [
     "GraphF1",
     "NEXT_EdgeF1",
     "Logic_EdgeF1",
-    "B_score",
+    "ConstraintAttachmentF1_TierB",
 ]
 
 
