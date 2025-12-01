@@ -42,6 +42,7 @@ from scripts.experiments.experiment_utils import (
 )
 
 LOGGER = logging.getLogger("dsc_sweep")
+SUBMISSION_DELAY_SECONDS = 5.0
 
 
 def parse_args() -> argparse.Namespace:
@@ -217,7 +218,8 @@ def main() -> None:
     seen: set[str] = set()
     failures: List[Tuple[str, str]] = []
     future_to_config: Dict[concurrent.futures.Future[Dict[str, object]], str] = {}
-    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+    first_submission = True
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
         for param_name, values in grids:
             for value in values:
                 env = defaults.copy()
@@ -226,6 +228,8 @@ def main() -> None:
                 if config_id in seen:
                     continue
                 seen.add(config_id)
+                if not first_submission:
+                    time.sleep(SUBMISSION_DELAY_SECONDS)
                 future = executor.submit(
                     process_single_run,
                     config_id,
@@ -236,6 +240,7 @@ def main() -> None:
                     doc_id_overrides,
                 )
                 future_to_config[future] = config_id
+                first_submission = False
 
         for future in concurrent.futures.as_completed(future_to_config):
             config_id = future_to_config[future]
