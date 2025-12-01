@@ -70,7 +70,6 @@ server.log
 
 # Large model files
 models/
-!models/.gitkeep
 
 # Uploaded files
 uploaded_files/*
