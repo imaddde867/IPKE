@@ -1,5 +1,12 @@
 # IPKE: Industrial Procedural Knowledge Extraction
 
+![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=flat-square&logo=python&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=flat-square&logo=fastapi&logoColor=white)
+![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?style=flat-square&logo=streamlit&logoColor=white)
+![Neo4j](https://img.shields.io/badge/Neo4j-008CC1?style=flat-square&logo=neo4j&logoColor=white)
+![Transformers](https://img.shields.io/badge/Transformers-FFD21E?style=flat-square&logo=huggingface&logoColor=black)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white)
+
 **IPKE** is a research framework for extracting structured procedural knowledge from unstructured industrial documentation. It transforms static PDFs and manuals into queryable **Procedural Graphs (Tier-B)** and **Structured Flows (Tier-A)**.
 
 Developed as a research thesis, this project explores the intersection of **Semantic Chunking** (Fixed, Breakpoint, DSC) and **Multi-Stage Prompting** to optimize extraction fidelity in low-resource environments.
