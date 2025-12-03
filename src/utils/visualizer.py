@@ -75,56 +75,77 @@ def _normalize_label(label: str, catalog: Dict[str, str]) -> str:
 
 
 def _build_graph_from_result(result: ExtractionResult, catalog: Dict[str, str] = None) -> nx.DiGraph:
-    """Converts ExtractionResult into NetworkX graph."""
+    """Converts ExtractionResult into NetworkX graph with a cleaner, more readable structure."""
     G = nx.DiGraph()
     
     if catalog is None:
         catalog = {}
     
-    # 1. Add Steps
+    # 1. Add Steps as primary nodes
     steps = result.steps if result.steps else []
     
     for step in steps:
         step_id = step.get("id", f"S{len(G.nodes)}")
         label = step.get("label", step_id)
+        action = step.get("action_verb", "")
         
-        G.add_node(step_id, type="Step", label=label, title=textwrap.fill(label, 40))
+        # Build a rich tooltip with all step details
+        tooltip_parts = [f"<b>Step {step_id}</b>", f"<br><i>{label}</i>"]
         
-        # Action
-        action = step.get("action_verb")
         if action:
-            act_id = f"Act_{step_id}"
-            G.add_node(act_id, type="Action", label=action, title=f"Action: {action}")
-            G.add_edge(step_id, act_id, relation="ACTION")
-            
-            # Object
-            obj = step.get("action_object")
-            if isinstance(obj, dict):
-                obj_name = obj.get("canonical") or obj.get("surface_form")
-            else:
-                obj_name = obj
-            
-            if obj_name:
-                obj_id = f"Obj_{step_id}_{str(obj_name).replace(' ', '_')}"
-                G.add_node(obj_id, type="Asset", label=str(obj_name), title=f"Object: {obj_name}")
-                G.add_edge(act_id, obj_id, relation="ACTS_ON")
-
-        # Resources
+            tooltip_parts.append(f"<br><br><b>Action:</b> {action.upper()}")
+        
+        # Get object
+        obj = step.get("action_object")
+        if isinstance(obj, dict):
+            obj_name = obj.get("canonical") or obj.get("surface_form")
+        else:
+            obj_name = obj
+        if obj_name:
+            tooltip_parts.append(f"<br><b>Target:</b> {obj_name}")
+        
+        # Get resources and resolve to friendly names
         resources = step.get("resources", {})
         if isinstance(resources, dict):
-            res_list = resources.get("tools", []) + resources.get("materials", [])
-        elif isinstance(resources, list):
-            res_list = resources
+            tools = resources.get("tools", [])
+            materials = resources.get("materials", [])
         else:
-            res_list = []
-            
-        for res in res_list:
-            res_name = res if isinstance(res, str) else res.get("name", str(res))
-            # Resolve resource ID to friendly name using catalog
-            friendly_name = _normalize_label(res_name, catalog)
-            res_id = f"Res_{step_id}_{res_name.replace(' ', '_')}"
-            G.add_node(res_id, type="Asset", label=friendly_name, title=f"Resource: {friendly_name}")
-            G.add_edge(step_id, res_id, relation="REQUIRES")
+            tools, materials = [], []
+        
+        if tools:
+            tool_names = [_normalize_label(t if isinstance(t, str) else t.get("name", str(t)), catalog) for t in tools]
+            tooltip_parts.append(f"<br><b>Tools:</b> {', '.join(tool_names)}")
+        
+        if materials:
+            mat_names = [_normalize_label(m if isinstance(m, str) else m.get("name", str(m)), catalog) for m in materials]
+            tooltip_parts.append(f"<br><b>Materials:</b> {', '.join(mat_names)}")
+        
+        # Parameters
+        params = step.get("parameters", [])
+        if params:
+            param_strs = [f"{p.get('name', '?')}: {p.get('value', '?')}" for p in params if isinstance(p, dict)]
+            if param_strs:
+                tooltip_parts.append(f"<br><b>Parameters:</b> {', '.join(param_strs)}")
+        
+        tooltip = "".join(tooltip_parts)
+        
+        # Create a concise but readable label: Action + short description
+        if action:
+            short_label = f"{action.upper()}\n{textwrap.fill(label, width=25)}"
+        else:
+            short_label = textwrap.fill(label, width=25)
+        
+        # Check flags for styling
+        is_safety = step.get("flags", {}).get("safety_critical", False)
+        
+        G.add_node(
+            step_id, 
+            type="Step", 
+            label=short_label, 
+            title=tooltip,
+            safety_critical=is_safety,
+            has_resources=bool(tools or materials)
+        )
 
     # 2. Sequence & Relations
     relations = {}
@@ -132,17 +153,24 @@ def _build_graph_from_result(result: ExtractionResult, catalog: Dict[str, str] =
         relations = result.metadata.get("relations", {})
     
     if relations and isinstance(relations, dict):
-        # Process Gateways first
+        # Process Gateways
         gateways = relations.get("gateways", [])
         for gw in gateways:
             gw_id = gw.get("id")
             gw_type = gw.get("gateway_type", "XOR")
+            guard = gw.get("guard", {})
+            condition = guard.get("condition", "") if isinstance(guard, dict) else ""
+            
             if gw_id:
-                # Use ? symbol for cleaner gateway display, with full type in tooltip
-                G.add_node(gw_id, type="Gateway", label="?", title=f"Decision Point ({gw_type})")
+                tooltip = f"<b>Decision Point</b><br>Type: {gw_type}"
+                if condition:
+                    tooltip += f"<br>Condition: {condition}"
+                
+                G.add_node(gw_id, type="Gateway", label=f"⬦\n{gw_type}", title=tooltip)
+                
                 # Add branches as edges
                 for branch_target in gw.get("branches", []):
-                    G.add_edge(gw_id, branch_target, relation="NEXT")
+                    G.add_edge(gw_id, branch_target, relation="BRANCH")
 
         # Process Sequence
         sequence = relations.get("sequence", [])
@@ -160,10 +188,11 @@ def _build_graph_from_result(result: ExtractionResult, catalog: Dict[str, str] =
 
     return G
 
+
 def generate_interactive_graph_html(result: ExtractionResult, height="600px", width="100%") -> str:
     """
-    Generates the HTML for the interactive graph using a physics-based 'spider web' layout.
-    Returns the HTML string.
+    Generates the HTML for an interactive, readable Procedural Knowledge Graph.
+    Designed for demo/presentation quality with clear visual hierarchy.
     """
     # Build resource catalog for friendly name resolution
     catalog = _build_resource_catalog(result)
@@ -171,86 +200,141 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
     G = _build_graph_from_result(result, catalog)
     
     if G.number_of_nodes() == 0:
-        return "<div>No procedural steps extracted to visualize.</div>"
+        return "<div style='padding: 40px; text-align: center; font-family: Arial;'><h2>No procedural steps extracted to visualize.</h2></div>"
 
-    # Convert to PyVis with layout=False to allow physics engine to handle positioning
+    # Use hierarchical layout for clearer flow
     net = Network(height=height, width=width, directed=True, layout=False)
     
-    # Colors & Shapes
-    styles = {
-        "Step": {"color": "#ADD8E6", "shape": "box", "size": 25},
-        "Gateway": {"color": "#FFD700", "shape": "diamond", "size": 20},
-        "Action": {"color": "#E6E6FA", "shape": "ellipse", "size": 15},
-        "Asset": {"color": "#90EE90", "shape": "dot", "size": 10},
-        "Constraint": {"color": "#FFB6C1", "shape": "dot", "size": 10}
+    # Enhanced color palette - professional and readable
+    COLORS = {
+        "step_normal": {
+            "background": "#4A90D9",  # Professional blue
+            "border": "#2E6AB3",
+            "highlight": {"background": "#6BA3E0", "border": "#4A90D9"}
+        },
+        "step_safety": {
+            "background": "#E74C3C",  # Warning red for safety-critical
+            "border": "#C0392B",
+            "highlight": {"background": "#EC7063", "border": "#E74C3C"}
+        },
+        "step_resources": {
+            "background": "#27AE60",  # Green for steps with resources
+            "border": "#1E8449",
+            "highlight": {"background": "#52BE80", "border": "#27AE60"}
+        },
+        "gateway": {
+            "background": "#F39C12",  # Orange for decisions
+            "border": "#D68910",
+            "highlight": {"background": "#F5B041", "border": "#F39C12"}
+        }
     }
     
     for node, data in G.nodes(data=True):
         ntype = data.get("type", "Step")
-        style = styles.get(ntype, styles["Step"])
-        
         label = data.get("label", str(node))
-        # Use textwrap.fill for multi-line labels instead of truncating with "..."
-        # Wrap at 20 characters for readable multi-line display
-        wrapped_label = textwrap.fill(label, width=20)
         
-        net.add_node(
-            node,
-            label=wrapped_label,
-            title=data.get("title", label),
-            color=style["color"],
-            shape=style["shape"],
-            size=style.get("size", 15),
-            physics=True, # Enable physics for spider layout
-            font={"size": 14, "face": "arial", "multi": True}  # multi: True enables line breaks
-        )
+        if ntype == "Gateway":
+            net.add_node(
+                node,
+                label=label,
+                title=data.get("title", label),
+                color=COLORS["gateway"],
+                shape="diamond",
+                size=50,
+                font={"size": 18, "face": "Arial", "color": "#FFFFFF", "bold": True, "multi": True},
+                borderWidth=3,
+                shadow=True
+            )
+        else:
+            # Determine step color based on attributes
+            if data.get("safety_critical"):
+                color = COLORS["step_safety"]
+            elif data.get("has_resources"):
+                color = COLORS["step_resources"]
+            else:
+                color = COLORS["step_normal"]
+            
+            net.add_node(
+                node,
+                label=label,
+                title=data.get("title", label),
+                color=color,
+                shape="box",
+                size=40,
+                font={"size": 16, "face": "Arial", "color": "#FFFFFF", "multi": True, "align": "center"},
+                borderWidth=3,
+                borderWidthSelected=5,
+                shadow={"enabled": True, "size": 10, "x": 3, "y": 3},
+                margin={"top": 15, "bottom": 15, "left": 15, "right": 15},
+                widthConstraint={"minimum": 180, "maximum": 280}
+            )
 
     for u, v, data in G.edges(data=True):
-        rel = data.get("relation", "")
-        color = "black"
-        dashes = False
-        width = 1
+        rel = data.get("relation", "NEXT")
         
         if rel == "NEXT":
-            color = "#455a64"
-            width = 2
-        elif rel == "REQUIRES":
-            color = "#90a4ae"
-            dashes = True
-        else:
-            color = "#b0bec5"
-            
-        net.add_edge(u, v, title=rel, color=color, width=width, dashes=dashes)
+            net.add_edge(
+                u, v,
+                title="Sequence Flow",
+                color={"color": "#34495E", "highlight": "#2C3E50"},
+                width=3,
+                arrows={"to": {"enabled": True, "scaleFactor": 1.2}},
+                smooth={"type": "cubicBezier", "forceDirection": "vertical", "roundness": 0.4}
+            )
+        elif rel == "BRANCH":
+            net.add_edge(
+                u, v,
+                title="Decision Branch",
+                color={"color": "#E67E22", "highlight": "#D35400"},
+                width=3,
+                dashes=[8, 4],
+                arrows={"to": {"enabled": True, "scaleFactor": 1.2}},
+                smooth={"type": "cubicBezier", "roundness": 0.5}
+            )
 
-    # Configure physics for a denser "spider web" layout with adjusted parameters
-    # - gravitationalConstant: -80 (was -100) keeps nodes closer together
-    # - springLength: 100 (was 200) creates shorter edges
-    # - avoidOverlap: 0.3 (was 0.5) allows nodes to be positioned closer while preventing overlap
+    # Configure physics for a spider web layout - spreads nodes in all directions
     net.set_options("""
     {
       "physics": {
         "enabled": true,
-        "forceAtlas2Based": {
-          "gravitationalConstant": -80,
-          "centralGravity": 0.005,
-          "springLength": 100,
-          "springConstant": 0.05,
-          "damping": 0.4,
-          "avoidOverlap": 0.3
+        "barnesHut": {
+          "gravitationalConstant": -3000,
+          "centralGravity": 0.1,
+          "springLength": 200,
+          "springConstant": 0.02,
+          "damping": 0.3,
+          "avoidOverlap": 0.8
         },
         "maxVelocity": 50,
         "minVelocity": 0.1,
-        "solver": "forceAtlas2Based",
+        "solver": "barnesHut",
         "stabilization": {
           "enabled": true,
-          "iterations": 1000,
+          "iterations": 2000,
           "updateInterval": 25
         }
+      },
+      "layout": {
+        "randomSeed": 42,
+        "improvedLayout": true
       },
       "interaction": {
         "dragNodes": true,
         "dragView": true,
-        "zoomView": true
+        "zoomView": true,
+        "hover": true,
+        "tooltipDelay": 100,
+        "navigationButtons": true,
+        "keyboard": {
+          "enabled": true,
+          "bindToWindow": false
+        }
+      },
+      "edges": {
+        "font": {
+          "size": 12,
+          "face": "Arial"
+        }
       }
     }
     """)
@@ -265,25 +349,37 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
     except OSError:
         pass
     
-    # Inject JavaScript to stop physics simulation on node click
-    stop_physics_script = """
+    # Inject JavaScript for enhanced interactivity
+    enhanced_script = """
     <script type="text/javascript">
     document.addEventListener('DOMContentLoaded', function() {
-        // Wait for the network to be initialized
         var checkNetwork = setInterval(function() {
             if (typeof network !== 'undefined' && network !== null) {
                 clearInterval(checkNetwork);
-                // Stop physics when a node is clicked
+                
+                // Stop physics on click for manual arrangement
                 network.on('click', function(params) {
                     if (params.nodes.length > 0) {
                         network.setOptions({ physics: { enabled: false } });
                     }
                 });
-                // Also stop on drag end for better UX
+                
+                // Stop physics on drag end
                 network.on('dragEnd', function(params) {
                     if (params.nodes.length > 0) {
                         network.setOptions({ physics: { enabled: false } });
                     }
+                });
+                
+                // Fit the graph nicely after stabilization
+                network.on('stabilizationIterationsDone', function() {
+                    network.fit({
+                        padding: 50,
+                        animation: {
+                            duration: 1000,
+                            easingFunction: 'easeInOutQuad'
+                        }
+                    });
                 });
             }
         }, 100);
@@ -291,10 +387,60 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
     </script>
     """
     
-    # Insert the script before closing </body> tag
-    html_content = html_content.replace('</body>', stop_physics_script + '\n</body>')
+    # Add legend HTML
+    legend_html = """
+    <div id="graph-legend" style="
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(255,255,255,0.95);
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        font-family: Arial, sans-serif;
+        z-index: 1000;
+        min-width: 200px;
+    ">
+        <h3 style="margin: 0 0 15px 0; font-size: 16px; color: #2C3E50; border-bottom: 2px solid #EEE; padding-bottom: 10px;">
+            📊 Knowledge Graph Legend
+        </h3>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 30px; height: 20px; background: #4A90D9; border-radius: 4px; border: 2px solid #2E6AB3;"></div>
+                <span style="font-size: 13px; color: #34495E;">Process Step</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 30px; height: 20px; background: #27AE60; border-radius: 4px; border: 2px solid #1E8449;"></div>
+                <span style="font-size: 13px; color: #34495E;">Step with Resources</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 30px; height: 20px; background: #E74C3C; border-radius: 4px; border: 2px solid #C0392B;"></div>
+                <span style="font-size: 13px; color: #34495E;">⚠️ Safety Critical</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 20px; height: 20px; background: #F39C12; transform: rotate(45deg); border: 2px solid #D68910;"></div>
+                <span style="font-size: 13px; color: #34495E; margin-left: 10px;">Decision Point</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px; margin-top: 8px; padding-top: 8px; border-top: 1px solid #EEE;">
+                <div style="width: 30px; height: 3px; background: #34495E;"></div>
+                <span style="font-size: 13px; color: #34495E;">Sequence Flow</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 30px; height: 3px; background: #E67E22; border-style: dashed;"></div>
+                <span style="font-size: 13px; color: #34495E;">Decision Branch</span>
+            </div>
+        </div>
+        <p style="margin: 15px 0 0 0; font-size: 11px; color: #7F8C8D; font-style: italic;">
+            💡 Hover over nodes for details<br>
+            🖱️ Click & drag to rearrange
+        </p>
+    </div>
+    """
     
-    # Add fullscreen-friendly styles to ensure the graph fills the viewport
+    # Insert the script and legend before closing </body> tag
+    html_content = html_content.replace('</body>', legend_html + enhanced_script + '\n</body>')
+    
+    # Add fullscreen-friendly styles
     fullscreen_styles = """
     <style>
     html, body {
@@ -303,11 +449,19 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
         width: 100%;
         height: 100%;
         overflow: hidden;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     }
     #mynetwork {
         width: 100% !important;
         height: 100vh !important;
         border: none !important;
+        background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+    }
+    /* Navigation buttons styling */
+    div.vis-navigation {
+        background: rgba(255,255,255,0.9) !important;
+        border-radius: 8px !important;
+        padding: 5px !important;
     }
     </style>
     """
