@@ -129,7 +129,7 @@ def _load_demo_data() -> Dict[str, Any]:
                     context=f"Demo Data: {item.get('id')}"
                 ))
 
-    # Construct ExtractionResult
+    # Construct ExtractionResult with resources_catalog for visualization
     result = ExtractionResult(
         entities=entities,
         confidence_score=1.0,
@@ -138,7 +138,8 @@ def _load_demo_data() -> Dict[str, Any]:
         steps=data.get("steps", []),
         metadata={
             "relations": data.get("relations", {}),
-            "procedure_info": data.get("procedure", {})
+            "procedure_info": data.get("procedure", {}),
+            "resources_catalog": data.get("resources_catalog", {})  # Include for visualizer
         }
     )
     
@@ -412,8 +413,49 @@ def main() -> None:
             st.subheader("Procedural Knowledge Graph")
             if "extraction_result" in last_result:
                 try:
-                    html_graph = generate_interactive_graph_html(last_result["extraction_result"], height="600px")
-                    components.html(html_graph, height=600, scrolling=True)
+                    html_graph = generate_interactive_graph_html(last_result["extraction_result"], height="100vh")
+                    
+                    # Create base64 encoded HTML for opening in new tab
+                    import base64
+                    graph_b64 = base64.b64encode(html_graph.encode()).decode()
+                    
+                    # JavaScript to open the graph in a new fullscreen tab
+                    open_fullscreen_js = f"""
+                    <script>
+                    function openGraphFullscreen() {{
+                        var htmlContent = atob("{graph_b64}");
+                        var newWindow = window.open('', '_blank');
+                        newWindow.document.write(htmlContent);
+                        newWindow.document.close();
+                    }}
+                    // Auto-open on load
+                    openGraphFullscreen();
+                    </script>
+                    <style>
+                    .fullscreen-btn {{
+                        background-color: #4CAF50;
+                        border: none;
+                        color: white;
+                        padding: 10px 20px;
+                        text-align: center;
+                        text-decoration: none;
+                        display: inline-block;
+                        font-size: 14px;
+                        margin: 4px 2px;
+                        cursor: pointer;
+                        border-radius: 4px;
+                    }}
+                    .fullscreen-btn:hover {{
+                        background-color: #45a049;
+                    }}
+                    </style>
+                    <button class="fullscreen-btn" onclick="openGraphFullscreen()">
+                        🔲 Open Graph in Full Screen
+                    </button>
+                    """
+                    
+                    components.html(open_fullscreen_js, height=50)
+                    st.success("Graph opened in a new tab. Click the button above to reopen if needed.")
                 except Exception as e:
                     st.error(f"Failed to generate graph: {e}")
             else:

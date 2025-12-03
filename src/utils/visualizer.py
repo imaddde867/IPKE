@@ -7,13 +7,79 @@ from pyvis.network import Network
 import textwrap
 import tempfile
 import os
+import re
 from typing import Dict, Any, List, Optional, Tuple
 
 from src.ai.types import ExtractionResult, ExtractedEntity
 
-def _build_graph_from_result(result: ExtractionResult) -> nx.DiGraph:
+
+def _build_resource_catalog(result: ExtractionResult) -> Dict[str, str]:
+    """
+    Build a lookup dictionary from resource IDs to friendly canonical names.
+    Parses resources_catalog from metadata if available.
+    """
+    catalog = {}
+    if not result.metadata:
+        return catalog
+    
+    resources_catalog = result.metadata.get("resources_catalog", {})
+    if not resources_catalog:
+        # Also check nested in relations or other keys
+        resources_catalog = result.metadata.get("relations", {}).get("resources_catalog", {})
+    
+    # Parse tools, materials, documents, ppe, etc.
+    for category in ["tools", "materials", "documents", "ppe"]:
+        items = resources_catalog.get(category, [])
+        for item in items:
+            if isinstance(item, dict):
+                res_id = item.get("id", "")
+                canonical = item.get("canonical_name", "")
+                if res_id and canonical:
+                    catalog[res_id] = canonical
+    
+    return catalog
+
+
+def _normalize_label(label: str, catalog: Dict[str, str]) -> str:
+    """
+    Normalize a label by:
+    1. Looking up resource IDs in the catalog for friendly names
+    2. Stripping technical prefixes (R_, T_, S_, etc.)
+    3. Replacing underscores with spaces
+    """
+    if not label:
+        return label
+    
+    # Check if this is a resource ID in our catalog
+    if label in catalog:
+        return catalog[label]
+    
+    # Strip common technical prefixes
+    normalized = label
+    prefix_patterns = [
+        r'^R_',   # Resource prefix
+        r'^T_',   # Tool prefix  
+        r'^M_',   # Material prefix
+        r'^Res_\w+_',  # Resource node prefix (Res_S1_)
+        r'^Act_',  # Action prefix
+        r'^Obj_\w+_',  # Object node prefix
+    ]
+    
+    for pattern in prefix_patterns:
+        normalized = re.sub(pattern, '', normalized)
+    
+    # Replace underscores with spaces
+    normalized = normalized.replace('_', ' ')
+    
+    return normalized.strip()
+
+
+def _build_graph_from_result(result: ExtractionResult, catalog: Dict[str, str] = None) -> nx.DiGraph:
     """Converts ExtractionResult into NetworkX graph."""
     G = nx.DiGraph()
+    
+    if catalog is None:
+        catalog = {}
     
     # 1. Add Steps
     steps = result.steps if result.steps else []
@@ -54,8 +120,10 @@ def _build_graph_from_result(result: ExtractionResult) -> nx.DiGraph:
             
         for res in res_list:
             res_name = res if isinstance(res, str) else res.get("name", str(res))
+            # Resolve resource ID to friendly name using catalog
+            friendly_name = _normalize_label(res_name, catalog)
             res_id = f"Res_{step_id}_{res_name.replace(' ', '_')}"
-            G.add_node(res_id, type="Asset", label=res_name, title=f"Resource: {res_name}")
+            G.add_node(res_id, type="Asset", label=friendly_name, title=f"Resource: {friendly_name}")
             G.add_edge(step_id, res_id, relation="REQUIRES")
 
     # 2. Sequence & Relations
@@ -70,7 +138,8 @@ def _build_graph_from_result(result: ExtractionResult) -> nx.DiGraph:
             gw_id = gw.get("id")
             gw_type = gw.get("gateway_type", "XOR")
             if gw_id:
-                G.add_node(gw_id, type="Gateway", label=gw_type, title=f"Gateway: {gw_type}")
+                # Use ? symbol for cleaner gateway display, with full type in tooltip
+                G.add_node(gw_id, type="Gateway", label="?", title=f"Decision Point ({gw_type})")
                 # Add branches as edges
                 for branch_target in gw.get("branches", []):
                     G.add_edge(gw_id, branch_target, relation="NEXT")
@@ -96,7 +165,10 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
     Generates the HTML for the interactive graph using a physics-based 'spider web' layout.
     Returns the HTML string.
     """
-    G = _build_graph_from_result(result)
+    # Build resource catalog for friendly name resolution
+    catalog = _build_resource_catalog(result)
+    
+    G = _build_graph_from_result(result, catalog)
     
     if G.number_of_nodes() == 0:
         return "<div>No procedural steps extracted to visualize.</div>"
@@ -118,17 +190,19 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
         style = styles.get(ntype, styles["Step"])
         
         label = data.get("label", str(node))
-        short_label = textwrap.shorten(label, width=15, placeholder="...")
+        # Use textwrap.fill for multi-line labels instead of truncating with "..."
+        # Wrap at 20 characters for readable multi-line display
+        wrapped_label = textwrap.fill(label, width=20)
         
         net.add_node(
             node,
-            label=short_label,
+            label=wrapped_label,
             title=data.get("title", label),
             color=style["color"],
             shape=style["shape"],
             size=style.get("size", 15),
             physics=True, # Enable physics for spider layout
-            font={"size": 14, "face": "arial"}
+            font={"size": 14, "face": "arial", "multi": True}  # multi: True enables line breaks
         )
 
     for u, v, data in G.edges(data=True):
@@ -148,18 +222,21 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
             
         net.add_edge(u, v, title=rel, color=color, width=width, dashes=dashes)
 
-    # Configure physics for a spacious "spider web" layout
+    # Configure physics for a denser "spider web" layout with adjusted parameters
+    # - gravitationalConstant: -80 (was -100) keeps nodes closer together
+    # - springLength: 100 (was 200) creates shorter edges
+    # - avoidOverlap: 0.3 (was 0.5) allows nodes to be positioned closer while preventing overlap
     net.set_options("""
     {
       "physics": {
         "enabled": true,
         "forceAtlas2Based": {
-          "gravitationalConstant": -100,
+          "gravitationalConstant": -80,
           "centralGravity": 0.005,
-          "springLength": 200,
+          "springLength": 100,
           "springConstant": 0.05,
           "damping": 0.4,
-          "avoidOverlap": 0.5
+          "avoidOverlap": 0.3
         },
         "maxVelocity": 50,
         "minVelocity": 0.1,
@@ -187,5 +264,53 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
         os.unlink(tmp.name)
     except OSError:
         pass
+    
+    # Inject JavaScript to stop physics simulation on node click
+    stop_physics_script = """
+    <script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function() {
+        // Wait for the network to be initialized
+        var checkNetwork = setInterval(function() {
+            if (typeof network !== 'undefined' && network !== null) {
+                clearInterval(checkNetwork);
+                // Stop physics when a node is clicked
+                network.on('click', function(params) {
+                    if (params.nodes.length > 0) {
+                        network.setOptions({ physics: { enabled: false } });
+                    }
+                });
+                // Also stop on drag end for better UX
+                network.on('dragEnd', function(params) {
+                    if (params.nodes.length > 0) {
+                        network.setOptions({ physics: { enabled: false } });
+                    }
+                });
+            }
+        }, 100);
+    });
+    </script>
+    """
+    
+    # Insert the script before closing </body> tag
+    html_content = html_content.replace('</body>', stop_physics_script + '\n</body>')
+    
+    # Add fullscreen-friendly styles to ensure the graph fills the viewport
+    fullscreen_styles = """
+    <style>
+    html, body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+    }
+    #mynetwork {
+        width: 100% !important;
+        height: 100vh !important;
+        border: none !important;
+    }
+    </style>
+    """
+    html_content = html_content.replace('</head>', fullscreen_styles + '\n</head>')
         
     return html_content
