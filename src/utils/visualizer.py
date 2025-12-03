@@ -11,134 +11,6 @@ from typing import Dict, Any, List, Optional, Tuple
 
 from src.ai.types import ExtractionResult, ExtractedEntity
 
-# --- Layout Logic (Adapted from generate_large_pkg.py) ---
-
-def _calculate_spine_layout(G: nx.DiGraph) -> Dict[str, Tuple[float, float]]:
-    """
-    Calculates x,y coordinates for a 'spine' layout.
-    Spine (Steps) runs horizontally.
-    Actions/Objects above.
-    Resources/Constraints below.
-    """
-    pos = {}
-    
-    # Identify spine nodes (Steps and Gateways)
-    spine_nodes = [n for n, d in G.nodes(data=True) if d.get("type") in ("Step", "Gateway")]
-    
-    if not spine_nodes:
-        return nx.spring_layout(G) # Fallback
-
-    # Determine start node (try S1 or first found)
-    start_node = "S1"
-    if start_node not in G:
-        # Try to find a node with no incoming NEXT edges
-        candidates = [n for n in spine_nodes if G.in_degree(n) == 0]
-        if candidates:
-            start_node = candidates[0]
-        else:
-            if spine_nodes:
-                start_node = spine_nodes[0]
-            else:
-                return nx.spring_layout(G)
-
-    # BFS for Rank/Order along spine
-    ranks = {}
-    queue = [(start_node, 0)]
-    visited = {start_node}
-    ranks[start_node] = 0
-    
-    while queue:
-        curr, rank = queue.pop(0)
-        # Next spine nodes
-        next_nodes = [v for u, v, d in G.edges(data=True) 
-                      if u == curr and d.get("relation") == "NEXT"]
-        
-        for nxt in next_nodes:
-            if nxt not in visited:
-                visited.add(nxt)
-                ranks[nxt] = rank + 1
-                queue.append((nxt, rank + 1))
-    
-    # Sort spine
-    sorted_spine = sorted(ranks.keys(), key=lambda k: ranks[k])
-    
-    # Configuration
-    x_cursor = 0
-    base_y = 0
-    step_width_base = 200  # Increased for PyVis pixel coordinates
-    satellite_spacing = 120 
-    y_level_spacing = 150
-    
-    # Calculate positions
-    for node in sorted_spine:
-        neighbors = list(G.neighbors(node))
-        actions = []
-        resources = []
-        params = []
-        
-        for nbr in neighbors:
-            if nbr in ranks: continue # Skip next spine nodes
-            
-            etype = G.nodes[nbr].get("type")
-            relation = G.edges[node, nbr].get("relation")
-            
-            if etype == "Action":
-                actions.append(nbr)
-            elif etype == "Asset" and relation == "REQUIRES":
-                resources.append(nbr)
-            elif etype == "Constraint":
-                params.append(nbr)
-        
-        # Calculate widths
-        top_width = 0
-        if actions:
-            for act in actions:
-                act_objs = [an for an in G.neighbors(act) if G.nodes[an].get("type") == "Asset"]
-                act_width = max(1, len(act_objs)) * satellite_spacing
-                top_width += act_width
-        
-        bottom_count = len(resources) + len(params)
-        bottom_width = bottom_count * satellite_spacing
-        
-        total_width = max(step_width_base, top_width, bottom_width)
-        
-        # Center X
-        center_x = x_cursor + (total_width / 2)
-        pos[node] = (center_x, base_y)
-        
-        # --- TOP SECTOR (Actions) ---
-        current_act_x = center_x - (top_width / 2) + (satellite_spacing / 2)
-        for act in actions:
-            act_objs = [an for an in G.neighbors(act) if G.nodes[an].get("type") == "Asset"]
-            n_objs = len(act_objs)
-            width_this_act = max(1, n_objs) * satellite_spacing
-            
-            act_center_x = current_act_x + (width_this_act / 2) - (satellite_spacing / 2)
-            pos[act] = (act_center_x, base_y - y_level_spacing) 
-            
-            # Objects above action
-            obj_start_x = current_act_x
-            for i, obj in enumerate(act_objs):
-                pos[obj] = (obj_start_x + (i * satellite_spacing), base_y - (y_level_spacing * 2))
-            
-            current_act_x += width_this_act
-
-        # --- BOTTOM SECTOR (Resources/Params) ---
-        start_res_x = center_x - (bottom_width / 2) + (satellite_spacing / 2)
-        current_res_x = start_res_x
-        
-        for i, res in enumerate(resources):
-            pos[res] = (current_res_x, base_y + y_level_spacing)
-            current_res_x += satellite_spacing
-            
-        for i, p in enumerate(params):
-            pos[p] = (current_res_x, base_y + (y_level_spacing * 1.5) if len(resources)%2==0 else base_y + y_level_spacing)
-            current_res_x += satellite_spacing
-            
-        x_cursor += total_width + 100 # Gap between steps
-
-    return pos
-
 def _build_graph_from_result(result: ExtractionResult) -> nx.DiGraph:
     """Converts ExtractionResult into NetworkX graph."""
     G = nx.DiGraph()
@@ -173,7 +45,6 @@ def _build_graph_from_result(result: ExtractionResult) -> nx.DiGraph:
 
         # Resources
         resources = step.get("resources", {})
-        # Could be dict or list depending on extraction quality
         if isinstance(resources, dict):
             res_list = resources.get("tools", []) + resources.get("materials", [])
         elif isinstance(resources, list):
@@ -188,7 +59,6 @@ def _build_graph_from_result(result: ExtractionResult) -> nx.DiGraph:
             G.add_edge(step_id, res_id, relation="REQUIRES")
 
     # 2. Sequence & Relations
-    # Check metadata for explicit relation structure
     relations = {}
     if result.metadata:
         relations = result.metadata.get("relations", {})
@@ -223,7 +93,7 @@ def _build_graph_from_result(result: ExtractionResult) -> nx.DiGraph:
 
 def generate_interactive_graph_html(result: ExtractionResult, height="600px", width="100%") -> str:
     """
-    Generates the HTML for the interactive graph.
+    Generates the HTML for the interactive graph using a physics-based 'spider web' layout.
     Returns the HTML string.
     """
     G = _build_graph_from_result(result)
@@ -231,46 +101,41 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
     if G.number_of_nodes() == 0:
         return "<div>No procedural steps extracted to visualize.</div>"
 
-    # Calculate layout
-    pos = _calculate_spine_layout(G)
-    
-    # Convert to PyVis
+    # Convert to PyVis with layout=False to allow physics engine to handle positioning
     net = Network(height=height, width=width, directed=True, layout=False)
     
     # Colors & Shapes
     styles = {
-        "Step": {"color": "#ADD8E6", "shape": "box"},
-        "Gateway": {"color": "#FFD700", "shape": "diamond"},
-        "Action": {"color": "#E6E6FA", "shape": "ellipse"},
-        "Asset": {"color": "#90EE90", "shape": "box"},
-        "Constraint": {"color": "#FFB6C1", "shape": "box"}
+        "Step": {"color": "#ADD8E6", "shape": "box", "size": 25},
+        "Gateway": {"color": "#FFD700", "shape": "diamond", "size": 20},
+        "Action": {"color": "#E6E6FA", "shape": "ellipse", "size": 15},
+        "Asset": {"color": "#90EE90", "shape": "dot", "size": 10},
+        "Constraint": {"color": "#FFB6C1", "shape": "dot", "size": 10}
     }
     
     for node, data in G.nodes(data=True):
-        x, y = pos.get(node, (0, 0))
         ntype = data.get("type", "Step")
         style = styles.get(ntype, styles["Step"])
         
         label = data.get("label", str(node))
-        # Shorten label for visual clarity
         short_label = textwrap.shorten(label, width=15, placeholder="...")
         
         net.add_node(
             node,
             label=short_label,
-            title=data.get("title", label), # Tooltip
+            title=data.get("title", label),
             color=style["color"],
             shape=style["shape"],
-            x=x, 
-            y=y,
-            physics=False, # Fixed position for spine layout
-            font={"size": 16, "face": "arial"}
+            size=style.get("size", 15),
+            physics=True, # Enable physics for spider layout
+            font={"size": 14, "face": "arial"}
         )
 
     for u, v, data in G.edges(data=True):
         rel = data.get("relation", "")
         color = "black"
         dashes = False
+        width = 1
         
         if rel == "NEXT":
             color = "#455a64"
@@ -278,30 +143,41 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
         elif rel == "REQUIRES":
             color = "#90a4ae"
             dashes = True
-            width = 1
         else:
             color = "#b0bec5"
-            width = 1
             
         net.add_edge(u, v, title=rel, color=color, width=width, dashes=dashes)
 
-    # Configure options
+    # Configure physics for a spacious "spider web" layout
     net.set_options("""
     {
+      "physics": {
+        "enabled": true,
+        "forceAtlas2Based": {
+          "gravitationalConstant": -100,
+          "centralGravity": 0.005,
+          "springLength": 200,
+          "springConstant": 0.05,
+          "damping": 0.4,
+          "avoidOverlap": 0.5
+        },
+        "maxVelocity": 50,
+        "minVelocity": 0.1,
+        "solver": "forceAtlas2Based",
+        "stabilization": {
+          "enabled": true,
+          "iterations": 1000,
+          "updateInterval": 25
+        }
+      },
       "interaction": {
         "dragNodes": true,
         "dragView": true,
         "zoomView": true
-      },
-      "physics": {
-        "enabled": false
       }
     }
     """)
     
-    # Return HTML
-    # PyVis write_html writes to file. We want string.
-    # We can write to temp file and read it back.
     with tempfile.NamedTemporaryFile(delete=False, suffix=".html") as tmp:
         net.save_graph(tmp.name)
         tmp.seek(0)
