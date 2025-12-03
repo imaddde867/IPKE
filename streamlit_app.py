@@ -15,10 +15,12 @@ from typing import Dict, Any, List
 
 import pandas as pd
 import streamlit as st
+import streamlit.components.v1 as components
 
 from src.core.unified_config import get_config
 from src.processors.streamlined_processor import StreamlinedDocumentProcessor
 from src.exceptions import ProcessingError
+from src.utils.visualizer import generate_interactive_graph_html
 
 
 # Quick chunker smoke test without touching LLMs
@@ -285,6 +287,7 @@ def _handle_uploaded_file(uploaded_file) -> Dict[str, Any]:
         "strategy_used": result.extraction_result.strategy_used,
         "metadata": result.metadata,
         "entities": entities_df,
+        "extraction_result": result.extraction_result # Pass full object for graph
     }
     return payload
 
@@ -335,23 +338,39 @@ def main() -> None:
         )
         col_right.metric("Strategy", last_result["strategy_used"])
 
-        st.subheader("Entities")
-        st.dataframe(last_result["entities"], use_container_width=True, hide_index=True)
+        # Use Tabs for cleaner UI
+        tab1, tab2, tab3 = st.tabs(["Entities", "Procedural Graph", "Metadata"])
+        
+        with tab1:
+            st.subheader("Entities")
+            st.dataframe(last_result["entities"], use_container_width=True, hide_index=True)
+            
+        with tab2:
+            st.subheader("Procedural Knowledge Graph")
+            if "extraction_result" in last_result:
+                try:
+                    html_graph = generate_interactive_graph_html(last_result["extraction_result"], height="600px")
+                    components.html(html_graph, height=600, scrolling=True)
+                except Exception as e:
+                    st.error(f"Failed to generate graph: {e}")
+            else:
+                st.info("No procedural graph data available.")
 
-        with st.expander("Metadata and Diagnostics", expanded=False):
-            st.json(
-                {
-                    "document_id": last_result["document_id"],
-                    "document_type": last_result["document_type"],
-                    "metadata": last_result["metadata"],
-                    "settings": st.session_state["settings"],
-                    "processor_stats": (
-                        st.session_state.get("processor").get_processing_stats()
-                        if st.session_state.get("processor")
-                        else {}
-                    ),
-                }
-            )
+        with tab3:
+            with st.expander("Metadata and Diagnostics", expanded=True):
+                st.json(
+                    {
+                        "document_id": last_result["document_id"],
+                        "document_type": last_result["document_type"],
+                        "metadata": last_result["metadata"],
+                        "settings": st.session_state["settings"],
+                        "processor_stats": (
+                            st.session_state.get("processor").get_processing_stats()
+                            if st.session_state.get("processor")
+                            else {}
+                        ),
+                    }
+                )
 
 
 if __name__ == "__main__":
