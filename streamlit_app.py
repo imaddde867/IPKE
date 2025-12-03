@@ -10,6 +10,7 @@ from src.ai.llm_env_setup import *  # noqa: F401,F403
 
 import asyncio
 import tempfile
+import json
 from pathlib import Path
 from typing import Dict, Any, List
 
@@ -21,6 +22,7 @@ from src.core.unified_config import get_config
 from src.processors.streamlined_processor import StreamlinedDocumentProcessor
 from src.exceptions import ProcessingError
 from src.utils.visualizer import generate_interactive_graph_html
+from src.ai.types import ExtractionResult, ExtractedEntity
 
 
 # Quick chunker smoke test without touching LLMs
@@ -103,6 +105,53 @@ def _process_entities(entities) -> pd.DataFrame:
             }
         )
     return pd.DataFrame(rows)
+
+
+def _load_demo_data() -> Dict[str, Any]:
+    """Load the 3M OEM SOP demo data."""
+    demo_path = Path("datasets/archive/gold_human/3M_OEM_SOP.json")
+    if not demo_path.exists():
+        raise FileNotFoundError(f"Demo file not found at {demo_path}")
+        
+    with open(demo_path, 'r') as f:
+        data = json.load(f)
+        
+    # Construct ExtractedEntity objects from resources
+    entities = []
+    if "resources_catalog" in data:
+        for cat, items in data["resources_catalog"].items():
+            for item in items:
+                entities.append(ExtractedEntity(
+                    content=item.get("canonical_name", item.get("id")),
+                    entity_type="Resource",
+                    category=cat,
+                    confidence=1.0,
+                    context=f"Demo Data: {item.get('id')}"
+                ))
+
+    # Construct ExtractionResult
+    result = ExtractionResult(
+        entities=entities,
+        confidence_score=1.0,
+        processing_time=0.0,
+        strategy_used="Human Gold Standard (Demo)",
+        steps=data.get("steps", []),
+        metadata={
+            "relations": data.get("relations", {}),
+            "procedure_info": data.get("procedure", {})
+        }
+    )
+    
+    return {
+        "document_id": "3M_OEM_SOP_DEMO",
+        "document_type": "manual",
+        "confidence_score": 1.0,
+        "processing_time": 0.0,
+        "strategy_used": "Demo",
+        "metadata": result.metadata,
+        "entities": _process_entities(entities),
+        "extraction_result": result
+    }
 
 
 def _render_sidebar() -> None:
@@ -307,7 +356,21 @@ def main() -> None:
         help="Supported formats are driven by the system configuration.",
     )
 
-    run_extraction = st.button("Run Extraction", type="primary")
+    col1, col2 = st.columns([1, 1])
+    
+    with col1:
+        run_extraction = st.button("Run Extraction", type="primary")
+    with col2:
+        load_demo = st.button("Load Demo (3M SOP)", type="secondary")
+
+    if load_demo:
+        with st.spinner("Loading demo data..."):
+            try:
+                payload = _load_demo_data()
+                st.session_state["last_result"] = payload
+                st.success("Demo data loaded successfully!")
+            except Exception as e:
+                st.error(f"Failed to load demo data: {e}")
 
     if run_extraction:
         if uploaded_file is None:
