@@ -11,7 +11,7 @@ from typing import Dict, Any, List, Optional, Tuple
 
 from src.ai.types import ExtractionResult, ExtractedEntity
 
-# --- Layout Logic ---
+# --- Layout Logic (Adapted from generate_large_pkg.py) ---
 
 def _calculate_spine_layout(G: nx.DiGraph) -> Dict[str, Tuple[float, float]]:
     """
@@ -36,7 +36,10 @@ def _calculate_spine_layout(G: nx.DiGraph) -> Dict[str, Tuple[float, float]]:
         if candidates:
             start_node = candidates[0]
         else:
-            start_node = spine_nodes[0]
+            if spine_nodes:
+                start_node = spine_nodes[0]
+            else:
+                return nx.spring_layout(G)
 
     # BFS for Rank/Order along spine
     ranks = {}
@@ -111,8 +114,7 @@ def _calculate_spine_layout(G: nx.DiGraph) -> Dict[str, Tuple[float, float]]:
             width_this_act = max(1, n_objs) * satellite_spacing
             
             act_center_x = current_act_x + (width_this_act / 2) - (satellite_spacing / 2)
-            pos[act] = (act_center_x, base_y - y_level_spacing) # Negative Y is UP in PyVis usually? No, usually Y increases downwards in canvas. Let's assume standard canvas: Y down.
-            # Actually PyVis default: Y down. So Up is negative.
+            pos[act] = (act_center_x, base_y - y_level_spacing) 
             
             # Objects above action
             obj_start_x = current_act_x
@@ -142,12 +144,7 @@ def _build_graph_from_result(result: ExtractionResult) -> nx.DiGraph:
     G = nx.DiGraph()
     
     # 1. Add Steps
-    # If result.steps is populated (structured extraction)
     steps = result.steps if result.steps else []
-    
-    # If no steps but we have entities, try to infer? 
-    # For this demo, we rely on 'steps' being present.
-    # If empty, we might fallback to visualizing just entities.
     
     for step in steps:
         step_id = step.get("id", f"S{len(G.nodes)}")
@@ -190,18 +187,38 @@ def _build_graph_from_result(result: ExtractionResult) -> nx.DiGraph:
             G.add_node(res_id, type="Asset", label=res_name, title=f"Resource: {res_name}")
             G.add_edge(step_id, res_id, relation="REQUIRES")
 
-    # 2. Sequence
-    # If we have explicit sequence info in steps
-    # Or if steps is just a list, assume linear sequence
-    if steps:
+    # 2. Sequence & Relations
+    # Check metadata for explicit relation structure
+    relations = {}
+    if result.metadata:
+        relations = result.metadata.get("relations", {})
+    
+    if relations and isinstance(relations, dict):
+        # Process Gateways first
+        gateways = relations.get("gateways", [])
+        for gw in gateways:
+            gw_id = gw.get("id")
+            gw_type = gw.get("gateway_type", "XOR")
+            if gw_id:
+                G.add_node(gw_id, type="Gateway", label=gw_type, title=f"Gateway: {gw_type}")
+                # Add branches as edges
+                for branch_target in gw.get("branches", []):
+                    G.add_edge(gw_id, branch_target, relation="NEXT")
+
+        # Process Sequence
+        sequence = relations.get("sequence", [])
+        for link in sequence:
+            u, v = link.get("from"), link.get("to")
+            if u and v:
+                G.add_edge(u, v, relation="NEXT")
+    
+    elif steps:
+        # Fallback: linear assumption
         for i in range(len(steps) - 1):
             u = steps[i].get("id", f"S{i}")
             v = steps[i+1].get("id", f"S{i+1}")
             G.add_edge(u, v, relation="NEXT")
 
-    # 3. Entities (orphaned ones?)
-    # For now, focused on the procedural spine.
-    
     return G
 
 def generate_interactive_graph_html(result: ExtractionResult, height="600px", width="100%") -> str:
