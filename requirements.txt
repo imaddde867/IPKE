@@ -19,6 +19,7 @@ fastapi>=0.104.0
 python-multipart>=0.0.20
 uvicorn>=0.24.0
 streamlit>=1.38.0
+pyvis>=0.3.2
 
 # Environment
 python-dotenv>=1.0.0
