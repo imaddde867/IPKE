@@ -54,8 +54,6 @@ def plot_prompting_comparison(output_path: str = "assets/prompting_comparison_ch
 
     # Styling
     ax.set_ylabel('Score (0-1)', fontsize=12, color='#333333', labelpad=10)
-    ax.set_title('Figure 9. Performance comparison of prompting strategies', 
-                 fontsize=14, fontweight='bold', loc='left', pad=20, color='#111111')
     
     ax.set_xticks(x)
     ax.set_xticklabels(metrics, fontsize=11, color='#333333')
