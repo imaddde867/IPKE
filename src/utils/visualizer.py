@@ -166,7 +166,7 @@ def _build_graph_from_result(result: ExtractionResult, catalog: Dict[str, str] =
                 if condition:
                     tooltip += f"<br>Condition: {condition}"
                 
-                G.add_node(gw_id, type="Gateway", label=f"⬦\n{gw_type}", title=tooltip)
+                G.add_node(gw_id, type="Gateway", label=f"?\n{gw_type}", title=tooltip)
                 
                 # Add branches as edges
                 for branch_target in gw.get("branches", []):
@@ -387,7 +387,7 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
     </script>
     """
     
-    # Add legend HTML
+    # Add legend HTML - plain text only, no emojis
     legend_html = """
     <div id="graph-legend" style="
         position: fixed;
@@ -402,7 +402,7 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
         min-width: 200px;
     ">
         <h3 style="margin: 0 0 15px 0; font-size: 16px; color: #2C3E50; border-bottom: 2px solid #EEE; padding-bottom: 10px;">
-            📊 Knowledge Graph Legend
+            Knowledge Graph Legend
         </h3>
         <div style="display: flex; flex-direction: column; gap: 12px;">
             <div style="display: flex; align-items: center; gap: 10px;">
@@ -415,7 +415,7 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
             </div>
             <div style="display: flex; align-items: center; gap: 10px;">
                 <div style="width: 30px; height: 20px; background: #E74C3C; border-radius: 4px; border: 2px solid #C0392B;"></div>
-                <span style="font-size: 13px; color: #34495E;">⚠️ Safety Critical</span>
+                <span style="font-size: 13px; color: #34495E;">Safety Critical</span>
             </div>
             <div style="display: flex; align-items: center; gap: 10px;">
                 <div style="width: 20px; height: 20px; background: #F39C12; transform: rotate(45deg); border: 2px solid #D68910;"></div>
@@ -431,8 +431,8 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
             </div>
         </div>
         <p style="margin: 15px 0 0 0; font-size: 11px; color: #7F8C8D; font-style: italic;">
-            💡 Hover over nodes for details<br>
-            🖱️ Click & drag to rearrange
+            Hover over nodes for details<br>
+            Click and drag to rearrange
         </p>
     </div>
     """
