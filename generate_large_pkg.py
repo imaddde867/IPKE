@@ -83,9 +83,10 @@ def create_procedural_graph(data):
 
     return G
 
-def calculate_thesis_layout(G):
+def calculate_thesis_layout(G, max_row_width=45, row_gap=2.5):
+    """Lay the process spine over multiple rows so the figure fits on a page."""
     pos = {}
-    
+
     # Identify spine nodes (Steps and Gateways)
     spine_nodes = [n for n, d in G.nodes(data=True) if d.get("type") in ("Step", "Gateway")]
     print(f"Total Nodes: {G.number_of_nodes()}")
@@ -96,107 +97,150 @@ def calculate_thesis_layout(G):
     if start_node not in G and spine_nodes:
         start_node = spine_nodes[0]
 
-    # Determine Order (rank)
     ranks = {}
-    queue = [(start_node, 0)]
-    visited = {start_node}
-    ranks[start_node] = 0
-    
-    while queue:
-        curr, rank = queue.pop(0)
-        # Find next spine nodes
-        next_nodes = [v for u, v, d in G.edges(data=True) 
-                      if u == curr and d.get("relation") == "NEXT"]
-        
-        for nxt in next_nodes:
-            if nxt not in visited:
-                visited.add(nxt)
-                ranks[nxt] = rank + 1
-                queue.append((nxt, rank + 1))
-    
-    # Sort spine nodes by rank
+    if spine_nodes:
+        queue = [(start_node, 0)]
+        visited = {start_node}
+        ranks[start_node] = 0
+
+        while queue:
+            curr, rank = queue.pop(0)
+            next_nodes = [v for u, v, d in G.edges(data=True)
+                          if u == curr and d.get("relation") == "NEXT"]
+
+            for nxt in next_nodes:
+                if nxt not in visited:
+                    visited.add(nxt)
+                    ranks[nxt] = rank + 1
+                    queue.append((nxt, rank + 1))
+
+    remaining = [n for n in spine_nodes if n not in ranks]
+    if remaining:
+        next_rank = max(ranks.values()) + 1 if ranks else 0
+        for n in remaining:
+            ranks[n] = next_rank
+            next_rank += 1
+
     sorted_spine = sorted(ranks.keys(), key=lambda k: ranks[k])
     print(f"Spine Length (sorted): {len(sorted_spine)}")
-    
-    # Configuration
-    x_cursor = 0
-    base_y = 0
-    step_width_base = 2.0
-    satellite_spacing = 1.5
-    
-    # Calculate positions
+
+    # Layout configuration tuned for print readability
+    step_width_base = 6.0
+    satellite_spacing = 1.8
+    row_spacing = 14.0
+    action_offset = 4.0
+    object_offset = 6.5
+    resource_offset = -4.0
+    param_offset = -5.5
+
+    # Pre-compute satellite information & widths for each step/gateway
+    layout_info = {}
     for node in sorted_spine:
-        # Get satellites
         neighbors = G[node]
-        actions = []
+        actions_info = []
         resources = []
         params = []
-        
+
         for nbr in neighbors:
-            if nbr in ranks: continue # Skip next spine nodes
-            
+            if nbr in ranks:
+                continue  # Skip NEXT links along the spine
+
             etype = G.nodes[nbr].get("type")
             relation = G.edges[node, nbr].get("relation")
-            
+
             if etype == "Action":
-                actions.append(nbr)
+                act_objs = [an for an in G[nbr] if G.nodes[an].get("type") == "Asset"]
+                actions_info.append({
+                    "id": nbr,
+                    "objects": act_objs,
+                    "width": max(1, len(act_objs)) * satellite_spacing
+                })
             elif etype == "Asset" and relation == "REQUIRES":
                 resources.append(nbr)
             elif etype == "Constraint":
                 params.append(nbr)
-        
-        # Determine width
-        top_width = 0
-        if actions:
-            for act in actions:
-                act_objs = [an for an in G[act] if G.nodes[an].get("type") == "Asset"]
-                act_width = max(1, len(act_objs)) * satellite_spacing
-                top_width += act_width
-        else:
-            top_width = 0
-            
+
+        top_width = sum(info["width"] for info in actions_info)
         bottom_count = len(resources) + len(params)
         bottom_width = bottom_count * satellite_spacing
-        
         total_width = max(step_width_base, top_width, bottom_width)
-        
-        # Center position for the Step
-        center_x = x_cursor + (total_width / 2)
-        pos[node] = (center_x, base_y)
-        
-        # Place Satellites
-        # --- TOP SECTOR (Actions & Objects) ---
-        current_act_x = center_x - (top_width / 2) + (satellite_spacing / 2)
-        for act in actions:
-            act_objs = [an for an in G[act] if G.nodes[an].get("type") == "Asset"]
-            n_objs = len(act_objs)
-            width_this_act = max(1, n_objs) * satellite_spacing
-            
-            act_center_x = current_act_x + (width_this_act / 2) - (satellite_spacing / 2)
-            pos[act] = (act_center_x, base_y + 3) # Action level
-            
-            # Place Objects above Action
-            obj_start_x = current_act_x
-            for i, obj in enumerate(act_objs):
-                pos[obj] = (obj_start_x + (i * satellite_spacing), base_y + 5) # Object level
-            
-            current_act_x += width_this_act
-            
-        # --- BOTTOM SECTOR (Resources & Params) ---
-        start_res_x = center_x - (bottom_width / 2) + (satellite_spacing / 2)
-        current_res_x = start_res_x
-        for i, res in enumerate(resources):
-            pos[res] = (current_res_x, base_y - 3)
-            current_res_x += satellite_spacing
-            
-        for i, p in enumerate(params):
-            pos[p] = (current_res_x, base_y - 4 if len(resources) % 2 == 0 else base_y - 3.5)
-            current_res_x += satellite_spacing
 
-        # Advance cursor
-        x_cursor += total_width + 1.0 
-    
-    print(f"Total Layout Width: {x_cursor}")
+        layout_info[node] = {
+            "actions": actions_info,
+            "resources": resources,
+            "params": params,
+            "width": total_width,
+            "top_width": top_width,
+            "bottom_width": bottom_width
+        }
+
+    # Wrap the spine into multiple rows while respecting the max width
+    rows = []
+    current_row = []
+    current_width = 0.0
+    for node in sorted_spine:
+        node_width = layout_info[node]["width"]
+        addition = node_width if not current_row else row_gap + node_width
+        if current_row and (current_width + addition) > max_row_width:
+            rows.append(current_row)
+            current_row = [node]
+            current_width = node_width
+        else:
+            current_row.append(node)
+            current_width += addition
+
+    if current_row:
+        rows.append(current_row)
+
+    print(f"Rows generated: {len(rows)} (max row width {max_row_width} units)")
+
+    # Position each row centered on the canvas
+    for row_idx, row_nodes in enumerate(rows):
+        row_y = -(row_idx * row_spacing)
+        row_width = sum(layout_info[n]["width"] for n in row_nodes)
+        row_width += row_gap * (len(row_nodes) - 1) if len(row_nodes) > 1 else 0
+        cursor_x = -row_width / 2.0
+
+        for node in row_nodes:
+            info = layout_info[node]
+            node_center_x = cursor_x + (info["width"] / 2.0)
+            pos[node] = (node_center_x, row_y)
+
+            # --- TOP SECTOR (Actions & Objects) ---
+            if info["actions"]:
+                top_width = max(info["top_width"], satellite_spacing)
+                current_act_x = node_center_x - (top_width / 2.0) + (satellite_spacing / 2.0)
+            else:
+                current_act_x = node_center_x
+
+            for action in info["actions"]:
+                width_this_act = max(satellite_spacing, action["width"])
+                act_center_x = current_act_x + (width_this_act / 2.0) - (satellite_spacing / 2.0)
+                pos[action["id"]] = (act_center_x, row_y + action_offset)
+
+                obj_start_x = current_act_x
+                for idx, obj in enumerate(action["objects"]):
+                    pos[obj] = (obj_start_x + (idx * satellite_spacing), row_y + object_offset)
+
+                current_act_x += width_this_act
+
+            # --- BOTTOM SECTOR (Resources & Params) ---
+            if info["bottom_width"] > 0:
+                start_res_x = node_center_x - (info["bottom_width"] / 2.0) + (satellite_spacing / 2.0)
+            else:
+                start_res_x = node_center_x
+
+            current_res_x = start_res_x
+            for res in info["resources"]:
+                pos[res] = (current_res_x, row_y + resource_offset)
+                current_res_x += satellite_spacing
+
+            for param in info["params"]:
+                pos[param] = (current_res_x, row_y + param_offset)
+                current_res_x += satellite_spacing
+
+            cursor_x += info["width"] + row_gap
+
     return pos
 
 def draw_thesis_figure(G, pos, output_file):
@@ -211,13 +255,12 @@ def draw_thesis_figure(G, pos, output_file):
     
     # Margins
     margin_x = 5
-    margin_y = 2
+    margin_y = 4
     
-    # 2. Dynamic Figure Size
-    # Target scale: 0.5 inches per unit width to fit text
-    scale_factor = 0.5 
-    fig_width = (width_units + 2*margin_x) * scale_factor
-    fig_height = max(10, (height_units + 2*margin_y) * scale_factor) # Min height 10
+    # 2. Dynamic Figure Size tuned for thesis layout proportions
+    scale_factor = 0.35
+    fig_width = min(14, max(11, (width_units + 2 * margin_x) * scale_factor))
+    fig_height = min(18, max(9, (height_units + 2 * margin_y) * scale_factor))
     
     # 3. Check Limits
     dpi = 300
@@ -238,6 +281,7 @@ def draw_thesis_figure(G, pos, output_file):
 
     plt.figure(figsize=(fig_width, fig_height))
     ax = plt.gca()
+    ax.set_facecolor('#f9fafb')
     plt.axis('off')
     
     # Set explicit limits
@@ -246,11 +290,11 @@ def draw_thesis_figure(G, pos, output_file):
 
     # Style Config
     styles = {
-        "Step": {"boxstyle": "round,pad=0.5", "fc": "#ffffff", "ec": "#005b96", "alpha": 1.0, "fontsize": 10, "fontweight": "bold"},
-        "Gateway": {"boxstyle": "darrow,pad=0.3", "fc": "#ffcc00", "ec": "#cc9900", "alpha": 1.0, "fontsize": 9},
-        "Action": {"boxstyle": "round,pad=0.3", "fc": "#e3f2fd", "ec": "#90caf9", "alpha": 1.0, "fontsize": 9},
-        "Asset": {"boxstyle": "round4,pad=0.3", "fc": "#e8f5e9", "ec": "#a5d6a7", "alpha": 1.0, "fontsize": 8},
-        "Constraint": {"boxstyle": "round,pad=0.3", "fc": "#ffebee", "ec": "#ef9a9a", "alpha": 1.0, "fontsize": 8}
+        "Step": {"boxstyle": "round,pad=0.5", "fc": "#ffffff", "ec": "#005b96", "alpha": 1.0, "fontsize": 11, "fontweight": "bold"},
+        "Gateway": {"boxstyle": "darrow,pad=0.35", "fc": "#ffeb99", "ec": "#cc9900", "alpha": 1.0, "fontsize": 10},
+        "Action": {"boxstyle": "round,pad=0.3", "fc": "#e3f2fd", "ec": "#64b5f6", "alpha": 1.0, "fontsize": 10},
+        "Asset": {"boxstyle": "round4,pad=0.3", "fc": "#e8f5e9", "ec": "#81c784", "alpha": 1.0, "fontsize": 9},
+        "Constraint": {"boxstyle": "round,pad=0.3", "fc": "#ffebee", "ec": "#ef9a9a", "alpha": 1.0, "fontsize": 9}
     }
 
     # Draw Edges
@@ -298,17 +342,24 @@ def draw_thesis_figure(G, pos, output_file):
     # Legend
     legend_elements = [
         mpatches.Patch(facecolor='#ffffff', edgecolor='#005b96', label='Procedure Step'),
-        mpatches.Patch(facecolor='#ffcc00', edgecolor='#cc9900', label='Gateway'),
-        mpatches.Patch(facecolor='#e3f2fd', edgecolor='#90caf9', label='Action'),
-        mpatches.Patch(facecolor='#e8f5e9', edgecolor='#a5d6a7', label='Asset'),
+        mpatches.Patch(facecolor='#ffeb99', edgecolor='#cc9900', label='Gateway'),
+        mpatches.Patch(facecolor='#e3f2fd', edgecolor='#64b5f6', label='Action'),
+        mpatches.Patch(facecolor='#e8f5e9', edgecolor='#81c784', label='Asset'),
         mpatches.Patch(facecolor='#ffebee', edgecolor='#ef9a9a', label='Constraint'),
         mlines.Line2D([], [], color='#455a64', lw=2, label='Sequence'),
         mlines.Line2D([], [], color='#d32f2f', lw=2, ls='dashed', label='Rework Loop')
     ]
-    ax.legend(handles=legend_elements, loc='upper left', title="Legend", fontsize=12)
+    ax.legend(
+        handles=legend_elements,
+        loc='upper left',
+        title="Legend",
+        fontsize=11,
+        frameon=True,
+        framealpha=0.95
+    )
 
-    plt.title("Extracted Procedural Knowledge Graph: 3M OEM SOP", fontsize=20, pad=20)
-    # No tight_layout, rely on explicit sizing
+    plt.title("Extracted Procedural Knowledge Graph: 3M OEM SOP", fontsize=18, pad=18)
+    plt.tight_layout()
     plt.savefig(output_file, dpi=dpi)
     print(f"Graph saved to {output_file}")
 
