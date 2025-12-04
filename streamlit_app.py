@@ -222,7 +222,7 @@ def render_sidebar():
                                key="gpu_select")
     
     # Apply button
-    if st.sidebar.button("Apply", use_container_width=True, type="primary"):
+    if st.sidebar.button("Apply", width='stretch', type="primary"):
         # Update config
         config.prompting_strategy = strategy
         config.chunking_method = chunking
@@ -251,8 +251,8 @@ def render_sidebar():
 
 def main():
     st.set_page_config(
-        page_title="IPKE",
-        page_icon="📊",
+        page_title="IPKE - Industrial PKG Extraction",
+        page_icon="🔬",
         layout="wide",
         initial_sidebar_state="expanded"
     )
@@ -261,8 +261,16 @@ def main():
     render_sidebar()
     
     # Header
-    st.title("IPKE")
-    st.caption("Industrial Procedural Knowledge Extraction — Transforming SOPs into machine-actionable knowledge graphs")
+    st.markdown("""
+    <div style="margin-bottom: 24px;">
+        <h1 style="margin: 0; font-size: 2.2rem; font-weight: 700;">
+            IPKE <span style="font-weight: 400; color: #64748B; font-size: 1.2rem;">Industrial Procedural Knowledge Extraction</span>
+        </h1>
+        <p style="color: #94A3B8; margin-top: 8px; font-size: 1rem;">
+            Transforming Standard Operating Procedures into machine-actionable, AI-queryable knowledge graphs
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
     
     # Thesis metrics summary
     col1, col2, col3, col4 = st.columns(4)
@@ -281,7 +289,8 @@ def main():
     with col1:
         uploaded = st.file_uploader("Upload Document", type=supported or None)
     with col2:
-        st.write("")
+        # Add vertical spacing to align with file uploader
+        st.markdown("<div style='height: 38px'></div>", unsafe_allow_html=True)
         demo_btn = st.button("Load Demo", use_container_width=True)
         if uploaded:
             extract_btn = st.button("Extract", type="primary", use_container_width=True)
@@ -328,47 +337,154 @@ def main():
         with tab1:
             st.subheader("Procedural Knowledge Graph")
             steps = result.steps or []
-            st.info(f"**{len(steps)} steps** | NEXT (sequence) + GUARD (constraint) edges")
+            constraints_count = sum(
+                len(step.get("constraints", {}).get(ct, []))
+                for step in steps
+                for ct in ["precondition", "postcondition", "guard", "warning"]
+            )
+            safety_count = sum(1 for step in steps if step.get("flags", {}).get("safety_critical"))
+            
+            # Info bar with graph statistics
+            col_a, col_b, col_c, col_d = st.columns(4)
+            col_a.metric("Steps", len(steps))
+            col_b.metric("Constraints", constraints_count)
+            col_c.metric("Safety-Critical", safety_count)
+            col_d.metric("Edges", metrics["sequences"])
+            
+            st.markdown("---")
             
             try:
                 html = generate_interactive_graph_html(result, height="100vh")
-                b64 = base64.b64encode(html.encode()).decode()
                 
-                js = f"""
+                # Embed the graph directly in the page
+                st.markdown("""
+                <style>
+                    .stIFrame { border-radius: 12px; overflow: hidden; }
+                    iframe[title="streamlit_app.components.v1.html"] { 
+                        border: 1px solid rgba(148, 163, 184, 0.15); 
+                        border-radius: 12px;
+                    }
+                </style>
+                """, unsafe_allow_html=True)
+                
+                # Embedded visualization (primary)
+                components.html(html, height=700, scrolling=False)
+                
+                # Option to open fullscreen
+                b64 = base64.b64encode(html.encode()).decode()
+                fullscreen_js = f"""
                 <script>
-                function openPKG() {{
+                function openFullscreen() {{
                     var html = atob("{b64}");
                     var blob = new Blob([html], {{type: 'text/html'}});
                     window.open(URL.createObjectURL(blob), '_blank');
                 }}
                 </script>
-                <button onclick="openPKG()" style="padding:8px 16px;background:#3498db;color:#fff;border:none;border-radius:4px;cursor:pointer;font-size:14px;">
-                    Open Knowledge Graph →
-                </button>
+                <div style="display: flex; gap: 12px; margin-top: 12px;">
+                    <button onclick="openFullscreen()" style="
+                        padding: 10px 20px;
+                        background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%);
+                        color: #fff;
+                        border: none;
+                        border-radius: 8px;
+                        cursor: pointer;
+                        font-size: 14px;
+                        font-weight: 500;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                        transition: all 0.2s ease;
+                        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+                    ">
+                        Open Fullscreen PKG
+                    </button>
+                </div>
                 """
-                components.html(js, height=50)
+                components.html(fullscreen_js, height=60)
             except Exception as e:
-                st.error(f"Graph failed: {e}")
+                st.error(f"Graph visualization failed: {e}")
+                import traceback
+                st.code(traceback.format_exc())
         
         with tab2:
             st.subheader("Extracted Data")
             
-            # Entities
+            # Resources/Entities
             if result.entities:
+                st.markdown("#### Resources & Entities")
                 entities_df = pd.DataFrame([
-                    {"Resource": e.content, "Category": e.category, "Confidence": e.confidence}
+                    {"Resource": e.content, "Category": e.category, "Confidence": f"{e.confidence:.0%}"}
                     for e in result.entities
                 ])
-                st.dataframe(entities_df, use_container_width=True, hide_index=True)
+                st.dataframe(entities_df, width='stretch', hide_index=True)
             
-            # Steps
+            # Steps with detailed view
             if result.steps:
-                st.markdown("#### Steps")
-                for step in result.steps[:10]:
-                    with st.expander(f"**{step.get('id')}**: {step.get('label', '')[:60]}..."):
-                        st.write(f"**Action:** {step.get('action_verb', 'N/A').upper()}")
-                        if step.get("flags", {}).get("safety_critical"):
-                            st.warning("⚠️ Safety Critical")
+                st.markdown("#### Procedural Steps")
+                for idx, step in enumerate(result.steps):
+                    step_id = step.get('id', f'S{idx+1}')
+                    label = step.get('label', '')
+                    action = step.get('action_verb', 'N/A').upper()
+                    is_safety = step.get('flags', {}).get('safety_critical', False)
+                    
+                    # Get resources
+                    resources = step.get('resources', {})
+                    tools = resources.get('tools', [])
+                    materials = resources.get('materials', [])
+                    
+                    # Get parameters
+                    params = step.get('parameters', [])
+                    
+                    # Get constraints count
+                    constraints = step.get('constraints', {})
+                    constraint_count = sum(len(v) for v in constraints.values() if isinstance(v, list))
+                    
+                    # Header with safety badge
+                    safety_badge = "[SAFETY] " if is_safety else ""
+                    with st.expander(f"**{safety_badge}{step_id}**: {action} — {label[:60]}..."):
+                        col1, col2 = st.columns([2, 1])
+                        
+                        with col1:
+                            st.markdown(f"**Full Description:** {label}")
+                            
+                            obj = step.get('action_object')
+                            if obj:
+                                obj_name = obj.get('canonical', obj) if isinstance(obj, dict) else obj
+                                st.markdown(f"**Target Object:** {obj_name}")
+                        
+                        with col2:
+                            if is_safety:
+                                st.warning("Safety-Critical Step")
+                            
+                            st.markdown(f"**Constraints:** {constraint_count}")
+                            st.markdown(f"**Resources:** {len(tools) + len(materials)}")
+                        
+                        # Resources
+                        if tools or materials:
+                            st.markdown("---")
+                            st.markdown("**Resources:**")
+                            if tools:
+                                st.markdown(f"- Tools: {', '.join(tools)}")
+                            if materials:
+                                st.markdown(f"- Materials: {', '.join(materials)}")
+                        
+                        # Parameters
+                        if params:
+                            st.markdown("---")
+                            st.markdown("**Parameters:**")
+                            for p in params:
+                                if isinstance(p, dict):
+                                    st.markdown(f"- {p.get('name', '?')}: **{p.get('value', '?')}** {p.get('unit', '')}")
+            
+            # Metadata section
+            if result.metadata:
+                st.markdown("#### Graph Metadata")
+                relations = result.metadata.get('relations', {})
+                if relations:
+                    seq_count = len(relations.get('sequence', []))
+                    gw_count = len(relations.get('gateways', []))
+                    st.markdown(f"- **Sequence Edges:** {seq_count}")
+                    st.markdown(f"- **Decision Gateways:** {gw_count}")
         
         with tab3:
             st.subheader("Debug")
@@ -390,11 +506,37 @@ def main():
             })
     
     else:
-        st.info("Upload a document or load demo to begin.")
+        # Empty state with better UI
+        st.markdown("""
+        <div style="
+            text-align: center; 
+            padding: 60px 40px; 
+            background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            margin-top: 20px;
+        ">
+            <h3 style="color: #F8FAFC; font-weight: 600; margin-bottom: 8px;">Ready to Extract Knowledge</h3>
+            <p style="color: #94A3B8; font-size: 1rem;">
+                Upload a document or load demo data to generate an interactive<br>
+                Procedural Knowledge Graph (PKG) with full AI queryability.
+            </p>
+        </div>
+        """, unsafe_allow_html=True)
     
     # Footer
     st.divider()
-    st.caption("**IPKE** | Turku UAS 2025 | [Repo Link](https://github.com/imaddde867)")
+    st.markdown("""
+    <div style="display: flex; justify-content: space-between; align-items: center; color: #64748B; font-size: 12px;">
+        <div>
+            <strong style="color: #3B82F6;">IPKE</strong> — Industrial Procedural Knowledge Extraction
+        </div>
+        <div>
+            Turku University of Applied Sciences · 2025 · 
+            <a href="https://github.com/imaddde867" style="color: #3B82F6; text-decoration: none;">GitHub</a>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
