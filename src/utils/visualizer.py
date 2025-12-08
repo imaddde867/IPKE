@@ -11,25 +11,29 @@ from typing import Dict, Any, List
 from src.ai.types import ExtractionResult
 
 THEME = {
-    "step": {"bg": "#1E40AF", "border": "#1E3A8A"},
-    "step_safety": {"bg": "#B91C1C", "border": "#991B1B"},
-    "step_resources": {"bg": "#047857", "border": "#065F46"},
-    "constraint_guard": {"bg": "#B45309", "border": "#92400E"},
-    "constraint_precondition": {"bg": "#C2410C", "border": "#9A3412"},
-    "constraint_postcondition": {"bg": "#15803D", "border": "#166534"},
-    "constraint_warning": {"bg": "#B91C1C", "border": "#991B1B"},
-    "gateway": {"bg": "#6D28D9", "border": "#5B21B6"},
-    "resource_tools": {"bg": "#0EA5E9", "border": "#0284C7"},
-    "resource_materials": {"bg": "#10B981", "border": "#059669"},
-    "resource_documents": {"bg": "#93C5FD", "border": "#60A5FA"},
-    "resource_ppe": {"bg": "#F59E0B", "border": "#D97706"},
-    "parameter": {"bg": "#64748B", "border": "#475569"},
-    "edge_next": "#1E40AF",
-    "edge_guard": "#B45309",
-    "edge_branch": "#6D28D9",
-    "edge_uses": "#0EA5E9",
-    "edge_param": "#64748B",
-    "edge_alias": "#94A3B8",
+    "step": {"bg": "#FFFFFF", "border": "#CBD5E1"},
+    "step_safety": {"bg": "#FFFFFF", "border": "#EF4444"},
+    "step_resources": {"bg": "#FFFFFF", "border": "#CBD5E1"},
+    "constraint_guard": {"bg": "#FFFFFF", "border": "#CBD5E1"},
+    "constraint_precondition": {"bg": "#FFFFFF", "border": "#CBD5E1"},
+    "constraint_postcondition": {"bg": "#FFFFFF", "border": "#CBD5E1"},
+    "constraint_warning": {"bg": "#FFFFFF", "border": "#CBD5E1"},
+    "gateway": {"bg": "#FFFFFF", "border": "#94A3B8"},
+    "action": {"bg": "#FFFFFF", "border": "#CBD5E1"},
+    "object": {"bg": "#FFFFFF", "border": "#CBD5E1"},
+    "resource_tools": {"bg": "#FFFFFF", "border": "#CBD5E1"},
+    "resource_materials": {"bg": "#FFFFFF", "border": "#CBD5E1"},
+    "resource_documents": {"bg": "#FFFFFF", "border": "#CBD5E1"},
+    "resource_ppe": {"bg": "#FFFFFF", "border": "#CBD5E1"},
+    "parameter": {"bg": "#FFFFFF", "border": "#CBD5E1"},
+    "edge_next": "#64748B",
+    "edge_guard": "#94A3B8",
+    "edge_branch": "#94A3B8",
+    "edge_uses": "#94A3B8",
+    "edge_param": "#94A3B8",
+    "edge_alias": "#D1D5DB",
+    "edge_performs": "#64748B",
+    "edge_on": "#94A3B8",
 }
 
 
@@ -155,6 +159,34 @@ def _build_graph(result: ExtractionResult, catalog: Dict) -> nx.DiGraph:
             has_resources=bool(tools or materials or documents or ppe),
             order=idx
         )
+
+        # Semantic decomposition: Action and Object
+        action_node_id = None
+        if action_str:
+            action_node_id = f"A:{step_id}:{action_str}"
+            if action_node_id not in G:
+                G.add_node(
+                    action_node_id,
+                    node_type="action",
+                    label=textwrap.fill(action_str[:24], width=12),
+                    title=f"Action<br>{action_str}",
+                )
+            G.add_edge(step_id, action_node_id, edge_type="PERFORMS")
+
+        if obj_name:
+            object_label = str(obj_name).replace("_", " ")
+            object_node_id = f"O:{step_id}:{object_label}"
+            if object_node_id not in G:
+                G.add_node(
+                    object_node_id,
+                    node_type="object",
+                    label=textwrap.fill(object_label[:28], width=14),
+                    title=f"Object<br>{object_label}",
+                )
+            if action_node_id:
+                G.add_edge(action_node_id, object_node_id, edge_type="ON")
+            else:
+                G.add_edge(step_id, object_node_id, edge_type="ON")
 
         # Resources and parameters
         name_to_id = _resource_name_to_id_map(catalog)
@@ -313,31 +345,49 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
             colors = THEME["gateway"]
             net.add_node(node, label=label, title=tooltip,
                 color={"background": colors["bg"], "border": colors["border"]},
-                shape="diamond", size=35, borderWidth=2,
-                font={"size": 11, "color": "#FFF", "multi": True, "align": "center"})
+                shape="diamond", size=28, borderWidth=1.5,
+                font={"size": 11, "color": "#0F172A", "multi": False, "align": "center"})
         
         elif node_type == "constraint":
             c_type = data.get("constraint_type", "guard")
             colors = THEME.get(f"constraint_{c_type}", THEME["constraint_guard"])
             net.add_node(node, label=label, title=tooltip,
                 color={"background": colors["bg"], "border": colors["border"]},
-                shape="ellipse", size=24, borderWidth=2,
-                font={"size": 9, "color": "#FFF", "multi": True, "align": "center"})
+                shape="ellipse", size=18, borderWidth=1.0,
+                font={"size": 10, "color": "#0F172A", "multi": False, "align": "center"})
         
         elif node_type == "resource":
             category = data.get("resource_category", "materials")
             colors = THEME.get(f"resource_{category}", THEME["resource_materials"])
             net.add_node(node, label=label, title=tooltip,
                 color={"background": colors["bg"], "border": colors["border"]},
-                shape="database", size=20, borderWidth=1.5,
-                font={"size": 10, "color": "#0F172A", "multi": True, "align": "center"})
+                shape="box", size=16, borderWidth=1.0,
+                font={"size": 10, "color": "#0F172A", "multi": False, "align": "center"},
+                margin=4, widthConstraint={"minimum": 80, "maximum": 120})
         
         elif node_type == "parameter":
             colors = THEME["parameter"]
             net.add_node(node, label=label, title=tooltip,
                 color={"background": colors["bg"], "border": colors["border"]},
-                shape="triangle", size=18, borderWidth=1.5,
-                font={"size": 10, "color": "#FFF", "multi": True, "align": "center"})
+                shape="box", size=12, borderWidth=1.0,
+                font={"size": 10, "color": "#0F172A", "multi": False, "align": "center"},
+                margin=4, widthConstraint={"minimum": 70, "maximum": 110})
+        
+        elif node_type == "action":
+            colors = THEME["action"]
+            net.add_node(node, label=label, title=tooltip,
+                color={"background": colors["bg"], "border": colors["border"]},
+                shape="box", size=14, borderWidth=1.0,
+                font={"size": 10, "color": "#0F172A", "multi": False, "align": "center"},
+                margin=4, widthConstraint={"minimum": 70, "maximum": 110})
+        
+        elif node_type == "object":
+            colors = THEME["object"]
+            net.add_node(node, label=label, title=tooltip,
+                color={"background": colors["bg"], "border": colors["border"]},
+                shape="box", size=14, borderWidth=1.0,
+                font={"size": 10, "color": "#0F172A", "multi": False, "align": "center"},
+                margin=4, widthConstraint={"minimum": 80, "maximum": 130})
         
         else:
             if data.get("safety_critical"):
@@ -349,41 +399,47 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
             
             net.add_node(node, label=label, title=tooltip,
                 color={"background": colors["bg"], "border": colors["border"]},
-                shape="box", size=30, borderWidth=2,
-                font={"size": 10, "color": "#FFF", "multi": True, "align": "center"},
-                margin=8, widthConstraint={"minimum": 100, "maximum": 160})
+                shape="box", size=22, borderWidth=1.2,
+                font={"size": 11, "color": "#0F172A", "multi": False, "align": "center"},
+                margin=6, widthConstraint={"minimum": 100, "maximum": 150})
     
     for u, v, data in G.edges(data=True):
         edge_type = data.get("edge_type", "NEXT")
         if edge_type == "NEXT":
-            net.add_edge(u, v, color={"color": THEME["edge_next"]}, width=2,
-                arrows={"to": {"enabled": True, "scaleFactor": 0.7}},
-                smooth={"type": "cubicBezier", "forceDirection": "vertical", "roundness": 0.2})
+            net.add_edge(u, v, color={"color": THEME["edge_next"]}, width=1.6,
+                arrows={"to": {"enabled": True, "scaleFactor": 0.7}})
         elif edge_type == "GUARD":
-            net.add_edge(u, v, color={"color": THEME["edge_guard"]}, width=1.5, dashes=[5, 3],
-                arrows={"to": {"enabled": True, "scaleFactor": 0.5}},
-                smooth={"type": "curvedCW", "roundness": 0.1})
+            net.add_edge(u, v, color={"color": THEME["edge_guard"]}, width=1.2,
+                arrows={"to": {"enabled": True, "scaleFactor": 0.5}})
         elif edge_type == "BRANCH":
-            net.add_edge(u, v, color={"color": THEME["edge_branch"]}, width=2, dashes=[6, 3],
-                arrows={"to": {"enabled": True, "scaleFactor": 0.6}},
-                smooth={"type": "cubicBezier", "roundness": 0.2})
+            net.add_edge(u, v, color={"color": THEME["edge_branch"]}, width=1.2,
+                arrows={"to": {"enabled": True, "scaleFactor": 0.6}})
         elif edge_type == "USES":
-            net.add_edge(u, v, color={"color": THEME["edge_uses"]}, width=1.5,
-                arrows={"to": {"enabled": True, "scaleFactor": 0.5}},
-                smooth={"type": "curvedCCW", "roundness": 0.15})
+            net.add_edge(u, v, color={"color": THEME["edge_uses"]}, width=1.0,
+                arrows={"to": {"enabled": True, "scaleFactor": 0.45}})
         elif edge_type == "HAS_PARAM":
-            net.add_edge(u, v, color={"color": THEME["edge_param"]}, width=1.2, dashes=[2,3],
-                arrows={"to": {"enabled": True, "scaleFactor": 0.4}},
-                smooth={"type": "curvedCCW", "roundness": 0.1})
+            net.add_edge(u, v, color={"color": THEME["edge_param"]}, width=0.9,
+                arrows={"to": {"enabled": True, "scaleFactor": 0.4}})
         elif edge_type == "ALIAS_OF":
-            net.add_edge(u, v, color={"color": THEME["edge_alias"]}, width=1.0, dashes=[2,2],
-                arrows={"to": {"enabled": True, "scaleFactor": 0.3}},
-                smooth={"type": "curvedCCW", "roundness": 0.05})
+            net.add_edge(u, v, color={"color": THEME["edge_alias"]}, width=0.8,
+                arrows={"to": {"enabled": True, "scaleFactor": 0.3}})
+        elif edge_type == "PERFORMS":
+            net.add_edge(u, v, color={"color": THEME["edge_performs"]}, width=1.0,
+                arrows={"to": {"enabled": True, "scaleFactor": 0.45}})
+        elif edge_type == "ON":
+            net.add_edge(u, v, color={"color": THEME["edge_on"]}, width=1.0,
+                arrows={"to": {"enabled": True, "scaleFactor": 0.45}})
     
     net.set_options("""{
-        "physics": {"enabled": true, "hierarchicalRepulsion": {"nodeDistance": 160, "springLength": 180}, "solver": "hierarchicalRepulsion", "stabilization": {"iterations": 1500}},
-        "layout": {"hierarchical": {"enabled": true, "direction": "UD", "sortMethod": "directed", "nodeSpacing": 160, "levelSeparation": 120}},
-        "interaction": {"hover": true, "tooltipDelay": 100, "navigationButtons": true, "keyboard": true}
+        "physics": {
+            "enabled": true,
+            "solver": "barnesHut",
+            "barnesHut": {"gravitationalConstant": -2500, "centralGravity": 0.2, "springLength": 140, "springConstant": 0.04, "avoidOverlap": 0.6},
+            "stabilization": {"iterations": 1200}
+        },
+        "layout": {"improvedLayout": true},
+        "edges": {"smooth": {"enabled": false}},
+        "interaction": {"hover": true, "tooltipDelay": 30, "zoomView": true, "dragView": true, "keyboard": true}
     }""")
     
     with tempfile.NamedTemporaryFile(delete=False, suffix=".html") as tmp:
@@ -397,46 +453,22 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
     
     styles = """<style>
     *{box-sizing:border-box}
-    html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;font-family:-apple-system,sans-serif;background:#FFF}
-    #mynetwork{width:100%!important;height:100vh!important;border:none!important;background:#FFF!important}
-    div.vis-tooltip{background:#FFF!important;border:1px solid #E2E8F0!important;border-radius:6px!important;padding:10px!important;font-size:12px!important;box-shadow:0 2px 8px rgba(0,0,0,0.1)!important}
-    .panel{position:fixed;background:#FFF;border-radius:6px;padding:12px 16px;border:1px solid #E2E8F0;font-size:11px;z-index:1000}
+    html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:#FFFFFF}
+    #mynetwork{width:100%!important;height:100vh!important;border:none!important;background:#FFFFFF!important}
+    div.vis-tooltip{background:#FFFFFF!important;border:1px solid #E5E7EB!important;border-radius:4px!important;padding:8px!important;font-size:12px!important;box-shadow:none!important;color:#0F172A}
+    .panel{position:fixed;background:#FFFFFF;border-radius:4px;padding:10px 12px;border:1px solid #E5E7EB;font-size:11px;z-index:1000;color:#0F172A}
     </style>"""
     
-    stats_panel = f"""<div class="panel" style="top:12px;left:12px">
-        <div style="font-weight:600;color:#0F172A;margin-bottom:8px">PKG</div>
-        <div style="display:flex;gap:16px">
-            <div><span style="font-size:18px;font-weight:700;color:#1E40AF">{steps}</span><br><span style="color:#64748B">Steps</span></div>
-            <div><span style="font-size:18px;font-weight:700;color:#B45309">{constraints}</span><br><span style="color:#64748B">Constraints</span></div>
-            <div><span style="font-size:18px;font-weight:700;color:#0EA5E9">{resources_ct}</span><br><span style="color:#64748B">Resources</span></div>
-            <div><span style="font-size:18px;font-weight:700;color:#64748B">{params_ct}</span><br><span style="color:#64748B">Parameters</span></div>
-            <div><span style="font-size:18px;font-weight:700;color:#B91C1C">{safety}</span><br><span style="color:#64748B">Safety</span></div>
-        </div>
-    </div>"""
-    
-    legend = """<div class="panel" style="top:12px;right:12px">
-        <div style="font-weight:600;color:#64748B;margin-bottom:8px">LEGEND</div>
-        <div style="display:flex;flex-direction:column;gap:4px">
-            <div style="display:flex;align-items:center;gap:6px"><div style="width:16px;height:10px;background:#1E40AF;border-radius:2px"></div><span style="color:#475569">Step</span></div>
-            <div style="display:flex;align-items:center;gap:6px"><div style="width:16px;height:10px;background:#047857;border-radius:2px"></div><span style="color:#475569">+Resources</span></div>
-            <div style="display:flex;align-items:center;gap:6px"><div style="width:16px;height:10px;background:#B91C1C;border-radius:2px"></div><span style="color:#475569">Safety</span></div>
-            <div style="display:flex;align-items:center;gap:6px"><div style="width:10px;height:10px;background:#B45309;border-radius:50%"></div><span style="color:#475569">Constraint</span></div>
-        </div>
-    </div>"""
-    
-    controls = """<div class="panel" style="bottom:12px;left:12px;color:#94A3B8">Scroll: zoom | Drag: pan | F: fit</div>"""
+    # removed overlays for a clean, print-ready look
     
     script = """<script>
     (function(){var i=setInterval(function(){if(typeof network!=='undefined'){clearInterval(i);
-        network.on('click',function(p){if(p.nodes.length>0)network.setOptions({physics:{enabled:false}})});
-        network.on('doubleClick',function(p){if(p.nodes.length===0)network.setOptions({physics:{enabled:true}})});
-        network.on('stabilizationIterationsDone',function(){setTimeout(function(){network.fit({padding:50})},100)});
-        document.addEventListener('keydown',function(e){if(e.key==='f'||e.key==='F')network.fit()});
+        network.on('stabilizationIterationsDone',function(){setTimeout(function(){network.fit({padding:40})},100)});
+        document.addEventListener('keydown',function(e){if(e.key==='f'||e.key==='F')network.fit({padding:40})});
     }},100)})();
     </script>"""
     
     html = html.replace('</head>', styles + '</head>')
-    legend2 = """<div class=\"panel\" style=\"top:120px;right:12px\">\n        <div style=\"font-weight:600;color:#64748B;margin-bottom:8px\">NODES</div>\n        <div style=\"display:flex;flex-direction:column;gap:4px\">\n            <div style=\"display:flex;align-items:center;gap:6px\"><div style=\"width:14px;height:10px;background:#0EA5E9;border-radius:2px\"></div><span style=\"color:#475569\">Resource</span></div>\n            <div style=\"display:flex;align-items:center;gap:6px\"><div style=\"width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:14px solid #64748B\"></div><span style=\"color:#475569\">Parameter</span></div>\n        </div>\n    </div>"""
-    html = html.replace('</body>', stats_panel + legend + legend2 + controls + script + '</body>')
+    html = html.replace('</body>', script + '</body>')
     
     return html
