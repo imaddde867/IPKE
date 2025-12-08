@@ -13,15 +13,22 @@ import tempfile
 import json
 import base64
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, List, Tuple
 
 import pandas as pd
 import streamlit as st
 import streamlit.components.v1 as components
+from dataclasses import asdict
 
 from src.core.unified_config import get_config
 from src.processors.streamlined_processor import StreamlinedDocumentProcessor
 from src.utils.visualizer import generate_interactive_graph_html
+from src.validation import validate_extraction
+from src.validation.constraint_validator import (
+    ValidationReport,
+    validate_constraints as validate_semantic_constraints,
+)
+import networkx as nx
 from src.ai.types import ExtractionResult, ExtractedEntity
 
 
@@ -111,10 +118,29 @@ def calculate_metrics(result: ExtractionResult) -> Dict[str, Any]:
     sequence_count = len(relations.get("sequence", []))
     gateway_count = len(relations.get("gateways", []))
     
-    # Constraint coverage estimate
+    # Constraint coverage estimate (constraints per step, capped at 1.0)
     c_cov = min(1.0, constraint_count / max(1, step_count))
-    s_f1 = 0.85 if step_count > 5 else 0.7
-    tau = 0.9 if sequence_count > 0 else 0.5
+    # Proxy Step F1: prefer richer procedures
+    s_f1 = 0.85 if step_count >= 6 else (0.75 if step_count >= 3 else 0.6)
+    # Order consistency proxy (τ): ratio of forward NEXT edges
+    def _order_tau() -> float:
+        if step_count <= 1:
+            return 1.0
+        step_index = {s.get("id", f"S{i+1}"): i for i, s in enumerate(steps)}
+        edges = relations.get("sequence", []) if isinstance(relations, dict) else []
+        if not edges:
+            return 0.5
+        forward = 0
+        total = 0
+        for link in edges:
+            u, v = link.get("from"), link.get("to")
+            if not u or not v or u not in step_index or v not in step_index:
+                continue
+            total += 1
+            if step_index[v] > step_index[u]:
+                forward += 1
+        return (forward / total) if total else 0.5
+    tau = _order_tau()
     
     # Procedural Fidelity (thesis weights: 0.5, 0.3, 0.2)
     phi = 0.5 * c_cov + 0.3 * s_f1 + 0.2 * tau
@@ -124,6 +150,116 @@ def calculate_metrics(result: ExtractionResult) -> Dict[str, Any]:
         "steps": step_count, "constraints": constraint_count,
         "sequences": sequence_count, "gateways": gateway_count,
         "safety_critical": safety_count
+    }
+
+
+def _build_schema_payload(result: ExtractionResult) -> Dict[str, Any]:
+    """Approximate the Tier-B schema payload from an ExtractionResult for validation."""
+    steps = []
+    id_map: Dict[str, str] = {}
+    for i, step in enumerate(result.steps or []):
+        sid = step.get("id", f"S{i+1}")
+        text = step.get("label") or step.get("text") or step.get("description") or ""
+        if not text:
+            continue
+        nsid = f"S{len(steps)+1}"
+        id_map[sid] = nsid
+        steps.append({"id": nsid, "text": text})
+
+    # Constraints as "conditions" with attached refs
+    conditions: List[Dict[str, Any]] = []
+    raw_steps = result.steps or []
+    for s in raw_steps:
+        sid = s.get("id")
+        if not sid:
+            continue
+        constraints = s.get("constraints", {}) if isinstance(s.get("constraints"), dict) else {}
+        for ctype, items in constraints.items():
+            if not isinstance(items, list):
+                continue
+            for idx, item in enumerate(items):
+                text = item if isinstance(item, str) else (item.get("text") or item.get("expression") or str(item))
+                conditions.append({
+                    "id": f"C{len(conditions)+1}",
+                    "type": ctype.upper(),
+                    "expression": text,
+                    "attached_to": id_map.get(sid, sid),
+                })
+
+    # NEXT edges
+    edges: List[Dict[str, Any]] = []
+    rel = result.metadata.get("relations", {}) if isinstance(result.metadata, dict) else {}
+    for link in rel.get("sequence", []) if isinstance(rel, dict) else []:
+        u, v = link.get("from"), link.get("to")
+        if not u or not v:
+            continue
+        edges.append({"from_id": id_map.get(u, u), "to_id": id_map.get(v, v), "type": "NEXT"})
+    for cond in conditions:
+        edges.append({"from_id": cond["id"], "to_id": cond.get("attached_to", ""), "type": "CONDITION_ON"})
+
+    doc_id = (result.metadata or {}).get("document_id") or "unknown_document"
+    return {
+        "document_id": str(doc_id),
+        "document_type": (result.metadata or {}).get("document_type") or "unknown",
+        "title": None,
+        "steps": steps,
+        "conditions": conditions,
+        "equipment": [],
+        "parameters": [],
+        "edges": edges,
+        "metadata": {"source": "streamlit_ui"},
+    }
+
+
+def compute_graph_stats(result: ExtractionResult) -> Dict[str, Any]:
+    """Compute structural completeness statistics for the PKG graph."""
+    steps = result.steps or []
+    rel = result.metadata.get("relations", {}) if isinstance(result.metadata, dict) else {}
+    G = nx.DiGraph()
+    step_ids = [s.get("id", f"S{i+1}") for i, s in enumerate(steps)]
+    G.add_nodes_from(step_ids)
+    for link in rel.get("sequence", []) if isinstance(rel, dict) else []:
+        u, v = link.get("from"), link.get("to")
+        if u in G and v in G:
+            G.add_edge(u, v)
+    # Fallback to linear chain if no edges
+    if G.number_of_edges() == 0 and len(step_ids) > 1:
+        for i in range(len(step_ids) - 1):
+            G.add_edge(step_ids[i], step_ids[i + 1])
+
+    # Connectivity and coverage
+    try:
+        components = list(nx.weakly_connected_components(G))
+    except Exception:
+        components = [set(step_ids)] if step_ids else []
+    num_components = len(components)
+    largest = max((len(c) for c in components), default=0)
+    coverage_main = (largest / max(1, len(step_ids))) if step_ids else 0.0
+
+    # Acyclicity and cycles
+    try:
+        cycles = list(nx.simple_cycles(G))
+        has_cycles = len(cycles) > 0
+    except Exception:
+        has_cycles = False
+
+    # Degree-based completeness: nodes with both in and out degree
+    both_deg = sum(1 for n in G.nodes if G.in_degree(n) > 0 and G.out_degree(n) > 0)
+    interior_ratio = both_deg / max(1, G.number_of_nodes())
+
+    # Edge orientation consistency (forward edges vs index order)
+    index = {sid: i for i, sid in enumerate(step_ids)}
+    forward = sum(1 for u, v in G.edges if index.get(v, 0) > index.get(u, 0))
+    tau_like = (forward / max(1, G.number_of_edges())) if G.number_of_edges() else 1.0
+
+    return {
+        "nodes": G.number_of_nodes(),
+        "edges": G.number_of_edges(),
+        "components": num_components,
+        "main_component_ratio": coverage_main,
+        "interior_ratio": interior_ratio,
+        "has_cycles": has_cycles,
+        "tau_like": tau_like,
     }
 
 
@@ -332,7 +468,7 @@ def main():
         st.divider()
         
         # Tabs
-        tab1, tab2, tab3 = st.tabs(["Graph", "Data", "Debug"])
+        tab1, tab2, tabQ, tab3 = st.tabs(["Graph", "Data", "Quality", "Debug"])
         
         with tab1:
             st.subheader("Procedural Knowledge Graph")
@@ -486,6 +622,113 @@ def main():
                     st.markdown(f"- **Sequence Edges:** {seq_count}")
                     st.markdown(f"- **Decision Gateways:** {gw_count}")
         
+        with tabQ:
+            st.subheader("Quality & Completeness")
+            # Procedural Fidelity breakdown
+            with st.container():
+                st.markdown("#### Procedural Fidelity Φ")
+                st.caption("Φ = 0.5·ConstraintCoverage + 0.3·StepF1 + 0.2·Order Consistency")
+                c1, c2, c3, c4 = st.columns(4)
+                c1.metric("Φ", f"{metrics['phi']:.3f}")
+                c2.metric("ConstraintCoverage", f"{metrics['c_cov']:.3f}")
+                c3.metric("StepF1 (proxy)", f"{metrics['s_f1']:.3f}")
+                c4.metric("Order Consistency", f"{metrics['tau']:.3f}")
+
+            st.markdown("---")
+            # Schema validation
+            st.markdown("#### Schema Validation")
+            try:
+                payload = _build_schema_payload(result)
+                is_valid, issues = validate_extraction(payload, autofix=True)
+                auto_fixes = [msg for msg in issues if str(msg).startswith("AUTO-FIX:")]
+                schema_errors = [msg for msg in issues if not str(msg).startswith("AUTO-FIX:")]
+                c1, c2, c3 = st.columns(3)
+                c1.metric("Valid", "Yes" if is_valid else "No")
+                c2.metric("Auto-fixes", len(auto_fixes))
+                c3.metric("Errors", len(schema_errors))
+                if schema_errors:
+                    st.warning("Schema issues detected")
+                    st.code("\n".join(schema_errors[:10]) + ("\n…" if len(schema_errors) > 10 else ""))
+                elif auto_fixes:
+                    st.info("Auto-fixes applied")
+                    st.code("\n".join(auto_fixes[:10]) + ("\n…" if len(auto_fixes) > 10 else ""))
+            except Exception as e:
+                st.error(f"Validation failed: {e}")
+
+            st.markdown("---")
+            # Semantic constraint validation
+            st.markdown("#### Constraint Validation (Semantic)")
+            try:
+                # Gather constraints from steps if top-level is empty
+                constraints: List[Dict[str, object]] = []
+                if result.constraints:
+                    constraints.extend(result.constraints)
+                for s in (result.steps or []):
+                    cdict = s.get("constraints", {}) if isinstance(s.get("constraints"), dict) else {}
+                    for ctype, items in cdict.items():
+                        if not isinstance(items, list):
+                            continue
+                        for item in items:
+                            text = item if isinstance(item, str) else (item.get("text") or item.get("expression") or str(item))
+                            constraints.append({
+                                "id": item.get("id") if isinstance(item, dict) else None,
+                                "type": ctype,
+                                "text": text,
+                                "attached_to": s.get("id"),
+                            })
+                report: ValidationReport = validate_semantic_constraints(constraints)
+                c1, c2, c3 = st.columns(3)
+                c1.metric("Passed", len(report.passed))
+                c2.metric("Warnings", len(report.warnings))
+                c3.metric("Errors", len(report.errors))
+                if report.errors:
+                    st.error("Top Errors")
+                    st.code("\n".join(f"{cid}: {msg}" for cid, msg in report.errors[:10]))
+                if report.warnings:
+                    st.warning("Top Warnings")
+                    st.code("\n".join(f"{cid}: {msg}" for cid, msg in report.warnings[:10]))
+            except Exception as e:
+                st.error(f"Constraint checks failed: {e}")
+
+            st.markdown("---")
+            # Graph completeness metrics
+            st.markdown("#### Graph Completeness")
+            try:
+                gstats = compute_graph_stats(result)
+                d1, d2, d3, d4 = st.columns(4)
+                d1.metric("Nodes", gstats["nodes"])
+                d2.metric("Edges", gstats["edges"])
+                d3.metric("Components", gstats["components"])
+                d4.metric("Main Component", f"{gstats['main_component_ratio']:.0%}")
+                e1, e2, e3 = st.columns(3)
+                e1.metric("Interior Nodes", f"{gstats['interior_ratio']:.0%}")
+                e2.metric("Forward Edges", f"{gstats['tau_like']:.0%}")
+                e3.metric("Cycles", "Yes" if gstats["has_cycles"] else "No")
+            except Exception as e:
+                st.error(f"Graph analysis failed: {e}")
+
+            st.markdown("---")
+            # Exports
+            st.markdown("#### Export")
+            try:
+                raw_json = json.dumps(asdict(result), ensure_ascii=False, indent=2)
+            except Exception:
+                # Fallback manual serialization
+                raw_json = json.dumps({
+                    "entities": [e.__dict__ for e in (result.entities or [])],
+                    "steps": result.steps or [],
+                    "constraints": result.constraints or [],
+                    "confidence_score": result.confidence_score,
+                    "processing_time": result.processing_time,
+                    "strategy_used": result.strategy_used,
+                    "quality_metrics": result.quality_metrics,
+                    "metadata": result.metadata,
+                }, ensure_ascii=False, indent=2)
+            payload_json = json.dumps(_build_schema_payload(result), ensure_ascii=False, indent=2)
+            colx, coly = st.columns(2)
+            colx.download_button("Download Extraction JSON", raw_json, file_name=f"{source}_extraction.json", mime="application/json")
+            coly.download_button("Download Schema Payload", payload_json, file_name=f"{source}_schema.json", mime="application/json")
+
         with tab3:
             st.subheader("Debug")
             config = get_config()
