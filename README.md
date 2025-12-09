@@ -1,71 +1,45 @@
-# IPKE
+# IPKE — Industrial Procedural Knowledge Extraction
 
-**Industrial Procedural Knowledge Extraction**
+Thesis-grade, privacy-preserving pipeline that reconstructs Procedural Knowledge Graphs (PKG) from safety-critical industrial manuals for human-in-the-loop validation and decision-support integration (Thesis Abstract).
 
-A research framework that transforms unstructured industrial documentation into machine-actionable Procedural Knowledge Graphs (PKG). Built for resource-constrained deployment without sacrificing extraction quality.
+## Validated Impact
+
+- **Local privacy preservation** — IPKE processes sensitive SOPs entirely on-prem via quantised 7B models, avoiding external APIs while maintaining schema fidelity (Thesis Abstract, §6.6).
+- **Two-Stage Decomposition (P3)** — P3 delivers Step F1 = 0.377 and Φ = 0.611 across Tier-A documents (Table 10) and Φ = 0.699 with 75% constraint coverage on the 3M SOP, outperforming Llama-3.1-70B zero-shot (Φ = 0.187, 0% coverage) and even its own P3 setup (Φ = 0.439, 50% coverage) (Table 12).
+- **Constraint-focused PKGs** — Constraint coverage rises from ≈0% under baseline prompting to 0.708 with P3 (Table 10), yielding queryable PKGs where GUARD edges bind safety rules to each procedural step (Fig. 11).
 
 ![Efficiency Frontier](assets/efficiency_frontier_phi.png)
 
-## Why IPKE?
+## Method Kernel
 
-Large language models struggle with structured extraction from technical documents. Even 70B parameter models fail at zero-shot procedural parsing due to schema non-compliance. IPKE solves this through task-decomposed prompting—achieving higher fidelity with a 7B model than larger models achieve with brute-force scaling.
+- **Dual Semantic Chunking (DSC)** aligns document headings with embedding-based cohesion to limit context fragmentation for mid-sized models (Thesis §4.1).
+- **P3 — Two-Stage Decomposition** decouples ordered step extraction from constraint attachment, eliminating schema drift seen in zero-shot and chain-of-thought baselines (Thesis §4.2–5.4).
 
-## Features
-
-- **Dual Semantic Chunking** — Preserves long-range coherence in technical documentation
-- **Multi-Stage Prompting** — Four strategy tiers (P1–P4) for precision-speed tradeoffs
-- **Interactive PKG Visualization** — Hierarchical graphs with constraint nodes and decision gateways
-- **Comprehensive Evaluation** — StepF1, GraphF1, and Procedural Fidelity Score (Φ)
-
-## Quick Start
+## Run IPKE
 
 ```bash
-# Environment
 python3 -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-
-# Run
 streamlit run streamlit_app.py
 ```
 
-## Configuration
-
 ```ini
 # .env
-GPU_BACKEND=metal                # metal | cuda | cpu
-CHUNKING_METHOD=dual_semantic    # fixed | semantic_breakpoint | dual_semantic
-PROMPTING_STRATEGY=P3            # P1 | P2 | P3 | P4
+GPU_BACKEND=metal
+CHUNKING_METHOD=dual_semantic
+PROMPTING_STRATEGY=P3
 ```
-
-## Project Structure
-
-```
-src/
-├── ai/           # LLM inference, prompting strategies
-├── evaluation/   # Extraction metrics
-├── graph/        # PKG schema, Neo4j connector
-├── pipelines/    # Orchestration
-├── processors/   # Document chunking
-└── utils/        # Visualization
-```
-
-## Reproducing Experiments
 
 ```bash
+# Reproduce chunking experiments
 python scripts/experiments/run_all_chunking_experiments.py \
   --documents datasets/archive/test_data/text/*.txt
+
+# API surface
+python main.py  # http://localhost:8000/docs
 ```
 
-## API
-
-```bash
-python main.py
-# http://localhost:8000/docs
-```
-
-## License
-
-Research thesis. Academic use. See `LICENSE`.
+Research distribution for academic and regulated industrial settings. See `LICENSE`.
 
 ---
 
