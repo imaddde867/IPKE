@@ -296,7 +296,11 @@ def render_sidebar():
     # Chunking Method - outside form for instant update
     st.sidebar.subheader("Chunking")
     methods = ["fixed", "breakpoint_semantic", "dsc"]
-    current_method = config.chunking_method if config.chunking_method in methods else "fixed"
+    current_method = config.chunking_method
+    if current_method in {"dual_semantic", "parent_only"}:
+        current_method = "dsc"
+    if current_method not in methods:
+        current_method = "fixed"
     chunking = st.sidebar.selectbox(
         "Method",
         options=methods,
@@ -305,6 +309,13 @@ def render_sidebar():
         key="chunking_select"
     )
     
+    chunk_size = config.chunk_max_chars
+    dsc_k = config.dsc_threshold_k
+    dsc_window = config.dsc_delta_window
+    dsc_headings = config.dsc_use_headings
+    sem_lambda = config.sem_lambda
+    sem_window = config.sem_window_w
+
     # Show parameters based on chunking method
     if chunking == "fixed":
         chunk_size = st.sidebar.number_input(
@@ -312,11 +323,7 @@ def render_sidebar():
             value=config.chunk_max_chars, help="Characters per chunk",
             key="chunk_size_input"
         )
-        dsc_k = config.dsc_threshold_k
-        dsc_window = config.dsc_delta_window
-        dsc_headings = config.dsc_use_headings
     elif chunking == "dsc":
-        chunk_size = config.chunk_max_chars
         st.sidebar.caption("DSC Parameters")
         dsc_k = st.sidebar.slider("Threshold k", 0.5, 2.0, float(config.dsc_threshold_k), 0.1,
                                   help="Boundary sensitivity (higher = fewer splits)",
@@ -328,17 +335,13 @@ def render_sidebar():
                                            help="Respect document structure",
                                            key="dsc_headings_check")
     else:  # breakpoint_semantic
-        chunk_size = config.chunk_max_chars
         st.sidebar.caption("Semantic Parameters")
-        dsc_k = st.sidebar.slider("Lambda (λ)", 0.0, 0.5, float(config.sem_lambda), 0.05,
-                                  help="Regularization strength",
-                                  key="sem_lambda_slider")
-        dsc_window = st.sidebar.number_input("Window Size", 5, 50, config.sem_window_w,
+        sem_lambda = st.sidebar.slider("Lambda (λ)", 0.0, 0.5, float(config.sem_lambda), 0.05,
+                                       help="Regularization strength",
+                                       key="sem_lambda_slider")
+        sem_window = st.sidebar.number_input("Window Size", 5, 50, config.sem_window_w,
                                              help="Semantic window size",
                                              key="sem_window_input")
-        dsc_headings = config.dsc_use_headings
-        dsc_window = config.dsc_delta_window
-        dsc_headings = config.dsc_use_headings
     
     # LLM Parameters
     st.sidebar.subheader("LLM")
@@ -358,27 +361,40 @@ def render_sidebar():
                                key="gpu_select")
     
     # Apply button
-    if st.sidebar.button("Apply", width='stretch', type="primary"):
-        # Update config
-        config.prompting_strategy = strategy
-        config.chunking_method = chunking
-        config.chunk_max_chars = chunk_size
-        config.chunk_size = chunk_size
-        config.dsc_threshold_k = dsc_k
-        config.dsc_delta_window = dsc_window
-        config.dsc_use_headings = dsc_headings
-        config.llm_temperature = temperature
-        config.llm_max_tokens = max_tokens
-        config.llm_n_ctx = n_ctx
-        config.gpu_backend = gpu
+    if st.sidebar.button("Apply", use_container_width=True, type="primary"):
+        canonical_chunking = "dual_semantic" if chunking == "dsc" else chunking
+        updates = {
+            "prompting_strategy": strategy,
+            "chunking_method": canonical_chunking,
+            "chunk_max_chars": chunk_size,
+            "chunk_size": chunk_size,
+            "llm_temperature": temperature,
+            "llm_max_tokens": max_tokens,
+            "llm_n_ctx": n_ctx,
+            "gpu_backend": gpu,
+        }
+        if chunking == "dsc":
+            updates.update({
+                "dsc_threshold_k": dsc_k,
+                "dsc_delta_window": dsc_window,
+                "dsc_use_headings": dsc_headings,
+            })
+        elif chunking == "breakpoint_semantic":
+            updates.update({
+                "sem_lambda": sem_lambda,
+                "sem_window_w": sem_window,
+            })
+        for key, value in updates.items():
+            setattr(config, key, value)
         st.session_state.processor = None  # Reset processor
         st.sidebar.success("Parameters updated")
     
     # Current config display
     st.sidebar.divider()
     strategy_labels = {"P0": "Zero-Shot", "P1": "CoT", "P2": "Few-Shot", "P3": "Two-Stage"}
+    chunking_label = "dsc" if config.chunking_method in {"dual_semantic", "parent_only"} else config.chunking_method
     st.sidebar.caption(f"**Model:** Mistral-7B (Q4_K_M)")
-    st.sidebar.caption(f"**Strategy:** {strategy_labels.get(config.prompting_strategy, config.prompting_strategy)} | **Chunking:** {config.chunking_method}")
+    st.sidebar.caption(f"**Strategy:** {strategy_labels.get(config.prompting_strategy, config.prompting_strategy)} | **Chunking:** {chunking_label}")
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -473,12 +489,8 @@ def main():
         with tab1:
             st.subheader("Procedural Knowledge Graph")
             steps = result.steps or []
-            constraints_count = sum(
-                len(step.get("constraints", {}).get(ct, []))
-                for step in steps
-                for ct in ["precondition", "postcondition", "guard", "warning"]
-            )
-            safety_count = sum(1 for step in steps if step.get("flags", {}).get("safety_critical"))
+            constraints_count = metrics["constraints"]
+            safety_count = metrics["safety_critical"]
             
             # Info bar with graph statistics
             col_a, col_b, col_c, col_d = st.columns(4)
@@ -552,7 +564,7 @@ def main():
                     {"Resource": e.content, "Category": e.category, "Confidence": f"{e.confidence:.0%}"}
                     for e in result.entities
                 ])
-                st.dataframe(entities_df, width='stretch', hide_index=True)
+                st.dataframe(entities_df, use_container_width=True, hide_index=True)
             
             # Steps with detailed view
             if result.steps:

@@ -9,6 +9,7 @@ from typing import Dict, List, Any, Optional, Callable, TypeVar
 from dataclasses import dataclass
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
+from threading import Lock
 
 # Document processing libraries (optional)
 try:
@@ -90,6 +91,10 @@ class StreamlinedDocumentProcessor:
         self.config = config or get_config()
         self._engine: Optional["UnifiedKnowledgeEngine"] = None
         self.executor = ThreadPoolExecutor(max_workers=self.config.max_workers)
+        self._ocr_reader = None
+        self._ocr_lock = Lock()
+        self._whisper_model = None
+        self._whisper_lock = Lock()
         
         # Performance tracking
         self.stats = {
@@ -231,11 +236,11 @@ class StreamlinedDocumentProcessor:
         def extract_pdf():
             try:
                 doc = fitz.open(str(file_path))
-                text = ""
-                for page in doc:
-                    text += page.get_text()
-                doc.close()
-                return text
+                try:
+                    pages = [page.get_text() for page in doc]
+                    return "".join(pages)
+                finally:
+                    doc.close()
             except Exception as e:
                 logger.warning(f"PDF extraction failed: {e}")
                 return ""
@@ -251,16 +256,22 @@ class StreamlinedDocumentProcessor:
         def extract_docx():
             try:
                 doc = DocxDocument(str(file_path))
-                text = ""
-                for paragraph in doc.paragraphs:
-                    text += paragraph.text + "\n"
-                return text
+                paragraphs = [paragraph.text for paragraph in doc.paragraphs]
+                return "\n".join(paragraphs)
             except Exception as e:
                 logger.warning(f"DOCX extraction failed: {e}")
                 return ""
         
         return await self._run_in_executor(extract_docx)
     
+    def _get_ocr_reader(self):
+        if self._ocr_reader is not None:
+            return self._ocr_reader
+        with self._ocr_lock:
+            if self._ocr_reader is None and OCR_AVAILABLE:
+                self._ocr_reader = easyocr.Reader(['en'])
+        return self._ocr_reader
+
     async def _extract_image_content(self, file_path: Path) -> str:
         """Extract text from images using OCR"""
         if not OCR_AVAILABLE:
@@ -269,10 +280,12 @@ class StreamlinedDocumentProcessor:
         
         def extract_ocr():
             try:
-                reader = easyocr.Reader(['en'])
-                results = reader.readtext(str(file_path))
-                text = " ".join([result[1] for result in results])
-                return text
+                reader = self._get_ocr_reader()
+                if reader is None:
+                    return ""
+                with self._ocr_lock:
+                    results = reader.readtext(str(file_path))
+                return " ".join(result[1] for result in results)
             except Exception as e:
                 logger.warning(f"OCR extraction failed: {e}")
                 return ""
@@ -311,20 +324,29 @@ class StreamlinedDocumentProcessor:
         def extract_presentation():
             try:
                 prs = Presentation(str(file_path))
-                text = ""
-                
+                fragments = []
+
                 for slide in prs.slides:
                     for shape in slide.shapes:
                         if hasattr(shape, "text"):
-                            text += shape.text + "\n"
-                
-                return text
+                            fragments.append(shape.text)
+
+                return "\n".join(fragments)
             except Exception as e:
                 logger.warning(f"Presentation extraction failed: {e}")
                 return ""
         
         return await self._run_in_executor(extract_presentation)
     
+    def _get_whisper_model(self):
+        if self._whisper_model is not None:
+            return self._whisper_model
+        with self._whisper_lock:
+            if self._whisper_model is None and WHISPER_AVAILABLE:
+                model_id = getattr(self.config, "whisper_model", "base")
+                self._whisper_model = whisper.load_model(model_id)
+        return self._whisper_model
+
     async def _extract_audio_content(self, file_path: Path) -> str:
         """Extract text from audio files using Whisper"""
         if not WHISPER_AVAILABLE:
@@ -333,9 +355,12 @@ class StreamlinedDocumentProcessor:
         
         def extract_audio():
             try:
-                model = whisper.load_model("base")
-                result = model.transcribe(str(file_path))
-                return result["text"]
+                model = self._get_whisper_model()
+                if model is None:
+                    return ""
+                with self._whisper_lock:
+                    result = model.transcribe(str(file_path))
+                return result.get("text", "")
             except Exception as e:
                 logger.warning(f"Audio extraction failed: {e}")
                 return ""
@@ -392,6 +417,12 @@ class StreamlinedDocumentProcessor:
     def clear_cache(self):
         """Clear all caches"""
         self.knowledge_engine.clear_cache()
+
+    def shutdown(self) -> None:
+        """Release processor resources."""
+        self.executor.shutdown(wait=False)
+        if self._engine is not None:
+            self._engine.clear_cache()
 
 
 # Backward compatibility

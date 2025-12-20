@@ -77,16 +77,20 @@ def _env_bool(*keys: str, default: bool = False) -> bool:
     return raw.strip().lower() in {"1", "true", "yes", "on"}
 
 
-CHUNKING_METHOD_CHOICES = {"fixed", "breakpoint_semantic", "dual_semantic", "dsc", "parent_only"}
+CHUNKING_METHOD_CHOICES = {"fixed", "breakpoint_semantic", "dual_semantic", "parent_only"}
+CHUNKING_METHOD_ALIASES = {
+    "dsc": "dual_semantic",
+}
 
 
 def _sanitize_chunking_method(value: Optional[str], default: str) -> str:
-    """Validate chunking method values."""
+    """Validate and normalize chunking method values."""
+    fallback = CHUNKING_METHOD_ALIASES.get(default, default)
     if not value:
-        return default
-    method = value.strip().lower()
+        return fallback
+    method = CHUNKING_METHOD_ALIASES.get(value.strip().lower(), value.strip().lower())
     if method not in CHUNKING_METHOD_CHOICES:
-        return default
+        return fallback
     return method
 
 
@@ -202,8 +206,10 @@ class UnifiedConfig:
         """Load configuration from environment variables"""
         
         env_name = _get_env_value(
-            'IPKE_ENV', 'ENVIRONMENT', default='development'
+            'IPKE_ENV', 'ENVIRONMENT', 'EXPLAINIUM_ENV', default='development'
         ).lower()
+        if _get_env_value('GOOGLE_CLOUD_PROJECT', default=None):
+            env_name = "cloud"
         try:
             environment = Environment(env_name)
         except ValueError:
@@ -213,6 +219,8 @@ class UnifiedConfig:
             return cls._production_config()
         elif environment == Environment.TESTING:
             return cls._testing_config()
+        elif environment == Environment.CLOUD:
+            return cls._cloud_config()
         else:
             return cls._development_config()
     
@@ -324,6 +332,14 @@ class UnifiedConfig:
         }
         base_kwargs.update(chunk_kwargs)
         return cls(**base_kwargs)
+
+    @classmethod
+    def _cloud_config(cls) -> 'UnifiedConfig':
+        """Cloud environment configuration (production-like defaults)."""
+        config = cls._production_config()
+        config.environment = Environment.CLOUD
+        config.enable_gpu = True
+        return config
     
     @classmethod
     def _chunking_overrides(cls) -> Dict[str, Any]:
@@ -332,9 +348,13 @@ class UnifiedConfig:
             _get_env_value('CHUNKING_METHOD', default=cls.chunking_method),
             cls.chunking_method
         )
+        chunk_max_chars = _env_int(
+            'CHUNK_MAX_CHARS', 'CHUNK_SIZE', default=cls.chunk_max_chars, min_value=200
+        )
         overrides: Dict[str, Any] = {
             'chunking_method': method,
-            'chunk_max_chars': _env_int('CHUNK_MAX_CHARS', default=cls.chunk_max_chars, min_value=200),
+            'chunk_max_chars': chunk_max_chars,
+            'chunk_size': chunk_max_chars,
             'chunk_overlap_chars': _env_int('CHUNK_OVERLAP_CHARS', default=cls.chunk_overlap_chars, min_value=0),
             'chunk_overlap_dedup_ratio': _env_float(
                 'CHUNK_OVERLAP_DEDUP_RATIO',
@@ -391,7 +411,7 @@ class UnifiedConfig:
                     'sem_lambda': _env_float('SEM_LAMBDA', default=cls.sem_lambda, min_value=0.0),
                     'sem_window_w': _env_int('SEM_WINDOW_W', default=cls.sem_window_w, min_value=1),
                 })
-            elif method in {"dsc", "parent_only"}:
+            elif method in {"dual_semantic", "parent_only"}:
                 overrides.update({
                     'dsc_parent_min_sentences': _env_int(
                         'DSC_PARENT_MIN_SENTENCES',
@@ -549,7 +569,7 @@ class UnifiedConfig:
                     'sem_lambda': self.sem_lambda,
                     'sem_window_w': self.sem_window_w,
                 })
-            elif self.chunking_method == "dsc":
+            elif self.chunking_method in {"dual_semantic", "parent_only"}:
                 config.update({
                     'dsc_parent_min_sentences': self.dsc_parent_min_sentences,
                     'dsc_parent_max_sentences': self.dsc_parent_max_sentences,

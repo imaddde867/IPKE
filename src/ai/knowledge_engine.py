@@ -16,6 +16,7 @@ import numpy as np
 
 from src.ai.types import ChunkExtraction, ExtractedEntity, ExtractionResult
 from src.ai.worker_pool import ChunkTask, LLMWorkerPool
+from src.ai.llm_backends import normalize_backend_name
 from src.core.unified_config import UnifiedConfig, get_config
 from src.logging_config import get_logger
 from src.processors.chunkers import Chunk, get_chunker
@@ -47,8 +48,8 @@ class UnifiedKnowledgeEngine:
 
     def _determine_backend(self) -> str:
         requested = getattr(self.config, "llm_backend", None)
-        if requested:
-            return requested
+        if requested and str(requested).lower() not in {"auto", "none"}:
+            return normalize_backend_name(str(requested).lower())
         backend = self.config.detect_gpu_backend()
         if backend == "cuda":
             return "llama_cpp"

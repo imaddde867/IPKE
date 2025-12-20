@@ -7,6 +7,15 @@ from typing import List, Optional
 
 from src.logging_config import get_logger
 
+_BACKEND_ALIASES = {
+    "llama.cpp": "llama_cpp",
+    "llama-cpp": "llama_cpp",
+}
+
+
+def normalize_backend_name(name: str) -> str:
+    return _BACKEND_ALIASES.get(name, name)
+
 logger = get_logger(__name__)
 
 try:
@@ -93,7 +102,7 @@ class TransformersBackend(LLMBackendBase):
             trust_remote_code=True,
             low_cpu_mem_usage=True,
         )
-        if not quant_config and self.device == "cpu":
+        if not quant_config:
             self.model.to(self.device)
         self.model.eval()
         self.generation_params = {
@@ -108,7 +117,9 @@ class TransformersBackend(LLMBackendBase):
     def _resolve_device(self, llm_config) -> str:
         if torch is None:
             return "cpu"
-        if torch.cuda.is_available() and llm_config.get("enable_gpu"):
+        if not llm_config.get("enable_gpu", True):
+            return "cpu"
+        if torch.cuda.is_available():
             return "cuda"
         if getattr(torch.backends, "mps", None) and torch.backends.mps.is_available():
             return "mps"
@@ -127,7 +138,7 @@ class TransformersBackend(LLMBackendBase):
 
 
 def build_backend(config, backend_name: str) -> LLMBackendBase:
-    backend = backend_name.lower()
+    backend = normalize_backend_name(backend_name.lower())
     if backend == "llama.cpp" or backend == "llama_cpp":
         return LlamaCppBackend(config)
     if backend == "transformers":
@@ -145,5 +156,6 @@ __all__ = [
     "LLMBackendBase",
     "TransformersBackend",
     "build_backend",
+    "normalize_backend_name",
     "warmup_backend",
 ]
