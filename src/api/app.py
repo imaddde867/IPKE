@@ -6,6 +6,7 @@ from typing import Dict, Any, List, Optional
 from datetime import datetime
 import tempfile
 import os
+import shutil
 from pathlib import Path
 from contextlib import asynccontextmanager
 
@@ -68,6 +69,12 @@ async def lifespan(app: FastAPI):
     try:
         yield
     finally:
+        proc = globals().get("processor")
+        if proc is not None:
+            try:
+                proc.shutdown()
+            except Exception as exc:  # pragma: no cover - best effort shutdown
+                logger.warning("Failed to shut down processor cleanly: %s", exc)
         logger.info("IPKE API shutting down")
 
 
@@ -162,27 +169,27 @@ async def extract_knowledge(
     # Validate file
     if not file.filename:
         raise HTTPException(status_code=400, detail="No file provided")
-    
-    content = await file.read()
-    file_size = len(content)
-    
-    if file_size > config.get_max_file_size():
-        raise HTTPException(
-            status_code=413, 
-            detail=f"File too large. Maximum size: {config.max_file_size_mb}MB"
-        )
-    
-    # Check file format
+
     file_ext = Path(file.filename).suffix.lower()
     if file_ext not in config.supported_formats:
         raise HTTPException(
             status_code=415,
             detail=f"Unsupported file format: {file_ext}"
         )
+
+    file.file.seek(0, os.SEEK_END)
+    file_size = file.file.tell()
+    file.file.seek(0)
+
+    if file_size > config.get_max_file_size():
+        raise HTTPException(
+            status_code=413,
+            detail=f"File too large. Maximum size: {config.max_file_size_mb}MB"
+        )
     
     # Save uploaded file temporarily
     with tempfile.NamedTemporaryFile(delete=False, suffix=file_ext) as tmp_file:
-        tmp_file.write(content)
+        shutil.copyfileobj(file.file, tmp_file)
         tmp_file_path = tmp_file.name
     
     try:

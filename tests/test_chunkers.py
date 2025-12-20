@@ -99,7 +99,7 @@ def test_dual_semantic_parent_boundaries(monkeypatch):
     monkeypatch.setenv("EXPLAINIUM_ENV", "testing")
 
     class DSCfg(DummyCfg):
-        chunking_method = "dsc"
+        chunking_method = "dual_semantic"
 
     chunker = DualSemanticChunker(DSCfg())
 

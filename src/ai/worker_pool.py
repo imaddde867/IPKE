@@ -9,7 +9,7 @@ from dataclasses import dataclass
 from multiprocessing import Process, get_context
 from typing import Dict, List, Optional, Sequence
 
-from src.ai.llm_backends import build_backend
+from src.ai.llm_backends import build_backend, normalize_backend_name
 from src.ai.prompting import build_prompt_strategy
 from src.ai.types import ChunkExtraction
 from src.logging_config import get_logger
@@ -92,11 +92,15 @@ class LLMWorkerPool:
         timeout: Optional[int] = None,
     ):
         self.config = config
-        self.backend_name = backend_name
+        self.backend_name = normalize_backend_name(backend_name)
         self.available_devices = _available_cuda_devices()
+        if not getattr(config, "enable_gpu", True):
+            self.available_devices = []
         resolved_strategy = (device_strategy or "single").strip().lower()
         if resolved_strategy == "auto":
             resolved_strategy = "round_robin" if len(self.available_devices) > 1 else "single"
+        if resolved_strategy not in {"single", "round_robin"}:
+            resolved_strategy = "single"
         self.device_strategy = resolved_strategy
         max_cap = getattr(config, "max_workers", None)
         requested = int(num_workers) if num_workers is not None else 0

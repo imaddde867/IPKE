@@ -115,6 +115,7 @@ def _build_graph(result: ExtractionResult, catalog: Dict) -> nx.DiGraph:
     G = nx.DiGraph()
     steps = result.steps or []
     all_constraints = []
+    name_to_id = _resource_name_to_id_map(catalog)
     
     for idx, step in enumerate(steps):
         step_id = step.get("id", f"S{idx + 1}")
@@ -189,8 +190,6 @@ def _build_graph(result: ExtractionResult, catalog: Dict) -> nx.DiGraph:
                 G.add_edge(step_id, object_node_id, edge_type="ON")
 
         # Resources and parameters
-        name_to_id = _resource_name_to_id_map(catalog)
-
         def _ensure_res_node(res: Any, category: str) -> str:
             # Create or reuse a resource node, return node ID
             if isinstance(res, dict):
@@ -202,7 +201,6 @@ def _build_graph(result: ExtractionResult, catalog: Dict) -> nx.DiGraph:
             rid = str(rid)
             node_id = f"R:{rid}"
             if node_id not in G:
-                colors = THEME.get(f"resource_{category}", THEME["resource_materials"])
                 G.add_node(
                     node_id,
                     node_type="resource",
@@ -238,7 +236,6 @@ def _build_graph(result: ExtractionResult, catalog: Dict) -> nx.DiGraph:
                     pname = plabel
                 pid = f"P:{step_id}:{pname or 'param'}"
                 if pid not in G:
-                    colors = THEME["parameter"]
                     G.add_node(
                         pid,
                         node_type="parameter",
@@ -302,7 +299,6 @@ def _build_graph(result: ExtractionResult, catalog: Dict) -> nx.DiGraph:
             low = name.lower()
             node_id = f"E:{idx+1}"
             category = str(getattr(ent, "category", "entity") or "entity").lower()
-            colors = THEME.get(f"resource_{category}", THEME["resource_materials"])
             G.add_node(
                 node_id,
                 node_type="entity",

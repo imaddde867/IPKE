@@ -108,6 +108,30 @@ class TestUnifiedConfig:
             monkeypatch.delenv('EXPLAINIUM_ENV', raising=False)
             reload_config()
 
+    def test_chunking_method_aliases(self, monkeypatch):
+        """Chunking method aliases should normalize to canonical names."""
+        try:
+            monkeypatch.setenv('CHUNKING_METHOD', 'dsc')
+            reload_config()
+            config = get_config()
+            assert config.chunking_method == 'dual_semantic'
+        finally:
+            monkeypatch.delenv('CHUNKING_METHOD', raising=False)
+            reload_config()
+
+    def test_chunk_size_alias(self, monkeypatch):
+        """CHUNK_SIZE should act as a fallback for CHUNK_MAX_CHARS."""
+        try:
+            monkeypatch.delenv('CHUNK_MAX_CHARS', raising=False)
+            monkeypatch.setenv('CHUNK_SIZE', '1234')
+            reload_config()
+            config = get_config()
+            assert config.chunk_max_chars == 1234
+            assert config.chunk_size == 1234
+        finally:
+            monkeypatch.delenv('CHUNK_SIZE', raising=False)
+            reload_config()
+
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
