@@ -1,6 +1,7 @@
 """Tests for the unified knowledge engine orchestration."""
 
 import pytest
+from unittest.mock import MagicMock, patch
 
 from src.ai.knowledge_engine import UnifiedKnowledgeEngine
 from src.ai.types import ChunkExtraction, ExtractedEntity
@@ -14,36 +15,51 @@ def make_chunk(step_text: str, constraint_text: str) -> ChunkExtraction:
     )
 
 
+def mock_chunker():
+    """Create a mock chunker that returns a single chunk."""
+    mock = MagicMock()
+    chunk = MagicMock()
+    chunk.text = "Test chunk"
+    chunk.sentence_span = (0, 10)
+    chunk.meta = {}
+    mock.chunk.return_value = [chunk]
+    return mock
+
+
 @pytest.mark.asyncio
 async def test_engine_normalizes_steps(monkeypatch):
-    engine = UnifiedKnowledgeEngine()
+    with patch("src.ai.knowledge_engine.get_chunker", return_value=mock_chunker()):
+        with patch.dict("sys.modules", {"sentence_transformers": MagicMock(SentenceTransformer=MagicMock())}):
+            engine = UnifiedKnowledgeEngine()
 
-    async def fake_run_chunks(self, tasks):
-        assert len(tasks) == 1
-        return [make_chunk("Inspect manifold", "Wear PPE")]
+            async def fake_run_chunks(self, tasks):
+                assert len(tasks) == 1
+                return [make_chunk("Inspect manifold", "Wear PPE")]
 
-    monkeypatch.setattr(UnifiedKnowledgeEngine, "_run_chunks", fake_run_chunks)
-    result = await engine.extract_knowledge("Inspect manifold before work.")
-    assert result.steps[0]["id"] == "S1"
-    assert result.constraints[0]["steps"] == ["S1"]
-    assert result.entities
+            monkeypatch.setattr(UnifiedKnowledgeEngine, "_run_chunks", fake_run_chunks)
+            result = await engine.extract_knowledge("Inspect manifold before work.")
+            assert result.steps[0]["id"] == "S1"
+            assert result.constraints[0]["steps"] == ["S1"]
+            assert result.entities
 
 
 @pytest.mark.asyncio
 async def test_engine_cache_hits(monkeypatch):
-    engine = UnifiedKnowledgeEngine()
-    calls = {"count": 0}
+    with patch("src.ai.knowledge_engine.get_chunker", return_value=mock_chunker()):
+        with patch.dict("sys.modules", {"sentence_transformers": MagicMock(SentenceTransformer=MagicMock())}):
+            engine = UnifiedKnowledgeEngine()
+            calls = {"count": 0}
 
-    async def fake_run_chunks(self, tasks):
-        calls["count"] += 1
-        return [make_chunk("Step alpha", "Use gloves")]
+            async def fake_run_chunks(self, tasks):
+                calls["count"] += 1
+                return [make_chunk("Step alpha", "Use gloves")]
 
-    monkeypatch.setattr(UnifiedKnowledgeEngine, "_run_chunks", fake_run_chunks)
-    await engine.extract_knowledge("Alpha procedure text.")
-    await engine.extract_knowledge("Alpha procedure text.")  # cache hit
-    assert calls["count"] == 1
-    stats = engine.get_performance_stats()
-    assert stats["cache_hits"] == 1
+            monkeypatch.setattr(UnifiedKnowledgeEngine, "_run_chunks", fake_run_chunks)
+            await engine.extract_knowledge("Alpha procedure text.")
+            await engine.extract_knowledge("Alpha procedure text.")  # cache hit
+            assert calls["count"] == 1
+            stats = engine.get_performance_stats()
+            assert stats["cache_hits"] == 1
 
 
 def test_clear_cache_shuts_down_pool():
