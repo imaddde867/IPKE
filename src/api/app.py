@@ -133,28 +133,6 @@ async def health_check():
     return _build_health_response()
 
 
-@app.get("/config")
-async def get_config_info():
-    """Get system configuration information"""
-    config = get_config()
-    llm_config = config.get_llm_config()
-    chunking_config = config.get_chunking_config()
-    
-    return {
-        "gpu_enabled": llm_config['enable_gpu'],
-        "gpu_backend": llm_config['gpu_backend'],
-        "detected_backend": config.detect_gpu_backend(),
-        "gpu_layers": llm_config['n_gpu_layers'],
-        "n_ctx": llm_config['n_ctx'],
-        "model_path": llm_config['model_path'],
-        "max_chunks": llm_config['max_chunks'],
-        "max_tokens": llm_config['max_tokens'],
-        "confidence_threshold": llm_config['confidence_threshold'],
-        "chunk_size": config.chunk_size,
-        "chunking": chunking_config
-    }
-
-
 @app.post("/extract", response_model=ExtractionResponse)
 async def extract_knowledge(
     file: UploadFile = File(...)

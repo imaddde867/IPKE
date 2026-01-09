@@ -70,7 +70,6 @@ class ProcessingResult:
     """Simplified processing result"""
     document_id: str
     document_type: str
-    content_extracted: str
     extraction_result: ExtractionResult
     processing_time: float
     file_size: int
@@ -174,7 +173,6 @@ class StreamlinedDocumentProcessor:
             result = ProcessingResult(
                 document_id=document_id,
                 document_type=document_type,
-                content_extracted=content[:1000] + "..." if len(content) > 1000 else content,
                 extraction_result=extraction_result,
                 processing_time=processing_time,
                 file_size=file_size,

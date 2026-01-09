@@ -28,6 +28,8 @@ streamlit run streamlit_app.py
 GPU_BACKEND=metal
 CHUNKING_METHOD=dual_semantic
 PROMPTING_STRATEGY=P3
+# Deduplicate overlapping content and enforce clean constraints/steps
+ENABLE_CHUNK_DEDUP=true
 ```
 
 ```bash

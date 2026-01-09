@@ -56,7 +56,6 @@ class TestDocumentProcessor:
             result = await processor.process_document(temp_path)
             assert result is not None
             assert result.document_id is not None
-            assert len(result.content_extracted) > 0
             assert result.processing_time > 0
         finally:
             Path(temp_path).unlink()

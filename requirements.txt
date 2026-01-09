@@ -26,13 +26,13 @@ python-dotenv>=1.0.0
 
 # Data & document processing
 pandas>=2.0.0
-python-pptx>=0.6.23
-PyMuPDF>=1.23.0
-python-docx>=0.8.11
 
-# Vision / audio (optional extras)
-easyocr>=1.7.0
-openai-whisper>=20231117
+# Optional heavy dependencies - install with: pip install -r requirements-extras.txt
+# These are guarded with try/except and will gracefully degrade if not installed:
+# - PyMuPDF (PDF extraction)
+# - python-pptx, python-docx (Office documents)
+# - easyocr (OCR for images)
+# - openai-whisper (audio transcription)
 
 # LLM backend (optional for baseline if cached outputs unavailable)
 llama-cpp-python==0.2.80

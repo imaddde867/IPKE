@@ -147,7 +147,7 @@ class UnifiedConfig:
     llm_backend: str = "llama_cpp"
     llm_device_strategy: str = "auto"
     llm_num_workers: int = 0  # 0 -> auto scale with available devices
-    prompting_strategy: str = "P0"
+    prompting_strategy: str = "P3"
     llm_random_seed: int = 42
     
     # GPU Configuration
@@ -165,21 +165,22 @@ class UnifiedConfig:
     
     # Performance
     max_workers: int = 8
-    chunk_size: int = 2000
     cache_size: int = 1000
     processing_timeout: int = 3600
 
     # Chunking configuration
-    chunking_method: str = "fixed"
+    chunking_method: str = "dual_semantic"
     chunk_max_chars: int = 2000
     chunk_overlap_chars: int = 0
     chunk_overlap_dedup_ratio: float = 0.75
-    enable_chunk_dedup: bool = False
+    enable_chunk_dedup: bool = True
     chunk_dedup_threshold: float = 0.9
     chunk_dedup_overlap_ratio: float = 0.7
     chunk_dedup_min_unique_chars: int = 320
     chunk_dedup_embedding_model: str = ""
     embedding_model_path: str = "all-mpnet-base-v2"
+    step_dedup_threshold: float = 0.9
+    constraint_dedup_threshold: float = 0.9
     sem_similarity: str = "cosine"
     sem_min_sentences_per_chunk: int = 2
     sem_max_sentences_per_chunk: int = 40
@@ -242,7 +243,6 @@ class UnifiedConfig:
             'gpu_memory_fraction': _env_float('GPU_MEMORY_FRACTION', default=0.8, min_value=0.0, max_value=1.0),
             'confidence_threshold': _env_float('CONFIDENCE_THRESHOLD', default=0.8, min_value=0.0, max_value=1.0),
             'quality_threshold': _env_float('QUALITY_THRESHOLD', default=0.7, min_value=0.0, max_value=1.0),
-            'chunk_size': _env_int('CHUNK_SIZE', default=2000, min_value=100),
             'llm_n_ctx': _env_int('LLM_N_CTX', default=cls.llm_n_ctx),
             'llm_temperature': _env_float('LLM_TEMPERATURE', default=cls.llm_temperature),
             'llm_top_p': _env_float('LLM_TOP_P', default=cls.llm_top_p),
@@ -283,7 +283,7 @@ class UnifiedConfig:
             'llm_backend': "transformers",
             'llm_device_strategy': "single",
             'llm_num_workers': 1,
-            'prompting_strategy': "P0",
+            'prompting_strategy': cls.prompting_strategy,
             'llm_random_seed': cls.llm_random_seed,
             'strict_schema_validation': _env_bool('STRICT_SCHEMA_VALIDATION', default=cls.strict_schema_validation),
             'schema_autofix_enabled': _env_bool('SCHEMA_AUTOFIX_ENABLED', default=cls.schema_autofix_enabled),
@@ -354,7 +354,6 @@ class UnifiedConfig:
         overrides: Dict[str, Any] = {
             'chunking_method': method,
             'chunk_max_chars': chunk_max_chars,
-            'chunk_size': chunk_max_chars,
             'chunk_overlap_chars': _env_int('CHUNK_OVERLAP_CHARS', default=cls.chunk_overlap_chars, min_value=0),
             'chunk_overlap_dedup_ratio': _env_float(
                 'CHUNK_OVERLAP_DEDUP_RATIO',
@@ -447,7 +446,7 @@ class UnifiedConfig:
             'max_file_size_mb': self.max_file_size_mb,
             'supported_formats': self.supported_formats,
             'max_workers': self.max_workers,
-            'chunk_size': self.chunk_size,
+            'chunk_max_chars': self.chunk_max_chars,
             'processing_timeout': self.processing_timeout
         }
 
@@ -545,7 +544,6 @@ class UnifiedConfig:
         """Expose chunking configuration to downstream components."""
         config: Dict[str, Any] = {
             'method': self.chunking_method,
-            'chunk_size': self.chunk_size,
             'chunk_max_chars': self.chunk_max_chars,
             'chunk_overlap_chars': self.chunk_overlap_chars,
             'chunk_overlap_dedup_ratio': self.chunk_overlap_dedup_ratio,
