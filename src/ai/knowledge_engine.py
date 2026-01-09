@@ -1,6 +1,7 @@
 """LLM-driven knowledge extraction engine."""
-from src.ai.llm_env_setup import *  # Must be first!
+from src.ai.llm_env_setup import *  
 
+import difflib
 import asyncio
 import hashlib
 import json
@@ -22,6 +23,7 @@ from src.logging_config import get_logger
 from src.processors.chunkers import Chunk, get_chunker
 from src.validation import validate_extraction
 from src.graph.canonicalizer import assign_canonical_ids
+from src.validation.constraint_validator import validate_constraints
 
 logger = get_logger(__name__)
 
@@ -123,8 +125,8 @@ class UnifiedKnowledgeEngine:
         chunk_results = await self._run_chunks(tasks)
 
         all_entities, raw_steps, raw_constraints = self._merge_chunk_results(chunk_results)
-        normalized_steps, step_id_map = self._normalize_steps(raw_steps)
-        normalized_constraints = self._normalize_constraints(raw_constraints, step_id_map)
+        normalized_steps, step_id_map, step_alias_map = self._normalize_steps(raw_steps)
+        normalized_constraints = self._normalize_constraints(raw_constraints, step_id_map, step_alias_map)
 
         processing_time = time.time() - start_time
         confidence_score = (
@@ -482,16 +484,20 @@ class UnifiedKnowledgeEngine:
         except (TypeError, ValueError):
             return float(self.config.confidence_threshold)
 
-    def _normalize_steps(self, steps: List[Dict[str, Any]]) -> Tuple[List[Dict[str, Any]], Dict[str, str]]:
+    def _normalize_steps(
+        self, steps: List[Dict[str, Any]]
+    ) -> Tuple[List[Dict[str, Any]], Dict[str, str], Dict[str, str]]:
+        deduped_steps, step_alias_map = self._deduplicate_steps(steps)
         normalized: List[Dict[str, Any]] = []
         id_map: Dict[str, str] = {}
-        for idx, step in enumerate(steps):
+
+        for idx, step in enumerate(deduped_steps):
             content = (step.get("text") or "").strip()
             if not content:
                 continue
             new_id = f"S{len(normalized) + 1}"
-            original_id = str(step.get("id") or new_id)
-            id_map[original_id] = new_id
+            raw_id = str(step.get("id") or new_id)
+            id_map[raw_id] = new_id
             normalized.append(
                 {
                     "id": new_id,
@@ -500,10 +506,27 @@ class UnifiedKnowledgeEngine:
                     "confidence": self._coerce_confidence(step.get("confidence")),
                 }
             )
-        return normalized, id_map
 
-    def _normalize_constraints(self, constraints: List[Dict[str, Any]], step_id_map: Dict[str, str]) -> List[Dict[str, Any]]:
+        # map aliases (duplicate raw IDs) onto the canonical new IDs
+        for raw_id, canonical_raw in step_alias_map.items():
+            if raw_id in id_map:
+                continue
+            if canonical_raw in id_map:
+                id_map[raw_id] = id_map[canonical_raw]
+
+        return normalized, id_map, step_alias_map
+
+    def _normalize_constraints(
+        self,
+        constraints: List[Dict[str, Any]],
+        step_id_map: Dict[str, str],
+        step_alias_map: Dict[str, str],
+    ) -> List[Dict[str, Any]]:
+        deduped_constraints = self._deduplicate_constraints(constraints, step_alias_map)
         normalized: List[Dict[str, Any]] = []
+        available_raw_ids = set(step_alias_map.keys()) | set(step_alias_map.values()) | set(step_id_map.keys())
+        available_target_ids = available_raw_ids | set(step_id_map.values())
+
         def _coerce_ref(value: Any) -> Optional[str]:
             if value is None:
                 return None
@@ -521,7 +544,22 @@ class UnifiedKnowledgeEngine:
                 return None
             text = str(value).strip()
             return text or None
-        for constraint in constraints:
+
+        def _fuzzy_match_step(ref: str) -> Optional[str]:
+            candidates = list(available_target_ids)
+            match = difflib.get_close_matches(ref, candidates, n=1, cutoff=0.75)
+            if not match:
+                return None
+            candidate = match[0]
+            if candidate in step_id_map:
+                return step_id_map[candidate]
+            if candidate in step_alias_map and step_alias_map[candidate] in step_id_map:
+                return step_id_map[step_alias_map[candidate]]
+            if candidate in step_id_map.values():
+                return candidate
+            return None
+
+        for constraint in deduped_constraints:
             text = (
                 constraint.get("text")
                 or constraint.get("expression")
@@ -530,6 +568,7 @@ class UnifiedKnowledgeEngine:
             ).strip()
             if not text:
                 continue
+
             raw_refs = constraint.get("steps") or constraint.get("attached_to") or constraint.get("targets") or []
             if not isinstance(raw_refs, list):
                 raw_refs = [raw_refs]
@@ -539,9 +578,15 @@ class UnifiedKnowledgeEngine:
                 ref_id = _coerce_ref(ref)
                 if not ref_id:
                     continue
-                mapped = step_id_map.get(ref_id)
+                canonical_raw = step_alias_map.get(ref_id, ref_id)
+                mapped = step_id_map.get(canonical_raw) or step_id_map.get(ref_id)
+                if not mapped:
+                    mapped = _fuzzy_match_step(ref_id)
                 if mapped:
                     attached_steps.append(mapped)
+
+            if not attached_steps:
+                continue
 
             normalized_constraint = deepcopy(constraint)
             normalized_constraint.pop("steps", None)
@@ -551,7 +596,131 @@ class UnifiedKnowledgeEngine:
             normalized_constraint["confidence"] = self._coerce_confidence(constraint.get("confidence"))
             normalized_constraint["steps"] = attached_steps
             normalized.append(normalized_constraint)
+
+        if not normalized:
+            return normalized
+
+        report = validate_constraints(normalized)
+        if report.warnings:
+            logger.warning("Constraint validation warnings: %s", report.warnings)
+        if report.errors:
+            error_ids = {cid for cid, _ in report.errors}
+            logger.warning("Constraint validation errors (filtered out): %s", report.errors)
+            normalized = [c for c in normalized if c.get("id") not in error_ids]
+
         return normalized
+
+    def _deduplicate_steps(
+        self, steps: List[Dict[str, Any]]
+    ) -> Tuple[List[Dict[str, Any]], Dict[str, str]]:
+        if not steps:
+            return [], {}
+        threshold = float(
+            getattr(self.config, "step_dedup_threshold", getattr(self.config, "chunk_dedup_threshold", 0.9))
+        )
+        texts = [(step.get("text") or "").strip() for step in steps]
+        embeddings = self._embed_chunk_texts(texts)
+        kept_indices: List[int] = []
+        kept_embeddings: List[np.ndarray] = []
+        alias_map: Dict[str, str] = {}
+
+        for idx, (step, text) in enumerate(zip(steps, texts)):
+            if not text:
+                continue
+            raw_id = str(step.get("id") or idx)
+            if not kept_embeddings:
+                kept_indices.append(idx)
+                kept_embeddings.append(embeddings[idx])
+                alias_map[raw_id] = raw_id
+                continue
+            sims = np.dot(np.vstack(kept_embeddings), embeddings[idx])
+            best = float(np.max(sims))
+            best_idx = int(np.argmax(sims))
+            if best >= threshold:
+                canonical_raw = str(steps[kept_indices[best_idx]].get("id") or kept_indices[best_idx])
+                alias_map[raw_id] = canonical_raw
+            else:
+                kept_indices.append(idx)
+                kept_embeddings.append(embeddings[idx])
+                alias_map[raw_id] = raw_id
+
+        deduped = [steps[i] for i in kept_indices]
+        # ensure canonical ids map to themselves
+        for step in deduped:
+            raw_id = str(step.get("id") or "")
+            if raw_id and raw_id not in alias_map:
+                alias_map[raw_id] = raw_id
+        return deduped, alias_map
+
+    def _deduplicate_constraints(
+        self, constraints: List[Dict[str, Any]], step_alias_map: Dict[str, str]
+    ) -> List[Dict[str, Any]]:
+        if not constraints:
+            return []
+        threshold = float(
+            getattr(self.config, "constraint_dedup_threshold", getattr(self.config, "chunk_dedup_threshold", 0.9))
+        )
+        texts = [
+            (c.get("text") or c.get("expression") or c.get("description") or "").strip()
+            for c in constraints
+        ]
+        embeddings = self._embed_chunk_texts(texts)
+        kept: List[Dict[str, Any]] = []
+        kept_embeddings: List[np.ndarray] = []
+
+        def _normalize_refs(raw_refs: Any) -> List[str]:
+            refs = raw_refs or []
+            if not isinstance(refs, list):
+                refs = [refs]
+            normalized_refs: List[str] = []
+            for ref in refs:
+                if isinstance(ref, dict):
+                    candidate = ref.get("id") or ref.get("step_id") or ref.get("step")
+                else:
+                    candidate = str(ref) if ref is not None else ""
+                if candidate:
+                    canonical = step_alias_map.get(candidate, candidate)
+                    normalized_refs.append(canonical)
+            return normalized_refs
+
+        for idx, (constraint, text) in enumerate(zip(constraints, texts)):
+            if not text:
+                continue
+            if not kept_embeddings:
+                clone = deepcopy(constraint)
+                clone["attached_to"] = _normalize_refs(
+                    constraint.get("attached_to") or constraint.get("steps") or constraint.get("targets")
+                )
+                kept.append(clone)
+                kept_embeddings.append(embeddings[idx])
+                continue
+
+            sims = np.dot(np.vstack(kept_embeddings), embeddings[idx])
+            best = float(np.max(sims))
+            best_idx = int(np.argmax(sims))
+            if best >= threshold:
+                # merge references into existing constraint
+                existing = kept[best_idx]
+                merged_refs = set(existing.get("attached_to", []))
+                merged_refs.update(
+                    _normalize_refs(
+                        constraint.get("attached_to") or constraint.get("steps") or constraint.get("targets")
+                    )
+                )
+                existing["attached_to"] = list(merged_refs)
+                existing["confidence"] = max(
+                    self._coerce_confidence(existing.get("confidence")),
+                    self._coerce_confidence(constraint.get("confidence")),
+                )
+            else:
+                clone = deepcopy(constraint)
+                clone["attached_to"] = _normalize_refs(
+                    constraint.get("attached_to") or constraint.get("steps") or constraint.get("targets")
+                )
+                kept.append(clone)
+                kept_embeddings.append(embeddings[idx])
+
+        return kept
 
     def _update_stats(self, result: ExtractionResult):
         stats = self.performance_stats

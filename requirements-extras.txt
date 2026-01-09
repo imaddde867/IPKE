@@ -1,0 +1,16 @@
+# IPKE - Optional Heavy Dependencies
+# Install with: pip install -r requirements-extras.txt
+# These packages are guarded with try/except in the codebase and will gracefully degrade if not installed.
+
+# PDF extraction
+PyMuPDF>=1.23.0
+
+# Office document processing
+python-pptx>=0.6.23
+python-docx>=0.8.11
+
+# OCR for image processing (heavy - ~1.5GB with models)
+easyocr>=1.7.0
+
+# Audio transcription (heavy - ~1GB with models)
+openai-whisper>=20231117

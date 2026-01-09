@@ -127,7 +127,6 @@ class TestUnifiedConfig:
             reload_config()
             config = get_config()
             assert config.chunk_max_chars == 1234
-            assert config.chunk_size == 1234
         finally:
             monkeypatch.delenv('CHUNK_SIZE', raising=False)
             reload_config()

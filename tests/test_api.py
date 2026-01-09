@@ -91,7 +91,6 @@ class TestAPI:
             return ProcessingResult(
                 document_id="doc123",
                 document_type="manual",
-                content_extracted="sample",
                 extraction_result=ExtractionResult(
                     entities=[],
                     confidence_score=0.0,
