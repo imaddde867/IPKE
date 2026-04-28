@@ -18,8 +18,8 @@ Thesis-grade, privacy-preserving pipeline that reconstructs Procedural Knowledge
 ## Run IPKE
 
 ```bash
-python3 -m venv .venv && source .venv/bin/activate
-pip install -r requirements.txt
+uv venv && source .venv/bin/activate
+uv sync --extra extras
 streamlit run streamlit_app.py
 ```
 
@@ -34,11 +34,11 @@ ENABLE_CHUNK_DEDUP=true
 
 ```bash
 # Reproduce chunking experiments
-python scripts/experiments/run_all_chunking_experiments.py \
+uv run python scripts/experiments/run_all_chunking_experiments.py \
   --documents datasets/archive/test_data/text/*.txt
 
 # API surface
-python main.py  # http://localhost:8000/docs
+uv run python main.py  # http://localhost:8000/docs
 ```
 
 Research distribution for academic and regulated industrial settings. See `LICENSE`.
@@ -53,11 +53,11 @@ Turku University of Applied Sciences · 2025
   `python - <<'PY'\nfrom huggingface_hub import hf_hub_download\nhf_hub_download(\n  repo_id=\"TheBloke/Mistral-7B-Instruct-v0.2-GGUF\",\n  filename=\"mistral-7b-instruct-v0.2.Q4_K_M.gguf\",\n  local_dir=\"models/llm\",\n  local_dir_use_symlinks=False,\n)\nPY`
 
 - Metal (Apple silicon, fastest locally):  
-  `pip install --force-reinstall --no-cache-dir --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/metal "llama-cpp-python==0.2.84"`  
+  `uv sync --extra extras --index-url https://abetlen.github.io/llama-cpp-python/whl/metal`  
   Test: `bash scripts/test_mistral_metal.sh`
 
 - CUDA (NVIDIA, other hardware):  
-  `pip install --force-reinstall --no-cache-dir --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cu121 "llama-cpp-python==0.2.84"`  
+  `uv sync --extra extras --index-url https://abetlen.github.io/llama-cpp-python/whl/cu121`  
   Test: `bash scripts/test_mistral_cuda.sh`
 
 The app will pick up the GGUF at `models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf`; set `LLM_N_GPU_LAYERS=-1` to offload all layers to Metal/CUDA.

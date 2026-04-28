@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 # CUDA smoke test for the Mistral 7B GGUF on NVIDIA hardware.
 # Prereqs on the CUDA box:
-#   pip install --force-reinstall --no-cache-dir \
-#     --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cu121 \
-#     "llama-cpp-python==0.2.84"
+#   uv sync --index-url https://abetlen.github.io/llama-cpp-python/whl/cu121
 # Run from repo root: bash scripts/test_mistral_cuda.sh
 
 set -euo pipefail

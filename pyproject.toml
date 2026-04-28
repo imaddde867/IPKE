@@ -1,0 +1,78 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ipke"
+version = "0.1.0"
+description = "Industrial Procedural Knowledge Extraction — Thesis-grade, privacy-preserving pipeline that reconstructs Procedural Knowledge Graphs from safety-critical industrial manuals"
+requires-python = ">=3.12"
+dependencies = [
+    # Numerics + NLP (baseline evaluation + embeddings)
+    "numpy>=1.24.4,<2.0",
+    "scipy>=1.11.3",
+    "networkx>=3.1",
+    "tqdm>=4.66.1",
+    "spacy>=3.7.2",
+    "en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl",
+    "sentence-transformers>=2.2.2",
+    "torch>=2.1.0",
+    "requests>=2.31.0",
+    "neo4j==5.14.0",
+    "jsonschema==4.20.0",
+    # Web Framework
+    "fastapi>=0.104.0",
+    "python-multipart>=0.0.20",
+    "uvicorn>=0.24.0",
+    "streamlit>=1.38.0",
+    "pyvis>=0.3.2",
+    # Environment
+    "python-dotenv>=1.0.0",
+    # Data & document processing
+    "pandas>=2.0.0",
+    # LLM backend (optional for baseline if cached outputs unavailable)
+    "llama-cpp-python==0.2.80",
+    "transformers>=4.36.0",
+    "accelerate>=0.25.0",
+    "bitsandbytes>=0.41.3",
+    # Testing
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.23.0",
+]
+
+[project.optional-dependencies]
+extras = [
+    # PDF extraction
+    "PyMuPDF>=1.23.0",
+    # Office document processing
+    "python-pptx>=0.6.23",
+    "python-docx>=0.8.11",
+    # OCR for image processing (heavy - ~1.5GB with models)
+    "easyocr>=1.7.0",
+    # Audio transcription (heavy - ~1GB with models)
+    "openai-whisper>=20231117",
+]
+
+[project.scripts]
+ipke-api = "main:main"
+
+[tool.setuptools.packages.find]
+include = ["src*"]
+
+[tool.pytest.ini_options]
+filterwarnings = [
+    "ignore:builtin type (SwigPyPacked|SwigPyObject|swigvarlink) has no __module__ attribute:DeprecationWarning",
+]
+markers = [
+    "integration: marks tests that require heavy models (deselect with '-m \"not integration\"')",
+]
+addopts = "-m \"not integration\" -v"
+
+[tool.uv]
+# Platform-specific build indexes for llama-cpp-python
+# Apple Silicon (Metal):
+#   uv sync --extra extras --index-url https://abetlen.github.io/llama-cpp-python/whl/metal
+# CUDA (NVIDIA):
+#   uv sync --extra extras --index-url https://abetlen.github.io/llama-cpp-python/whl/cu121
+# CPU (default):
+#   uv sync --extra extras
