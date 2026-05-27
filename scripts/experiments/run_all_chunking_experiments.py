@@ -18,6 +18,8 @@ from typing import Callable, Dict, Iterable, List, Optional, Sequence, Tuple
 from urllib import error as urllib_error
 from urllib import request as urllib_request
 
+import os
+
 import requests
 
 
@@ -385,11 +387,13 @@ def main() -> None:
     fixed_status = "SUCCESS" if statuses.get("fixed_chunker") else "FAILED"
     semantic_status = "SUCCESS" if statuses.get("semantic_chunker") else "FAILED"
     dsc_status = "SUCCESS" if statuses.get("dsc_chunker") else "FAILED"
-    notify_discord(
-        "[REDACTED_DISCORD_WEBHOOK]
-        f"🎉 IPKE EXPERIMENT FINISHED at {datetime.datetime.utcnow()} UTC\n"
-        f"Status: Fixed={fixed_status}, Semantic={semantic_status}, DSC={dsc_status}",
-    )
+    webhook_url = os.environ.get("DISCORD_WEBHOOK_URL")
+    if webhook_url:
+        notify_discord(
+            webhook_url,
+            f"🎉 IPKE EXPERIMENT FINISHED at {datetime.datetime.utcnow()} UTC\n"
+            f"Status: Fixed={fixed_status}, Semantic={semantic_status}, DSC={dsc_status}",
+        )
     logging.info("All sweeps finished. DONE file written to %s.", done_file)
 
 
