@@ -1,111 +1,61 @@
-# CLAUDE.md — IPKE
+# CLAUDE.md - IPKE
 
-Read this before doing anything in this repo.
+## What this is
 
-## Who and what
+**IPKE (Industrial Procedural Knowledge Extraction)** is a research pipeline that extracts
+structured Procedural Knowledge Graphs (PKGs) from safety-critical industrial documents using
+local LLMs. It is the codebase behind Imad Eddine Elmouss's bachelor's thesis (Turku UAS,
+Dec 2025) and the target of a short paper submission to **ECIR 2027** (deadline: 12 Oct 2026).
 
-**Imad Eddine Elmouss** — Research Engineer at CoRe (Cognitive Technologies Research Group),
-Turku University of Applied Sciences, Finland. This repo is the codebase for his bachelor's
-thesis *Structured Procedural Knowledge Extraction from Industrial Documentation Using LLMs*
-(Dec 2025, Turku UAS).
+The code is not the product. Publishable, reproducible experimental results are the product.
+Every task must map to: running experiments, improving the evaluation framework, or producing
+paper-ready outputs.
 
-**Current goal**: convert the thesis into a 6-page short paper for **ECIR 2027**
-(Short Paper Track, deadline **12 October 2026**). The code is not the product — publishable
-results are the product. Every task in this repo should map to either running experiments,
-improving the evaluation framework, or producing paper-ready outputs.
+**Core method:**
 
----
+| Component | Description |
+|---|---|
+| DSC | Dual Semantic Chunking - heading-aware parent segmentation + embedding cohesion sub-chunks |
+| P3 | Two-Stage Prompting - decouple step extraction from constraint attachment |
+| Phi | Procedural Fidelity Score: `0.5*ConstraintCoverage + 0.3*StepF1 + 0.2*Kendall` |
 
-## What the thesis proved (your baseline)
+**Baseline result:** Mistral-7B-Instruct Q4_K_M + DSC + P3 = Phi=0.699, 75% constraint
+coverage on the 3M Marine SOP. Llama-3.1-70B zero-shot = Phi=0.439. Pipeline beats scale.
 
-Pipeline: **Dual Semantic Chunking (DSC)** + **P3 Two-Stage Prompting** + Procedural Fidelity
-score **Phi**.
-
-Headline result: Mistral-7B-Instruct Q4_K_M (local, llama-cpp) + DSC + P3 reaches
-Phi=0.699 and 75% constraint coverage on the 3M Marine SOP. Llama-3.1-70B with naive
-zero-shot: Phi=0.439, 50% coverage. A 10x smaller model beats the big one because the
-pipeline does the heavy lifting, not scale.
-
-Evaluated on 3 documents only. Single-seed. Constraint-Attachment F1 collapses to 0 due to
-strict string ID matching (known metric artefact). No human validation. No comparison against
-contemporary baselines (PAGED, etc.). These are the paper's open wounds.
+**Current gaps (ECIR P0):** 3 documents only, single seed, ConstraintAttachmentF1 collapses
+to 0 (strict string matching artefact), no human validation, no baseline comparison (PAGED).
 
 ---
 
-## Repo layout
+## Your role
 
-```
-src/
-  ai/
-    prompting/          # Prompt strategies: zero_shot, few_shot, chain_of_thought, two_stage (P3)
-    llm_backends.py     # LLM backend abstraction (llama-cpp today; extend for OpenAI-compatible)
-    knowledge_engine.py # Orchestrates chunker + strategy + graph builder
-  evaluation/
-    metrics.py          # Phi, StepF1, AdjacencyF1, Kendall, ConstraintCoverage, ConstraintAttachmentF1
-                        # Tier-A (steps+constraints) and Tier-B (full graph, smatch-based)
-    smatch.py           # Smatch graph alignment for Tier-B
-  processors/
-    chunkers/
-      dual_semantic.py  # DSC: heading-aware parent segmentation + embedding cohesion sub-chunks
-      fixed.py          # Fixed-size chunker (ablation baseline)
-      breakpoint.py     # Semantic breakpoint chunker (ablation baseline)
-  graph/
-    builder.py          # Assembles per-chunk extractions into a full PKG
-    models.py           # Pydantic models for PKG nodes/edges
-    neo4j_connector.py  # Neo4j persistence (optional, not needed for paper experiments)
-  validation/
-    schema_validator.py # JSON schema validation on LLM output
-scripts/
-  experiments/
-    run_all_chunking_experiments.py   # Main experiment runner (extend this for paper runs)
-    run_chunker_eval.py               # Chunker-only evaluation
-    experiment_utils.py               # Shared helpers
-    prepare_human_eval_samples.py     # Samples for human expert rating study
-  reevaluate_metrics.py               # Re-score cached predictions with updated metrics
-  run_pkg_extraction.py               # Run extraction on a single document
-datasets/
-  archive/
-    test_data/text/                   # 3 source documents (plain text)
-    test_data/gold/                   # Gold annotations (Tier-A: steps + constraints)
-    gold_human/                       # Human-revised gold (Tier-A)
-    gold_human_tierb/                 # Human-revised gold (Tier-B: full graph)
-  Samples/                            # Raw PDFs for new document intake
-```
+Senior research engineer and pair programmer for the IPKE paper push.
+
+Optimize for: **correctness, reproducibility, and paper-readiness**.
+Prefer verified incremental changes. Flag risks and non-obvious implications - don't just
+implement what is asked if there is a better approach.
+Every code change must be justifiable in terms of experimental validity or pipeline correctness.
 
 ---
 
-## Dev commands
+## Default workflow
 
-```bash
-# Setup (uv only — do not use pip or venv directly)
-uv venv && source .venv/bin/activate
-uv sync --extra extras
+At the start of every task:
 
-# For Metal (Apple Silicon M4):
-uv sync --extra extras --index-url https://abetlen.github.io/llama-cpp-python/whl/metal
+1. Clarify the concrete objective.
+2. Read relevant source files before proposing changes - never work from memory alone.
+3. Use MCP tools for library docs, API references, and external context.
+4. Keep scope focused. Do not explore beyond what the task requires.
+5. Spawn subagents for isolated investigations that would flood the main thread.
 
-# For CUDA (RTX 3090 / 5090):
-uv sync --extra extras --index-url https://abetlen.github.io/llama-cpp-python/whl/cu121
+---
 
-# Run without downloading the model (code/eval work only):
-SKIP_MODEL_CHECK=true uv run python main.py
+## Tooling priorities
 
-# Unit tests (fast, no model required):
-uv run pytest
-
-# Integration tests (require model + hardware):
-uv run pytest -m ""
-
-# Reproduce thesis chunking experiments:
-uv run python scripts/experiments/run_all_chunking_experiments.py \
-  --documents datasets/archive/test_data/text/*.txt
-
-# Re-score saved predictions after changing metrics.py:
-uv run python scripts/reevaluate_metrics.py --run-dir <run_dir>
-
-# Single document extraction:
-uv run python scripts/run_pkg_extraction.py --document datasets/archive/test_data/text/3m_marine_oem_sop.txt
-```
+- `docs` MCP (Context7): any library, framework, or API question - even well-known ones.
+- `github` MCP: PRs, issues, CI, discussions.
+- `fetch` MCP: changelogs, specs, paper PDFs.
+- Direct `grep`/`read` for first-pass code discovery; GitNexus after the target symbol is known.
 
 ---
 
@@ -114,127 +64,186 @@ uv run python scripts/run_pkg_extraction.py --document datasets/archive/test_dat
 | Machine | Access | VRAM | Use for |
 |---|---|---|---|
 | Mac M4 (local) | native | 16 GB unified | dev, fast iteration, Metal llama-cpp |
-| RTX 3090 | `ssh core` | 24 GB | primary model inference; 4B-14B comfortable; 4-bit Mistral/Qwen |
+| RTX 3090 | `ssh core` | 24 GB | primary inference; 4-bit Mistral/Qwen comfortable |
 | RTX 5090-01 | `ssh 172.24.50.2` | ~32 GB | large model runs, parallel seeds |
 | RTX 5090-02 | `ssh 172.24.50.227` | ~32 GB | parallel multi-seed runs |
-| CSC Puhti | `ssh puhti.csc.fi` | batch | long batch jobs; submit via SLURM; not always-on |
+| CSC Puhti | `ssh puhti.csc.fi` | batch | long batch jobs via SLURM |
 
-**Model runtime preference**: LM Studio over Ollama (clearer quant/context visibility). Use
-LM Studio's OpenAI-compatible local endpoint (`http://localhost:1234/v1`) so the same
-inference code works across machines. Avoid cloud APIs — this is a privacy-preserving pipeline
-by design.
+**Runtime preference:** LM Studio OpenAI-compatible endpoint (`http://localhost:1234/v1`) for
+dev and model switching. llama-cpp-python GGUF direct for final reproducibility runs.
+No cloud APIs - privacy-preserving by design.
 
-**Quantization defaults**: 4-bit (Q4_K_M) for text LLMs on 3090. fp16 acceptable on 5090s
-for quality-sensitive runs. Always record exact model version, quantization, and seed in
-experiment logs.
+**Quantization defaults:** Q4_K_M on 3090. fp16 acceptable on 5090s for quality-sensitive
+runs. Always record exact model name, quantization, temperature, seed, and hardware in logs.
 
 ---
 
-## Paper experiment gap — what's missing for ECIR
+## Repo layout
 
-This is the core of all current work. Tasks are prioritized P0 (non-negotiable) to P2
-(opportunistic).
-
-### P0 — paper is not credible without these
-
-**P0.1 — Expand dataset to 8-15 documents**
-- Current: 3 documents (3M Marine, DOA Food, Fire Safety), 47 pages total.
-- Target: 8-15 documents across distinct industrial domains.
-- Safe public sources (no partner clearance needed):
-  - OSHA Process Safety Management factsheets (osha.gov, freely citeable)
-  - NIST SP 800-series operational/maintenance guides (public domain)
-  - John Deere / Caterpillar public service manuals (OEM-published)
-  - HSE UK guidance documents (hse.gov.uk)
-- Intake pipeline: PDF -> text (PyMuPDF already in deps) -> gold annotation (JSON, same schema
-  as `datasets/archive/test_data/gold/`) -> peer audit (30% sample, Cohen's kappa > 0.7 target)
-- Do NOT build a UI for annotation. Use the existing JSON schema in a text editor.
-- Files go in: `datasets/paper/text/` and `datasets/paper/gold/`
-
-**P0.2 — Multi-seed runs with 95% confidence intervals**
-- Current: single seed per document per strategy.
-- Target: >= 3 seeds, paired bootstrap CI on per-chunk Phi across documents.
-- Implementation: add `--seeds` flag to experiment runner; fix random state via LLM temperature
-  and a seed parameter passed to the backend; use `scipy.stats.bootstrap` or manual paired
-  bootstrap across documents for CIs.
-- Key file to extend: `scripts/experiments/run_all_chunking_experiments.py` and
-  `scripts/experiments/experiment_utils.py`.
-
-**P0.3 — Fuzzy constraint-attachment metric**
-- Current: ConstraintAttachmentF1 collapses to 0 due to strict string ID matching. This is
-  flagged as a known artefact in the thesis. The paper cannot ship with a metric that always
-  reports 0.
-- Fix: semantic attachment metric. A predicted (constraint, step) pair is correct if:
-  cosine_similarity(pred_constraint_embedding, gold_constraint_embedding) >= 0.75 AND
-  cosine_similarity(pred_step_embedding, gold_step_embedding) >= 0.75.
-  Use `EmbeddingCache` (already in `src/evaluation/metrics.py`) — it is already available.
-- Report both strict (current) and fuzzy versions for transparency.
-- Key file: `src/evaluation/metrics.py` — add a `fuzzy_constraint_attachment_f1` function,
-  then expose it in `evaluate_tier_a_document` alongside the existing strict version.
-
-**P0.4 — At least one additional model family**
-- Current: Mistral-7B vs Llama-3.1-70B (both via llama-cpp GGUF).
-- Add: Qwen2.5-7B-Instruct Q4_K_M — it's a stronger 7B baseline as of 2026 and will likely
-  produce an interesting data point on the efficiency frontier.
-- Optional additions (do not block on): OpenEuroLLM-Finnish-7B (Finnish SOP angle, strong
-  European venue differentiator), Phi-4-mini (~3.8B, smaller efficiency point).
-- These are inference re-runs on existing documents. Wire them through the same backend
-  abstraction in `src/ai/llm_backends.py`. If using LM Studio's OpenAI-compatible endpoint,
-  you likely need to add an `OpenAICompatibleBackend` class.
-
-### P1 — lifts paper from ok to elite
-
-**P1.1 — Small expert human study (start ASAP — it has the longest lead time)**
-- 2-3 domain experts (CoRe supervisors, TeoAly partner contacts with industrial process
-  backgrounds) rate 40-60 sampled extractions on: step comprehensiveness (1-5), sequence
-  correctness (1-5), constraint clarity (1-5), trust to use in production (1-5).
-- Script for sampling already exists: `scripts/experiments/prepare_human_eval_samples.py`
-- Correlate expert ratings with Phi via Spearman. Target rho > 0.5.
-- This is the only task with a social/coordination blocker. Ask David or Mikko this week.
-
-**P1.2 — Constraint-type breakdown**
-- Break constraints into: guards (IF/THEN), parameter thresholds (value > X), role assignments,
-  sequencing preconditions.
-- Show per-type recall under each prompting strategy. This requires adding a `constraint_type`
-  field to gold annotations and to the P3 extraction schema.
-- Expected finding: "P3 lifts guard recall from ~12% to ~70% and parameter recall from ~9%
-  to ~58%." That kind of table earns reviewer trust.
-
-**P1.3 — PAGED metric comparison**
-- Run PAGED's evaluation metric on your extractions (or run your metric on PAGED's gold) so
-  reviewers can locate IPKE on the existing benchmark map.
-- One paragraph in the paper, one row added to Table 1.
-
-### P2 — opportunistic
-
-**P2.1 — Finnish SOP extension**: only if a CoRe partner provides Finnish docs AND P0 is done.
-**P2.2 — Phi weight sensitivity ablation**: recompute Phi for w_c in {0.3, 0.5, 0.7}; show
-  ranking of methods is stable. Pre-empts "arbitrary weights" reviewer concern. Small effort.
-**P2.3 — Two-turn CoT fix**: test the P2 CoT failure fix ("generate reasoning, then second
-  call with schema-only instructions"). If it works, another data point on the prompting axis.
+```
+src/
+  ai/
+    prompting/          # P0 zero-shot, P1 few-shot, P2 CoT, P3 two-stage (primary)
+    llm_backends.py     # LlamaCppBackend + TransformersBackend; extend here for new models
+    knowledge_engine.py # Orchestrates chunker -> strategy -> graph builder
+    llm_env_setup.py    # Side-effect module: sets TOKENIZERS_PARALLELISM before imports
+  evaluation/
+    metrics.py          # Phi, StepF1, AdjacencyF1, Kendall, ConstraintCoverage (Tier A+B)
+    smatch.py           # Smatch graph alignment for Tier-B evaluation
+  processors/
+    chunkers/
+      dual_semantic.py  # DSC - primary chunker, produces the headline results
+      breakpoint.py     # Semantic breakpoint chunker - ablation baseline
+      fixed.py          # Fixed-size chunker - ablation baseline
+  graph/
+    builder.py          # Assembles per-chunk extractions into full PKG
+    models.py           # Pydantic models for PKG nodes and edges
+    neo4j_connector.py  # Optional - not needed for paper experiments
+  validation/
+    schema_validator.py # JSON schema validation on LLM output
+    constraint_validator.py
+scripts/
+  experiments/
+    run_all_chunking_experiments.py  # Main sweep runner - extend for paper runs
+    run_chunker_eval.py
+    experiment_utils.py
+    prepare_human_eval_samples.py
+  reevaluate_metrics.py              # Re-score cached predictions after metrics.py changes
+  run_pkg_extraction.py              # Single-document extraction entry point
+datasets/
+  archive/
+    test_data/text/    # 3 source documents (plain text)
+    test_data/gold/    # Gold annotations Tier-A
+    gold_human/        # Human-revised gold Tier-A
+    gold_human_tierb/  # Human-revised gold Tier-B (full graph)
+  Samples/             # Raw PDFs for new document intake
+```
 
 ---
 
-## LLM backend notes
+## Dev commands
 
-Current backend: `llama-cpp-python` loading GGUF files locally. Works for Mistral on Mac
-(Metal) and 3090/5090 (CUDA). For paper experiments with multiple models, adding an
-`OpenAICompatibleBackend` in `src/ai/llm_backends.py` that hits LM Studio's local endpoint
-is the cleanest path — avoids re-downloading GGUF for every model and works across machines.
+```bash
+# Setup (uv only - do not use pip or venv directly)
+uv venv && source .venv/bin/activate
+uv sync
 
-LM Studio is preferred over Ollama (clearer quantization/context visibility, faster model
-switching for benchmarking). Use LM Studio for dev; GGUF direct via llama-cpp for final runs
-where reproducibility matters (no LM Studio version dependency).
+# With heavy extras (PDF, OCR, audio):
+uv sync --extra extras
 
-Model path expected at: `models/llm/<model_name>.gguf`. Set `LLM_N_GPU_LAYERS=-1` to offload
-all layers to GPU. `SKIP_MODEL_CHECK=true` skips model presence check for code-only work.
+# CUDA build of llama-cpp-python (RTX 3090/5090/WSL):
+uv pip install llama-cpp-python \
+  --index-url https://abetlen.github.io/llama-cpp-python/whl/cu121 \
+  --force-reinstall
+
+# Metal build (M4):
+uv pip install llama-cpp-python \
+  --index-url https://abetlen.github.io/llama-cpp-python/whl/metal \
+  --force-reinstall
+
+# Unit tests (fast, no model required):
+uv run pytest
+
+# Integration tests (require live model):
+uv run pytest -m ""
+
+# Single document extraction (DSC + P3):
+uv run python scripts/run_pkg_extraction.py \
+  --input-path datasets/archive/test_data/text/3m_marine_oem_sop.txt \
+  --doc-id 3M_OEM_SOP \
+  --chunking-method dsc \
+  --prompting-strategy P3 \
+  --gpu-backend cuda    # or: metal / cpu
+
+# Evaluate (Tier A - primary metrics):
+uv run python -m src.evaluation.metrics \
+  --gold-dir datasets/archive/gold_human \
+  --pred-dir logs/pkg_runs \
+  --out-file logs/eval_results/results.json \
+  --tier A
+
+# Re-score saved predictions after changing metrics.py:
+uv run python scripts/reevaluate_metrics.py
+
+# Code-only mode (skip model presence check):
+SKIP_MODEL_CHECK=true uv run python main.py
+```
 
 ---
 
-## Git conventions
+## Engineering standards
 
-All commits must be authored as **Imad <imad.e.elmouss@turkuamk.fi>**. Never use a different
-name or email. Never add "Co-Authored-By" trailers. The repo is sole-authored research work
-belonging to Imad Eddine Elmouss.
+- Python 3.12+. `uv` for env management. `ruff` for lint and format.
+- Pydantic v2 at all structured output boundaries.
+- Hardware-agnostic: guard `torch.cuda` and `torch.backends.mps` with try/except.
+- Centralized logging via `src/logging_config.py`. Use `get_logger(__name__)`, never `print()`
+  or bare `logging.info()` in `src/`.
+- Experiment outputs go in `runs/<experiment_name>/<timestamp>/`. Never commit run outputs.
+- Keep raw predictions as JSON. Re-score with `reevaluate_metrics.py` when metrics change.
+- No Neo4j required for paper experiments. Builder works in-memory.
+- No cloud API calls. Privacy-preserving by design.
+- No emojis in code, scripts, or test output.
+
+---
+
+## Experiment integrity rules
+
+These protect reproducibility. Do not violate them.
+
+1. **Record everything per run:** exact model name, quantization, temperature, seed, hardware,
+   CUDA/Metal version, llama-cpp-python version. These go in the run's `config.json`.
+2. **Never mutate gold annotations** once peer-audited. Gold lives in `datasets/archive/`.
+   New documents go in `datasets/paper/`.
+3. **Fixed seed for all LLM calls:** `LLM_RANDOM_SEED=42` in `.env` unless explicitly running
+   multi-seed CI. `LLM_TEMPERATURE=0.1` always.
+4. **No manual result editing.** All metrics are computed programmatically. If Phi looks wrong,
+   fix `metrics.py` and re-score with `reevaluate_metrics.py`.
+5. **Tier A is the primary metric surface.** Tier B (smatch graph alignment) is secondary.
+   Paper tables report Phi, StepF1, AdjacencyF1, Kendall, ConstraintCoverage.
+6. **ConstraintAttachmentF1 (strict) collapses to 0.** This is a known artefact - strict string
+   ID matching. It is reported but not used to assess method quality until the fuzzy variant
+   (P0.3) is implemented.
+
+---
+
+## Paper experiment gaps (P0 - non-negotiable for ECIR)
+
+| ID | Task | Status |
+|---|---|---|
+| P0.1 | Expand dataset to 8-15 documents (OSHA, NIST, HSE UK, OEM manuals) | Not started |
+| P0.2 | Multi-seed runs (>=3 seeds), 95% CI via paired bootstrap | Not started |
+| P0.3 | Fuzzy ConstraintAttachmentF1 using embedding cosine similarity >= 0.75 | Not started |
+| P0.4 | Add Qwen2.5-7B-Instruct Q4_K_M as second model family | Not started |
+
+New documents go in `datasets/paper/text/` and `datasets/paper/gold/`. Use the same JSON
+schema as `datasets/archive/test_data/gold/`. Do not build an annotation UI.
+
+---
+
+## Debugging workflow
+
+1. Reproduce the failure with a minimal input.
+2. Narrow scope to the smallest failing case.
+3. Identify the most likely root cause.
+4. Fix minimally - do not clean up unrelated code alongside a bug fix.
+5. Validate narrowly, then broadly.
+6. Report: root cause, fix, remaining risk.
+
+---
+
+## Git workflow
+
+- **Every task on a branch.** Name it after the work: `feat/fuzzy-constraint-metric`,
+  `fix/tokenizers-parallelism`, `exp/qwen-7b-baseline`. Never work directly on `main`.
+- **Never push to main.** All changes go through a PR. Create branch, push, `gh pr create`.
+  Only Imad merges.
+- **Commit after each logical unit.** Passing tests, working sub-feature, config change.
+  Do not batch unrelated changes.
+- **Commit message format:** one imperative line, 50 chars max. No body. No bullets.
+  Examples: `Add fuzzy constraint attachment metric`, `Fix DSC private method coupling`,
+  `Remove hardcoded Discord webhook`.
+- **Sole author.** Every commit is authored by `Imad <imad.e.elmouss@turkuamk.fi>`.
+  Never add `Co-Authored-By`. Never mention any AI tool in a commit message or PR description.
 
 ```bash
 git config user.name "Imad"
@@ -243,64 +252,48 @@ git config user.email "imad.e.elmouss@turkuamk.fi"
 
 ---
 
-## Coding conventions
+## Safety
 
-- Python 3.12+. `uv` for env management. `ruff` for lint/format. Strict types where they add
-  clarity; Pydantic v2 at all structured output boundaries.
-- Hardware-agnostic: use try/except guards on `torch.cuda.is_available()` and
-  `torch.backends.mps.is_available()`. All model paths and hardware selection via env vars.
-- Centralized JSON logging via `src/logging_config.py`. Use `get_logger(__name__)`, not
-  `print()` or bare `logging.info()`.
-- Experiment outputs go in a timestamped `runs/<experiment_name>/<timestamp>/` directory,
-  not committed to git. Keep raw predictions as JSON; re-score with `reevaluate_metrics.py`
-  when the metric changes.
-- No Neo4j required for paper experiments. The graph builder works in-memory; Neo4j is for
-  the deployed application, not evaluation.
-- No cloud API calls. Privacy-preserving by design.
+- Ask before destructive actions: force push to main, deleting gold data, dropping run logs.
+- Never commit model files (`.gguf`), partner SOPs, or API keys.
+- `DISCORD_WEBHOOK_URL` goes in `.env` only, never in source.
+- The `.gitignore` excludes `models/`, `runs/`, `logs/`, `.env`. Verify before committing
+  anything in those directories.
 
 ---
 
-## What not to do
+## Response format
 
-- Do not build an annotation UI. JSON in a text editor, David/Mikko audit 30%.
-- Do not replicate PAGED end-to-end. Run their metric on your data.
-- Do not add Finnish SOP extension before P0 is done.
-- Do not rename Phi. "Procedural Fidelity" is established.
-- Do not let tests require a live LLM or Neo4j unless marked `@pytest.mark.integration`.
-- Do not add model files (`.gguf`) or raw partner SOPs to git.
-- Do not touch the FastAPI / Streamlit / Neo4j stack for paper work. It's the demo
-  application layer; the paper needs the experiment pipeline.
+1. **Objective** - what we are doing and why.
+2. **Findings** - what was found in the code or docs.
+3. **Changes** - what was implemented or proposed.
+4. **Validation** - how correctness was verified.
+5. **Risks / follow-up** - what to watch next.
+
+Keep responses concise. One clear sentence beats a paragraph. Do not summarize what can be
+read in the diff. Do not use em dashes. Use a hyphen, colon, or rewrite the sentence instead.
 
 ---
 
-## Paper timeline checkpoints
+## Paper timeline
 
-| Date | Milestone |
+| Period | Milestone |
 |---|---|
-| Now - June 2 | Decisions: confirm ECIR 2027, confirm co-authors, identify which public SOPs to use |
-| June 3 - July 7 | P0.1 dataset expansion + P0.2 multi-seed engineering |
-| July 8 - Aug 11 | P0.3 fuzzy metric, P0.4 new model, P1.1 expert study (start recruitment NOW) |
+| Now - Jun 2 | Confirm ECIR 2027, confirm co-authors, identify public SOPs for P0.1 |
+| Jun 3 - Jul 7 | P0.1 dataset expansion + P0.2 multi-seed engineering |
+| Jul 8 - Aug 11 | P0.3 fuzzy metric + P0.4 new model + P1.1 expert study recruitment |
 | Aug 12 - Sep 8 | First full draft |
-| Sep 9 - Sep 22 | Co-author review passes, LaTeX port to LNCS template |
+| Sep 9 - Sep 22 | Co-author review, LaTeX port to LNCS template |
 | Sep 22 - Oct 12 | Polish, reproducibility check, submit |
 
-Submission deadline: **12 October 2026**. Non-negotiable.
+**Deadline: 12 October 2026. Non-negotiable.**
 
 ---
 
-## Reproducibility checklist (ECIR requires this)
+## Reproducibility checklist (ECIR requirement)
 
 - [ ] Public repo cited in paper (deanonymize after review)
-- [ ] Gold annotations released under CC-BY where partners allow (confirm per-doc)
-- [ ] Exact model name, quantization, temperature, seed, hardware in §4
+- [ ] Gold annotations released under CC-BY where partners allow
+- [ ] Exact model name, quantization, temperature, seed, hardware in Section 4
 - [ ] One-command rerun: `make eval` (wire this up before submission)
 - [ ] Fresh-clone test: verify setup works from scratch by end of June
-
----
-
-## Status (update at end of every session touching experiments)
-
-- 2025-12 — Thesis submitted. 3 documents, single seed, Mistral-7B + DSC + P3 = Phi=0.699.
-- 2026-05-27 — Returning to repo for paper push. Hardware upgraded: M4 + RTX 3090 + 2x
-  RTX 5090 + CSC Puhti. Paper target: ECIR 2027 short paper, deadline Oct 12 2026.
-  P0 experiments not yet started. Expert recruitment not started. Dataset still 3 docs.
