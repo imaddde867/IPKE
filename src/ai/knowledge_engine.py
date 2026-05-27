@@ -1,5 +1,5 @@
 """LLM-driven knowledge extraction engine."""
-from src.ai.llm_env_setup import *  
+import src.ai.llm_env_setup  # noqa: F401  # side-effect: sets TOKENIZERS_PARALLELISM, OMP/MKL thread limits
 
 import difflib
 import asyncio
@@ -316,7 +316,6 @@ class UnifiedKnowledgeEngine:
     def _get_chunk_dedup_embedder(self):
         if self._chunk_dedup_model is not None:
             return self._chunk_dedup_model
-        os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
         from sentence_transformers import SentenceTransformer
 
         model_id = (

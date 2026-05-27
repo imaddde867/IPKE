@@ -404,7 +404,7 @@ def render_sidebar():
 def main():
     st.set_page_config(
         page_title="IPKE - Industrial PKG Extraction",
-        page_icon="🔬",
+        page_icon=":microscope:",
         layout="wide",
         initial_sidebar_state="expanded"
     )

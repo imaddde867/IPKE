@@ -58,7 +58,5 @@ async def test_constraint_attachment_bug():
                 assert len(result.steps) == 1
                 assert result.steps[0]["id"] == "S1"
 
-                # This assertion is expected to FAIL currently because "attached_to" is ignored
-                # The engine looks for "steps" key in constraints
                 assert len(result.constraints) == 1
                 assert result.constraints[0]["steps"] == ["S1"]

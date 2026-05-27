@@ -2,7 +2,7 @@
 
 import textwrap
 
-from src.ai.prompting.base import PromptStrategy, _escape_braces
+from src.ai.prompting.base import PromptStrategy
 from src.ai.types import ChunkExtraction
 
 

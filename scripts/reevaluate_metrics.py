@@ -61,7 +61,7 @@ def main():
             metrics_path = exp_dir / "metrics.json"
 
             if not pred_path.exists():
-                print(f"⚠️  Missing predictions: {pred_path}")
+                print(f"WARNING: Missing predictions: {pred_path}")
                 continue
 
             gold_path_a, gold_path_b = get_gold_paths(document)
@@ -101,7 +101,7 @@ def main():
             if first_metrics_after is None:
                 first_metrics_after = final_metrics
 
-            print(f"✅ Updated: {experiment}/{document}")
+            print(f"Updated: {experiment}/{document}")
             print(f"   New Φ: {final_metrics.get('Phi'):.3f}")
             
             # Prepare row for summary csv
@@ -140,10 +140,10 @@ def main():
         filtered_rows.append(filtered_row)
 
     write_summary_table(filtered_rows, summary_path)
-    print("\n✅ Regenerated summary.csv")
+    print("\nRegenerated summary.csv")
     
     if first_metrics_before and first_metrics_after:
-        print(f"\n🔍 Example metrics.json before/after for {first_metrics_path}:")
+        print(f"\nExample metrics.json before/after for {first_metrics_path}:")
         print("\n--- BEFORE ---")
         print(json.dumps(first_metrics_before, indent=2))
         print("\n--- AFTER ---")
@@ -153,7 +153,7 @@ def main():
     for row in all_metrics_rows:
         macro_scores[row['chunk_method']].append(row.get('Phi') or 0.0)
 
-    print("\n📈 Macro-average Φ:")
+    print("\nMacro-average Phi:")
     for method, scores in macro_scores.items():
         avg_score = sum(scores) / len(scores) if scores else 0.0
         print(f"- {method}: {avg_score:.3f}")

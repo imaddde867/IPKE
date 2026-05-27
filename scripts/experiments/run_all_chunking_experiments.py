@@ -391,7 +391,7 @@ def main() -> None:
     if webhook_url:
         notify_discord(
             webhook_url,
-            f"🎉 IPKE EXPERIMENT FINISHED at {datetime.datetime.utcnow()} UTC\n"
+            f"IPKE EXPERIMENT FINISHED at {datetime.datetime.utcnow()} UTC\n"
             f"Status: Fixed={fixed_status}, Semantic={semantic_status}, DSC={dsc_status}",
         )
     logging.info("All sweeps finished. DONE file written to %s.", done_file)

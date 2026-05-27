@@ -100,9 +100,9 @@ class TestIntegration:
         assert response.status_code == 200
         
         print("\n=== System Health Check ===")
-        print("✓ Root endpoint operational")
-        print("✓ Health endpoint operational")
-        print("✓ Stats endpoint operational")
+        print("Root endpoint operational")
+        print("Health endpoint operational")
+        print("Stats endpoint operational")
 
 
 if __name__ == "__main__":

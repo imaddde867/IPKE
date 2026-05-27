@@ -10,9 +10,6 @@ import numpy as np
 
 from .base import BaseChunker, Chunk
 
-# Ensure tokenizers stay single-threaded before any optional imports occur.
-os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
-
 LOGGER = logging.getLogger(__name__)
 
 
@@ -61,7 +58,6 @@ class BreakpointSemanticChunker(BaseChunker):
         if self._model is not None:
             return self._model
 
-        os.environ["TOKENIZERS_PARALLELISM"] = "false"
         from sentence_transformers import SentenceTransformer
 
         model_id = getattr(
