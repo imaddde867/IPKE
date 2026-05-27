@@ -90,6 +90,7 @@ class TestUnifiedConfig:
     def test_cloud_environment_detected(self, monkeypatch):
         """Setting GCP hints or EXPLAINIUM_ENV=cloud should load the cloud preset."""
         try:
+            monkeypatch.delenv('IPKE_ENV', raising=False)
             monkeypatch.delenv('EXPLAINIUM_ENV', raising=False)
             monkeypatch.delenv('ENVIRONMENT', raising=False)
             monkeypatch.setenv('GOOGLE_CLOUD_PROJECT', 'demo-project')
@@ -101,6 +102,7 @@ class TestUnifiedConfig:
             monkeypatch.delenv('GOOGLE_CLOUD_PROJECT', raising=False)
             reload_config()
         try:
+            monkeypatch.delenv('IPKE_ENV', raising=False)
             monkeypatch.setenv('EXPLAINIUM_ENV', 'cloud')
             reload_config()
             config = get_config()

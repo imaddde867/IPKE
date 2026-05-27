@@ -297,3 +297,56 @@ read in the diff. Do not use em dashes. Use a hyphen, colon, or rewrite the sent
 - [ ] Exact model name, quantization, temperature, seed, hardware in Section 4
 - [ ] One-command rerun: `make eval` (wire this up before submission)
 - [ ] Fresh-clone test: verify setup works from scratch by end of June
+
+---
+
+## Status (update at end of every session touching experiments)
+
+- 2025-12 — Thesis submitted. 3 documents, single seed, Mistral-7B + DSC + P3 = Phi=0.699.
+- 2026-05-27 — Returning to repo for paper push. Hardware upgraded: M4 + RTX 3090 + 2x
+  RTX 5090 + CSC Puhti. Paper target: ECIR 2027 short paper, deadline Oct 12 2026.
+  P0 experiments not yet started. Expert recruitment not started. Dataset still 3 docs.
+
+<!-- gitnexus:start -->
+# GitNexus — Code Intelligence
+
+This project is indexed by GitNexus as **IPKE** (3190 symbols, 5525 relationships, 179 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+
+> If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
+
+## Always Do
+
+- **MUST run impact analysis before editing any symbol.** Before modifying a function, class, or method, run `gitnexus_impact({target: "symbolName", direction: "upstream"})` and report the blast radius (direct callers, affected processes, risk level) to the user.
+- **MUST run `gitnexus_detect_changes()` before committing** to verify your changes only affect expected symbols and execution flows.
+- **MUST warn the user** if impact analysis returns HIGH or CRITICAL risk before proceeding with edits.
+- When exploring unfamiliar code, use `gitnexus_query({query: "concept"})` to find execution flows instead of grepping. It returns process-grouped results ranked by relevance.
+- When you need full context on a specific symbol — callers, callees, which execution flows it participates in — use `gitnexus_context({name: "symbolName"})`.
+
+## Never Do
+
+- NEVER edit a function, class, or method without first running `gitnexus_impact` on it.
+- NEVER ignore HIGH or CRITICAL risk warnings from impact analysis.
+- NEVER rename symbols with find-and-replace — use `gitnexus_rename` which understands the call graph.
+- NEVER commit changes without running `gitnexus_detect_changes()` to check affected scope.
+
+## Resources
+
+| Resource | Use for |
+|----------|---------|
+| `gitnexus://repo/IPKE/context` | Codebase overview, check index freshness |
+| `gitnexus://repo/IPKE/clusters` | All functional areas |
+| `gitnexus://repo/IPKE/processes` | All execution flows |
+| `gitnexus://repo/IPKE/process/{name}` | Step-by-step execution trace |
+
+## CLI
+
+| Task | Read this skill file |
+|------|---------------------|
+| Understand architecture / "How does X work?" | `.claude/skills/gitnexus/gitnexus-exploring/SKILL.md` |
+| Blast radius / "What breaks if I change X?" | `.claude/skills/gitnexus/gitnexus-impact-analysis/SKILL.md` |
+| Trace bugs / "Why is X failing?" | `.claude/skills/gitnexus/gitnexus-debugging/SKILL.md` |
+| Rename / extract / split / refactor | `.claude/skills/gitnexus/gitnexus-refactoring/SKILL.md` |
+| Tools, resources, schema reference | `.claude/skills/gitnexus/gitnexus-guide/SKILL.md` |
+| Index, status, clean, wiki CLI commands | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md` |
+
+<!-- gitnexus:end -->
