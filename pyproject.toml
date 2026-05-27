@@ -30,7 +30,7 @@ dependencies = [
     # Data & document processing
     "pandas>=2.0.0",
     # LLM backend (optional for baseline if cached outputs unavailable)
-    "llama-cpp-python==0.2.80",
+    "llama-cpp-python==0.3.23",
     "transformers>=4.36.0",
     "accelerate>=0.25.0",
     "bitsandbytes>=0.41.3",
@@ -69,6 +69,9 @@ markers = [
     "integration: marks tests that require heavy models (deselect with '-m \"not integration\"')",
 ]
 addopts = "-m \"not integration\" -v"
+
+[tool.uv.sources]
+llama-cpp-python = { url = "https://github.com/abetlen/llama-cpp-python/releases/download/v0.3.23-cu124/llama_cpp_python-0.3.23-py3-none-linux_x86_64.whl" }
 
 [tool.uv]
 # Platform-specific build indexes for llama-cpp-python
