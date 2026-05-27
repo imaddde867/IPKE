@@ -16,11 +16,13 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Sequence, Set, Union
+from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Sequence, Set, Union
 
 from .models import Condition, Edge, Graph, Step
 from src.validation.constraint_validator import ValidationReport, validate_constraints
-from .neo4j_connector import Neo4jConnector
+
+if TYPE_CHECKING:
+    from .neo4j_connector import Neo4jConnector
 
 
 ConditionType = Optional[str]
@@ -86,12 +88,13 @@ class ProceduralGraphBuilder:
         self,
         graph: Graph,
         clear_existing: bool = False,
-        connector: Optional[Neo4jConnector] = None,
+        connector: Optional["Neo4jConnector"] = None,
     ) -> None:
         """Persist the given graph into the configured Neo4j instance."""
 
         if connector is None:
-            with Neo4jConnector() as managed:
+            connector_cls = _load_neo4j_connector()
+            with connector_cls() as managed:
                 managed.create_graph(graph, clear_existing=clear_existing)
         else:
             connector.create_graph(graph, clear_existing=clear_existing)
@@ -316,6 +319,19 @@ def _parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def _load_neo4j_connector():
+    try:
+        from .neo4j_connector import Neo4jConnector
+    except ModuleNotFoundError as exc:
+        if exc.name == "neo4j":
+            raise RuntimeError(
+                "Neo4j support requires the optional dependency. "
+                "Install it with `uv sync --extra neo4j`."
+            ) from exc
+        raise
+    return Neo4jConnector
+
+
 def main() -> None:
     args = _parse_args()
     builder = ProceduralGraphBuilder()
@@ -324,7 +340,8 @@ def main() -> None:
     print(json.dumps(stats, indent=2))
 
     if args.persist_neo4j or args.neo4j_clear:
-        connector = Neo4jConnector()
+        connector_cls = _load_neo4j_connector()
+        connector = connector_cls()
         builder.persist_to_neo4j(graph, clear_existing=args.neo4j_clear, connector=connector)
         print(f"Persisted graph to Neo4j at {connector.uri}")
 
