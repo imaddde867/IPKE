@@ -70,6 +70,7 @@ class TestUnifiedConfig:
 
     def test_gpu_env_overrides(self, monkeypatch):
         """GPU-related env vars should override config values."""
+        monkeypatch.delenv('EXPLAINIUM_ENV', raising=False)
         monkeypatch.setenv('LLM_GPU_LAYERS', '10')
         monkeypatch.setenv('GPU_MEMORY_FRACTION', '0.5')
         monkeypatch.setenv('ENABLE_GPU', 'true')
