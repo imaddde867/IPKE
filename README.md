@@ -19,8 +19,16 @@ Thesis-grade, privacy-preserving pipeline that reconstructs Procedural Knowledge
 
 ```bash
 uv venv && source .venv/bin/activate
-uv sync --extra extras
+uv sync
 streamlit run streamlit_app.py
+```
+
+Use `uv sync --extra extras` for PDF/OCR/audio dependencies and
+`uv sync --extra neo4j` when you need graph persistence. Use both extras for
+the full app stack:
+
+```bash
+uv sync --extra extras --extra neo4j
 ```
 
 ```ini
@@ -73,4 +81,3 @@ IPKE auto-detects your hardware and gracefully falls back to CPU if GPU accelera
 | **CPU only** | `GPU_BACKEND=cpu` | Default fallback, no GPU required |
 
 The system uses `torch.cuda.is_available()` and `torch.backends.mps.is_available()` with try/except guards to ensure safe operation on any platform.
-
