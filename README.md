@@ -81,3 +81,6 @@ IPKE auto-detects your hardware and gracefully falls back to CPU if GPU accelera
 | **CPU only** | `GPU_BACKEND=cpu` | Default fallback, no GPU required |
 
 The system uses `torch.cuda.is_available()` and `torch.backends.mps.is_available()` with try/except guards to ensure safe operation on any platform.
+
+See [`docs/notes/hardware-validation-rtx5060-cuda132.md`](docs/notes/hardware-validation-rtx5060-cuda132.md)
+for the 2026-05-27 Blackwell/CUDA 13.2 validation note and its evaluation caveats.
