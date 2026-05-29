@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "ipke"
 version = "0.1.0"
 description = "Industrial Procedural Knowledge Extraction — Thesis-grade, privacy-preserving pipeline that reconstructs Procedural Knowledge Graphs from safety-critical industrial manuals"
-requires-python = ">=3.12"
+requires-python = ">=3.12,<3.14"
 dependencies = [
     # Numerics + NLP (baseline evaluation + embeddings)
     "numpy>=1.24.4,<2.0",
@@ -71,7 +71,7 @@ markers = [
 addopts = "-m \"not integration\" -v"
 
 [tool.uv.sources]
-llama-cpp-python = { url = "https://github.com/abetlen/llama-cpp-python/releases/download/v0.3.23-cu124/llama_cpp_python-0.3.23-py3-none-linux_x86_64.whl" }
+llama-cpp-python = { url = "https://github.com/abetlen/llama-cpp-python/releases/download/v0.3.23-cu124/llama_cpp_python-0.3.23-py3-none-linux_x86_64.whl", marker = "sys_platform == 'linux' and platform_machine == 'x86_64'" }
 
 [tool.uv]
 # Platform-specific build indexes for llama-cpp-python
