@@ -15,13 +15,18 @@ Thesis-grade, privacy-preserving pipeline that reconstructs Procedural Knowledge
 - **Dual Semantic Chunking (DSC)** aligns document headings with embedding-based cohesion to limit context fragmentation for mid-sized models (Thesis §4.1).
 - **P3 — Two-Stage Decomposition** decouples ordered step extraction from constraint attachment, eliminating schema drift seen in zero-shot and chain-of-thought baselines (Thesis §4.2–5.4).
 
-## Run IPKE
+## Reproducible Commands
 
 ```bash
-uv venv && source .venv/bin/activate
 uv sync
-streamlit run streamlit_app.py
+make test
+make smoke-extract
+make eval
 ```
+
+Experiment artifacts are written under `runs/` and are intentionally ignored by git.
+
+## Run IPKE
 
 Use `uv sync --extra extras` for PDF/OCR/audio dependencies and
 `uv sync --extra neo4j` when you need graph persistence. Use both extras for
