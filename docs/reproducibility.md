@@ -7,6 +7,8 @@ uv sync
 make test
 ```
 
+The default uv `dev` dependency group installs pytest for local validation.
+
 ## Single-Document Smoke Extraction
 
 ```bash

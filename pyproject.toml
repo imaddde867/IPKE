@@ -36,10 +36,6 @@ llm = [
     "accelerate>=0.25.0",
     "bitsandbytes>=0.41.3",
 ]
-dev = [
-    "pytest>=7.4.0",
-    "pytest-asyncio>=0.23.0",
-]
 neo4j = [
     "neo4j==5.14.0",
 ]
@@ -58,6 +54,12 @@ extras = [
 [project.scripts]
 ipke-api = "main:main"
 
+[dependency-groups]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.23.0",
+]
+
 [tool.setuptools.packages.find]
 include = ["src*"]
 
@@ -67,8 +69,8 @@ llama-cpp-python = { url = "https://github.com/abetlen/llama-cpp-python/releases
 [tool.uv]
 # Platform-specific build indexes for llama-cpp-python
 # Apple Silicon (Metal):
-#   uv sync --extra extras --index-url https://abetlen.github.io/llama-cpp-python/whl/metal
+#   uv sync --extra llm --index-url https://abetlen.github.io/llama-cpp-python/whl/metal
 # CUDA (NVIDIA):
-#   uv sync --extra extras --index-url https://abetlen.github.io/llama-cpp-python/whl/cu121
+#   uv sync --extra llm --index-url https://abetlen.github.io/llama-cpp-python/whl/cu121
 # CPU (default):
-#   uv sync --extra extras
+#   uv sync --extra llm

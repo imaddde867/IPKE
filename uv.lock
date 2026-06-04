@@ -602,10 +602,6 @@ app = [
     { name = "streamlit" },
     { name = "uvicorn" },
 ]
-dev = [
-    { name = "pytest" },
-    { name = "pytest-asyncio" },
-]
 extras = [
     { name = "easyocr" },
     { name = "openai-whisper" },
@@ -624,6 +620,12 @@ neo4j = [
     { name = "neo4j" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "accelerate", marker = "extra == 'llm'", specifier = ">=0.25.0" },
@@ -640,8 +642,6 @@ requires-dist = [
     { name = "openai-whisper", marker = "extra == 'extras'", specifier = ">=20231117" },
     { name = "pandas", specifier = ">=2.0.0" },
     { name = "pymupdf", marker = "extra == 'extras'", specifier = ">=1.23.0" },
-    { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.4.0" },
-    { name = "pytest-asyncio", marker = "extra == 'dev'", specifier = ">=0.23.0" },
     { name = "python-docx", marker = "extra == 'extras'", specifier = ">=0.8.11" },
     { name = "python-dotenv", specifier = ">=1.0.0" },
     { name = "python-multipart", marker = "extra == 'app'", specifier = ">=0.0.20" },
@@ -657,7 +657,13 @@ requires-dist = [
     { name = "transformers", marker = "extra == 'llm'", specifier = ">=4.36.0" },
     { name = "uvicorn", marker = "extra == 'app'", specifier = ">=0.24.0" },
 ]
-provides-extras = ["app", "llm", "dev", "neo4j", "extras"]
+provides-extras = ["app", "llm", "neo4j", "extras"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "pytest", specifier = ">=7.4.0" },
+    { name = "pytest-asyncio", specifier = ">=0.23.0" },
+]
 
 [[package]]
 name = "ipython"
