@@ -67,10 +67,11 @@ include = ["src*"]
 llama-cpp-python = { url = "https://github.com/abetlen/llama-cpp-python/releases/download/v0.3.23-cu124/llama_cpp_python-0.3.23-py3-none-linux_x86_64.whl", marker = "sys_platform == 'linux' and platform_machine == 'x86_64'" }
 
 [tool.uv]
-# Platform-specific build indexes for llama-cpp-python
+# Platform-specific llama-cpp-python installs
 # Apple Silicon (Metal):
 #   uv sync --extra llm --index-url https://abetlen.github.io/llama-cpp-python/whl/metal
-# CUDA (NVIDIA):
-#   uv sync --extra llm --index-url https://abetlen.github.io/llama-cpp-python/whl/cu121
+# Linux x86_64 (CUDA 12.4):
+#   uv sync --extra llm
+#   Uses the direct cu124 wheel pinned in [tool.uv.sources].
 # CPU (default):
 #   uv sync --extra llm

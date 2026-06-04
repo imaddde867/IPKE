@@ -1,6 +1,8 @@
-import re
 import tomllib
 from pathlib import Path
+
+from packaging.requirements import Requirement
+from packaging.utils import canonicalize_name
 
 
 def load_pyproject():
@@ -10,7 +12,7 @@ def load_pyproject():
 def dependency_names(dependencies):
     names = set()
     for dependency in dependencies:
-        names.add(re.split(r"\s|@|=|<|>|~|!|;", dependency, maxsplit=1)[0])
+        names.add(canonicalize_name(Requirement(dependency).name))
     return names
 
 

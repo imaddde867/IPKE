@@ -76,8 +76,8 @@ Turku University of Applied Sciences · 2025
   `uv sync --extra llm --index-url https://abetlen.github.io/llama-cpp-python/whl/metal`  
   Test: `bash scripts/test_mistral_metal.sh`
 
-- CUDA (NVIDIA, other hardware):  
-  `uv sync --extra llm --index-url https://abetlen.github.io/llama-cpp-python/whl/cu121`  
+- CUDA (Linux x86_64, NVIDIA):  
+  `uv sync --extra llm` installs the pinned CUDA 12.4 `llama-cpp-python` wheel from `pyproject.toml`.  
   Test: `bash scripts/test_mistral_cuda.sh`
 
 The app will pick up the GGUF at `models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf`; set `LLM_N_GPU_LAYERS=-1` to offload all layers to Metal/CUDA.
