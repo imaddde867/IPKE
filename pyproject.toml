@@ -8,7 +8,6 @@ version = "0.1.0"
 description = "Industrial Procedural Knowledge Extraction — Thesis-grade, privacy-preserving pipeline that reconstructs Procedural Knowledge Graphs from safety-critical industrial manuals"
 requires-python = ">=3.12,<3.14"
 dependencies = [
-    # Numerics + NLP (baseline evaluation + embeddings)
     "numpy>=1.24.4,<2.0",
     "scipy>=1.11.3",
     "networkx>=3.1",
@@ -19,27 +18,28 @@ dependencies = [
     "torch>=2.1.0",
     "requests>=2.31.0",
     "jsonschema==4.20.0",
-    # Web Framework
+    "python-dotenv>=1.0.0",
+    "pandas>=2.0.0",
+]
+
+[project.optional-dependencies]
+app = [
     "fastapi>=0.104.0",
     "python-multipart>=0.0.20",
     "uvicorn>=0.24.0",
     "streamlit>=1.38.0",
     "pyvis>=0.3.2",
-    # Environment
-    "python-dotenv>=1.0.0",
-    # Data & document processing
-    "pandas>=2.0.0",
-    # LLM backend (optional for baseline if cached outputs unavailable)
+]
+llm = [
     "llama-cpp-python==0.3.23",
     "transformers>=4.36.0",
     "accelerate>=0.25.0",
     "bitsandbytes>=0.41.3",
-    # Testing
+]
+dev = [
     "pytest>=7.4.0",
     "pytest-asyncio>=0.23.0",
 ]
-
-[project.optional-dependencies]
 neo4j = [
     "neo4j==5.14.0",
 ]

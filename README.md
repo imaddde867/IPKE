@@ -18,7 +18,7 @@ Thesis-grade, privacy-preserving pipeline that reconstructs Procedural Knowledge
 ## Reproducible Commands
 
 ```bash
-uv sync
+uv sync --extra dev
 make test
 make smoke-extract
 make eval
@@ -34,12 +34,13 @@ Experiment artifacts are written under `runs/` and are intentionally ignored by 
 
 ## Run IPKE
 
-Use `uv sync --extra extras` for PDF/OCR/audio dependencies and
-`uv sync --extra neo4j` when you need graph persistence. Use both extras for
-the full app stack:
+Use extras as needed:
 
 ```bash
-uv sync --extra extras --extra neo4j
+uv sync --extra dev --extra llm
+uv sync --extra dev --extra app
+uv sync --extra dev --extra extras
+uv sync --extra dev --extra neo4j
 ```
 
 ```ini
