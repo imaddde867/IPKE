@@ -26,6 +26,12 @@ make eval
 
 Experiment artifacts are written under `runs/` and are intentionally ignored by git.
 
+## Research Reproducibility
+
+- [Reproducibility guide](docs/reproducibility.md)
+- [Implemented DSC method note](docs/methods/dsc-implementation.md)
+- [Paper dataset workspace](datasets/paper/README.md)
+
 ## Run IPKE
 
 Use `uv sync --extra extras` for PDF/OCR/audio dependencies and
