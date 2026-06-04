@@ -340,6 +340,15 @@ def write_done_file(path: Path, statuses: Dict[str, bool], summary_path: Optiona
     return path
 
 
+def build_run_roots(timestamp: str) -> Dict[str, Path]:
+    return {
+        "run_root": REPO_ROOT / "runs" / "chunking_sweeps" / f"full_run_{timestamp}",
+        "log_dir": REPO_ROOT / "runs" / "master_logs" / timestamp,
+        "global_errors": REPO_ROOT / "runs" / "master_logs" / "errors.txt",
+        "latest_summary": REPO_ROOT / "runs" / "latest" / "all_chunking_summary.csv",
+    }
+
+
 def main() -> None:
     args = parse_args()
     logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
@@ -354,11 +363,12 @@ def main() -> None:
     verify_docker_running()
 
     timestamp = datetime.datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-    run_root = REPO_ROOT / "results" / f"full_run_{timestamp}"
-    log_dir = REPO_ROOT / "results" / "master_logs" / timestamp
+    roots = build_run_roots(timestamp)
+    run_root = roots["run_root"]
+    log_dir = roots["log_dir"]
     run_root.mkdir(parents=True, exist_ok=True)
     log_dir.mkdir(parents=True, exist_ok=True)
-    error_logger = ErrorLogger(run_specific=log_dir / "errors.txt", global_errors=REPO_ROOT / "results" / "master_logs" / "errors.txt")
+    error_logger = ErrorLogger(run_specific=log_dir / "errors.txt", global_errors=roots["global_errors"])
 
     sweeps = build_sweeps()
     statuses: Dict[str, bool] = {}
@@ -381,7 +391,7 @@ def main() -> None:
         (sweep.method, run_root / sweep.output_subdir / sweep.summary_filename) for sweep in sweeps
     ]
     summary_path = run_root / "all_chunking_summary.csv"
-    latest_summary = REPO_ROOT / "results" / "all_chunking_summary.csv"
+    latest_summary = roots["latest_summary"]
     summary_written = combine_summaries(summary_inputs, summary_path, latest_summary, error_logger.log)
     done_file = write_done_file(run_root / "DONE.txt", statuses, summary_path if summary_written else None)
     fixed_status = "SUCCESS" if statuses.get("fixed_chunker") else "FAILED"
