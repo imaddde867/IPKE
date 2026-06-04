@@ -61,15 +61,6 @@ ipke-api = "main:main"
 [tool.setuptools.packages.find]
 include = ["src*"]
 
-[tool.pytest.ini_options]
-filterwarnings = [
-    "ignore:builtin type (SwigPyPacked|SwigPyObject|swigvarlink) has no __module__ attribute:DeprecationWarning",
-]
-markers = [
-    "integration: marks tests that require heavy models (deselect with '-m \"not integration\"')",
-]
-addopts = "-m \"not integration\" -v"
-
 [tool.uv.sources]
 llama-cpp-python = { url = "https://github.com/abetlen/llama-cpp-python/releases/download/v0.3.23-cu124/llama_cpp_python-0.3.23-py3-none-linux_x86_64.whl", marker = "sys_platform == 'linux' and platform_machine == 'x86_64'" }
 
