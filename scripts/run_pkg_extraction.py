@@ -12,10 +12,15 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import hashlib
 import json
 import os
+import platform
+import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
@@ -62,6 +67,57 @@ def _apply_env_overrides(
         os.environ["LLM_QUANTIZATION"] = hf_quantization
 
 
+def _file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def _git_sha() -> str:
+    try:
+        result = subprocess.run(
+            ["git", "rev-parse", "HEAD"],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        return result.stdout.strip()
+    except Exception:
+        return "unknown"
+
+
+def build_run_metadata(
+    *,
+    config: Any,
+    doc_id: str,
+    input_path: Path,
+    flat_path: Path,
+    pkg_path: Path,
+) -> dict[str, Any]:
+    return {
+        "created_at_utc": datetime.now(timezone.utc).isoformat(),
+        "git_sha": _git_sha(),
+        "doc_id": doc_id,
+        "input_path": str(input_path),
+        "input_sha256": _file_sha256(input_path),
+        "flat_output_path": str(flat_path),
+        "pkg_output_path": str(pkg_path),
+        "chunking_method": getattr(config, "chunking_method", None),
+        "prompting_strategy": getattr(config, "prompting_strategy", None),
+        "llm_backend": getattr(config, "llm_backend", None),
+        "llm_model_path": getattr(config, "llm_model_path", None),
+        "llm_model_id": getattr(config, "llm_model_id", None),
+        "llm_quantization": getattr(config, "llm_quantization", None),
+        "llm_temperature": getattr(config, "llm_temperature", None),
+        "llm_random_seed": getattr(config, "llm_random_seed", None),
+        "gpu_backend": getattr(config, "gpu_backend", None),
+        "python_version": platform.python_version(),
+        "platform": platform.platform(),
+    }
+
+
 async def run_extraction(args: argparse.Namespace) -> None:
     """Execute the extraction pipeline and persist both flat + PKG views."""
     _apply_env_overrides(
@@ -92,9 +148,20 @@ async def run_extraction(args: argparse.Namespace) -> None:
     pkg_path = output_dir / f"{args.doc_id}_pkg.json"
     pkg_path.write_text(json.dumps(pkg_payload, indent=2), encoding="utf-8")
 
+    metadata = build_run_metadata(
+        config=config,
+        doc_id=args.doc_id,
+        input_path=doc_path,
+        flat_path=flat_path,
+        pkg_path=pkg_path,
+    )
+    metadata_path = output_dir / "config.json"
+    metadata_path.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
+
     print(f"Extraction complete via DSC + {args.prompting_strategy.upper()} for {args.doc_id}.")
     print(f"Flat structured output : {flat_path}")
     print(f"PKG-ready graph output: {pkg_path}")
+    print(f"Run metadata          : {metadata_path}")
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
