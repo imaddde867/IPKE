@@ -97,7 +97,7 @@ async def run_extraction(args: argparse.Namespace) -> None:
     print(f"PKG-ready graph output: {pkg_path}")
 
 
-def parse_args() -> argparse.Namespace:
+def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Run DSC chunked, P3 prompted extraction and emit PKG-ready artifacts."
     )
@@ -113,13 +113,13 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--output-dir",
-        default="logs/pkg_runs/3m_marine_oem_sop",
+        default="runs/pkg_extraction/3m_marine_oem_sop",
         help="Directory for saving extraction artifacts.",
     )
     parser.add_argument(
         "--chunking-method",
         default="dsc",
-        choices=sorted(CHUNKING_METHOD_CHOICES),
+        choices=sorted(CHUNKING_METHOD_CHOICES | {"dsc"}),
         help="Chunking method override (default: dsc).",
     )
     parser.add_argument(
@@ -150,7 +150,7 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Optional quantization hint for HuggingFace models (use 'none' for pure MPS).",
     )
-    return parser.parse_args()
+    return parser.parse_args(argv)
 
 
 def main() -> None:
