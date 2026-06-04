@@ -31,10 +31,15 @@ venv.bak/
 # Environment files
 .env
 
-# Logs and Results
+# Logs, Results, and Run Artifacts
 logs/
 results/
+runs/
 *.log
+
+# Local research/private documents
+*.pdf
+!datasets/Samples/*.pdf
 
 # IDE
 .vscode/
@@ -74,7 +79,6 @@ models/
 uploaded_files/*
 !uploaded_files/.gitkeep
 
-# Extras 
+# Extras
 thesis/
 PRE_DEPLOYMENT_CHECKLIST.md
-AGENTS.md
