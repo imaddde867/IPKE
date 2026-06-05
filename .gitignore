@@ -72,6 +72,20 @@ tests/outputs/
 *.temp
 server.log
 
+# Local agent/tooling clutter
+.claude/
+.codex/
+.gitnexus/
+.mcp.json
+docs/superpowers/
+opencode.json
+prompt.md
+report.md
+details.md
+requirements.txt
+thesis.txt
+Elmouss_Imad Eddine.pdf
+
 # Large model files
 models/
 
