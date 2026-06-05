@@ -1,0 +1,138 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.org/ipke/procedural-graph.schema.json",
+  "title": "Industrial Procedural Knowledge Graph",
+  "type": "object",
+  "required": ["document_id", "steps", "edges"],
+  "additionalProperties": false,
+  "properties": {
+    "document_id": {"type": "string"},
+    "document_type": {"type": ["string", "null"]},
+    "title": {"type": ["string", "null"]},
+
+    "steps": {
+      "type": "array",
+      "items": {"$ref": "#/definitions/Step"}
+    },
+    "conditions": {
+      "type": "array",
+      "items": {"$ref": "#/definitions/Condition"},
+      "default": []
+    },
+    "equipment": {
+      "type": "array",
+      "items": {"$ref": "#/definitions/Equipment"},
+      "default": []
+    },
+    "parameters": {
+      "type": "array",
+      "items": {"$ref": "#/definitions/Parameter"},
+      "default": []
+    },
+    "edges": {
+      "type": "array",
+      "items": {"$ref": "#/definitions/Edge"}
+    },
+
+    "metadata": {
+      "type": "object",
+      "additionalProperties": {"type": ["string", "null"]},
+      "default": {}
+    }
+  },
+
+  "definitions": {
+    "Step": {
+      "type": "object",
+      "required": ["id", "text"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string"},
+        "order": {"type": ["integer", "null"], "minimum": 1},
+        "text": {"type": "string"},
+        "section": {"type": ["string", "null"]},
+        "context": {"type": ["string", "null"]},
+        "references": {
+          "type": ["array", "null"],
+          "items": {"type": "string"}
+        }
+      }
+    },
+    "Condition": {
+      "type": "object",
+      "required": ["id", "expression"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string"},
+        "type": {
+          "type": ["string", "null"],
+          "enum": [
+            null,
+            "precondition",
+            "postcondition",
+            "safety",
+            "environment",
+            "quality",
+            "exception"
+          ]
+        },
+        "expression": {"type": "string"},
+        "context": {"type": ["string", "null"]}
+      }
+    },
+    "Equipment": {
+      "type": "object",
+      "required": ["id", "name"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string"},
+        "name": {"type": "string"},
+        "model": {"type": ["string", "null"]},
+        "category": {"type": ["string", "null"]},
+        "vendor": {"type": ["string", "null"]},
+        "notes": {"type": ["string", "null"]}
+      }
+    },
+    "Parameter": {
+      "type": "object",
+      "required": ["id", "name"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": "string"},
+        "name": {"type": "string"},
+        "value": {"type": ["string", "null"]},
+        "unit": {"type": ["string", "null"]},
+        "range": {"type": ["string", "null"]},
+        "notes": {"type": ["string", "null"]}
+      }
+    },
+    "Edge": {
+      "type": "object",
+      "required": ["from_id", "to_id", "type"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {"type": ["string", "null"]},
+        "from_id": {"type": "string"},
+        "to_id": {"type": "string"},
+        "type": {
+          "type": "string",
+          "enum": [
+            "NEXT",
+            "CONDITION_ON",
+            "USES",
+            "HAS_PARAMETER",
+            "REQUIRES",
+            "PRODUCES",
+            "REFERENCES",
+            "ALTERNATIVE_TO"
+          ]
+        },
+        "confidence": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+        "attributes": {
+          "type": ["object", "null"],
+          "additionalProperties": {"type": "string"}
+        }
+      }
+    }
+  }
+}

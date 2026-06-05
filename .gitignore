@@ -1,0 +1,84 @@
+# Python
+.venv/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+core.*
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment files
+.env
+
+# Logs, Results, and Run Artifacts
+logs/
+results/
+runs/
+*.log
+
+# Local research/private documents
+*.pdf
+!datasets/Samples/*.pdf
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Tests
+test*.txt
+debug*.py
+.pytest_cache
+tests/temp_files/
+tests/**/*.log
+tests/outputs/
+.pytest_cache/
+.coverage
+
+# Temporary files
+*.tmp
+*.temp
+server.log
+
+# Large model files
+models/
+
+# Uploaded files
+uploaded_files/*
+!uploaded_files/.gitkeep
+
+# Extras
+thesis/
+PRE_DEPLOYMENT_CHECKLIST.md

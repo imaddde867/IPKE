@@ -1,0 +1,5 @@
+services:
+  ipke-fixed:
+    environment:
+      CHUNKING_METHOD: "fixed"
+      CHUNK_MAX_CHARS: "1000"
