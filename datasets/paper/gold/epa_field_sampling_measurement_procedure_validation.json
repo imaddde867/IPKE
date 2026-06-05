@@ -1,0 +1,142 @@
+{
+  "procedure": {
+    "doc_id": "epa_field_sampling_measurement_procedure_validation",
+    "title": "EPA LSASD non-standard procedure validation excerpt",
+    "version": "LSASDPROC-012-R6",
+    "domain": "field_procedure_validation",
+    "source": {
+      "doc_id": "epa_field_sampling_measurement_procedure_validation",
+      "page": "4-6",
+      "section": "3.2.1-5.1"
+    }
+  },
+  "steps": [
+    {
+      "id": "S1",
+      "label": "Inform the customer in writing that a non-standard procedure will be used",
+      "action_verb": "inform",
+      "action_object": "customer",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C1",
+          "type": "precondition",
+          "text": "Use this branch only when a non-standard sampling or measurement procedure is necessary.",
+          "attached_to": [
+            "S1"
+          ]
+        }
+      ],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "epa_field_sampling_measurement_procedure_validation",
+        "page": "4",
+        "section": "3.2.1"
+      }
+    },
+    {
+      "id": "S2",
+      "label": "Document that the customer agrees with the non-standard procedure",
+      "action_verb": "document",
+      "action_object": "customer agreement",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "epa_field_sampling_measurement_procedure_validation",
+        "page": "4",
+        "section": "3.2.1"
+      }
+    },
+    {
+      "id": "S3",
+      "label": "Document the customer request and need in the project file",
+      "action_verb": "document",
+      "action_object": "project file justification",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C2",
+          "type": "documentation",
+          "text": "Record both the request description and why the project required the non-standard procedure.",
+          "attached_to": [
+            "S3"
+          ]
+        }
+      ],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "epa_field_sampling_measurement_procedure_validation",
+        "page": "4",
+        "section": "3.2.1"
+      }
+    },
+    {
+      "id": "S4",
+      "label": "Develop a validation plan with objective acceptance criteria and testing scope",
+      "action_verb": "develop",
+      "action_object": "validation plan",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C3",
+          "type": "requirement",
+          "text": "The validation plan should address the objective, acceptance criteria, testing level, and peer review.",
+          "attached_to": [
+            "S4"
+          ]
+        }
+      ],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "epa_field_sampling_measurement_procedure_validation",
+        "page": "5",
+        "section": "4.2.1"
+      }
+    },
+    {
+      "id": "S5",
+      "label": "Provide documented training before staff implement the accepted operating procedure",
+      "action_verb": "provide",
+      "action_object": "staff training",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C4",
+          "type": "postcondition",
+          "text": "Document competency for each staff member assigned to implement the procedure.",
+          "attached_to": [
+            "S5"
+          ]
+        }
+      ],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "epa_field_sampling_measurement_procedure_validation",
+        "page": "6",
+        "section": "5.1"
+      }
+    }
+  ],
+  "constraints": [],
+  "relations": [],
+  "quality": {
+    "annotation_scope": "bounded_excerpt",
+    "review_status": "reviewed"
+  }
+}

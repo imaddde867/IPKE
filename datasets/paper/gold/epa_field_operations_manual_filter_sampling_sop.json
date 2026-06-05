@@ -1,0 +1,142 @@
+{
+  "procedure": {
+    "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+    "title": "CASTNET site initiation and operator training excerpt",
+    "version": "Revision 9",
+    "domain": "site_installation_sop",
+    "source": {
+      "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+      "page": "7-8",
+      "section": "6.3.3-6.4.1"
+    }
+  },
+  "steps": [
+    {
+      "id": "S1",
+      "label": "Verify the data logger, exercise the programmed control sequence, and record the results",
+      "action_verb": "verify",
+      "action_object": "data logger operations",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+        "page": "7",
+        "section": "6.3.3"
+      }
+    },
+    {
+      "id": "S2",
+      "label": "Test the sampling systems and measure the resulting flows on the sample lines",
+      "action_verb": "test",
+      "action_object": "sampling systems",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C1",
+          "type": "requirement",
+          "text": "Confirm that all data-logger channels are properly sequenced and initialized.",
+          "attached_to": [
+            "S2"
+          ]
+        }
+      ],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+        "page": "7",
+        "section": "6.3.3"
+      }
+    },
+    {
+      "id": "S3",
+      "label": "Test the telephone, modem, and router connections after calibration is complete",
+      "action_verb": "test",
+      "action_object": "communications connections",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C2",
+          "type": "precondition",
+          "text": "Complete system calibration and confirm the equipment is operating before testing communications.",
+          "attached_to": [
+            "S3"
+          ]
+        }
+      ],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+        "page": "7",
+        "section": "6.3.3"
+      }
+    },
+    {
+      "id": "S4",
+      "label": "Inventory onsite support materials before the station initiation team departs",
+      "action_verb": "inventory",
+      "action_object": "support materials",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C3",
+          "type": "requirement",
+          "text": "Keep enough materials onsite for at least one calendar quarter of uninterrupted operation.",
+          "attached_to": [
+            "S4"
+          ]
+        }
+      ],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+        "page": "7",
+        "section": "6.3.4"
+      }
+    },
+    {
+      "id": "S5",
+      "label": "Review site operations with the operator and document performance during closeout",
+      "action_verb": "review",
+      "action_object": "site operator performance",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C4",
+          "type": "documentation",
+          "text": "Check calibration forms for completeness and add narrative log entries for significant installation tasks.",
+          "attached_to": [
+            "S5"
+          ]
+        }
+      ],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+        "page": "7-8",
+        "section": "6.3.5"
+      }
+    }
+  ],
+  "constraints": [],
+  "relations": [],
+  "quality": {
+    "annotation_scope": "bounded_excerpt",
+    "review_status": "reviewed"
+  }
+}

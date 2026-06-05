@@ -1,0 +1,106 @@
+{
+  "documents": {
+    "epa_field_sampling_measurement_procedure_validation": {
+      "step_exact": {
+        "precision": 0.8,
+        "recall": 0.8,
+        "f1": 0.8000000000000002,
+        "true_positive": 4,
+        "false_positive": 1,
+        "false_negative": 1,
+        "reference_count": 5,
+        "predicted_count": 5
+      },
+      "constraint_exact": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "true_positive": 4,
+        "false_positive": 0,
+        "false_negative": 0,
+        "reference_count": 4,
+        "predicted_count": 4
+      },
+      "relation_exact": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1": 1.0,
+        "true_positive": 4,
+        "false_positive": 0,
+        "false_negative": 0,
+        "reference_count": 4,
+        "predicted_count": 4
+      },
+      "token_label_kappa": 0.9291287386215865,
+      "token_label_pairs": 109
+    },
+    "olsk_small_cnc_v1_workbook": {
+      "step_exact": {
+        "precision": 0.75,
+        "recall": 0.75,
+        "f1": 0.75,
+        "true_positive": 3,
+        "false_positive": 1,
+        "false_negative": 1,
+        "reference_count": 4,
+        "predicted_count": 4
+      },
+      "constraint_exact": {
+        "precision": 1.0,
+        "recall": 0.6666666666666666,
+        "f1": 0.8,
+        "true_positive": 4,
+        "false_positive": 0,
+        "false_negative": 2,
+        "reference_count": 6,
+        "predicted_count": 4
+      },
+      "relation_exact": {
+        "precision": 1.0,
+        "recall": 0.6666666666666666,
+        "f1": 0.8,
+        "true_positive": 4,
+        "false_positive": 0,
+        "false_negative": 2,
+        "reference_count": 6,
+        "predicted_count": 4
+      },
+      "token_label_kappa": 0.5314315218794372,
+      "token_label_pairs": 110
+    }
+  },
+  "aggregate": {
+    "step_exact": {
+      "true_positive": 7,
+      "false_positive": 2,
+      "false_negative": 2,
+      "reference_count": 9,
+      "predicted_count": 9,
+      "precision": 0.7777777777777778,
+      "recall": 0.7777777777777778,
+      "f1": 0.7777777777777778
+    },
+    "constraint_exact": {
+      "true_positive": 8,
+      "false_positive": 0,
+      "false_negative": 2,
+      "reference_count": 10,
+      "predicted_count": 8,
+      "precision": 1.0,
+      "recall": 0.8,
+      "f1": 0.888888888888889
+    },
+    "relation_exact": {
+      "true_positive": 8,
+      "false_positive": 0,
+      "false_negative": 2,
+      "reference_count": 10,
+      "predicted_count": 8,
+      "precision": 1.0,
+      "recall": 0.8,
+      "f1": 0.888888888888889
+    },
+    "token_label_kappa": 0.708818456231134,
+    "token_label_pairs": 219
+  }
+}

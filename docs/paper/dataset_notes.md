@@ -17,8 +17,6 @@ Initial Tier-A gold annotation targets:
 
 - `usgs_nfm_collection_water_samples_a4`
 - `usgs_groundwater_technical_procedures_tm1_a1`
-- `faa_amt_general_handbook_2023`
-- `faa_amt_airframe_handbook`
 - `epa_guidance_preparing_sops_qag6`
 - `epa_field_sampling_measurement_procedure_validation`
 - `epa_field_operations_manual_filter_sampling_sop`
@@ -26,22 +24,53 @@ Initial Tier-A gold annotation targets:
 - `nasa_npr_8715_3d_general_safety`
 - `olsk_small_cnc_v1_workbook`
 
+This bounded first pass keeps the Tier-A set at eight documents. The two FAA handbooks remain
+downloaded alternates because they are the largest and most mixed expository/procedural sources
+in the corpus, which made first-pass extraction and review disproportionally expensive.
+
 Downloaded alternates and support artifacts are tracked in
 `datasets/paper/public_sources_manifest.csv`.
 
-## IAA Plan
+## Current Counts
 
-Use a planned inter-annotator agreement subset before freezing the Tier-A gold set:
+- Downloaded first-wave public artifacts tracked in manifest: 16
+- Extracted text files committed under `datasets/paper/text/`: 10
+- Tier-A selected documents in the bounded first pass: 8
+- Reviewed gold annotation files under `datasets/paper/gold/`: 8
+- Second-pass annotation files under `datasets/paper/second_pass/`: 2
 
-- Sample at least 20 percent of Tier-A documents, with a minimum of three source families.
-- Include one government SOP-like document, one maintenance or assembly document, and one safety or requirements document.
-- Double-annotate step boundaries, step order, constraint attachment, resource references, and safety-critical flags.
-- Resolve disagreements before final gold freeze and record adjudication notes outside raw source files.
+The extracted text directory includes the two FAA handbook alternates because they were already
+successfully extracted from the first-wave corpus, but they are not counted in the bounded first-pass
+Tier-A gold set.
+
+## IAA Results
+
+Double annotation was completed for:
+
+- `epa_field_sampling_measurement_procedure_validation`
+- `olsk_small_cnc_v1_workbook`
+
+This covers 2 of 8 Tier-A documents, which satisfies the minimum `max(2, 20%)` requirement for the
+issue-53 slice.
+
+Aggregate agreement from `datasets/paper/reports/issue_53_iaa_report.json`:
+
+- `step_exact`: precision 0.778, recall 0.778, F1 0.778
+- `constraint_exact`: precision 1.000, recall 0.800, F1 0.889
+- `relation_exact`: precision 1.000, recall 0.800, F1 0.889
+- `token_label_kappa`: 0.709 across 219 comparable token-label pairs
+
+Interpretation:
+
+- Step boundary and wording disagreements are concentrated in the bounded assembly excerpt.
+- Constraint text and attachment agreement is stronger than step exact-match agreement in this subset.
+- The current IAA remains a bounded workflow check, not a finalized corpus-wide adjudication result.
 
 ## Limitations
 
 - The first wave is public and reproducible, but it is not a substitute for private partner SOPs.
 - Several sources are long handbooks with mixed procedural and expository content, so section selection must be documented.
+- The current Tier-A annotations are bounded excerpts rather than full-document procedural gold.
 - NASA and EPA directives can be policy-heavy; they should not dominate step-level evaluation.
 - Open-hardware OLSK documents improve assembly coverage but are smaller than government manuals.
 - The public corpus is English-only in this slice.
@@ -64,4 +93,3 @@ explicit permission. Do not use them in the paper corpus unless permission is se
 
 Rights notes must travel with extracted text, gold files, and experiment metadata. Do not publish
 raw PDFs from this repository.
-

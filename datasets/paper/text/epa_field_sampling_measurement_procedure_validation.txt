@@ -1,0 +1,319 @@
+document_id: epa_field_sampling_measurement_procedure_validation
+source_family: EPA
+title: Field Sampling and Measurement Procedure and Procedure Validation
+direct_url: https://www.epa.gov/system/files/documents/2021-08/lsasdproc-012-r6-field-sampling-and-measurement-procedure-and-procedure-validation-080621.pdf
+sha256: da209fb6670b5eda00be7a2687ba405cb03b0113a19924976455ff5d9cc6666f
+
+Region 4
+U.S. Environmental Protection Agency
+Laboratory Services and Applied Science Division
+Athens, Georgia
+Operating Procedure
+Title: Field Sampling and Measurement
+Procedures and Procedure Validation
+ID: LSASDPROC-012-R6
+Issuing Authority: LSASD Field Services Branch Chief
+Review Issue Date: August 6, 2021
+Next Review Date: August 6, 2025
+Purpose
+Laboratory Services and Applied Science Division (LSASD) Field Services Branch (FSB) operating
+procedures are reviewed at a frequency specified in LSASD Operating Procedure for Document
+Control (LSASDPROC-1000, most recent version), and where necessary, revised to ensure
+continuing suitability and conformance with applicable requirements and industry standards.
+Additionally, there may be the occasion where a new sampling or measurement procedure is
+developed internally or adapted from an existing standard or non-standard procedure. This document
+defines the different classes of procedures and describes the process for the development and
+validation of new LSASD procedures; and the development, review/validation, and approval process
+to be followed when adopting or revising standard or non-standard procedures.
+Scope/Application
+This document applies to all standard, non-standard, and LSASD-developed sampling and
+measurement procedures.
+Note: LSASD is currently migrating to a paperless organization. As a result, this SOP will allow for
+the use of electronic logbooks, checklists, and report forms as they are developed, which will
+also be housed in the LSASD Local Area Network (LAN) and traceable to each project.
+LSASD is committed to maintaining its quality system by continued traceability of original
+observations in the final report as migration to an electronic system occurs.
+
+Field Sampling and Measurement Procedures and validation
+Effective Date: August 6, 2021
+
+Approved by FSB Chief
+Page 2 of 7
+LSASDPROC-012-R6 080621
+Table of Contents
+
+
+
+1.
+Documentation/Verification _______________________________________________________ 3
+2.
+Definitions_____________________________________________________________________ 3
+3.
+Field Sampling and Measurement Procedures _________________________________________ 3
+4.
+Validation _____________________________________________________________________ 4
+5.
+Procedure Implementation ________________________________________________________ 6
+References _________________________________________________________________________ 6
+Revision History ____________________________________________________________________ 7
+
+
+
+
+
+Field Sampling and Measurement Procedures and validation
+Effective Date: August 6, 2021
+
+Approved by FSB Chief
+Page 3 of 7
+LSASDPROC-012-R6 080621
+General Information
+
+
+1. Documentation/Verification
+
+1.1. This procedure was prepared by persons deemed technically competent by LSASD
+management, based on their knowledge, skills, and abilities. The official copy of this procedure
+resides on the LSASD Local Area Network (LAN). The Quality Assurance Manager is
+responsible for ensuring the most recent version of the procedure is placed on the LAN and for
+maintaining records of review conducted prior to its issuance.
+
+2. Definitions
+
+2.1. Standard Procedure - This term applies to an established environmental sampling or
+measurement procedure used and accepted within the environmental industry.
+
+2.2. Non-Standard Procedure - A non-standard procedure is an environmental sampling or
+measurement procedure that is not widely used or accepted within the environmental industry.
+
+2.3. LSASD-Developed Procedure - A new sampling or measurement procedure developed by the
+LSASD field branches for internal use.
+
+3. Field Sampling and Measurement Procedures
+
+3.1. Standard Procedures
+
+3.1.1. LSASD field investigators use standard procedures while conducting field investigations.
+LSASD procedures are subject to periodic review and where necessary, may be revised to
+ensure continuing suitability and conformance with applicable industry standards and
+requirements. LSASD procedures undergoing periodic review that are updated with
+minor modifications are not subject to the validation process described in Section 4 of
+this procedure.
+
+3.1.2. New standard procedures may be adopted for use by LSASD field investigators. In
+addition, as state-of-the-art changes and new instruments, equipment, and procedures are
+developed and become available, it may be appropriate for LSASD to develop and
+publish new operating procedures for field measurement and sampling activities.
+
+3.1.3. New standard procedures adopted for use by the FSB will not be subject to an extensive
+validation as described in Section 4 of this procedure. New standard procedures will be
+evaluated to the extent necessary to ensure the result provided is equivalent to a currently
+used procedure or consistent results are achieved.
+
+
+
+Field Sampling and Measurement Procedures and validation
+Effective Date: August 6, 2021
+
+Approved by FSB Chief
+Page 4 of 7
+LSASDPROC-012-R6 080621
+3.2. Non-Standard Procedures
+
+3.2.1. When it is necessary to use a non-standard sampling or measurement procedure, the
+project leader will:
+
+• Inform the customer in writing (email or memo) that a non-standard procedure will
+be used;
+• Document that the customer agrees with the use of a non-standard procedure; and,
+• Document in the project file the customer’s request and the need for using a non-
+standard procedure (i.e., description of the project request and why it required the
+use of a non-standard procedure).
+
+3.2.2. Non-standard procedures will be fully validated according to Section 4 of this procedure.
+If the non-standard procedure is not adopted into the scope of the FSB quality system
+prior to use, any results generated by the procedure must be clearly identified as being
+outside the scope of the quality system in the field investigation report.
+
+3.2.3. If FSB choose to include the non-standard procedure in the scope of their quality system,
+this will be done in accordance with the LSASD Operating Procedure for Document
+Control (LSASDPROC-1000, most recent version).
+
+3.3. LSASD-Developed Procedures
+
+3.3.1. When it is necessary for FSB to develop procedures for their own use, it will be a planned
+activity and management will designate qualified personnel to develop the procedure.
+Management will also ensure adequate resources (time, equipment, funding, personnel,
+etc.) are available to aid in the development process. If a team of staff members is tasked
+with the procedure development, management will designate an individual to serve as the
+team leader. This individual will be responsible for facilitating the development process.
+The development process will consist of:
+
+• Review of relevant literature (manufacturers’ documentation, scientific
+publications, etc.);
+• Development of an operating procedure; and,
+• Validation of the procedure.
+
+4. Validation
+
+4.1. General
+
+4.1.1. Validation is the confirmation by examination and the provision of objective evidence
+that the requirements for a specific intended use are fulfilled. LSASD will validate 1)
+non-standard procedures; 2) LSASD developed procedures; 3) standard procedures used
+outside their intended scope; and 4) amplifications and modifications of standard
+procedures to confirm that the procedures are fit for the intended use. Validation will be
+as extensive as is necessary to meet the needs of the given application.
+
+
+Field Sampling and Measurement Procedures and validation
+Effective Date: August 6, 2021
+
+Approved by FSB Chief
+Page 5 of 7
+LSASDPROC-012-R6 080621
+
+4.2. Validation Team
+
+4.2.1. LSASD FSB management will designate members of the validation team and ensure
+adequate resources are available to complete the validation. Members may consist of
+subject matter experts (SMEs) and representatives from both FSB sections, as
+appropriate. Management will designate one team member as the team leader. The team
+leader will serve as the point of contact for the team and facilitate the validation process.
+The team will be responsible for developing a validation plan that should address, at a
+minimum, the objective of the validation, acceptance criteria, the level of testing
+necessary and peer review. The team will update the validation plan, as necessary, during
+the validation process.
+
+4.3. Field Testing or Evaluation
+
+4.3.1. The validation team will develop an appropriate field test or evaluation for the operating
+procedure. A member or members of the validation team will be present during the field
+test or evaluation to record information on the conditions, performance, and practicality
+of the proposed procedure.
+
+4.4. Assessment
+
+4.4.1. After completion of the field test or evaluation, the validation team will assess the results
+using the acceptance criteria established by the team in the validation plan.
+
+4.5. Acceptance/Rejection of Operating Procedure
+
+4.5.1. If the assessment indicates that the operating procedure meets the acceptance criteria, the
+validation team will finalize the operating procedure as written, or with modifications. If
+the acceptance criteria are not met, the team may continue the validation by returning to
+earlier steps in the validation process, as appropriate.
+
+4.6. Records
+
+4.6.1. The validation team will document all decisions and actions. The following records will
+be generated during the validation process:
+
+• Validation plan
+• Relevant literature
+• Draft and final operating procedures
+• Results of field tests and/or evaluations
+• Results of the assessment
+
+4.6.2. The validation team leader will be responsible for maintaining the records during the
+validation process. Upon completion of the validation, the records will be maintained by
+the Quality Assurance Manager.
+
+
+Field Sampling and Measurement Procedures and validation
+Effective Date: August 6, 2021
+
+Approved by FSB Chief
+Page 6 of 7
+LSASDPROC-012-R6 080621
+
+5. Procedure Implementation
+
+5.1. After a standard or nonstandard procedure has been assessed and accepted for use, the subject
+matter expert will provide training, to the appropriate staff, on how to correctly implement the
+operating procedure. Competency will be documented, in accordance with LSASD Operating
+Procedure for Training and Competency (LSASDPROC-1003, most recent version) for each
+staff member who will be assigned to implement the operating procedure.
+
+References
+
+LSASD Operating Procedure for Document Control (LSASDPROC-1000), most recent version.
+
+LSASD’s Training and Competency (LSASDPROC-1003), most recent version.
+
+
+
+Field Sampling and Measurement Procedures and validation
+Effective Date: August 6, 2021
+
+Approved by FSB Chief
+Page 7 of 7
+LSASDPROC-012-R6 080621
+
+Revision History
+
+History
+Effective Date
+LSASDPROC-012-R6,
+Field
+Sampling
+and
+Measurement
+Procedures and Procedure Validation, replaces SESDPROC-012-
+R4
+
+General: Corrected any typographical, grammatical, and/or
+editorial errors. Throughout the document mention of quality
+system or SESD quality system was replaced with Laboratory
+Services and Applied Science Branch Quality System or LSASD.
+Changed field branches to Field Service Branch. SOP put into the
+new format. Updated SOP references.
+
+
+August 6, 2021
+SESDPROC-012-R4,
+Field
+Sampling
+and
+Measurement
+Procedures and Procedure Validation, replaces SESDPROC-012-
+R3
+
+General: Corrected any typographical, grammatical, and/or
+editorial errors. Throughout the document mention of quality
+system or SESD quality system was replaced with Field Branches
+Quality System or FBQS.
+
+Cover Page: Changed the Author from Bobby Lewis to Hunter
+Johnson. Updated cover page to represent SESD reorganization.
+John Deatrick was not listed as the Chief of the Field Services
+Branch.
+
+July 13, 2016
+SESDPROC-012-R3,
+Field
+Sampling
+and
+Measurement
+Procedures and Procedure Validation, replaces SESDPROC-012-
+R2
+August 30, 2012
+SESDPROC-012-R2,
+Field
+Sampling
+and
+Measurement
+Procedures and Procedure Validation, replaces SESDPROC-012-
+R1
+December 18, 2009
+SESDPROC-012-R1,
+Field
+Sampling
+and
+Measurement
+Procedures and Procedure Validation, replaces SESDPROC-012-
+R0
+November 1, 2007
+SESDPROC-012-R0, Procedure Development, Revision and
+Validation, Original Issue
+October 10, 2007
