@@ -40,17 +40,31 @@ def test_compute_text_metrics_skips_metadata_header(
 ) -> None:
     metrics = compute_text_metrics(TEXT_DIR / filename)
     assert metrics["word_count"] >= expected_words
-    assert metrics["token_count"] >= metrics["word_count"]
+    assert metrics["word_count"] >= metrics["token_count"]
     assert "excerpt_word_count" in metrics
 
 
-def test_merge_metrics_adds_columns_for_all_rows() -> None:
+def test_merge_metrics_writes_positive_counts_for_text_rows() -> None:
     rows = _rows()
     enriched = merge_metrics_into_manifest(rows, TEXT_DIR)
-    for row in enriched:
-        assert int(row["word_count"]) > 0
-        assert int(row["token_count"]) > 0
+    text_rows = [r for r in enriched if r["selected_for_gold"].strip().lower() == "true"]
+    assert text_rows, "no selected_for_gold rows in manifest"
+    for row in text_rows:
+        assert int(row["word_count"]) > 0, row["document_id"]
+        assert int(row["token_count"]) > 0, row["document_id"]
         assert SHA256_RE.fullmatch(row["sha256"])
+
+
+def test_merge_metrics_writes_zero_counts_for_rows_without_text() -> None:
+    rows = _rows()
+    enriched = merge_metrics_into_manifest(rows, TEXT_DIR)
+    no_text_rows = [r for r in enriched if not (TEXT_DIR / f"{r['document_id']}.txt").exists()]
+    assert no_text_rows, "expected at least one manifest row with no text file"
+    for row in no_text_rows:
+        assert int(row["word_count"]) == 0, row["document_id"]
+        assert int(row["token_count"]) == 0, row["document_id"]
+        assert int(row["excerpt_word_count"]) == 0, row["document_id"]
+        assert int(row["excerpt_token_count"]) == 0, row["document_id"]
 
 
 def test_enrichment_preserves_existing_status_columns() -> None:

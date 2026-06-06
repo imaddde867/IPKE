@@ -25,6 +25,10 @@ EXPECTED_HEADER = [
     "annotation_status",
     "annotation_scope",
     "annotator_count",
+    "word_count",
+    "token_count",
+    "excerpt_word_count",
+    "excerpt_token_count",
 ]
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 
