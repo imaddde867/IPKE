@@ -25,7 +25,7 @@ def test_every_gold_file_has_pilot_audit_block(path: Path) -> None:
     for key in REQUIRED_AUDIT_KEYS:
         assert key in audit, f"{path.name}: missing audit.{key}"
     assert audit["gold_status"] == "pilot_gold"
-    assert audit["annotation_status"] in {"draft", "reviewed"}
+    assert audit["annotation_status"] in {"draft", "reviewed", "double_annotated"}
 
 
 @pytest.mark.parametrize("path", sorted(SECOND_DIR.glob("*.json")))
@@ -43,3 +43,22 @@ def test_manifest_columns_contain_pilot_status() -> None:
     header = rows[0].split(",")
     assert "gold_status" in header
     assert "annotation_status" in header
+
+
+def test_double_annotated_gold_file_mirrors_manifest_status() -> None:
+    rows = json.loads(
+        Path("datasets/paper/annotation_batches/manifest_pilot_status.json").read_text(encoding="utf-8")
+    )
+    status_by_id = {row["document_id"]: row["annotation_status"] for row in rows}
+    double_annotated_ids = {doc_id for doc_id, status in status_by_id.items() if status == "double_annotated"}
+    assert double_annotated_ids == {
+        "epa_field_sampling_measurement_procedure_validation",
+        "niosh_nmam_5th_edition_ebook",
+        "olsk_small_cnc_v1_workbook",
+    }
+    for doc_id in double_annotated_ids:
+        annotation = json.loads((GOLD_DIR / f"{doc_id}.json").read_text(encoding="utf-8"))
+        assert annotation["procedure"]["audit"]["annotation_status"] == "double_annotated", doc_id
+    for path in sorted(SECOND_DIR.glob("*.json")):
+        second = json.loads(path.read_text(encoding="utf-8"))
+        assert second["procedure"]["audit"]["annotation_status"] == "double_annotated", path.name

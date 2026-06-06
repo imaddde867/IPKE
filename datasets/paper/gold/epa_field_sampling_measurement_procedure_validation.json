@@ -11,7 +11,7 @@
     },
     "audit": {
       "gold_status": "pilot_gold",
-      "annotation_status": "reviewed",
+      "annotation_status": "double_annotated",
       "annotation_scope": "bounded_excerpt",
       "annotator_count": 1,
       "guideline_version": "ipke-annotation-guideline-v0.1-pilot",
