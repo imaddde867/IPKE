@@ -35,3 +35,7 @@ def test_multi_seed_sweep_rejects_unknown_config():
         cwd=str(REPO_ROOT),
     )
     assert result.returncode != 0, "Unknown config must not exit 0"
+    combined = result.stdout + result.stderr
+    assert "no_such_config" in combined or "invalid choice" in combined, (
+        f"Expected argparse rejection message in output, got:\n{combined[:500]}"
+    )
