@@ -1,4 +1,4 @@
-.PHONY: test eval smoke-extract paper-table clean-artifacts
+.PHONY: test eval smoke-extract paper-table clean-artifacts paper-validate
 
 PYTHON := uv run python
 
@@ -26,3 +26,6 @@ paper-table:
 
 clean-artifacts:
 	$(PYTHON) -c "from pathlib import Path; [p.unlink() for p in Path('runs').rglob('.DS_Store')] if Path('runs').exists() else None"
+
+paper-validate:
+	$(PYTHON) scripts/paper_validate.py
