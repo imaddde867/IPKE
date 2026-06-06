@@ -24,6 +24,9 @@ jobs:
       - name: Sync dependencies
         run: uv sync --locked --extra app
 
+      - name: Check manifest freshness
+        run: uv run python scripts/check_manifest_freshness.py --manifest datasets/paper/public_sources_manifest.csv --text-dir datasets/paper/text
+
       - name: Run tests
         run: uv run pytest
 

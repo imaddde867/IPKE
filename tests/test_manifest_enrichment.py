@@ -81,3 +81,18 @@ def test_enrichment_preserves_existing_status_columns() -> None:
     usgs = by_id["usgs_nfm_collection_water_samples_a4"]
     assert usgs["annotation_status"] == "reviewed"
     assert usgs["annotator_count"] == "1"
+
+
+from scripts.enrich_manifest import compute_text_metrics  # noqa: F401
+from scripts.check_manifest_freshness import (
+    check_manifest_freshness,
+    EXPECTED_STATUSES,
+)
+
+
+def test_manifest_is_fresh() -> None:
+    report = check_manifest_freshness(MANIFEST, TEXT_DIR)
+    drift = [entry for entry in report["rows"] if entry["drift"]]
+    assert not drift, f"manifest drift: {drift}"
+    for status in EXPECTED_STATUSES:
+        assert any(row[status] for row in report["rows"] if status in row), status
