@@ -31,7 +31,7 @@ class BreakpointSemanticChunker(BaseChunker):
 
                 if torch.cuda.is_available():
                     return "cuda"
-            except Exception:  # noqa: BLE001
+            except (ImportError, RuntimeError):  # noqa: BLE001
                 pass
         if backend in {"metal", "mps"}:
             try:
@@ -39,7 +39,7 @@ class BreakpointSemanticChunker(BaseChunker):
 
                 if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
                     return "mps"
-            except Exception:  # noqa: BLE001
+            except (ImportError, RuntimeError):  # noqa: BLE001
                 pass
         return "cpu"
 

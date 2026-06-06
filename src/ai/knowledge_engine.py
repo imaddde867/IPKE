@@ -338,7 +338,7 @@ class UnifiedKnowledgeEngine:
                 if torch.cuda.is_available():
                     self._chunk_dedup_device = "cuda"
                     return self._chunk_dedup_device
-            except Exception:  # noqa: BLE001
+            except (ImportError, RuntimeError):  # noqa: BLE001
                 pass
         if backend in {"metal", "mps"}:
             try:
@@ -347,7 +347,7 @@ class UnifiedKnowledgeEngine:
                 if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
                     self._chunk_dedup_device = "mps"
                     return self._chunk_dedup_device
-            except Exception:  # noqa: BLE001
+            except (ImportError, RuntimeError):  # noqa: BLE001
                 pass
         self._chunk_dedup_device = "cpu"
         return self._chunk_dedup_device
@@ -687,9 +687,10 @@ class UnifiedKnowledgeEngine:
                 continue
             if not kept_embeddings:
                 clone = deepcopy(constraint)
-                clone["attached_to"] = _normalize_refs(
+                clone["steps"] = _normalize_refs(
                     constraint.get("attached_to") or constraint.get("steps") or constraint.get("targets")
                 )
+                clone.pop("attached_to", None)
                 kept.append(clone)
                 kept_embeddings.append(embeddings[idx])
                 continue
@@ -700,22 +701,24 @@ class UnifiedKnowledgeEngine:
             if best >= threshold:
                 # merge references into existing constraint
                 existing = kept[best_idx]
-                merged_refs = set(existing.get("attached_to", []))
+                merged_refs = set(existing.get("steps", []))
                 merged_refs.update(
                     _normalize_refs(
                         constraint.get("attached_to") or constraint.get("steps") or constraint.get("targets")
                     )
                 )
-                existing["attached_to"] = list(merged_refs)
+                existing["steps"] = list(merged_refs)
+                existing.pop("attached_to", None)
                 existing["confidence"] = max(
                     self._coerce_confidence(existing.get("confidence")),
                     self._coerce_confidence(constraint.get("confidence")),
                 )
             else:
                 clone = deepcopy(constraint)
-                clone["attached_to"] = _normalize_refs(
+                clone["steps"] = _normalize_refs(
                     constraint.get("attached_to") or constraint.get("steps") or constraint.get("targets")
                 )
+                clone.pop("attached_to", None)
                 kept.append(clone)
                 kept_embeddings.append(embeddings[idx])
 
