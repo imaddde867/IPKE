@@ -1,0 +1,58 @@
+[
+  {
+    "document_id": "usgs_nfm_collection_water_samples_a4",
+    "gold_status": "pilot_gold",
+    "annotation_status": "reviewed",
+    "annotation_scope": "bounded_excerpt",
+    "annotator_count": 1
+  },
+  {
+    "document_id": "usgs_groundwater_technical_procedures_tm1_a1",
+    "gold_status": "pilot_gold",
+    "annotation_status": "reviewed",
+    "annotation_scope": "bounded_excerpt",
+    "annotator_count": 1
+  },
+  {
+    "document_id": "epa_guidance_preparing_sops_qag6",
+    "gold_status": "pilot_gold",
+    "annotation_status": "reviewed",
+    "annotation_scope": "bounded_excerpt",
+    "annotator_count": 1
+  },
+  {
+    "document_id": "epa_field_sampling_measurement_procedure_validation",
+    "gold_status": "pilot_gold",
+    "annotation_status": "double_annotated",
+    "annotation_scope": "bounded_excerpt",
+    "annotator_count": 2
+  },
+  {
+    "document_id": "epa_field_operations_manual_filter_sampling_sop",
+    "gold_status": "pilot_gold",
+    "annotation_status": "reviewed",
+    "annotation_scope": "bounded_excerpt",
+    "annotator_count": 1
+  },
+  {
+    "document_id": "niosh_nmam_5th_edition_ebook",
+    "gold_status": "pilot_gold",
+    "annotation_status": "double_annotated",
+    "annotation_scope": "bounded_excerpt",
+    "annotator_count": 2
+  },
+  {
+    "document_id": "nasa_npr_8715_3d_general_safety",
+    "gold_status": "pilot_gold",
+    "annotation_status": "reviewed",
+    "annotation_scope": "bounded_excerpt",
+    "annotator_count": 1
+  },
+  {
+    "document_id": "olsk_small_cnc_v1_workbook",
+    "gold_status": "pilot_gold",
+    "annotation_status": "double_annotated",
+    "annotation_scope": "bounded_excerpt",
+    "annotator_count": 2
+  }
+]
