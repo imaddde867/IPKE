@@ -41,12 +41,12 @@ Outputs (all under --output-root/multi_seed_<timestamp>/):
         seed_<seed>/              flat + tierb prediction JSONs
         metrics_seed_<seed>.json  Tier-A scores for that seed
 
-Note on Qwen3 thinking mode:
+Note on Qwen3 thinking mode (pending):
     Qwen3 supports a thinking mode (chain-of-thought before answering).
-    When think_mode=False, /no_think is prepended to the stage-1 prompt,
-    disabling internal reasoning for faster, more direct structured output.
-    When think_mode=True, the model reasons before each JSON response —
-    this is a novel ablation not yet in the literature for industrial SOP extraction.
+    The SweepConfig.think_mode field records the intent for each config,
+    but the control tokens (/no_think, /think) are not yet wired into the
+    prompting path — all configs currently run without think-mode control.
+    See the TODO comment in _extract_one for implementation notes.
 """
 
 from __future__ import annotations
@@ -98,9 +98,6 @@ _MISTRAL_GGUF = f"{_MODEL_DIR}/Mistral-7B-Instruct-v0.2-Q4_K_M.gguf"
 _QWEN3_GGUF   = f"{_MODEL_DIR}/Qwen3-8B-Q4_K_M.gguf"
 _LLAMA31_GGUF = f"{_MODEL_DIR}/Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf"
 
-# Qwen3 thinking-mode control token (soft switch in raw prompt text).
-_QWEN3_NO_THINK = "/no_think"
-_QWEN3_THINK    = "/think"
 
 
 # ---------------------------------------------------------------------------
@@ -295,7 +292,7 @@ def write_run_config(
     # Build per-config model provenance (ECIR Section 4 requirement).
     config_provenance = []
     for c in configs:
-        abs_path = _resolve_model_path(c.model_path)
+        abs_path = _resolve_model_path(c.model_path, model_dir=args.model_dir)
         config_provenance.append({
             "name": c.name,
             "chunking_method": c.chunking_method,
@@ -303,7 +300,6 @@ def write_run_config(
             "model_path": abs_path or "(env default)",
             "model_file": Path(abs_path).name if abs_path else "(env default)",
             "llm_backend": c.llm_backend,
-            "think_mode": c.think_mode,
         })
     payload: Dict[str, Any] = {
         "timestamp": datetime.now(timezone.utc).isoformat(),
