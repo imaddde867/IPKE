@@ -340,14 +340,20 @@ def main(argv: list[str] | None = None) -> int:
     # used as paper evidence.
     if not args.dry_run and not args.allow_unreviewed:
         unreviewed = []
+        bad_gold = []
         for gf, _ in pairs:
             try:
                 data = json.loads(gf.read_text(encoding="utf-8"))
                 status = data.get("quality", {}).get("review_status", "")
                 if status != "reviewed":
                     unreviewed.append(gf.name)
-            except Exception:  # noqa: BLE001
-                pass
+            except Exception as exc:  # noqa: BLE001
+                bad_gold.append((gf.name, exc))
+        if bad_gold:
+            print("ERROR: could not read or parse gold files:", file=sys.stderr)
+            for name, exc in bad_gold:
+                print(f"  {name}: {exc}", file=sys.stderr)
+            return 1
         if unreviewed:
             print(
                 "ERROR: the following gold files are not reviewed "
