@@ -26,16 +26,17 @@ REQUIRED_AUDIT_KEYS: tuple[str, ...] = (
 def reclassify_annotation(
     annotation: dict[str, Any],
     *,
-    role: str,
     annotation_status: str,
+    annotation_scope: str,
+    annotator_count: int,
 ) -> dict[str, Any]:
-    """Return a copy of `annotation` with the audit block populated for `role`."""
+    """Return a copy of `annotation` with the audit block populated."""
     procedure = dict(annotation.get("procedure", {}))
     audit = dict(procedure.get("audit") or {})
     audit["gold_status"] = "pilot_gold"
     audit["annotation_status"] = annotation_status
-    audit.setdefault("annotation_scope", "bounded_excerpt")
-    audit.setdefault("annotator_count", 1)
+    audit["annotation_scope"] = annotation_scope
+    audit["annotator_count"] = annotator_count
     audit.setdefault("guideline_version", "ipke-annotation-guideline-v0.1-pilot")
     audit.setdefault("model_draft_used", True)
     audit.setdefault("reviewed_by", "paper-author-self-review")
@@ -69,31 +70,51 @@ def update_manifest_columns(manifest: Path, rows: list[dict[str, str]]) -> None:
         writer.writerows(existing)
 
 
+def _check_orphan_files(
+    in_dir: Path,
+    *,
+    role: str,
+    rows_by_id: dict[str, dict[str, str]],
+    rows_path: Path,
+) -> list[str]:
+    """Return document_ids that have a file but no rows entry. Empty list means OK."""
+    orphans: list[str] = []
+    for path in sorted(in_dir.glob("*.json")):
+        document_id = path.stem
+        if document_id not in rows_by_id:
+            orphans.append(document_id)
+        elif role == "second_pass" and rows_by_id[document_id]["annotation_status"] != "double_annotated":
+            raise SystemExit(
+                f"{document_id}: second_pass file exists but manifest says "
+                f"annotation_status={rows_by_id[document_id]['annotation_status']!r}. "
+                f"Move the file or update {rows_path}."
+            )
+    return orphans
+
+
 def reclassify_directory(
     in_dir: Path,
     *,
     role: str,
-    status_by_id: dict[str, str],
+    rows_by_id: dict[str, dict[str, str]],
 ) -> None:
     for path in sorted(in_dir.glob("*.json")):
         document_id = path.stem
-        if document_id not in status_by_id:
-            raise SystemExit(
-                f"{document_id}: no annotation_status in manifest rows JSON. "
-                f"Add it to datasets/paper/annotation_batches/manifest_pilot_status.json."
-            )
-        annotation_status = status_by_id[document_id]
-        if role == "second_pass" and annotation_status != "double_annotated":
-            raise SystemExit(
-                f"{document_id}: second_pass file exists but manifest says "
-                f"annotation_status={annotation_status!r}. Move the file or update the manifest."
-            )
+        row = rows_by_id[document_id]
         annotation = json.loads(path.read_text(encoding="utf-8"))
         updated = reclassify_annotation(
-            annotation, role=role, annotation_status=annotation_status
+            annotation,
+            annotation_status=row["annotation_status"],
+            annotation_scope=row["annotation_scope"],
+            annotator_count=int(row["annotator_count"]),
         )
         path.write_text(json.dumps(updated, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
-        print(f"{path.name}: reclassified to pilot_gold ({role}, status={annotation_status})")
+        print(
+            f"{path.name}: audit stamped "
+            f"(status={row['annotation_status']}, "
+            f"scope={row['annotation_scope']}, "
+            f"annotators={row['annotator_count']})"
+        )
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
@@ -108,9 +129,19 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     rows = json.loads(args.rows_json.read_text(encoding="utf-8"))
-    status_by_id = {row["document_id"]: row["annotation_status"] for row in rows}
-    reclassify_directory(args.gold_dir, role="gold", status_by_id=status_by_id)
-    reclassify_directory(args.second_dir, role="second_pass", status_by_id=status_by_id)
+    rows_by_id = {row["document_id"]: row for row in rows}
+
+    for role, in_dir in (("gold", args.gold_dir), ("second_pass", args.second_dir)):
+        orphans = _check_orphan_files(
+            in_dir, role=role, rows_by_id=rows_by_id, rows_path=args.rows_json
+        )
+        if orphans:
+            raise SystemExit(
+                f"{in_dir}: file(s) have no entry in {args.rows_json}: {orphans}. "
+                f"Add rows for them or remove the files."
+            )
+        reclassify_directory(in_dir, role=role, rows_by_id=rows_by_id)
+
     update_manifest_columns(args.manifest, rows)
     return 0
 

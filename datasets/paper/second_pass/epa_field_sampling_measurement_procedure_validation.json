@@ -8,7 +8,7 @@
       "gold_status": "pilot_gold",
       "annotation_status": "double_annotated",
       "annotation_scope": "bounded_excerpt",
-      "annotator_count": 1,
+      "annotator_count": 2,
       "guideline_version": "ipke-annotation-guideline-v0.1-pilot",
       "model_draft_used": true,
       "reviewed_by": "paper-author-self-review",

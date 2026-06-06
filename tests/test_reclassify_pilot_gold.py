@@ -45,6 +45,9 @@ def test_manifest_columns_contain_pilot_status() -> None:
     assert "annotation_status" in header
 
 
+# The 3-document ID set asserted below is a contract for the current pilot state.
+# A 4th `double_annotated` document will require an explicit update to this set
+# and to the test_audit_block_mirrors_manifest_annotator_count_and_scope coverage.
 def test_double_annotated_gold_file_mirrors_manifest_status() -> None:
     rows = json.loads(
         Path("datasets/paper/annotation_batches/manifest_pilot_status.json").read_text(encoding="utf-8")
@@ -62,3 +65,16 @@ def test_double_annotated_gold_file_mirrors_manifest_status() -> None:
     for path in sorted(SECOND_DIR.glob("*.json")):
         second = json.loads(path.read_text(encoding="utf-8"))
         assert second["procedure"]["audit"]["annotation_status"] == "double_annotated", path.name
+
+
+def test_audit_block_mirrors_manifest_annotator_count_and_scope() -> None:
+    rows = json.loads(
+        Path("datasets/paper/annotation_batches/manifest_pilot_status.json").read_text(encoding="utf-8")
+    )
+    rows_by_id = {row["document_id"]: row for row in rows}
+    for path in sorted(GOLD_DIR.glob("*.json")):
+        annotation = json.loads(path.read_text(encoding="utf-8"))
+        audit = annotation["procedure"]["audit"]
+        row = rows_by_id[path.stem]
+        assert audit["annotator_count"] == int(row["annotator_count"]), path.name
+        assert audit["annotation_scope"] == row["annotation_scope"], path.name
