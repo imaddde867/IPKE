@@ -39,9 +39,20 @@ Downloaded alternates and support artifacts are tracked in
 - Reviewed gold annotation files under `datasets/paper/gold/`: 8
 - Second-pass annotation files under `datasets/paper/second_pass/`: 2
 
-The extracted text directory includes the two FAA handbook alternates because they were already
-successfully extracted from the first-wave corpus, but they are not counted in the bounded first-pass
-Tier-A gold set.
+The extracted text directory is produced by:
+
+```bash
+uv run python scripts/extract_public_documents.py \
+  --manifest datasets/paper/public_sources_manifest.csv \
+  --raw-dir <raw-download-dir> \
+  --out-dir datasets/paper/text \
+  --selection download
+```
+
+`--selection download` includes FAA handbooks and OLSK alternates, which is
+why the directory has 10 files. `--selection gold` (the default) would
+produce only 8 files, matching the bounded Tier-A set. Both behaviors
+are tested in `tests/test_extractor_selection_modes.py`.
 
 ## IAA Results
 
