@@ -27,7 +27,7 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 # Configure unlimited chunks
-os.environ['LLM_MAX_CHUNKS'] = '0'
+os.environ.setdefault('LLM_MAX_CHUNKS', '0')
 
 from src.pipelines.baseline import (
     TIER_A_TEST_DOCS,
