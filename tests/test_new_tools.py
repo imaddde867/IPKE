@@ -17,7 +17,7 @@ if str(REPO_ROOT) not in sys.path:
 
 from tools.annotate_gold import _extraction_to_draft, _load_schema, _validate
 from scripts.compute_iaa import compare_annotations
-from scripts.eval_multiseed import _ci95, _summary_table, METRIC_COLUMNS
+from scripts.eval_multiseed import _ci95, _summary_rows, paired_bootstrap_pvalue, phi, METRIC_COLUMNS
 
 
 # ---------------------------------------------------------------------------
@@ -134,31 +134,72 @@ def test_ci95_single_value_returns_nan():
     assert math.isnan(lo) and math.isnan(hi)
 
 
-def test_summary_table_columns_and_ci():
-    rows = [
-        {"model_id": "m1", "chunker": "dsc", "prompter": "P3", "doc_id": "d1", "seed": i,
+def _make_detail_rows(n: int = 3) -> list[dict]:
+    return [
+        {"model_id": "m1", "chunker": "dsc", "prompter": "P3", "doc_id": f"d{i}", "seed": 0,
          "StepF1": 0.7 + i * 0.01, "AdjacencyF1": 0.5, "Kendall": 0.8,
          "ConstraintCoverage": 0.6, "ConstraintAttachmentF1": 0.4, "Phi": 0.65}
-        for i in range(3)
+        for i in range(n)
     ]
-    table = _summary_table(rows)
-    for col in METRIC_COLUMNS:
-        assert col in table
-    assert "m1" in table
-    assert "dsc" in table
-    # CI bracket should appear
-    assert "[" in table and "]" in table
 
 
-def test_summary_table_handles_none_values():
-    # A group where all metric values are None produces no data row (nothing to
-    # summarise), so only the header appears in the output.
+def test_summary_rows_contains_metrics():
+    rows = _make_detail_rows(3)
+    summary = _summary_rows(rows, [(0.5, 0.3, 0.2)])
+    assert len(summary) == 1
+    s = summary[0]
+    assert s["model_id"] == "m1"
+    assert s["chunker"] == "dsc"
+    for m in METRIC_COLUMNS:
+        assert f"{m}_mean" in s
+    # CI exists (3 values)
+    assert s["StepF1_ci_lo"] is not None
+
+
+def test_summary_rows_phi_sensitivity():
+    rows = _make_detail_rows(3)
+    schemes = [(0.5, 0.3, 0.2), (0.4, 0.4, 0.2), (0.6, 0.2, 0.2)]
+    summary = _summary_rows(rows, schemes)
+    s = summary[0]
+    for w_cov, w_step, w_tau in schemes:
+        key = f"Phi_{w_cov}_{w_step}_{w_tau}_mean"
+        assert key in s and s[key] is not None
+
+
+def test_summary_rows_handles_none_values():
     rows = [
         {"model_id": "m1", "chunker": "dsc", "prompter": "P3", "doc_id": "d1", "seed": 0,
          "StepF1": None, "AdjacencyF1": None, "Kendall": None,
          "ConstraintCoverage": None, "ConstraintAttachmentF1": None, "Phi": None}
     ]
-    table = _summary_table(rows)
-    assert "StepF1" in table  # header present
-    # No data row for m1 since all values are None
-    assert "m1" not in table
+    summary = _summary_rows(rows, [(0.5, 0.3, 0.2)])
+    assert len(summary) == 1
+    s = summary[0]
+    assert s["StepF1_mean"] is None
+    assert s["StepF1_n"] == 0
+
+
+def test_phi_function():
+    assert abs(phi(0.6, 0.7, 0.8) - (0.5*0.6 + 0.3*0.7 + 0.2*0.8)) < 1e-9
+    # None treated as 0
+    assert phi(None, 0.7, None) == pytest.approx(0.3 * 0.7)
+
+
+def test_bootstrap_detects_real_difference():
+    # A clearly dominates B — p-value should be small
+    a = [0.9, 0.85, 0.92, 0.88, 0.91]
+    b = [0.3, 0.28, 0.31, 0.29, 0.30]
+    pval = paired_bootstrap_pvalue(a, b, n_resamples=5000, rng_seed=42)
+    assert pval < 0.05
+
+
+def test_bootstrap_null_gives_high_pvalue():
+    # Identical scores — p-value should be high (not significant)
+    vals = [0.7, 0.65, 0.72, 0.68, 0.71]
+    pval = paired_bootstrap_pvalue(vals, vals, n_resamples=5000, rng_seed=42)
+    assert pval > 0.3
+
+
+def test_bootstrap_mismatched_lengths_raises():
+    with pytest.raises(ValueError):
+        paired_bootstrap_pvalue([0.5, 0.6], [0.5])
