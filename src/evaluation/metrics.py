@@ -70,7 +70,7 @@ class TextPreprocessor:
             if not use_lemma:
                 logging.warning("spaCy model '%s' missing lemmatizer; defaulting to surface forms.", model_name)
             return nlp, use_lemma
-        except Exception:  # noqa: BLE001
+        except (OSError, ValueError):  # noqa: BLE001
             logging.warning("spaCy model '%s' unavailable; falling back to blank English model.", model_name)
             nlp = spacy.blank("en")
             use_lemma = False
@@ -79,7 +79,7 @@ class TextPreprocessor:
                     nlp.add_pipe("lemmatizer")
                     nlp.initialize()
                     use_lemma = True
-                except Exception:  # noqa: BLE001
+                except (OSError, ValueError):  # noqa: BLE001
                     logging.warning("Failed to initialise spaCy lemmatizer; defaulting to surface forms.")
                     if "lemmatizer" in nlp.pipe_names:
                         nlp.remove_pipe("lemmatizer")

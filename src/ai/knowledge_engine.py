@@ -338,7 +338,7 @@ class UnifiedKnowledgeEngine:
                 if torch.cuda.is_available():
                     self._chunk_dedup_device = "cuda"
                     return self._chunk_dedup_device
-            except Exception:  # noqa: BLE001
+            except (ImportError, RuntimeError):  # noqa: BLE001
                 pass
         if backend in {"metal", "mps"}:
             try:
@@ -347,7 +347,7 @@ class UnifiedKnowledgeEngine:
                 if hasattr(torch.backends, "mps") and torch.backends.mps.is_available():
                     self._chunk_dedup_device = "mps"
                     return self._chunk_dedup_device
-            except Exception:  # noqa: BLE001
+            except (ImportError, RuntimeError):  # noqa: BLE001
                 pass
         self._chunk_dedup_device = "cpu"
         return self._chunk_dedup_device
