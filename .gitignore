@@ -106,6 +106,7 @@ lib/
 # scratch/untracked scripts not part of main pipeline
 src/ai/chunkers.py
 scripts/inspect_chunking.py
+scripts/plot_baseline_metrics.py
 tools/plotter.py
 
 # agent tool outputs
