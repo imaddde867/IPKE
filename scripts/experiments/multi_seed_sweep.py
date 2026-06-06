@@ -155,8 +155,8 @@ DEFAULT_CONFIGS: List[SweepConfig] = [
     SweepConfig("qwen3_8b_dsc_p0",    "dual_semantic", "P0",  model_path=_QWEN3_GGUF, think_mode=False),
     SweepConfig("qwen3_8b_fixed_p0",  "fixed",         "P0",  model_path=_QWEN3_GGUF, think_mode=False),
 
-    # ---- Qwen3-8B thinking mode  (novel ablation: does internal CoT help structured extraction?) ----
-    SweepConfig("qwen3_8b_think_dsc_p3", "dual_semantic", "P3", model_path=_QWEN3_GGUF, think_mode=True),
+    # ---- Qwen3-8B thinking mode  (pending: requires LLM_PROMPT_PREFIX consumer in prompting path) ----
+    # SweepConfig("qwen3_8b_think_dsc_p3", "dual_semantic", "P3", model_path=_QWEN3_GGUF, think_mode=True),
 
     # ---- Llama-3.1-8B-Instruct  (Meta family, broadens comparative coverage) ----
     SweepConfig("llama31_8b_dsc_p3",   "dual_semantic", "P3",  model_path=_LLAMA31_GGUF),
@@ -390,15 +390,9 @@ async def _extract_one(
         if gpu_backend.lower() in {"cuda", "metal"}:
             os.environ.setdefault("ENABLE_GPU", "1")
 
-    # --- Qwen3 thinking mode (soft switch via prompt prefix) ---
-    # The IPKE backends use raw create_completion; injecting /no_think or /think
-    # at the start of the prompt is the supported soft-switch mechanism for Qwen3.
-    if sweep_cfg.think_mode is False:
-        os.environ["LLM_PROMPT_PREFIX"] = _QWEN3_NO_THINK + "\n"
-    elif sweep_cfg.think_mode is True:
-        os.environ["LLM_PROMPT_PREFIX"] = _QWEN3_THINK + "\n"
-    else:
-        os.environ.pop("LLM_PROMPT_PREFIX", None)
+    # think_mode is not yet wired into the prompting path (LLM_PROMPT_PREFIX has no consumer
+    # in src/ai/prompting/). All configs currently run without think-mode control tokens.
+    # When prompt-prefix support is added, restore the LLM_PROMPT_PREFIX logic here.
 
     config = reload_config()
     processor = StreamlinedDocumentProcessor(config=config)
