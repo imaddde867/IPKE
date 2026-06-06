@@ -11,7 +11,7 @@
       "annotator_count": 2,
       "guideline_version": "ipke-annotation-guideline-v0.1-pilot",
       "model_draft_used": true,
-      "reviewed_by": "paper-author-self-review",
+      "reviewed_by": "batch_pilot_second_pass",
       "reviewed_at": "2026-06-06",
       "review_notes": "Pilot annotation produced from model draft, then self-corrected. Not yet independently annotated. See datasets/paper/annotation_batches/."
     }

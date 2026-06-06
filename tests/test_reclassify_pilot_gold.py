@@ -79,3 +79,47 @@ def test_audit_block_mirrors_manifest_status_count_and_scope() -> None:
         assert audit["annotation_status"] == row["annotation_status"], path.name
         assert audit["annotator_count"] == int(row["annotator_count"]), path.name
         assert audit["annotation_scope"] == row["annotation_scope"], path.name
+
+
+BATCH_DIR = Path("datasets/paper/annotation_batches")
+
+
+def test_batch_provenance_files_exist() -> None:
+    assert (BATCH_DIR / "batch_pilot_self_review.json").exists()
+    assert (BATCH_DIR / "batch_pilot_second_pass.json").exists()
+
+
+def test_batch_provenance_contract() -> None:
+    for name in ("batch_pilot_self_review.json", "batch_pilot_second_pass.json"):
+        batch = json.loads((BATCH_DIR / name).read_text(encoding="utf-8"))
+        for key in (
+            "batch_id",
+            "annotation_date",
+            "annotators",
+            "model_draft_provenance",
+            "guideline_version",
+            "source_excerpts",
+            "review_state",
+        ):
+            assert key in batch, f"{name}: missing {key}"
+        assert batch["review_state"] in {"draft", "self_reviewed", "adjudicated"}
+
+
+def test_reviewed_by_points_at_batch_id() -> None:
+    expected_by_doc = {
+        "usgs_nfm_collection_water_samples_a4": "batch_pilot_self_review",
+        "usgs_groundwater_technical_procedures_tm1_a1": "batch_pilot_self_review",
+        "epa_guidance_preparing_sops_qag6": "batch_pilot_self_review",
+        "epa_field_operations_manual_filter_sampling_sop": "batch_pilot_self_review",
+        "nasa_npr_8715_3d_general_safety": "batch_pilot_self_review",
+        "epa_field_sampling_measurement_procedure_validation": "batch_pilot_second_pass",
+        "niosh_nmam_5th_edition_ebook": "batch_pilot_second_pass",
+        "olsk_small_cnc_v1_workbook": "batch_pilot_second_pass",
+    }
+    for path in sorted(GOLD_DIR.glob("*.json")):
+        annotation = json.loads(path.read_text(encoding="utf-8"))
+        reviewed_by = annotation["procedure"]["audit"]["reviewed_by"]
+        assert reviewed_by == expected_by_doc[path.stem], path.name
+    for path in sorted(SECOND_DIR.glob("*.json")):
+        annotation = json.loads(path.read_text(encoding="utf-8"))
+        assert annotation["procedure"]["audit"]["reviewed_by"] == "batch_pilot_second_pass", path.name

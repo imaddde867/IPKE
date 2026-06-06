@@ -1,0 +1,29 @@
+{
+  "batch_id": "batch_pilot_self_review",
+  "annotation_date": "2026-06-05",
+  "annotators": [
+    {
+      "annotator_id": "paper-author",
+      "role": "author",
+      "expertise": "industrial hygiene and SOP design",
+      "independence": "self"
+    }
+  ],
+  "model_draft_provenance": {
+    "model": "mistral-7b-instruct-q4_k_m",
+    "prompting_strategy": "P3",
+    "chunking_method": "dsc",
+    "draft_run_id": "paper-pilot-draft-2026-06-04"
+  },
+  "guideline_version": "ipke-annotation-guideline-v0.1-pilot",
+  "guideline_path": "docs/paper/annotation_protocol.md",
+  "source_excerpts": [
+    {"document_id": "usgs_nfm_collection_water_samples_a4", "section": "Ch A4 4.1-4.6"},
+    {"document_id": "usgs_groundwater_technical_procedures_tm1_a1", "section": "TM1-A1 6-9"},
+    {"document_id": "epa_guidance_preparing_sops_qag6", "section": "QAG-6 3-5"},
+    {"document_id": "epa_field_operations_manual_filter_sampling_sop", "section": "App 1 2-4"},
+    {"document_id": "nasa_npr_8715_3d_general_safety", "section": "NPR 8715.3D 3-5"}
+  ],
+  "review_state": "self_reviewed",
+  "review_notes": "Drafted from model output, then manually corrected. No independent annotator. Not paper-grade gold."
+}

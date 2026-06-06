@@ -1,0 +1,29 @@
+{
+  "batch_id": "batch_pilot_second_pass",
+  "annotation_date": "2026-06-06",
+  "annotators": [
+    {
+      "annotator_id": "paper-author-blind",
+      "role": "author",
+      "expertise": "industrial hygiene and SOP design",
+      "independence": "self_after_two_weeks",
+      "blinding": "Re-annotated the same excerpts from source text only, no access to first-pass JSON. Compared after both passes were complete."
+    }
+  ],
+  "model_draft_provenance": {
+    "model": null,
+    "prompting_strategy": null,
+    "chunking_method": null,
+    "draft_run_id": null,
+    "note": "Second pass was produced from source text only, not from the first-pass JSON."
+  },
+  "guideline_version": "ipke-annotation-guideline-v0.1-pilot",
+  "guideline_path": "docs/paper/annotation_protocol.md",
+  "source_excerpts": [
+    {"document_id": "epa_field_sampling_measurement_procedure_validation", "section": "LSASDPROC-012-R6 3.2.1-5.1"},
+    {"document_id": "olsk_small_cnc_v1_workbook", "section": "01.1-01.4"},
+    {"document_id": "niosh_nmam_5th_edition_ebook", "section": "NMAM 5th Ed 2.1-2.4"}
+  ],
+  "review_state": "self_reviewed",
+  "review_notes": "Second-pass annotations are self-reproductions after a delay, not independent annotations. Treat the resulting IAA as a smoke check, not a paper-grade reliability number."
+}
