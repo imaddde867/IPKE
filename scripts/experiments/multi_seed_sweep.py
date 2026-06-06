@@ -98,8 +98,6 @@ _MISTRAL_GGUF = f"{_MODEL_DIR}/Mistral-7B-Instruct-v0.2-Q4_K_M.gguf"
 _QWEN3_GGUF   = f"{_MODEL_DIR}/Qwen3-8B-Q4_K_M.gguf"
 _LLAMA31_GGUF = f"{_MODEL_DIR}/Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf"
 
-
-
 # ---------------------------------------------------------------------------
 # Sweep configuration
 # ---------------------------------------------------------------------------
