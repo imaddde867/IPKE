@@ -20,7 +20,7 @@ Notes
 from __future__ import annotations
 
 import logging
-from typing import Any, Dict, Iterable, List, Optional, Sequence, Set, Tuple
+from typing import Any, Dict, List, Sequence, Set, Tuple
 
 
 logger = logging.getLogger(__name__)
