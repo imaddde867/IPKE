@@ -7,32 +7,31 @@ from typing import List, Tuple
 
 import numpy as np
 
-from .base import BaseChunker, Chunk
+from .base import Chunk
 from .breakpoint import BreakpointSemanticChunker
 
 
 LOGGER = logging.getLogger(__name__)
 
 
-class DualSemanticChunker(BaseChunker):
+class DualSemanticChunker(BreakpointSemanticChunker):
     """Hierarchical semantic chunker using parent sections + breakpoint refinement."""
 
     def __init__(self, cfg, *, parent_only: bool = False):
-        self.cfg = cfg
-        self.base = BreakpointSemanticChunker(cfg)
+        super().__init__(cfg)
         self.parent_only = parent_only
 
     def chunk(self, text: str) -> List[Chunk]:
-        sentences, spans = self.base._sentences(text)
+        sentences, spans = self._sentences(text)
         if not sentences:
             return []
 
-        embeddings = self.base._embeddings(sentences)
+        embeddings = self._embeddings(sentences)
         if embeddings.size == 0 or embeddings.shape[0] != len(sentences):
-            return self.base._fallback_chunk(text, spans)
+            return self._fallback_chunk(text, spans)
 
         if len(sentences) == 1:
-            return self.base._fallback_chunk(text, spans)
+            return self._fallback_chunk(text, spans)
 
         sims = np.sum(embeddings[:-1] * embeddings[1:], axis=1)
         prefix_sims = np.zeros(len(sentences))
@@ -53,12 +52,12 @@ class DualSemanticChunker(BaseChunker):
         for start, end in parents:
             if start >= end:
                 continue
-            boundaries = self.base._compute_boundaries(end - start, prefix_sims, offset=start)
+            boundaries = self._compute_boundaries(end - start, prefix_sims, offset=start)
             if not boundaries:
                 boundaries = [(start, end)]
-            parent_cohesion = self.base._mean_similarity(prefix_sims, start, end)
+            parent_cohesion = self._mean_similarity(prefix_sims, start, end)
             for child_start, child_end in boundaries:
-                chunk = self.base._build_chunk(sentences, spans, child_start, child_end, prefix_sims)
+                chunk = self._build_chunk(sentences, spans, child_start, child_end, prefix_sims)
                 if chunk is None:
                     continue
                 if isinstance(chunk.meta, dict):
@@ -68,8 +67,8 @@ class DualSemanticChunker(BaseChunker):
                     chunk.meta["parent_cohesion"] = parent_cohesion
                 chunks.append(chunk)
 
-        refined = self.base._enforce_char_cap(chunks, sentences, spans, prefix_sims)
-        self.base._log_chunk_summary(refined, len(text))
+        refined = self._enforce_char_cap(chunks, sentences, spans, prefix_sims)
+        self._log_chunk_summary(refined, len(text))
         return refined
 
     def _emit_parent_chunks(
@@ -82,18 +81,18 @@ class DualSemanticChunker(BaseChunker):
     ) -> List[Chunk]:
         parent_chunks: List[Chunk] = []
         for start, end in parents:
-            chunk = self.base._build_chunk(sentences, spans, start, end, prefix_sims)
+            chunk = self._build_chunk(sentences, spans, start, end, prefix_sims)
             if chunk is None:
                 continue
             if isinstance(chunk.meta, dict):
                 chunk.meta["strategy"] = "parent_only"
                 chunk.meta["sentences"] = (start, end)
                 chunk.meta["parent"] = (start, end)
-                chunk.meta["parent_cohesion"] = self.base._mean_similarity(prefix_sims, start, end)
+                chunk.meta["parent_cohesion"] = self._mean_similarity(prefix_sims, start, end)
             parent_chunks.append(chunk)
 
-        refined = self.base._enforce_char_cap(parent_chunks, sentences, spans, prefix_sims)
-        self.base._log_chunk_summary(refined, text_len)
+        refined = self._enforce_char_cap(parent_chunks, sentences, spans, prefix_sims)
+        self._log_chunk_summary(refined, text_len)
         return refined
 
     def _parent_boundaries(self, distances, sentences, spans, text):
