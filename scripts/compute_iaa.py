@@ -181,6 +181,7 @@ def compare_annotations(reference: dict[str, Any], predicted: dict[str, Any]) ->
         "relation_exact": f1_counts(relation_set(reference), relation_set(predicted)),
         "token_label_kappa": cohen_kappa(pairs),
         "token_label_pairs": len(pairs),
+        "_pairs": pairs,
     }
 
 
@@ -237,7 +238,7 @@ def compute_iaa(gold_dir: Path, second_dir: Path) -> dict[str, Any]:
         reference = json.loads(gold_path.read_text(encoding="utf-8"))
         predicted = json.loads(second_path.read_text(encoding="utf-8"))
         metrics = compare_annotations(reference, predicted)
-        metrics["_pairs"] = token_label_pairs(reference, predicted)
+        # _pairs already included by compare_annotations; no recomputation needed
         documents[document_id] = metrics
 
     if not documents:
