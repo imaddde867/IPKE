@@ -79,7 +79,7 @@ class TextPreprocessor:
                     nlp.add_pipe("lemmatizer")
                     nlp.initialize()
                     use_lemma = True
-                except (OSError, ValueError):  # noqa: BLE001
+                except (OSError, ValueError, RuntimeError):  # noqa: BLE001
                     logging.warning("Failed to initialise spaCy lemmatizer; defaulting to surface forms.")
                     if "lemmatizer" in nlp.pipe_names:
                         nlp.remove_pipe("lemmatizer")
