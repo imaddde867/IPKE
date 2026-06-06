@@ -263,14 +263,15 @@ def test_eval_multiseed_dry_run_skips_guard(tmp_path):
     assert rc == 0
 
 
-def test_eval_multiseed_allow_unreviewed_flag(tmp_path):
-    """--allow-unreviewed bypasses the guard (for dev use)."""
+def test_eval_multiseed_allow_unreviewed_bypasses_guard(tmp_path, capsys):
+    """--allow-unreviewed must bypass the guard without needing --dry-run."""
     import json
     from scripts.eval_multiseed import main
 
     gold_dir = tmp_path / "gold"
     text_dir = tmp_path / "text"
-    gold_dir.mkdir(); text_dir.mkdir()
+    gold_dir.mkdir()
+    text_dir.mkdir()
 
     (gold_dir / "doc1.json").write_text(json.dumps({
         "procedure": {"doc_id": "doc1", "title": "t"},
@@ -279,15 +280,18 @@ def test_eval_multiseed_allow_unreviewed_flag(tmp_path):
     }))
     (text_dir / "doc1.txt").write_text("step content")
 
-    # dry-run + allow-unreviewed: guard skipped, returns 0
-    rc = main([
+    # No --dry-run: guard must not fire even though gold is unreviewed
+    main([
         "--gold-dir", str(gold_dir),
         "--text-dir", str(text_dir),
         "--seeds", "1",
-        "--dry-run",
         "--allow-unreviewed",
     ])
-    assert rc == 0
+    captured = capsys.readouterr()
+    assert "not reviewed" not in captured.err, (
+        "--allow-unreviewed must bypass the unreviewed-gold guard"
+    )
+    assert "quality.review_status != 'reviewed'" not in captured.err
 
 
 def test_eval_multiseed_rejects_malformed_gold(tmp_path):
