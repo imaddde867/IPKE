@@ -22,7 +22,9 @@ eval:
 		--phi-weights 0.6:0.2:0.2 \
 		--dry-run
 
-# Full sweep: requires LLM_MODEL_PATH and a configured backend.
+# Full sweep: requires all paper gold files to have quality.review_status='reviewed'
+# AND LLM_MODEL_PATH set with a configured backend. Currently blocked: all 8 gold
+# files are unreviewed AI drafts. See REPRODUCIBILITY.md checklist.
 eval-full:
 	$(PYTHON) scripts/eval_multiseed.py \
 		--gold-dir $(PAPER_GOLD) \
