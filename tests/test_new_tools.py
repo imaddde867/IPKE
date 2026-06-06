@@ -203,3 +203,80 @@ def test_bootstrap_null_gives_high_pvalue():
 def test_bootstrap_mismatched_lengths_raises():
     with pytest.raises(ValueError):
         paired_bootstrap_pvalue([0.5, 0.6], [0.5])
+
+
+def test_eval_multiseed_rejects_unreviewed_gold(tmp_path):
+    """Guard blocks full sweep when gold has review_status != 'reviewed'."""
+    import json
+    from scripts.eval_multiseed import main
+
+    gold_dir = tmp_path / "gold"
+    text_dir = tmp_path / "text"
+    gold_dir.mkdir(); text_dir.mkdir()
+
+    # Unreviewed gold file
+    (gold_dir / "doc1.json").write_text(json.dumps({
+        "procedure": {"doc_id": "doc1", "title": "t"},
+        "steps": [{"id": "S1", "label": "step"}],
+        "quality": {"review_status": "unreviewed"},
+    }))
+    (text_dir / "doc1.txt").write_text("step content")
+
+    rc = main([
+        "--gold-dir", str(gold_dir),
+        "--text-dir", str(text_dir),
+        "--seeds", "1",
+    ])
+    assert rc == 1
+
+
+def test_eval_multiseed_dry_run_skips_guard(tmp_path):
+    """--dry-run bypasses the unreviewed guard."""
+    import json
+    from scripts.eval_multiseed import main
+
+    gold_dir = tmp_path / "gold"
+    text_dir = tmp_path / "text"
+    gold_dir.mkdir(); text_dir.mkdir()
+
+    (gold_dir / "doc1.json").write_text(json.dumps({
+        "procedure": {"doc_id": "doc1", "title": "t"},
+        "steps": [{"id": "S1", "label": "step"}],
+        "quality": {"review_status": "unreviewed"},
+    }))
+    (text_dir / "doc1.txt").write_text("step content")
+
+    rc = main([
+        "--gold-dir", str(gold_dir),
+        "--text-dir", str(text_dir),
+        "--seeds", "1",
+        "--dry-run",
+    ])
+    assert rc == 0
+
+
+def test_eval_multiseed_allow_unreviewed_flag(tmp_path):
+    """--allow-unreviewed bypasses the guard (for dev use)."""
+    import json, os
+    from scripts.eval_multiseed import main
+
+    gold_dir = tmp_path / "gold"
+    text_dir = tmp_path / "text"
+    gold_dir.mkdir(); text_dir.mkdir()
+
+    (gold_dir / "doc1.json").write_text(json.dumps({
+        "procedure": {"doc_id": "doc1", "title": "t"},
+        "steps": [{"id": "S1", "label": "step"}],
+        "quality": {"review_status": "unreviewed"},
+    }))
+    (text_dir / "doc1.txt").write_text("step content")
+
+    # dry-run + allow-unreviewed: guard skipped, returns 0
+    rc = main([
+        "--gold-dir", str(gold_dir),
+        "--text-dir", str(text_dir),
+        "--seeds", "1",
+        "--dry-run",
+        "--allow-unreviewed",
+    ])
+    assert rc == 0
