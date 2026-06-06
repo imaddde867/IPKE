@@ -288,3 +288,25 @@ def test_eval_multiseed_allow_unreviewed_flag(tmp_path):
         "--allow-unreviewed",
     ])
     assert rc == 0
+
+
+def test_eval_multiseed_rejects_malformed_gold(tmp_path):
+    """Malformed gold JSON must block the sweep (fail closed), not silently pass."""
+    import json
+    from scripts.eval_multiseed import main
+
+    gold_dir = tmp_path / "gold"
+    text_dir = tmp_path / "text"
+    gold_dir.mkdir()
+    text_dir.mkdir()
+
+    # Truncated JSON — parse will fail
+    (gold_dir / "bad.json").write_text("{")
+    (text_dir / "bad.txt").write_text("some procedure text")
+
+    rc = main([
+        "--gold-dir", str(gold_dir),
+        "--text-dir", str(text_dir),
+        "--seeds", "1",
+    ])
+    assert rc == 1
