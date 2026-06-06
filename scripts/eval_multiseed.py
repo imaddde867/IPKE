@@ -73,19 +73,16 @@ def _resolve(value: str | Path, base: Path) -> Path:
     return p if p.is_absolute() else (base / p).resolve()
 
 
-async def _extract_one(text_path: Path, doc_id: str, seed: int) -> dict[str, Any]:
+async def _extract_one(text_path: Path, doc_id: str, seed: int, processor: Any) -> dict[str, Any]:
     """Run the pipeline for a single (doc, seed) pair.
 
-    Env vars for chunker/prompter/model are expected to be set by the caller
-    before this coroutine runs.
+    ``processor`` is a pre-built ``StreamlinedDocumentProcessor``. The seed is
+    passed as an env var so the underlying LLM inference reads it at call time;
+    the processor instance is reused across seeds to avoid repeated model loads.
     """
-    from src.core.unified_config import reload_config
     from src.pipelines.baseline import extraction_payload
-    from src.processors.streamlined_processor import StreamlinedDocumentProcessor
 
     os.environ["LLM_RANDOM_SEED"] = str(seed)
-    config = reload_config()
-    processor = StreamlinedDocumentProcessor(config=config)
     result = await processor.process_document(file_path=str(text_path), document_id=doc_id)
     return extraction_payload(doc_id, result)
 
@@ -225,8 +222,13 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     from src.evaluation.metrics import prepare_evaluator
+    from src.processors.streamlined_processor import StreamlinedDocumentProcessor
 
     preprocessor, embedder = prepare_evaluator()
+
+    # Reuse the config already loaded above; build processor once so the LLM
+    # backend is loaded a single time for all (doc, seed) iterations.
+    processor = StreamlinedDocumentProcessor(config=config)
 
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S")
     out_dir = args.out_dir.resolve()
@@ -245,7 +247,7 @@ def main(argv: list[str] | None = None) -> int:
             for seed in seeds:
                 print(f"  {doc_id}  seed={seed} ...", end=" ", flush=True)
                 try:
-                    pred = asyncio.run(_extract_one(tf, doc_id, seed))
+                    pred = asyncio.run(_extract_one(tf, doc_id, seed, processor))
                     metrics = _score(gold, pred, args.threshold, preprocessor, embedder)
                 except Exception as exc:
                     print(f"ERROR: {exc}")
