@@ -687,9 +687,10 @@ class UnifiedKnowledgeEngine:
                 continue
             if not kept_embeddings:
                 clone = deepcopy(constraint)
-                clone["attached_to"] = _normalize_refs(
+                clone["steps"] = _normalize_refs(
                     constraint.get("attached_to") or constraint.get("steps") or constraint.get("targets")
                 )
+                clone.pop("attached_to", None)
                 kept.append(clone)
                 kept_embeddings.append(embeddings[idx])
                 continue
@@ -700,22 +701,24 @@ class UnifiedKnowledgeEngine:
             if best >= threshold:
                 # merge references into existing constraint
                 existing = kept[best_idx]
-                merged_refs = set(existing.get("attached_to", []))
+                merged_refs = set(existing.get("steps", []))
                 merged_refs.update(
                     _normalize_refs(
                         constraint.get("attached_to") or constraint.get("steps") or constraint.get("targets")
                     )
                 )
-                existing["attached_to"] = list(merged_refs)
+                existing["steps"] = list(merged_refs)
+                existing.pop("attached_to", None)
                 existing["confidence"] = max(
                     self._coerce_confidence(existing.get("confidence")),
                     self._coerce_confidence(constraint.get("confidence")),
                 )
             else:
                 clone = deepcopy(constraint)
-                clone["attached_to"] = _normalize_refs(
+                clone["steps"] = _normalize_refs(
                     constraint.get("attached_to") or constraint.get("steps") or constraint.get("targets")
                 )
+                clone.pop("attached_to", None)
                 kept.append(clone)
                 kept_embeddings.append(embeddings[idx])
 
