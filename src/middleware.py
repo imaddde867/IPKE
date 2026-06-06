@@ -88,7 +88,6 @@ class ErrorHandlingMiddleware(BaseHTTPMiddleware):
         
         # Handle custom knowledge extraction errors
         if isinstance(exc, BaseKnowledgeExtractionError):
-            error_dict = exc.to_dict()
             error_response.update({
                 'error': exc.__class__.__name__,
                 'message': exc.message,

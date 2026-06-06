@@ -323,13 +323,7 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
     
     if G.number_of_nodes() == 0:
         return """<!DOCTYPE html><html><body style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;color:#64748B"><h2>No Data</h2></body></html>"""
-    
-    steps = sum(1 for _, d in G.nodes(data=True) if d.get("node_type") == "step")
-    constraints = sum(1 for _, d in G.nodes(data=True) if d.get("node_type") == "constraint")
-    resources_ct = sum(1 for _, d in G.nodes(data=True) if d.get("node_type") == "resource")
-    params_ct = sum(1 for _, d in G.nodes(data=True) if d.get("node_type") == "parameter")
-    safety = sum(1 for _, d in G.nodes(data=True) if d.get("safety_critical"))
-    
+
     net = Network(height=height, width=width, directed=True, layout=False)
     
     for node, data in G.nodes(data=True):
