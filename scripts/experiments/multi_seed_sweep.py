@@ -515,7 +515,8 @@ def aggregate_results(
                         bucket[metric].append(float(val))
 
         # Build macro summary row.
-        row: Dict[str, Any] = {"config": cid, "n_seeds": len(seeds)}
+        n_completed = max((len(v) for v in macro_by_metric.values()), default=0)
+        row: Dict[str, Any] = {"config": cid, "n_seeds": n_completed}
         for metric in PAPER_METRICS:
             vals = macro_by_metric[metric]
             if not vals:
@@ -533,10 +534,11 @@ def aggregate_results(
 
         # Build per-doc rows.
         for doc_id, metric_values in per_doc_collector.items():
+            doc_n = max((len(v) for v in metric_values.values()), default=0)
             doc_row: Dict[str, Any] = {
                 "config": cid,
                 "doc_id": doc_id,
-                "n_seeds": len(seeds),
+                "n_seeds": doc_n,
             }
             for metric in PAPER_METRICS:
                 vals = metric_values.get(metric, [])
