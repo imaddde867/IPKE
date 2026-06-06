@@ -19,12 +19,12 @@ logger = get_logger(__name__)
 
 class TwoStageSchemaStrategy(PromptStrategy):
     """Two-stage prompting reduces cognitive load by splitting extraction.
-    
+
     Stage 1: Extract only procedural steps in execution order (skeleton)
     Stage 2: Extract constraints and entities with strict validation:
              - All constraints MUST reference pre-existing step IDs from Stage 1
              - This prevents hallucination of constraints that don't attach to any step
-    
+
     This approach is particularly effective for smaller models (e.g., Mistral-7B)
     that are vulnerable to instruction drift where they lose track of ID-linking rules.
     """
@@ -114,7 +114,7 @@ Original {document_type} text:
         self, constraints: List[Dict[str, Any]], valid_step_ids: set
     ) -> List[Dict[str, Any]]:
         """Validate that all constraints reference at least one valid step ID.
-        
+
         This enforces the P3 validation rule: constraints must attach to pre-existing steps.
         """
         validated: List[Dict[str, Any]] = []

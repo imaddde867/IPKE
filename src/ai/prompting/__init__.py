@@ -13,7 +13,7 @@ from src.ai.prompting.zero_shot import ZeroShotJSONStrategy
 
 def build_prompt_strategy(config: Any) -> PromptStrategy:
     """Return the configured prompt strategy implementation.
-    
+
     Strategy mapping (as per STRATEGIES.md):
     - P0: ZeroShotJSONStrategy (baseline, zero-shot)
     - P1: FewShotPromptStrategy (few-shot with examples)
