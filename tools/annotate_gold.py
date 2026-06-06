@@ -82,8 +82,11 @@ def _extraction_to_draft(
     raw_steps: list[dict[str, Any]] = payload.get("steps") or []
     raw_constraints: list[dict[str, Any]] = payload.get("constraints") or []
 
-    # Build a step-id -> list-of-constraint index for nesting
+    # Build a step-id -> list-of-constraint index for nesting.
+    # Constraints with no step reference are placed in an __orphan__ bucket so
+    # the caller can warn the user rather than silently losing them.
     step_constraint_index: dict[str, list[dict[str, Any]]] = {}
+    orphan_constraints: list[str] = []
     for i, c in enumerate(raw_constraints):
         cid = c.get("id") or f"C{i + 1}"
         refs: list[str] = []
@@ -103,8 +106,10 @@ def _extraction_to_draft(
         }
         if refs:
             entry["attached_to"] = refs
-        for sid in refs or []:
-            step_constraint_index.setdefault(sid, []).append(entry)
+            for sid in refs:
+                step_constraint_index.setdefault(sid, []).append(entry)
+        else:
+            orphan_constraints.append(cid)
 
     draft_steps: list[dict[str, Any]] = []
     for i, s in enumerate(raw_steps):
@@ -122,6 +127,13 @@ def _extraction_to_draft(
         if s.get("order") is not None:
             draft_step["provenance"] = {"order": s["order"]}
         draft_steps.append(draft_step)
+
+    if orphan_constraints:
+        print(
+            f"WARNING: {len(orphan_constraints)} constraint(s) had no step reference "
+            f"and were dropped from draft: {orphan_constraints}",
+            file=__import__("sys").stderr,
+        )
 
     return {
         "procedure": {
@@ -187,6 +199,8 @@ def main(argv: list[str] | None = None) -> int:
     schema = _load_schema()
 
     if args.skip_model:
+        if args.title or args.domain:
+            print("NOTE: --title/--domain ignored in --skip-model mode (draft loaded as-is)")
         print(f"Loading existing draft: {doc_path}")
         draft = json.loads(doc_path.read_text(encoding="utf-8"))
     else:
