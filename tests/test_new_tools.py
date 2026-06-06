@@ -263,10 +263,19 @@ def test_eval_multiseed_dry_run_skips_guard(tmp_path):
     assert rc == 0
 
 
-def test_eval_multiseed_allow_unreviewed_bypasses_guard(tmp_path, capsys):
-    """--allow-unreviewed must bypass the guard without needing --dry-run."""
+def test_eval_multiseed_allow_unreviewed_bypasses_guard(tmp_path, monkeypatch, capsys):
+    """--allow-unreviewed must bypass the guard; test must not load real models."""
     import json
+    import scripts.eval_multiseed as em
     from scripts.eval_multiseed import main
+
+    # Stub heavy infrastructure so the test stays fast and model-free.
+    async def _fake_extract(text_path, doc_id, seed):
+        return {"steps": [], "constraints": []}
+
+    monkeypatch.setattr(em, "_extract_one", _fake_extract)
+    import src.evaluation.metrics as metrics_mod
+    monkeypatch.setattr(metrics_mod, "prepare_evaluator", lambda *a, **kw: (None, None))
 
     gold_dir = tmp_path / "gold"
     text_dir = tmp_path / "text"
@@ -280,7 +289,7 @@ def test_eval_multiseed_allow_unreviewed_bypasses_guard(tmp_path, capsys):
     }))
     (text_dir / "doc1.txt").write_text("step content")
 
-    # No --dry-run: guard must not fire even though gold is unreviewed
+    # No --dry-run: guard must not fire even though gold is unreviewed.
     main([
         "--gold-dir", str(gold_dir),
         "--text-dir", str(text_dir),
