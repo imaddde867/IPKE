@@ -619,6 +619,9 @@ llm = [
 neo4j = [
     { name = "neo4j" },
 ]
+test-pdf = [
+    { name = "pymupdf" },
+]
 
 [package.dev-dependencies]
 dev = [
@@ -642,6 +645,7 @@ requires-dist = [
     { name = "openai-whisper", marker = "extra == 'extras'", specifier = ">=20231117" },
     { name = "pandas", specifier = ">=2.0.0" },
     { name = "pymupdf", marker = "extra == 'extras'", specifier = ">=1.23.0" },
+    { name = "pymupdf", marker = "extra == 'test-pdf'", specifier = ">=1.23.0" },
     { name = "python-docx", marker = "extra == 'extras'", specifier = ">=0.8.11" },
     { name = "python-dotenv", specifier = ">=1.0.0" },
     { name = "python-multipart", marker = "extra == 'app'", specifier = ">=0.0.20" },
@@ -657,7 +661,7 @@ requires-dist = [
     { name = "transformers", marker = "extra == 'llm'", specifier = ">=4.36.0" },
     { name = "uvicorn", marker = "extra == 'app'", specifier = ">=0.24.0" },
 ]
-provides-extras = ["app", "llm", "neo4j", "extras"]
+provides-extras = ["app", "llm", "neo4j", "extras", "test-pdf"]
 
 [package.metadata.requires-dev]
 dev = [

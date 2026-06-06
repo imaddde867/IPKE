@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import shutil
-import textwrap
 from pathlib import Path
 
 import pytest
@@ -18,19 +17,8 @@ RAW_DIR = Path("/tmp/extract-test-raw")
 OUT_DIR = Path("/tmp/extract-test-out")
 
 
-MINIMAL_PDF = (
-    b"%PDF-1.4\n"
-    b"1 0 obj<</Type/Catalog/Pages 2 0 R>>endobj\n"
-    b"2 0 obj<</Type/Pages/Kids[3 0 R]/Count 1>>endobj\n"
-    b"3 0 obj<</Type/Page/Parent 2 0 R/MediaBox[0 0 612 792]>>endobj\n"
-    b"xref\n0 4\n0000000000 65535 f \n0000000009 00000 n \n0000000056 00000 n \n0000000109 00000 n \n"
-    b"trailer<</Size 4/Root 1 0 R>>\n"
-    b"startxref\n171\n%%EOF\n"
-)
-
-
 @pytest.fixture(autouse=True)
-def reset_dirs() -> None:
+def reset_dirs(monkeypatch: pytest.MonkeyPatch) -> None:
     for d in (RAW_DIR, OUT_DIR):
         if d.exists():
             shutil.rmtree(d)
@@ -39,7 +27,11 @@ def reset_dirs() -> None:
         "usgs_nfm_collection_water_samples_a4.pdf",
         "faa_amt_general_handbook_2023.pdf",
     ):
-        (RAW_DIR / name).write_bytes(MINIMAL_PDF)
+        (RAW_DIR / name).write_text("stub text\n", encoding="utf-8")
+    monkeypatch.setattr(
+        "scripts.extract_public_documents.read_source_text",
+        lambda _path: "stub text for selection test\n",
+    )
     yield
 
 

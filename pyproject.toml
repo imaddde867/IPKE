@@ -50,6 +50,11 @@ extras = [
     # Audio transcription (heavy - ~1GB with models)
     "openai-whisper>=20231117",
 ]
+test-pdf = [
+    # PDF extraction for tests that exercise the PDF backend.
+    # Heavy OCR/audio/PDF groups stay opt-in via the `extras` extra.
+    "PyMuPDF>=1.23.0",
+]
 
 [project.scripts]
 ipke-api = "main:main"

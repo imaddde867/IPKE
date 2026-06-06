@@ -22,7 +22,7 @@ jobs:
         run: uv python install 3.12
 
       - name: Sync dependencies
-        run: uv sync --locked --extra app
+        run: uv sync --locked --extra app --extra test-pdf
 
       - name: Check manifest freshness
         run: uv run python scripts/check_manifest_freshness.py --manifest datasets/paper/public_sources_manifest.csv --text-dir datasets/paper/text
