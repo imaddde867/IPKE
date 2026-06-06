@@ -54,6 +54,14 @@ def test_extraction_to_draft_missing_text_falls_back_to_id():
     assert draft["steps"][0]["label"] == "S1"
 
 
+def test_extraction_to_draft_quality_uses_review_status():
+    payload = {"steps": [{"id": "S1", "text": "Do thing", "order": 1}], "constraints": []}
+    draft = _extraction_to_draft("doc1", payload, "T", "domain")
+    quality = draft["quality"]
+    assert quality.get("review_status") == "unreviewed", "must use review_status not status"
+    assert "status" not in quality, "old 'status' field must not appear"
+
+
 def test_extraction_to_draft_validates_against_schema(tmp_path):
     payload = {
         "steps": [{"id": "S1", "text": "Do the thing", "order": 1}],
@@ -257,7 +265,7 @@ def test_eval_multiseed_dry_run_skips_guard(tmp_path):
 
 def test_eval_multiseed_allow_unreviewed_flag(tmp_path):
     """--allow-unreviewed bypasses the guard (for dev use)."""
-    import json, os
+    import json
     from scripts.eval_multiseed import main
 
     gold_dir = tmp_path / "gold"
