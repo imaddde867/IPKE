@@ -153,10 +153,88 @@ def extract_step_text(step: Dict[str, Any]) -> str:
 
 
 def extract_constraint_text(constraint: Dict[str, Any]) -> str:
-    for key in ("text", "description", "condition", "statement"):
+    for key in ("text", "description", "condition", "statement", "label", "expression"):
         if constraint.get(key):
             return normalize_field(constraint[key])
     return normalize_field(constraint.get("id", ""))
+
+
+NESTED_CONSTRAINT_KINDS = (
+    "precondition",
+    "postcondition",
+    "guard",
+    "acceptance_criteria",
+    "warning",
+    "exception",
+    "safety",
+    "environment",
+    "quality",
+)
+
+CONSTRAINT_LINK_KEYS = (
+    "step_id",
+    "step",
+    "steps",
+    "attached_step",
+    "attached_steps",
+    "attached_to",
+    "applies_to",
+    "scope",
+    "targets",
+)
+
+
+def normalize_doc_constraints(doc: Dict[str, Any]) -> List[Dict[str, Any]]:
+    """Return a flat list of constraints with at least one step link.
+
+    Accepts two gold/pred shapes:
+      * flat: ``doc["constraints"] = [{id, text, applies_to|steps|...}, ...]``
+      * nested: each ``doc["steps"][i]["constraints"]`` is a dict keyed by
+        ``precondition|postcondition|guard|acceptance_criteria|warning|...``
+        with a list of constraint dicts.
+
+    Nested constraints are flattened and given ``applies_to`` set to the parent
+    step id when no explicit link key is present. Flat constraints are returned
+    untouched. Idempotent.
+    """
+    top = doc.get("constraints")
+    if isinstance(top, list) and top:
+        return list(top)
+
+    flat: List[Dict[str, Any]] = []
+    for step in doc.get("steps", []) or []:
+        if not isinstance(step, dict):
+            continue
+        sid = step.get("id")
+        nested = step.get("constraints")
+        if not isinstance(nested, dict):
+            continue
+        for kind in NESTED_CONSTRAINT_KINDS:
+            items = nested.get(kind)
+            if not isinstance(items, list):
+                continue
+            for item in items:
+                if not isinstance(item, dict):
+                    continue
+                new_item = dict(item)
+                new_item.setdefault("type", kind)
+                has_link = any(new_item.get(k) for k in CONSTRAINT_LINK_KEYS)
+                if sid and not has_link:
+                    new_item["applies_to"] = sid
+                flat.append(new_item)
+        # Also accept ad-hoc lists nested under unknown keys, as long as
+        # each entry already carries a usable link.
+        for kind, items in nested.items():
+            if kind in NESTED_CONSTRAINT_KINDS or not isinstance(items, list):
+                continue
+            for item in items:
+                if not isinstance(item, dict):
+                    continue
+                if any(item.get(k) for k in CONSTRAINT_LINK_KEYS):
+                    new_item = dict(item)
+                    new_item.setdefault("type", kind)
+                    flat.append(new_item)
+    return flat
 
 
 def extract_node_label(node: Dict[str, Any]) -> str:
@@ -513,8 +591,8 @@ def evaluate_tier_a_document(
     metrics = compute_step_metrics(step_alignment, gold_adj, pred_adj, gold_order, pred_order)
 
     constraints_metrics = tier_a_constraints_metrics(
-        gold_doc.get("constraints", []),
-        pred_doc.get("constraints", []),
+        normalize_doc_constraints(gold_doc),
+        normalize_doc_constraints(pred_doc),
         preprocessor,
         embedder,
         threshold,
