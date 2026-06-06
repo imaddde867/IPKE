@@ -21,6 +21,10 @@ EXPECTED_HEADER = [
     "selected_for_gold",
     "selected_for_download",
     "risk_level",
+    "gold_status",
+    "annotation_status",
+    "annotation_scope",
+    "annotator_count",
 ]
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 
