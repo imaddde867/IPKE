@@ -1,8 +1,8 @@
 """
 Test-wide fixtures and configuration.
 
-Ensures the suite runs in EXPLAINIUM_ENV=testing so that lightweight mock
-strategies are used instead of real LLMs/downloads.
+Defaults EXPLAINIUM_ENV, GPU_BACKEND, and ENABLE_GPU to testing-safe values
+if the caller has not set them. Caller-provided environment takes precedence.
 """
 import os
 
