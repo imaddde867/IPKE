@@ -330,14 +330,15 @@ def write_run_config(
 # ---------------------------------------------------------------------------
 
 
-def _resolve_model_path(model_path: str) -> str:
-    """Return an absolute model path, anchoring relative paths at REPO_ROOT."""
+def _resolve_model_path(model_path: str, model_dir: Path | None = None) -> str:
+    """Return an absolute model path. Relative paths anchor at model_dir, then REPO_ROOT."""
     if not model_path:
         return ""
     p = Path(model_path)
     if p.is_absolute():
         return str(p)
-    return str(REPO_ROOT / p)
+    base = model_dir if model_dir is not None else REPO_ROOT
+    return str(base / p)
 
 
 async def _extract_one(
@@ -347,6 +348,7 @@ async def _extract_one(
     pred_dir: Path,
     skip_existing: bool,
     gpu_backend: Optional[str],
+    model_dir: Path | None = None,
 ) -> None:
     """Extract PKG predictions for one (config, seed) combination."""
     if skip_existing and all(
@@ -373,7 +375,7 @@ async def _extract_one(
     os.environ["LLM_BACKEND"] = sweep_cfg.llm_backend
 
     # --- Model selection ---
-    abs_model_path = _resolve_model_path(sweep_cfg.model_path)
+    abs_model_path = _resolve_model_path(sweep_cfg.model_path, model_dir=model_dir)
     if abs_model_path:
         if not Path(abs_model_path).exists():
             raise FileNotFoundError(
@@ -583,6 +585,7 @@ def print_run_plan(
     seeds: List[int],
     doc_ids: List[str],
     run_dir: Path,
+    model_dir: Path | None = None,
 ) -> None:
     total = len(configs) * len(seeds) * len(doc_ids)
     print("\n=== Multi-Seed Multi-Model Sweep Plan ===")
@@ -594,7 +597,7 @@ def print_run_plan(
     print(f"  {'Config':<30} {'Model':<42} {'Chunker':<16} {'Strategy':<8} {'Think'}")
     print(f"  {'-'*30} {'-'*42} {'-'*16} {'-'*8} {'-'*7}")
     for c in configs:
-        abs_path = _resolve_model_path(c.model_path)
+        abs_path = _resolve_model_path(c.model_path, model_dir=model_dir)
         model_label = Path(abs_path).name if abs_path else "(env default)"
         think_str = {True: "on", False: "off", None: "n/a"}[c.think_mode]
         exists_str = "" if not abs_path else (" [OK]" if Path(abs_path).exists() else " [MISSING]")
@@ -602,12 +605,12 @@ def print_run_plan(
     print()
     missing = [
         c for c in configs
-        if c.model_path and not Path(_resolve_model_path(c.model_path)).exists()
+        if c.model_path and not Path(_resolve_model_path(c.model_path, model_dir=model_dir)).exists()
     ]
     if missing:
         print("  WARNING: missing model files (see download commands in script header):")
         for c in missing:
-            print(f"    {_resolve_model_path(c.model_path)}")
+            print(f"    {_resolve_model_path(c.model_path, model_dir=model_dir)}")
     print("=========================================\n")
 
 
@@ -640,7 +643,7 @@ def main() -> None:
     run_dir = args.output_root / f"multi_seed_{timestamp}"
 
     if args.dry_run:
-        print_run_plan(selected_configs, args.seeds, list(doc_sources.keys()), run_dir)
+        print_run_plan(selected_configs, args.seeds, list(doc_sources.keys()), run_dir, model_dir=args.model_dir)
         return
 
     # Write run config immediately so a crashed run can be diagnosed.
@@ -665,6 +668,7 @@ def main() -> None:
                     pred_dir=pred_dir,
                     skip_existing=args.skip_existing,
                     gpu_backend=args.gpu_backend,
+                    model_dir=args.model_dir,
                 )
             )
 
