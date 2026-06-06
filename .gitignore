@@ -99,3 +99,14 @@ PRE_DEPLOYMENT_CHECKLIST.md
 AGENTS.md
 datasets/paper/gold_drafts/
 datasets/Unusable/
+
+# pyvis runtime assets (generated at runtime, not source)
+lib/
+
+# scratch/untracked scripts not part of main pipeline
+src/ai/chunkers.py
+scripts/inspect_chunking.py
+tools/plotter.py
+
+# agent tool outputs
+.agents/
