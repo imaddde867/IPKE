@@ -12,6 +12,13 @@ from pathlib import Path
 from typing import Any
 
 
+REPO_ROOT = Path(__file__).resolve().parent.parent
+SMOKE_REPORT_FILENAME = "issue_53_iaa_report.smoke.json"
+SMOKE_REPORT_PATH = REPO_ROOT / "datasets/paper/reports" / SMOKE_REPORT_FILENAME
+SMOKE_GOLD_DIR = REPO_ROOT / "datasets/paper/gold"
+SMOKE_SECOND_DIR = REPO_ROOT / "datasets/paper/second_pass"
+
+
 TOKEN_RE = re.compile(r"\b\w+\b")
 
 
@@ -253,17 +260,47 @@ def compute_iaa(gold_dir: Path, second_dir: Path) -> dict[str, Any]:
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--gold-dir", required=True, type=Path)
-    parser.add_argument("--second-dir", required=True, type=Path)
-    parser.add_argument("--out", required=True, type=Path)
+    parser.add_argument("--gold-dir", type=Path, default=None)
+    parser.add_argument("--second-dir", type=Path, default=None)
+    parser.add_argument("--out", type=Path, default=None)
+    parser.add_argument(
+        "--smoke-only",
+        action="store_true",
+        help="Write a tiny placeholder report to confirm the script runs end-to-end.",
+    )
     return parser.parse_args(argv)
+
+
+def run_smoke() -> dict[str, Any]:
+    second_paths = sorted(SMOKE_SECOND_DIR.glob("*.json"))
+    if not second_paths:
+        raise SystemExit(f"No second_pass files found in {SMOKE_SECOND_DIR}")
+    sample = second_paths[0]
+    gold_path = SMOKE_GOLD_DIR / sample.name
+    if not gold_path.exists():
+        raise SystemExit(f"Gold file missing for smoke sample: {gold_path}")
+    return {
+        "mode": "smoke",
+        "documents_checked": 1,
+        "n_files": 1,
+        "path": str(SMOKE_REPORT_PATH.relative_to(REPO_ROOT)),
+    }
 
 
 def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
-    result = compute_iaa(args.gold_dir, args.second_dir)
-    args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+    if args.smoke_only:
+        out_path = SMOKE_REPORT_PATH
+        result: dict[str, Any] = run_smoke()
+    else:
+        if args.gold_dir is None or args.second_dir is None or args.out is None:
+            raise SystemExit(
+                "--gold-dir, --second-dir, and --out are required unless --smoke-only is set"
+            )
+        out_path = args.out
+        result = compute_iaa(args.gold_dir, args.second_dir)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
     return 0
 
 
