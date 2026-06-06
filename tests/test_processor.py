@@ -30,11 +30,14 @@ class TestDocumentProcessor:
         assert len(processor.spreadsheet_formats) > 0
     
     def test_document_type_detection(self, processor):
-        """Test document type detection"""
+        """Test document type detection for all categorised extensions."""
         assert processor._detect_document_type('.pdf') == 'manual'
         assert processor._detect_document_type('.docx') == 'document'
+        assert processor._detect_document_type('.txt') == 'text'
         assert processor._detect_document_type('.csv') == 'data'
         assert processor._detect_document_type('.jpg') == 'image'
+        assert processor._detect_document_type('.mp3') == 'audio'
+        assert processor._detect_document_type('.unknown') == 'unknown'
     
     @pytest.mark.asyncio
     async def test_process_nonexistent_file(self, processor):
@@ -44,19 +47,25 @@ class TestDocumentProcessor:
     
     @pytest.mark.asyncio
     async def test_process_plain_text(self, processor):
-        """Test processing plain text file"""
-        # Create temporary text file
+        """Processing a plain text file returns a structured, typed result."""
         with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as f:
-            f.write("This is a test document with some content.\n")
-            f.write("It contains multiple lines of text.\n")
+            f.write("This is a test document.\n")
             f.write("Safety procedure: Wear protective equipment.\n")
             temp_path = f.name
-        
+
         try:
             result = await processor.process_document(temp_path)
-            assert result is not None
-            assert result.document_id is not None
+            # Top-level fields
+            assert result.document_id and isinstance(result.document_id, str)
+            assert result.document_type == 'text'  # .txt maps to 'text'
             assert result.processing_time > 0
+            # Extraction payload is typed
+            er = result.extraction_result
+            assert isinstance(er.steps, list)
+            assert isinstance(er.constraints, list)
+            assert isinstance(er.entities, list)
+            assert 0.0 <= er.confidence_score <= 1.0
+            assert er.strategy_used and isinstance(er.strategy_used, str)
         finally:
             Path(temp_path).unlink()
     
