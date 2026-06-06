@@ -100,16 +100,16 @@ class UnifiedConfig:
     Unified configuration for the entire thesis system (IPKE): all settings are centralized here and loaded from environment variables
     with sensible defaults for each environment.
     """
-    
+
     # Environment
     environment: Environment = Environment.DEVELOPMENT
-    
+
     # Application
     app_name: str = "Industrial Procedural Knowledge Extraction (IPKE)"
     app_version: str = "2.0"
     debug: bool = True
     log_level: str = "INFO"
-    
+
     # File Processing
     upload_directory: str = "uploaded_files"
     max_file_size_mb: int = 100
@@ -119,7 +119,7 @@ class UnifiedConfig:
         '.xls', '.xlsx', '.csv', '.ppt', '.pptx',
         '.mp3', '.wav', '.flac', '.aac'
     ])
-    
+
     # AI Models
     spacy_model: str = "en_core_web_sm"
     embedding_model: str = "models/embeddings/bge-small-en-v1.5"
@@ -131,7 +131,7 @@ class UnifiedConfig:
     llm_f16_kv: bool = True
     llm_use_mlock: bool = True
     llm_use_mmap: bool = True
-    
+
     # LLM Configuration (Hugging Face Transformers backend)
     llm_model_id: str = "mistralai/Mistral-7B-Instruct-v0.2"
     llm_quantization: str = "4bit"  # "4bit", "8bit", or "none"
@@ -149,12 +149,12 @@ class UnifiedConfig:
     llm_num_workers: int = 0  # 0 -> auto scale with available devices
     prompting_strategy: str = "P3"
     llm_random_seed: int = 42
-    
+
     # GPU Configuration
     gpu_backend: str = "auto"  # "metal", "cuda", "auto", or "cpu"
     enable_gpu: bool = True
     gpu_memory_fraction: float = 0.8
-    
+
     # Quality Thresholds
     confidence_threshold: float = 0.8
     quality_threshold: float = 0.7
@@ -162,7 +162,7 @@ class UnifiedConfig:
     strict_schema_validation: bool = False
     schema_autofix_enabled: bool = True
     validation_error_log: str = "logs/validation_errors.jsonl"
-    
+
     # Performance
     max_workers: int = 8
     cache_size: int = 1000
@@ -193,7 +193,7 @@ class UnifiedConfig:
     dsc_threshold_k: float = 1.0
     dsc_use_headings: bool = True
     debug_chunking: bool = False
-    
+
     # API
     api_host: str = "0.0.0.0"
     api_port: int = 8000
@@ -205,7 +205,7 @@ class UnifiedConfig:
     @classmethod
     def from_environment(cls) -> 'UnifiedConfig':
         """Load configuration from environment variables"""
-        
+
         env_name = _get_env_value(
             'IPKE_ENV', 'ENVIRONMENT', 'EXPLAINIUM_ENV', default='development'
         ).lower()
@@ -215,7 +215,7 @@ class UnifiedConfig:
             environment = Environment(env_name)
         except ValueError:
             environment = Environment.DEVELOPMENT
-        
+
         if environment == Environment.PRODUCTION:
             return cls._production_config()
         elif environment == Environment.TESTING:
@@ -224,7 +224,7 @@ class UnifiedConfig:
             return cls._cloud_config()
         else:
             return cls._development_config()
-    
+
     @classmethod
     def _development_config(cls) -> 'UnifiedConfig':
         """Development environment configuration"""
@@ -264,7 +264,7 @@ class UnifiedConfig:
         }
         base_kwargs.update(chunk_kwargs)
         return cls(**base_kwargs)
-    
+
     @classmethod
     def _testing_config(cls) -> 'UnifiedConfig':
         """Testing environment configuration"""
@@ -297,7 +297,7 @@ class UnifiedConfig:
         """Production environment configuration"""
         cors_origins_raw = _get_env_value('CORS_ORIGINS', default='')
         cors_origins = cors_origins_raw.split(',') if cors_origins_raw else []
-        
+
         chunk_kwargs = cls._chunking_overrides()
         llm_workers = max(0, _env_int('LLM_NUM_WORKERS', default=cls.llm_num_workers))
         base_kwargs: Dict[str, Any] = {
@@ -340,7 +340,7 @@ class UnifiedConfig:
         config.environment = Environment.CLOUD
         config.enable_gpu = True
         return config
-    
+
     @classmethod
     def _chunking_overrides(cls) -> Dict[str, Any]:
         """Load chunking configuration overrides from the environment."""
@@ -427,16 +427,16 @@ class UnifiedConfig:
                     'dsc_use_headings': _env_bool('DSC_USE_HEADINGS', default=cls.dsc_use_headings),
                 })
         return overrides
-    
+
     # Utility methods
     def get_upload_directory(self) -> str:
         path = Path(self.upload_directory)
         path.mkdir(exist_ok=True)
         return str(path.absolute())
-    
+
     def get_max_file_size(self) -> int:
         return self.max_file_size_mb * 1024 * 1024
-    
+
     def get_cors_origins(self) -> List[str]:
         return self.cors_origins
 
@@ -452,10 +452,10 @@ class UnifiedConfig:
 
     def is_development(self) -> bool:
         return self.environment == Environment.DEVELOPMENT
-    
+
     def is_production(self) -> bool:
         return self.environment == Environment.PRODUCTION
-    
+
     def get_model_config(self) -> Dict[str, Any]:
         """Get AI model configuration"""
         return {
@@ -468,25 +468,25 @@ class UnifiedConfig:
             'enable_gpu': self.enable_gpu,
             'gpu_backend': self.gpu_backend,
         }
-    
+
     def detect_gpu_backend(self) -> str:
         """Detect the best available GPU backend if set to 'auto'."""
         if self.gpu_backend != 'auto':
             return self.gpu_backend
-        
+
         if not self.enable_gpu:
             return "cpu"
-        
+
         system = platform.system()
         processor = platform.processor().lower()
         if system == "Darwin" and ("arm" in processor or "apple" in processor):
             # Use CPU for LLMs on Apple Silicon to avoid tokenizer mutex issues.
             # MPS acceleration will be reserved for embedding workloads.
             return "cpu"
-        
+
         if system == "Darwin" and platform.machine() in ["arm64", "aarch64"]:
             return "metal"
-        
+
         try:
             import subprocess
             result = subprocess.run(['nvidia-smi'], capture_output=True, text=True, timeout=2)
@@ -494,9 +494,9 @@ class UnifiedConfig:
                 return "cuda"
         except (subprocess.TimeoutExpired, FileNotFoundError):
             pass
-            
+
         return "cpu"
-    
+
     def get_llm_config(self) -> Dict[str, Any]:
         """Get all LLM-related configuration."""
         return {
@@ -530,7 +530,7 @@ class UnifiedConfig:
             'model_id': self.llm_model_id,
             'quantization': self.llm_quantization,
         }
-    
+
     def get_api_config(self) -> Dict[str, Any]:
         """Get API configuration"""
         return {

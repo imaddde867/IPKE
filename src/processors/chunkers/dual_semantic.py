@@ -105,7 +105,6 @@ class DualSemanticChunker(BreakpointSemanticChunker):
         n = len(sentences)
         boundaries: List[Tuple[int, int]] = []
         start = 0
-        t = window
 
         def local_stats(center: int):
             left = max(0, center - window)

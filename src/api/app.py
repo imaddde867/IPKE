@@ -81,7 +81,7 @@ async def lifespan(app: FastAPI):
 def create_app() -> FastAPI:
     """Create and configure the FastAPI application"""
     config = get_config()
-    
+
     app = FastAPI(
         title="Industrial Procedural Knowledge Extraction API",
         description="Simplified, high-performance knowledge extraction from documents",
@@ -89,7 +89,7 @@ def create_app() -> FastAPI:
         debug=config.is_development(),
         lifespan=lifespan
     )
-    
+
     # Add middleware
     app.add_middleware(ErrorHandlingMiddleware)
     app.add_middleware(RequestLoggingMiddleware)
@@ -100,7 +100,7 @@ def create_app() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
-    
+
     return app
 
 
@@ -139,11 +139,11 @@ async def extract_knowledge(
 ):
     """
     Extract knowledge from an uploaded document
-    
+
     Args:
         file: Document file to process
     """
-    
+
     # Validate file
     if not file.filename:
         raise HTTPException(status_code=400, detail="No file provided")
@@ -164,18 +164,18 @@ async def extract_knowledge(
             status_code=413,
             detail=f"File too large. Maximum size: {config.max_file_size_mb}MB"
         )
-    
+
     # Save uploaded file temporarily
     with tempfile.NamedTemporaryFile(delete=False, suffix=file_ext) as tmp_file:
         shutil.copyfileobj(file.file, tmp_file)
         tmp_file_path = tmp_file.name
-    
+
     try:
         # Process document
         result = await processor.process_document(
             file_path=tmp_file_path
         )
-        
+
         # Convert entities to response format
         entities = [
             EntityResponse(
@@ -187,7 +187,7 @@ async def extract_knowledge(
             )
             for entity in result.extraction_result.entities
         ]
-        
+
         response = ExtractionResponse(
             document_id=result.document_id,
             document_type=result.document_type,
@@ -200,14 +200,14 @@ async def extract_knowledge(
             metadata=result.metadata,
             quality_metrics=result.extraction_result.quality_metrics
         )
-        
+
         logger.info(
             f"Successfully extracted {len(result.extraction_result.steps)} steps / "
             f"{len(entities)} entities from {file.filename} in {result.processing_time:.2f}s"
         )
-        
+
         return response
-        
+
     except ProcessingError as e:
         logger.error(f"Processing failed for {file.filename}: {e}")
         raise HTTPException(status_code=422, detail=str(e))

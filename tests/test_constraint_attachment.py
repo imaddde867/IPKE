@@ -1,8 +1,10 @@
-import pytest
+"""Regression: constraints with 'attached_to' key are normalised to 'steps'."""
 import numpy as np
+import pytest
 from unittest.mock import MagicMock, patch
+
 from src.ai.knowledge_engine import UnifiedKnowledgeEngine
-from src.ai.types import ChunkExtraction, ExtractedEntity
+from src.ai.types import ChunkExtraction
 
 
 @pytest.mark.asyncio
@@ -12,52 +14,40 @@ async def test_constraint_attachment_normalised():
     preserved through the engine and normalised to the 'steps' key in the
     final output. Previously this case was silently dropped.
     """
-    # Mock sentence_transformers at the module level where it's imported
-    mock_st_model = MagicMock()
-    mock_st_model.encode.return_value = np.array([[0.1, 0.2, 0.3]])
+    # Patch _embed_chunk_texts so the engine never reaches sentence_transformers.
+    embed_stub = lambda self, texts: np.eye(max(len(texts), 1))[: len(texts)]
 
-    with patch.dict("sys.modules", {"sentence_transformers": MagicMock(SentenceTransformer=MagicMock(return_value=mock_st_model))}):
-        # Mock the chunker to return a single chunk
-        with patch("src.ai.knowledge_engine.get_chunker") as mock_get_chunker:
-            mock_chunker = MagicMock()
-            mock_chunk = MagicMock()
-            mock_chunk.text = "Test chunk"
-            mock_chunk.sentence_span = (0, 10)
-            mock_chunk.meta = {}
-            mock_chunker.chunk.return_value = [mock_chunk]
-            mock_get_chunker.return_value = mock_chunker
+    with patch.object(UnifiedKnowledgeEngine, "_embed_chunk_texts", embed_stub), \
+         patch("src.ai.knowledge_engine.get_chunker") as mock_get_chunker, \
+         patch("src.ai.knowledge_engine.LLMWorkerPool") as mock_pool_cls:
 
-            # Mock the worker pool to return a specific extraction result
-            with patch("src.ai.knowledge_engine.LLMWorkerPool") as mock_pool_cls:
-                mock_pool = MagicMock()
+        mock_chunk = MagicMock()
+        mock_chunk.text = "Test chunk"
+        mock_chunk.sentence_span = (0, 10)
+        mock_chunk.meta = {}
+        mock_chunker = MagicMock()
+        mock_chunker.chunk.return_value = [mock_chunk]
+        mock_get_chunker.return_value = mock_chunker
 
-                # Simulate an extraction result from P1/P2/P3 which uses "attached_to"
-                extraction_result = ChunkExtraction(
-                    steps=[
-                        {"id": "S1", "text": "Step 1", "confidence": 0.9},
-                    ],
-                    constraints=[
-                        {
-                            "id": "C1",
-                            "text": "Constraint 1",
-                            "attached_to": ["S1"],  # This is what P1/P2/P3 produce
-                            "confidence": 0.8
-                        }
-                    ],
-                    entities=[]
-                )
+        extraction_result = ChunkExtraction(
+            steps=[{"id": "S1", "text": "Step 1", "confidence": 0.9}],
+            constraints=[{
+                "id": "C1",
+                "text": "Constraint 1",
+                "attached_to": ["S1"],  # P1/P2/P3 produce this key
+                "confidence": 0.8,
+            }],
+            entities=[],
+        )
+        mock_pool = MagicMock()
+        mock_pool.process.return_value = [extraction_result]
+        mock_pool_cls.return_value = mock_pool
 
-                mock_pool.process.return_value = [extraction_result]
-                mock_pool_cls.return_value = mock_pool
+        engine = UnifiedKnowledgeEngine()
+        result = await engine.extract_knowledge("Test content")
 
-                engine = UnifiedKnowledgeEngine()
-
-                # Run extraction
-                result = await engine.extract_knowledge("Test content")
-
-                # Assertions
-                assert len(result.steps) == 1
-                assert result.steps[0]["id"] == "S1"
-
-                assert len(result.constraints) == 1
-                assert result.constraints[0]["steps"] == ["S1"]
+        assert len(result.steps) == 1
+        assert result.steps[0]["id"] == "S1"
+        assert len(result.constraints) == 1
+        assert result.constraints[0]["steps"] == ["S1"]
+        assert "attached_to" not in result.constraints[0]

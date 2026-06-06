@@ -8,7 +8,7 @@ from src.ai.types import ChunkExtraction
 
 class CoTPromptStrategy(PromptStrategy):
     """Chain-of-Thought reasoning with explicit decomposition steps.
-    
+
     Implements Wei et al. (2022) CoT approach with four reasoning stages:
     1. CLASSIFY: Distinguish between Descriptive and Procedural content
     2. FILTER: Extract human actions and ignore non-human events
