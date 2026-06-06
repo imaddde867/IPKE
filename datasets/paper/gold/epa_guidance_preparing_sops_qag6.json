@@ -1,0 +1,125 @@
+{
+  "procedure": {
+    "doc_id": "epa_guidance_preparing_sops_qag6",
+    "title": "EPA SOP preparation and review excerpt",
+    "version": "EPA QA/G-6",
+    "domain": "sop_governance",
+    "source": {
+      "doc_id": "epa_guidance_preparing_sops_qag6",
+      "page": "2-4",
+      "section": "2.0 SOP Process"
+    }
+  },
+  "steps": [
+    {
+      "id": "S1",
+      "label": "Assign knowledgeable subject-matter experts to write the SOP",
+      "action_verb": "assign",
+      "action_object": "SOP writers",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C1",
+          "type": "requirement",
+          "text": "Write the SOP with enough detail that a basic but unsupervised user can reproduce the procedure.",
+          "attached_to": [
+            "S1"
+          ]
+        }
+      ],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "page": "2-3",
+        "section": "2.1"
+      }
+    },
+    {
+      "id": "S2",
+      "label": "Review and test the draft SOP with trained reviewers before finalizing it",
+      "action_verb": "review",
+      "action_object": "draft SOP",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C2",
+          "type": "approval",
+          "text": "Obtain management approval after review and validation.",
+          "attached_to": [
+            "S2"
+          ]
+        }
+      ],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "page": "3",
+        "section": "2.2"
+      }
+    },
+    {
+      "id": "S3",
+      "label": "Update and re-approve the SOP whenever the underlying procedure changes",
+      "action_verb": "update",
+      "action_object": "SOP revision",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C3",
+          "type": "review_cycle",
+          "text": "Review SOPs periodically, such as every one to two years, to confirm they remain current.",
+          "attached_to": [
+            "S3"
+          ]
+        }
+      ],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "page": "3",
+        "section": "2.3"
+      }
+    },
+    {
+      "id": "S4",
+      "label": "Maintain a master list and archive obsolete SOP versions",
+      "action_verb": "maintain",
+      "action_object": "SOP master list and archive",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C4",
+          "type": "documentation",
+          "text": "Track SOP number, version, issue date, title, author, status, and organizational owner.",
+          "attached_to": [
+            "S4"
+          ]
+        }
+      ],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "page": "4",
+        "section": "2.6"
+      }
+    }
+  ],
+  "constraints": [],
+  "relations": [],
+  "quality": {
+    "annotation_scope": "bounded_excerpt",
+    "review_status": "reviewed"
+  }
+}

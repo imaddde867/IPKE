@@ -1,0 +1,949 @@
+document_id: olsk_small_cnc_v1_workbook
+source_family: OLSK
+title: Open Lab Starter Kit Small CNC V1 Workbook
+direct_url: https://raw.githubusercontent.com/Open-Lab-Starter-Kit/OLSK-Small-CNC/main/OLSK_Small_CNC_V1/OLSK_Small_CNC_V1_Workbook.pdf
+sha256: e267802535b39c99e9450133c49ffb6babc9fd6a5a8cb4eab276a929b5a92dd2
+
+Step
+Number
+Step Title
+Parts list
+Tools list
+Remarks
+Quantity
+Part name
+Quantity
+Tool name
+01.1 Electronic Box Frame - Top and
+Bottom
+8
+Profile 20-400
+1
+Square
+Not necessary to be absolutely
+precise.
+8
+Bracket 20
+1
+Allen key
+16
+Hammer Nut M5
+16
+C-screw M5-8
+01.2 Electronic Box - Bottom Panel
+1
+Box Bottom Panel
+1
+Allen key
+Remove protective foils.
+6
+Hammer Nut M5
+Pay attention to top and bottom of the
+panel.
+6
+C-screw M5-8
+Mark the front with the Red Dot
+Sticker
+1
+Red Dot Sticker
+1
+Prepared Bottom Frame (Step1.1)
+01.3 Electronic Box - Drivers and Power
+Supply
+3
+Motor Driver
+1
+Allen key
+Pay attention to position of motor
+drivers and motor power supply
+1
+Motor Power Supply
+1
+wrench or small
+plier
+6
+C-screw M4-12
+4
+C-screw M4-8
+6
+Lock Nut M4
+01.4 Electronic Box Frame - vertical
+profiles
+4
+Profile 20-150
+1
+Allen key
+Attach brackets first to the vertical
+profiles, then to the top and bottom
+8
+Bracket 20
+The final tightening of the screws
+should be all together at the end.
+16
+Hammer Nut M5
+16
+C-screw M5-8
+1
+Prepared Top Frame (Step1.1)
+
+Step
+Number
+Step Title
+Parts list
+Tools list
+Remarks
+Quantity
+Part name
+Quantity
+Tool name
+01.5 Electronic Box - PCBs
+14
+Standoff
+1
+Small screwdriver
+Phillips
+1
+Controller PCB
+1
+Allen Key
+28
+Plastic Screw M3-8
+1
+Router PCB
+1
+Relay
+1
+Sensor PCB
+02.1 Prepare Left Panel
+1
+USB Cable Inside
+1
+Small screwdriver
+Phillips
+Remove protective foil from panel
+2
+Plastic Screw M3-8
+1
+Box Left Panel
+02.2 Prepare Back Panel
+1
+Box Back Panel
+1
+Allen key
+Remove protective foil from panel
+5
+Cable Gland
+1
+Wrench or small
+plier
+1
+Power Socket + Mains Cable
+2
+C-screw M3-10
+2
+Lock Nut M3
+2
+Washer M3
+02.3 Attaching Sides, Front and Back
+Panels
+1
+Prepared Left Panel (Step 2)
+1
+Allen key
+Remove protective foil from panels
+1
+Prepared Back Panel (Step 3)
+1
+Box Right Panel
+1
+Box Front Panel
+34
+B-screw M5-8
+34
+Hammer Nut M5
+
+Step
+Number
+Step Title
+Parts list
+Tools list
+Remarks
+Quantity
+Part name
+Quantity
+Tool name
+03.1 Preparing Ball Screw Y
+6
+C-screw M5-16
+1
+Allen key
+1
+Ball Screw Y
+1
+Screw Block Y
+03.2 Preparing Ball Screw X
+1
+Ball Screw X
+6
+C-screw M5-16
+1
+Screw Block X
+03.3 Preparing Ball Screw Z
+6
+C-screw M4-16
+1
+Allen key
+1
+Ball Screw Z
+1
+Screw Block Z
+04.1 Preparing the Y-axis - linear guides
+2
+Linear Guide Y
+1
+Allen key
+Arrows should be pointing outside
+1
+Base Plate
+Flip the base upsidedown
+28
+C-screw M4-16
+Push the linear guides outwards to
+align.
+04.2 Preparing the Y-axis - Carriages
+4
+Carriage
+Insert the carriages to the same
+direction as the writings of the linear
+guide.
+04.3 Preparing the Y-axis - Sides
+2
+Base side protection
+1
+Allen key
+18
+C-screw M5-20
+04.4 Preparing the Y-axis - front
+1
+Base front
+1
+Allen key
+8
+C-screw M5-20
+
+Step
+Number
+Step Title
+Parts list
+Tools list
+Remarks
+Quantity
+Part name
+Quantity
+Tool name
+04.5 Attaching Y Back Bearing Holder
+1
+Prepared Ball Screw Y
+1
+Rubber Hammer
+Insert the Ball Screw Y in the Y Back
+Bearing in the right direction.
+2
+C-screw M8-30
+1
+Allen key
+Insert the other end of the Ball Screw
+Y in the Y Front Bearing with a rubber
+hammer.
+1
+Y Back Bearing Holder
+1
+Wrench
+The Ball Spindle Y housing should
+have the filleted side facing the Base
+Plate
+1
+Locknut pitch1mm
+4
+Washer M12
+05.1 Completing the base - Back
+1
+Base back
+1
+Allen key
+7
+C-screw M5-20
+1
+C-screw M5-25
+1
+Wire Fixer Small
+1
+Air Splitter Holder
+05.2 Completing the base - Profiles
+2
+Profile 40-800
+1
+Allen key
+Make sure to align the T-nuts to the
+Base Plate holes
+4
+C-screw M8-25
+12
+T-nut 8 M6
+2
+C-screw M6-16
+2
+Washer M8 Big
+05.3 Completing the base - shoulders
+support
+1
+Shoulder Support Left
+1
+Allen key
+1
+Shoulder Support Right
+1
+Shoulder Support Connector
+4
+C-screw M5-16
+16
+C-screw M4-30
+
+Step
+Number
+Step Title
+Parts list
+Tools list
+Remarks
+Quantity
+Part name
+Quantity
+Tool name
+4
+C-screw M8-25
+05.4 Attaching the bed to the base
+12
+B-screw M6-20
+1
+Allen key
+Flip the Base Plate.
+1
+Bed
+06.1 Preparing the X-axis - linear guides
+2
+Linear Guide X
+1
+Allen key
+All arrows of the linear guides should
+be pointing down.
+1
+X-axis Plate
+To ensure a good alignment, force
+the linear guide inwards while
+tightening the screws
+20
+C-screw M4-16
+06.2 Preparing the X-axis - carriages
+4
+Carriage
+Insert the carriages to the same
+direction as the writings of the linear
+guide.
+06.3 Attaching the X-axis - left shoulder
+1
+Left Shoulder
+1
+Allen key
+6
+C-screw M8-40
+06.4 Preparing the X-axis - X bearing
+holders
+1
+Prepared Ball Screw X
+1
+Rubber Hammer
+Insert the ends of the Ball Screw X in
+the bearing with a rubber hammer [1]
+1
+X Bearing Holder Right
+1
+Allen key
+The Ball Screw X housing should
+have the filleted side facing the X-axis
+Plate. [2]
+1
+Locknut M12 pitch1mm
+1
+Wrench
+06.5 Preparing the X-axis - right shoulder
+1
+Right Shoulder
+1
+Allen key
+6
+C-screw M8-35
+2
+C-screw M6-35
+07 Attach X-axis to Shoulder Supports
+16
+C-screw M8-35
+1
+Rubber Hammer
+Tighten the screws all at the same
+time incrementally
+1
+Prepared X-axis (Step 06)
+
+Step
+Number
+Step Title
+Parts list
+Tools list
+Remarks
+Quantity
+Part name
+Quantity
+Tool name
+08.1 Preparing the Z-axis - linear guides
+2
+Linear Guide Z
+1
+Allen key
+Carefully remove the carriages from
+the linear guides, using the plastic
+ones as substitution.
+1
+Z-axis Front Plate
+Don't tighten the screws yet for a later
+alignment of the linear guides.
+2
+Plastic linear guide
+32
+C-screw M3-12
+08.2 Preparing the Z-axis - Top Plate
+1
+Z Top Plate
+1
+Allen key
+6
+C-screw M6-25
+08.3 Preparing the Z-axis - Ball Screw Z
+1
+Z-axis bottom bearing Holder
+1
+Rubber Hammer
+Hammer the Z Ball Screw into the
+bearings and then screw the bottom
+bearing holder
+2
+C-screw M6-16
+1
+Allen key
+1
+Prepared Ball Screw Z
+4
+Washer M10
+08.4 Preparing the Z-axis - Top Bearing
+cover
+1
+Z Top Bearing Cover
+1
+Allen key
+2
+C-screw M5-20
+1
+Wrench
+1
+Lock Nut pitch1mm
+08.5 Preparing the Z-axis - Middle Plate
+1
+Middle Plate
+1
+Allen key
+Don't tighten the screws of the
+carriages. Carefully slide the Middle
+Plate with the carriages onto the
+linear guides. Then tighten all the
+screws.
+4
+Carriages (Step 8.1)
+Carefully remove the Middle Plate
+with carriages, substituting the linear
+guides for the plastic ones again.
+16
+C-screw M3-25
+Tape the plastic linear guides around
+the carriages to avoid they coming
+out.
+09.1 Attach Middle Plate to X Linear
+Guides
+14
+C-screw M4-25
+1
+Short Allen Key
+2
+C-screw M4-12
+1
+Allen key
+
+Step
+Number
+Step Title
+Parts list
+Tools list
+Remarks
+Quantity
+Part name
+Quantity
+Tool name
+4
+B-screw M5-20
+09.2 Attaching Z-axis
+1
+Prepared Z-axis
+1
+Allen key
+Untighten the carriages and carefully
+slide the Prepared Z-axis back to the
+Z Linear guide carriages, removing
+the plastic linear guides.
+4
+C-screw M5-16
+Fix the Z Ball Screw housing to the
+Middle Plate
+10 Attach the Z-motor
+1
+Z-motor
+1
+Allen key
+Tighten the set screws of the coupler.
+Fo facilitate, the coupler parts can be
+separated.
+1
+Z Coupler
+1
+Z-motor Adapter
+4
+C-screw M5-80
+11.1 Attach Z-axis Router Holder
+12
+C-screw M5-20
+1
+Allen key
+1
+Router Holder
+11.2 Attach the Router
+1
+Router
+1
+Allen key
+1
+B-screw M8-70
+11.3 Attach Coolant System (optional)
+1
+Coolant System
+1
+Allen key
+1
+Cooler System Holder
+2
+B-screw M5-20
+2
+C-screw M4-35
+2
+Lock Nut M4
+4
+Washer M4
+11.4 Attach cooling pipes (optional)
+2
+Cooling pipes
+
+Step
+Number
+Step Title
+Parts list
+Tools list
+Remarks
+Quantity
+Part name
+Quantity
+Tool name
+2
+Cable Tie
+12.1 Attach Z-endstop Sensor
+1
+Z-endstop Sensor
+12.2 Attach Z-endstop Sensor screw
+1
+Hexagon Screw M6-16
+1
+Wrench or small
+plier
+1
+Lock Nut M6
+1
+Allen key
+4
+Washer M5
+1
+Washer M6
+1
+Z-screw Holder
+4
+Screw Holder Spacer
+4
+C-screw M5-35
+13.1 Attach the X-chain Top Support
+1
+X-chain Top Support
+1
+Allen key
+Tie de cables and pipes together with
+Cable Ties before fixing the Wire
+Fixer Big
+1
+Wire Fixer Big
+Pass the motor, router cables and
+pipe through the Top Chain Top
+Support hole.
+1
+B-screw M6-16
+1
+B-screw M6-30
+3
+Cable Ties
+13.2 Fix Top Chain Bottom Support
+1
+X-chain Bottom Support
+1
+Allen key
+3
+C-screw M6-12
+
+Step
+Number
+Step Title
+Parts list
+Tools list
+Remarks
+Quantity
+Part name
+Quantity
+Tool name
+13.3 Fix the Top Chain
+4
+C-screw M3-12
+1
+Allen key
+Insert in the chain the following
+cables: Router Communication,
+Router Power, Z-endstop Sensor, Z-
+motor
+1
+X-chain
+4
+Lock Nut M3
+4
+Washer M3
+6
+Cable Tie
+14 Fix X-motor and X-endstop Sensor
+1
+X-motor
+1
+Allen key
+Tighten the set screws of the coupler.
+Fo facilitate, the coupler parts can be
+t d
+1
+X-motor Adapter
+1
+XY Coupler
+4
+C-screw M5-70
+2
+B-screw M5-20
+1
+X-endstop Sensor
+1
+X-endstop Sensor Holder
+15.1 Y-chain Top support
+2
+Y-chain Top Support
+1
+Allen key
+2
+B-screw M8-12
+15.2 Y-chain Bottom support
+1
+Y-endstop Sensor
+1
+Allen key
+1
+Y-endstop Sensor Holder
+1
+Wrench
+2
+Y-chain Bottom Support Front and
+Back
+2
+C-screw M5-10
+2
+C-screw M5-20
+2
+Washer M5
+2
+Lock Nut M5
+
+Step
+Number
+Step Title
+Parts list
+Tools list
+Remarks
+Quantity
+Part name
+Quantity
+Tool name
+15.3 Fix the Y-chain
+1
+Y-chain
+1
+Allen key
+Insert in the chain the following
+cables: all inserted in Top Chain + X-
+motor + X-endstop Sensor
+1
+Y-chain Bottom Support Side
+6
+B-screw M5-12
+4
+Washer M5
+6
+Lock Nut M5
+4
+Cable Tie
+16 Fix Y-motor
+1
+Y-motor
+1
+Allen key
+Tighten the set screws of the coupler.
+Fo facilitate, the coupler parts can be
+separated.
+1
+Y-motor Adapter
+4
+C-screw M5-35
+1
+XY Coupler
+17 Attach Vaccuum control system
+4
+Vaccuum Valve
+1
+Allen key
+Fit the Air Tubes in the Fit Connectors
+and label them accordingly
+1
+Vaccuum Splitter
+5
+Fit Connector
+1
+Angle Connector
+4
+O Ring
+1
+Teflon Tape
+3
+Flat screw
+4
+Vaccuum Valve Label
+18 Attach Z-axis Side panels
+1
+Z Side Panel Right
+1
+Allen key
+6
+B-screw M5-8
+1
+Z Side Panel Left
+19.1 Wiring Logic
+3
+Motor Driver Logic Cable
+1
+Screwdriver
+1
+Z height Sensor
+1
+Screwdriver
+slotted small
+1
+X-endstop Sensor Cable
+
+Step
+Number
+Step Title
+Parts list
+Tools list
+Remarks
+Quantity
+Part name
+Quantity
+Tool name
+1
+Y-endstop Sensor Cable
+1
+Z-endstop Sensor Cable
+2
+Router PCB Jumper
+1
+Router Control Cable
+3
+Relay Jumper F-F
+1
+Relay Jumper M-M
+1
+Sensor Logic Cable
+19.2 Wiring Power
+3
+Motor Driver Power Cable
+1
+Screwdriver
+Phillips
+Fix the Earth Cable Outside to the
+right screw on the Base
+1
+Controller PCB Power Cable
+1
+Screwdriver
+slotted small
+1
+Router PCB Power Cable
+1
+Sensor PCB Power Cable
+1
+B-screw M5-8
+2
+Washer M5
+1
+Hammer Nut M5
+1
+Earth Cable Inside + Outside
+1
+Emergency Button Cable
+1
+Cable Connector
+20.1 Emergency Button
+1
+Emergency Button
+1
+Screwdriver
+Philips
+Remove the foils from the panel
+1
+Top Panel
+20.2 Checking and testing the electronics
+1
+Multimeter
+Check with a multimeter is the
+connections are correct.
+Check if the motion of the motors is
+smooth and to the correct direction.
+
+Step
+Number
+Step Title
+Parts list
+Tools list
+Remarks
+Quantity
+Part name
+Quantity
+Tool name
+20.3 Adjusting the Endstops
+Check if endstops are working by
+setting a small motion and placing
+metal on the sensor to see if it stops.
+Adjust the position of the endstops
+according to the limits of the motion
+range.
+Test the homing of the machine.
+20.4 Cable management
+1
+Cable Wrapper Bottom
+1
+Cutter
+Tighten the Cable Gands
+1
+Cable Wrapper Top
+Try to separate logic and power.
+Cable Tie
+Fix the Y-motor Cable and Z-height
+Sensor Cable to the wire fixer on the
+back.
+20.5 Closing the electronic Box
+8
+B-screw M5-8
+1
+Allen key
+8
+Hammer Nut M5
+1
+Prepared Top Panel
+21 Inserting linear guides caps
+20
+Linear Guide Cap
+22 Installing Coolant System (optional)
+1
+Air Compressor
+1
+Coolant Pipes
+1
+Coolant System
+23 Milling the bed
+Mill the bed to flatten, then mill
+vacuum channels.
+24.1 Installing vacuum system - Vacuum
+channels
+4
+Air Cap
+Threading Tools
+Thread the vaccuum channels
+24.2 Installing vacuum system - air pipes
+4
+Angle Connector
+Pass the air tube through the base
+back holes
+Teflon Tape
+Lift the machine carefully to attach the
+Angle connectors
+
+Step
+Number
+Step Title
+Parts list
+Tools list
+Remarks
+Quantity
+Part name
+Quantity
+Tool name
+4
+Fit Connector
+4
+Air Tube
+24.3 Installing vacuum system - external
+devices
+1
+Vacuum Pump
+1
+Vaccum Chamber
+1
+Foot Switch
+25 Safety Stickers
+Safety Stickers
+1
+1
+1
+1
+1

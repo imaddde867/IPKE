@@ -96,3 +96,6 @@ uploaded_files/*
 # Extras
 thesis/
 PRE_DEPLOYMENT_CHECKLIST.md
+AGENTS.md
+datasets/paper/gold_drafts/
+datasets/Unusable/
