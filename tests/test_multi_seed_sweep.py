@@ -39,3 +39,17 @@ def test_multi_seed_sweep_rejects_unknown_config():
     assert "no_such_config" in combined or "invalid choice" in combined, (
         f"Expected argparse rejection message in output, got:\n{combined[:500]}"
     )
+
+
+def test_config_picks_up_llm_model_path(monkeypatch):
+    """reload_config() must propagate LLM_MODEL_PATH into config.llm_model_path."""
+    import sys
+    sys.path.insert(0, str(REPO_ROOT))
+    monkeypatch.setenv("LLM_MODEL_PATH", "/tmp/sentinel_model.gguf")
+    monkeypatch.setenv("EXPLAINIUM_ENV", "development")
+
+    from src.core.unified_config import reload_config
+    cfg = reload_config()
+    assert cfg.llm_model_path == "/tmp/sentinel_model.gguf", (
+        "LLM_MODEL_PATH must be reflected in config.llm_model_path after reload_config()"
+    )
