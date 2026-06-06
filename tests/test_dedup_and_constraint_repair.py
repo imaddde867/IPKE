@@ -46,3 +46,23 @@ def test_constraint_dedup_and_fuzzy_attachment(monkeypatch):
     assert len(normalized) == 1
     assert normalized[0]["steps"] == ["S1"]
     assert normalized[0]["text"].startswith("If pressure")
+
+
+def test_dedup_constraints_uses_steps_key(monkeypatch):
+    """_deduplicate_constraints must output the 'steps' key, not 'attached_to'."""
+    engine = UnifiedKnowledgeEngine(UnifiedConfig())
+    monkeypatch.setattr(
+        engine,
+        "_embed_chunk_texts",
+        # Two distinct vectors so no merging happens — just clone path
+        lambda texts: np.eye(max(len(texts), 1))[: len(texts)],
+    )
+    step_alias_map: dict = {}
+    constraints = [
+        {"id": "C1", "text": "wear gloves", "attached_to": ["S1"]},
+    ]
+    result = engine._deduplicate_constraints(constraints, step_alias_map)
+    assert len(result) == 1
+    assert "steps" in result[0], f"Expected key 'steps', got: {list(result[0].keys())}"
+    assert "attached_to" not in result[0]
+    assert result[0]["steps"] == ["S1"]

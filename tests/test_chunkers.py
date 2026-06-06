@@ -227,3 +227,20 @@ def test_char_cap_enforcement_on_fixed():
     assert len(chunks) >= 2
     for chunk in chunks:
         assert len(chunk.text) <= 250
+
+
+def test_dual_semantic_does_not_reach_into_breakpoint_private():
+    """DSC must access inherited methods via self._, not via self.base._."""
+    import inspect
+    from src.processors.chunkers.dual_semantic import DualSemanticChunker
+    source = inspect.getsource(DualSemanticChunker)
+    assert "self.base._" not in source, (
+        "DualSemanticChunker must not access private methods via self.base._; "
+        "it should inherit from BreakpointSemanticChunker instead."
+    )
+
+
+def test_dual_semantic_is_breakpoint_subclass():
+    from src.processors.chunkers.dual_semantic import DualSemanticChunker
+    from src.processors.chunkers.breakpoint import BreakpointSemanticChunker
+    assert issubclass(DualSemanticChunker, BreakpointSemanticChunker)

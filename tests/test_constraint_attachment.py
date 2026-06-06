@@ -6,10 +6,11 @@ from src.ai.types import ChunkExtraction, ExtractedEntity
 
 
 @pytest.mark.asyncio
-async def test_constraint_attachment_bug():
+async def test_constraint_attachment_normalised():
     """
-    Reproduce the bug where constraints using 'attached_to' are dropped
-    because the engine only looks for 'steps'.
+    Regression: constraints produced by P1/P2/P3 with key 'attached_to' are
+    preserved through the engine and normalised to the 'steps' key in the
+    final output. Previously this case was silently dropped.
     """
     # Mock sentence_transformers at the module level where it's imported
     mock_st_model = MagicMock()
