@@ -1,0 +1,40 @@
+{
+  "procedure": {
+    "doc_id": "sample_procedure",
+    "title": "Sample Procedure",
+    "version": null,
+    "domain": "test"
+  },
+  "steps": [
+    {
+      "id": "S1",
+      "label": "Inspect the pump seal"
+    },
+    {
+      "id": "S2",
+      "label": "Tighten the retaining bolts"
+    }
+  ],
+  "constraints": [
+    {
+      "id": "C1",
+      "text": "Wear safety gloves",
+      "applies_to": [
+        "S1"
+      ]
+    },
+    {
+      "id": "C2",
+      "condition": "Torque must not exceed 40 Nm",
+      "targets": [
+        "S2"
+      ]
+    }
+  ],
+  "resources": [],
+  "resources_catalog": {},
+  "relations": [],
+  "quality": {
+    "annotator": "A"
+  }
+}
