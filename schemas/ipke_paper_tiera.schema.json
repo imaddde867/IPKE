@@ -1,0 +1,151 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ipke.local/schemas/ipke_paper_tiera.schema.json",
+  "title": "IPKE Paper Tier A Gold Annotation (Strict)",
+  "description": "Strict schema for paper Tier A gold. Required for new paper gold files. Existing pilot_gold files are grandfathered via the loose ipke_annotation.schema.json.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["procedure", "steps"],
+  "properties": {
+    "procedure": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["doc_id", "title", "source", "audit"],
+      "properties": {
+        "doc_id": {"type": "string", "minLength": 1},
+        "title": {"type": "string", "minLength": 1},
+        "version": {"type": ["string", "null"]},
+        "domain": {"type": ["string", "null"]},
+        "source": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["doc_id", "section"],
+          "properties": {
+            "doc_id": {"type": "string", "minLength": 1},
+            "section": {"type": "string", "minLength": 1},
+            "page": {"type": ["string", "integer", "null"]},
+            "char_start": {"type": "integer", "minimum": 0},
+            "char_end": {"type": "integer", "minimum": 0},
+            "url": {"type": "string"}
+          }
+        },
+        "audit": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "gold_status",
+            "annotation_status",
+            "annotation_scope",
+            "annotator_count",
+            "guideline_version",
+            "reviewed_by",
+            "reviewed_at"
+          ],
+          "properties": {
+            "gold_status": {"enum": ["pilot_gold", "gold"]},
+            "annotation_status": {"enum": ["draft", "reviewed", "double_annotated", "adjudicated"]},
+            "annotation_scope": {"enum": ["bounded_excerpt", "full_document"]},
+            "annotator_count": {"type": "integer", "minimum": 1},
+            "guideline_version": {"type": "string", "minLength": 1},
+            "model_draft_used": {"type": "boolean"},
+            "reviewed_by": {"type": "string", "minLength": 1},
+            "reviewed_at": {"type": "string", "minLength": 1},
+            "review_notes": {"type": "string"}
+          }
+        }
+      }
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/step"}
+    },
+    "constraints": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/constraint"}
+    },
+    "relations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["from", "to"],
+        "properties": {
+          "from": {"type": "string"},
+          "to": {"type": "string"},
+          "type": {"type": "string"}
+        }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "annotation_scope": {"type": "string", "minLength": 1},
+        "review_status": {"type": "string", "minLength": 1}
+      }
+    }
+  },
+  "$defs": {
+    "step": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "provenance"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1, "pattern": "^S[0-9]+$"},
+        "label": {"type": "string", "minLength": 1},
+        "action_verb": {"type": ["string", "null"]},
+        "action_object": {"type": ["object", "string", "null"]},
+        "arguments": {"type": "array"},
+        "parameters": {"type": "array"},
+        "constraints": {
+          "type": "array",
+          "items": {"$ref": "#/$defs/constraint"}
+        },
+        "resources": {"type": ["object", "array"]},
+        "flags": {"type": "object"},
+        "provenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["doc_id", "section"],
+          "properties": {
+            "doc_id": {"type": "string"},
+            "section": {"type": "string"},
+            "page": {"type": ["string", "integer", "null"]},
+            "char_start": {"type": "integer", "minimum": 0},
+            "char_end": {"type": "integer", "minimum": 0}
+          }
+        }
+      }
+    },
+    "constraint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "type", "text", "attached_to"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "type": {"type": "string", "minLength": 1},
+        "text": {"type": "string", "minLength": 1},
+        "attached_to": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "pattern": "^S[0-9]+$"}
+        },
+        "applies_to": {
+          "type": ["string", "array", "null"],
+          "items": {"type": "string", "pattern": "^S[0-9]+$"}
+        },
+        "provenance": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "doc_id": {"type": "string"},
+            "section": {"type": "string"},
+            "char_start": {"type": "integer", "minimum": 0},
+            "char_end": {"type": "integer", "minimum": 0}
+          }
+        }
+      }
+    }
+  }
+}

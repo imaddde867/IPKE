@@ -107,3 +107,16 @@ IPKE stores these mainly as procedure fields rather than BRAT-style spans:
 
 This structure keeps the gold set directly usable by the existing IPKE evaluation pipeline while
 still preserving enough semantic detail for later span or graph evaluation.
+
+## Strict Paper Schema
+
+New paper gold files must validate under
+`schemas/ipke_paper_tiera.schema.json`. The strict schema requires:
+
+- `procedure.audit` with at least annotator count, reviewer, and review date.
+- `procedure.source.section` (no empty section strings).
+- Step `provenance.doc_id` and `provenance.section`.
+- Constraint `id`, `type`, `text`, and at least one `attached_to` step.
+
+Existing `pilot_gold` files may continue to validate under the loose
+`schemas/ipke_annotation.schema.json` until they are upgraded.
