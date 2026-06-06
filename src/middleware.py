@@ -28,15 +28,15 @@ logger = get_logger(__name__)
 
 class ErrorHandlingMiddleware(BaseHTTPMiddleware):
     """Middleware for centralized error handling and logging."""
-    
+
     def __init__(self, app: ASGIApp):
         super().__init__(app)
-    
+
     async def dispatch(self, request: Request, call_next: Callable) -> Response:
         # Set correlation ID for request tracking
         correlation_id = request.headers.get('X-Correlation-ID') or str(uuid.uuid4())
         set_correlation_id(correlation_id)
-        
+
         # Log request start
         start_time = time.time()
         logger.info(
@@ -49,10 +49,10 @@ class ErrorHandlingMiddleware(BaseHTTPMiddleware):
                 'user_agent': request.headers.get('user-agent')
             }
         )
-        
+
         try:
             response = await call_next(request)
-            
+
             # Log successful request completion
             duration = time.time() - start_time
             logger.info(
@@ -64,19 +64,19 @@ class ErrorHandlingMiddleware(BaseHTTPMiddleware):
                     'duration_seconds': duration
                 }
             )
-            
+
             # Add correlation ID to response headers
             response.headers['X-Correlation-ID'] = correlation_id
             return response
-            
+
         except Exception as exc:
             # Log error and return appropriate response
             duration = time.time() - start_time
             return await self._handle_exception(request, exc, duration)
-    
+
     async def _handle_exception(self, request: Request, exc: Exception, duration: float) -> JSONResponse:
         """Handle exceptions and return appropriate JSON responses."""
-        
+
         # Default error response
         status_code = 500
         error_response = {
@@ -85,7 +85,7 @@ class ErrorHandlingMiddleware(BaseHTTPMiddleware):
             'correlation_id': get_correlation_id(),
             'timestamp': time.time()
         }
-        
+
         # Handle custom knowledge extraction errors
         if isinstance(exc, BaseKnowledgeExtractionError):
             error_response.update({
@@ -94,7 +94,7 @@ class ErrorHandlingMiddleware(BaseHTTPMiddleware):
                 'error_code': exc.error_code,
                 'details': exc.details
             })
-            
+
             # Set appropriate HTTP status codes
             if isinstance(exc, ValidationError):
                 status_code = 400
@@ -110,7 +110,7 @@ class ErrorHandlingMiddleware(BaseHTTPMiddleware):
                 status_code = 500
             elif isinstance(exc, ServiceUnavailableError):
                 status_code = 503
-            
+
             log_error(
                 logger,
                 exc,
@@ -122,7 +122,7 @@ class ErrorHandlingMiddleware(BaseHTTPMiddleware):
                     'duration_seconds': duration
                 }
             )
-        
+
         # Handle FastAPI HTTPException
         elif isinstance(exc, HTTPException):
             status_code = exc.status_code
@@ -130,7 +130,7 @@ class ErrorHandlingMiddleware(BaseHTTPMiddleware):
                 'error': 'HTTPException',
                 'message': exc.detail
             })
-            
+
             logger.warning(
                 f"HTTP exception in {request.method} {request.url.path}: {exc.detail}",
                 extra={
@@ -141,7 +141,7 @@ class ErrorHandlingMiddleware(BaseHTTPMiddleware):
                     'exception_detail': exc.detail
                 }
             )
-        
+
         # Handle unexpected exceptions
         else:
             log_error(
@@ -155,7 +155,7 @@ class ErrorHandlingMiddleware(BaseHTTPMiddleware):
                     'duration_seconds': duration
                 }
             )
-        
+
         return JSONResponse(
             status_code=status_code,
             content=error_response,
@@ -165,12 +165,12 @@ class ErrorHandlingMiddleware(BaseHTTPMiddleware):
 
 class RequestLoggingMiddleware(BaseHTTPMiddleware):
     """Middleware for detailed request/response logging."""
-    
+
     def __init__(self, app: ASGIApp, log_request_body: bool = False, log_response_body: bool = False):
         super().__init__(app)
         self.log_request_body = log_request_body
         self.log_response_body = log_response_body
-    
+
     async def dispatch(self, request: Request, call_next: Callable) -> Response:
         # Log request details
         extra_data = {
@@ -180,7 +180,7 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
             'headers': dict(request.headers),
             'client_ip': request.client.host if request.client else None
         }
-        
+
         # Optionally log request body (be careful with sensitive data)
         if self.log_request_body and request.method in ['POST', 'PUT', 'PATCH']:
             try:
@@ -192,11 +192,11 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
                         extra_data['request_body'] = body.decode('utf-8', errors='ignore')
             except Exception as e:
                 extra_data['request_body_error'] = str(e)
-        
+
         logger.debug("Detailed request information", extra=extra_data)
-        
+
         response = await call_next(request)
-        
+
         # Log response details
         response_extra = {
             'method': request.method,
@@ -204,25 +204,25 @@ class RequestLoggingMiddleware(BaseHTTPMiddleware):
             'status_code': response.status_code,
             'response_headers': dict(response.headers)
         }
-        
+
         logger.debug("Detailed response information", extra=response_extra)
-        
+
         return response
 
 
 def create_error_handler_for_exception_type(exception_type: type, status_code: int, error_name: str):
     """Create a custom error handler for specific exception types."""
-    
+
     async def handler(request: Request, exc: exception_type):
         correlation_id = get_correlation_id() or str(uuid.uuid4())
-        
+
         error_response = {
             'error': error_name,
             'message': str(exc),
             'correlation_id': correlation_id,
             'timestamp': time.time()
         }
-        
+
         log_error(
             logger,
             exc,
@@ -233,11 +233,11 @@ def create_error_handler_for_exception_type(exception_type: type, status_code: i
                 'status_code': status_code
             }
         )
-        
+
         return JSONResponse(
             status_code=status_code,
             content=error_response,
             headers={'X-Correlation-ID': correlation_id}
         )
-    
+
     return handler

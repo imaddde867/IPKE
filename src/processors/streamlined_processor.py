@@ -79,13 +79,13 @@ class ProcessingResult:
 class StreamlinedDocumentProcessor:
     """
     Streamlined Document Processor
-    
+
     Simplified, focused document processor that:
     1. Extracts content from various formats
     2. Uses the unified knowledge engine for extraction
     3. Provides consistent, fast processing
     """
-    
+
     def __init__(self, config: Optional[UnifiedConfig] = None):
         self.config = config or get_config()
         self._engine: Optional["UnifiedKnowledgeEngine"] = None
@@ -94,7 +94,7 @@ class StreamlinedDocumentProcessor:
         self._ocr_lock = Lock()
         self._whisper_model = None
         self._whisper_lock = Lock()
-        
+
         # Performance tracking
         self.stats = {
             'documents_processed': 0,
@@ -102,14 +102,14 @@ class StreamlinedDocumentProcessor:
             'format_counts': {},
             'average_processing_time': 0.0
         }
-        
+
         # Supported formats
         self.text_formats = {'.pdf', '.doc', '.docx', '.txt', '.rtf'}
         self.image_formats = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff'}
         self.spreadsheet_formats = {'.xls', '.xlsx', '.csv'}
         self.presentation_formats = {'.ppt', '.pptx'}
         self.audio_formats = {'.mp3', '.wav', '.flac', '.aac'}
-        
+
         logger.info("Streamlined Document Processor initialized")
 
     @property
@@ -118,44 +118,44 @@ class StreamlinedDocumentProcessor:
             from src.ai.knowledge_engine import UnifiedKnowledgeEngine
             self._engine = UnifiedKnowledgeEngine(self.config)
         return self._engine
-    
+
     async def _run_in_executor(self, func: Callable[[], T]) -> T:
         """Execute blocking operations in the shared thread pool."""
         loop = asyncio.get_running_loop()
         return await loop.run_in_executor(self.executor, func)
-    
+
     async def process_document(
-        self, 
-        file_path: str, 
+        self,
+        file_path: str,
         document_id: Optional[str] = None
     ) -> ProcessingResult:
         """
         Process a document and extract knowledge
-        
+
         Args:
             file_path: Path to the document file
             document_id: Optional document identifier
         """
         start_time = time.time()
         file_path = Path(file_path)
-        
+
         if not file_path.exists():
             raise ProcessingError(f"File not found: {file_path}")
-        
+
         # Generate document ID if not provided
         if not document_id:
             document_id = hashlib.md5(str(file_path).encode()).hexdigest()[:16]
-        
+
         # Detect file format and extract content
         file_format = file_path.suffix.lower()
         document_type = self._detect_document_type(file_format)
-        
+
         try:
             content = await self._extract_content(file_path, file_format)
-            
+
             if not content.strip():
                 raise ProcessingError(f"No content extracted from {file_path}")
-            
+
             # Extract knowledge using unified engine
             extraction_result = await self.knowledge_engine.extract_knowledge(
                 content=content,
@@ -163,13 +163,13 @@ class StreamlinedDocumentProcessor:
                 quality_threshold=self.config.quality_threshold,
                 document_id=document_id,
             )
-            
+
             processing_time = time.time() - start_time
             file_size = file_path.stat().st_size
-            
+
             # Update statistics
             self._update_stats(processing_time, file_format)
-            
+
             result = ProcessingResult(
                 document_id=document_id,
                 document_type=document_type,
@@ -186,21 +186,21 @@ class StreamlinedDocumentProcessor:
                     'quality_metrics': extraction_result.quality_metrics
                 }
             )
-            
+
             logger.info(
                 f"Processed {file_path.name} in {processing_time:.2f}s: "
                 f"{len(extraction_result.steps)} steps, {len(extraction_result.entities)} entities extracted"
             )
-            
+
             return result
-            
+
         except Exception as e:
             logger.error(f"Failed to process {file_path}: {e}")
             raise ProcessingError(f"Processing failed: {e}") from e
-    
+
     async def _extract_content(self, file_path: Path, file_format: str) -> str:
         """Extract text content based on file format"""
-        
+
         if file_format in self.text_formats:
             return await self._extract_text_content(file_path, file_format)
         elif file_format in self.image_formats:
@@ -214,17 +214,17 @@ class StreamlinedDocumentProcessor:
         else:
             # Try to read as plain text
             return await self._extract_plain_text(file_path)
-    
+
     async def _extract_text_content(self, file_path: Path, file_format: str) -> str:
         """Extract content from text documents"""
-        
+
         if file_format == '.pdf':
             return await self._extract_pdf_content(file_path)
         elif file_format in {'.doc', '.docx'}:
             return await self._extract_docx_content(file_path)
         else:
             return await self._extract_plain_text(file_path)
-    
+
     async def _extract_pdf_content(self, file_path: Path) -> str:
         """Extract text from PDF files"""
         if not FITZ_AVAILABLE:
@@ -242,9 +242,9 @@ class StreamlinedDocumentProcessor:
             except Exception as e:
                 logger.warning(f"PDF extraction failed: {e}")
                 return ""
-        
+
         return await self._run_in_executor(extract_pdf)
-    
+
     async def _extract_docx_content(self, file_path: Path) -> str:
         """Extract text from Word documents"""
         if not DOCX_AVAILABLE:
@@ -259,9 +259,9 @@ class StreamlinedDocumentProcessor:
             except Exception as e:
                 logger.warning(f"DOCX extraction failed: {e}")
                 return ""
-        
+
         return await self._run_in_executor(extract_docx)
-    
+
     def _get_ocr_reader(self):
         if self._ocr_reader is not None:
             return self._ocr_reader
@@ -275,7 +275,7 @@ class StreamlinedDocumentProcessor:
         if not OCR_AVAILABLE:
             logger.warning("OCR not available. Install easyocr for image processing.")
             return ""
-        
+
         def extract_ocr():
             try:
                 reader = self._get_ocr_reader()
@@ -287,9 +287,9 @@ class StreamlinedDocumentProcessor:
             except Exception as e:
                 logger.warning(f"OCR extraction failed: {e}")
                 return ""
-        
+
         return await self._run_in_executor(extract_ocr)
-    
+
     async def _extract_spreadsheet_content(self, file_path: Path, file_format: str) -> str:
         """Extract content from spreadsheets"""
         if not PANDAS_AVAILABLE:
@@ -302,7 +302,7 @@ class StreamlinedDocumentProcessor:
                     df = pd.read_csv(file_path)
                 else:
                     df = pd.read_excel(file_path)
-                
+
                 # Convert to text representation
                 text = f"Spreadsheet data ({df.shape[0]} rows, {df.shape[1]} columns):\n"
                 text += df.to_string(max_rows=50, max_cols=10)
@@ -310,9 +310,9 @@ class StreamlinedDocumentProcessor:
             except Exception as e:
                 logger.warning(f"Spreadsheet extraction failed: {e}")
                 return ""
-        
+
         return await self._run_in_executor(extract_spreadsheet)
-    
+
     async def _extract_presentation_content(self, file_path: Path) -> str:
         """Extract text from presentations"""
         if not PPTX_AVAILABLE:
@@ -333,9 +333,9 @@ class StreamlinedDocumentProcessor:
             except Exception as e:
                 logger.warning(f"Presentation extraction failed: {e}")
                 return ""
-        
+
         return await self._run_in_executor(extract_presentation)
-    
+
     def _get_whisper_model(self):
         if self._whisper_model is not None:
             return self._whisper_model
@@ -350,7 +350,7 @@ class StreamlinedDocumentProcessor:
         if not WHISPER_AVAILABLE:
             logger.warning("Whisper not available. Install openai-whisper for audio processing.")
             return ""
-        
+
         def extract_audio():
             try:
                 model = self._get_whisper_model()
@@ -362,9 +362,9 @@ class StreamlinedDocumentProcessor:
             except Exception as e:
                 logger.warning(f"Audio extraction failed: {e}")
                 return ""
-        
+
         return await self._run_in_executor(extract_audio)
-    
+
     async def _extract_plain_text(self, file_path: Path) -> str:
         """Extract plain text content"""
         def extract_text():
@@ -374,9 +374,9 @@ class StreamlinedDocumentProcessor:
             except Exception as e:
                 logger.warning(f"Plain text extraction failed: {e}")
                 return ""
-        
+
         return await self._run_in_executor(extract_text)
-    
+
     def _detect_document_type(self, file_format: str) -> str:
         """Detect document type based on file format"""
         type_mapping = {
@@ -396,7 +396,7 @@ class StreamlinedDocumentProcessor:
             '.wav': 'audio',
         }
         return type_mapping.get(file_format, 'unknown')
-    
+
     def _update_stats(self, processing_time: float, file_format: str):
         """Update processing statistics"""
         self.stats['documents_processed'] += 1
@@ -405,13 +405,13 @@ class StreamlinedDocumentProcessor:
         self.stats['average_processing_time'] = (
             self.stats['total_processing_time'] / self.stats['documents_processed']
         )
-    
+
     def get_processing_stats(self) -> Dict[str, Any]:
         """Get processing statistics"""
         stats = self.stats.copy()
         stats['knowledge_engine_stats'] = self.knowledge_engine.get_performance_stats()
         return stats
-    
+
     def clear_cache(self):
         """Clear all caches"""
         self.knowledge_engine.clear_cache()

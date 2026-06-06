@@ -42,11 +42,11 @@ def _build_resource_catalog(result: ExtractionResult) -> Dict[str, Dict[str, Any
     catalog: Dict[str, Dict[str, Any]] = {}
     if not result.metadata:
         return catalog
-    
+
     resources = result.metadata.get("resources_catalog", {})
     if not resources:
         resources = result.metadata.get("relations", {}).get("resources_catalog", {})
-    
+
     for category in ["tools", "materials", "documents", "ppe"]:
         for item in resources.get(category, []):
             if isinstance(item, dict) and item.get("id"):
@@ -96,7 +96,7 @@ def _extract_constraints(step: Dict) -> List[Dict]:
         "warning": "WARN",
         "acceptance_criteria": "ACC",
     }
-    
+
     for ctype, icon in types.items():
         for i, item in enumerate(data.get(ctype, [])):
             text = item if isinstance(item, str) else item.get("text", str(item))
@@ -116,27 +116,27 @@ def _build_graph(result: ExtractionResult, catalog: Dict) -> nx.DiGraph:
     steps = result.steps or []
     all_constraints = []
     name_to_id = _resource_name_to_id_map(catalog)
-    
+
     for idx, step in enumerate(steps):
         step_id = step.get("id", f"S{idx + 1}")
         label = step.get("label", step_id)
         action = step.get("action_verb", "")
-        
+
         obj = step.get("action_object")
         obj_name = obj.get("canonical", "") if isinstance(obj, dict) else (obj or "")
-        
+
         resources = step.get("resources", {})
         tools = resources.get("tools", []) if isinstance(resources, dict) else []
         materials = resources.get("materials", []) if isinstance(resources, dict) else []
         documents = resources.get("documents", []) if isinstance(resources, dict) else []
         ppe = resources.get("ppe", []) if isinstance(resources, dict) else []
-        
+
         step_constraints = _extract_constraints(step)
         all_constraints.extend(step_constraints)
-        
+
         flags = step.get("flags", {})
         is_safety = flags.get("safety_critical", False)
-        
+
         tooltip = f"<b>{step_id}: {action.upper() if action else 'ACTION'}</b>"
         if is_safety:
             tooltip += " [SAFETY]"
@@ -146,11 +146,11 @@ def _build_graph(result: ExtractionResult, catalog: Dict) -> nx.DiGraph:
         if tools or materials or documents or ppe:
             res_names = [_get_resource_name(r, catalog) for r in (tools + materials + documents + ppe)[:3]]
             tooltip += f"<br>Resources: {', '.join(res_names)}"
-        
+
         action_str = action.upper().replace("_", " ") if action else ""
         wrapped = textwrap.fill(label[:35], width=16)
         display = f"{step_id}\n{action_str}\n{wrapped}" if action_str else f"{step_id}\n{wrapped}"
-        
+
         G.add_node(
             step_id,
             node_type="step",
@@ -243,12 +243,12 @@ def _build_graph(result: ExtractionResult, catalog: Dict) -> nx.DiGraph:
                         title=f"Parameter<br>{plabel}",
                     )
                 G.add_edge(step_id, pid, edge_type="HAS_PARAM")
-    
+
     for c in all_constraints:
         wrapped = textwrap.fill(c["text"][:30], width=14)
         display = f"{c['icon']}\n{wrapped}"
         tooltip = f"<b>{c['type'].upper()}</b><br>{c['text']}<br>Step: {c['step_id']}"
-        
+
         G.add_node(
             c["id"],
             node_type="constraint",
@@ -258,15 +258,15 @@ def _build_graph(result: ExtractionResult, catalog: Dict) -> nx.DiGraph:
             attached_to=c["step_id"]
         )
         G.add_edge(c["id"], c["step_id"], edge_type="GUARD")
-    
+
     relations = result.metadata.get("relations", {}) if result.metadata else {}
-    
+
     if isinstance(relations, dict):
         for link in relations.get("sequence", []):
             u, v = link.get("from"), link.get("to")
             if u and v and u in G.nodes and v in G.nodes:
                 G.add_edge(u, v, edge_type="NEXT")
-        
+
         for gw in relations.get("gateways", []):
             gw_id = gw.get("id")
             gw_type = gw.get("gateway_type", "XOR")
@@ -275,13 +275,13 @@ def _build_graph(result: ExtractionResult, catalog: Dict) -> nx.DiGraph:
                 for branch in gw.get("branches", []):
                     if branch in G.nodes:
                         G.add_edge(gw_id, branch, edge_type="BRANCH")
-    
+
     if not any(d.get("edge_type") == "NEXT" for _, _, d in G.edges(data=True)):
         step_ids = [s.get("id", f"S{i+1}") for i, s in enumerate(steps)]
         for i in range(len(step_ids) - 1):
             if step_ids[i] in G.nodes and step_ids[i+1] in G.nodes:
                 G.add_edge(step_ids[i], step_ids[i+1], edge_type="NEXT")
-    
+
     # Integrate extracted entities by aliasing to resources when possible
     try:
         # Build lookup of resource names -> node id
@@ -320,24 +320,24 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
     """Generate interactive PKG visualization HTML."""
     catalog = _build_resource_catalog(result)
     G = _build_graph(result, catalog)
-    
+
     if G.number_of_nodes() == 0:
         return """<!DOCTYPE html><html><body style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;color:#64748B"><h2>No Data</h2></body></html>"""
 
     net = Network(height=height, width=width, directed=True, layout=False)
-    
+
     for node, data in G.nodes(data=True):
         node_type = data.get("node_type", "step")
         label = data.get("label", str(node))
         tooltip = data.get("title", label)
-        
+
         if node_type == "gateway":
             colors = THEME["gateway"]
             net.add_node(node, label=label, title=tooltip,
                 color={"background": colors["bg"], "border": colors["border"]},
                 shape="diamond", size=28, borderWidth=1.5,
                 font={"size": 11, "color": "#0F172A", "multi": False, "align": "center"})
-        
+
         elif node_type == "constraint":
             c_type = data.get("constraint_type", "guard")
             colors = THEME.get(f"constraint_{c_type}", THEME["constraint_guard"])
@@ -345,7 +345,7 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
                 color={"background": colors["bg"], "border": colors["border"]},
                 shape="ellipse", size=18, borderWidth=1.0,
                 font={"size": 10, "color": "#0F172A", "multi": False, "align": "center"})
-        
+
         elif node_type == "resource":
             category = data.get("resource_category", "materials")
             colors = THEME.get(f"resource_{category}", THEME["resource_materials"])
@@ -354,7 +354,7 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
                 shape="box", size=16, borderWidth=1.0,
                 font={"size": 10, "color": "#0F172A", "multi": False, "align": "center"},
                 margin=4, widthConstraint={"minimum": 80, "maximum": 120})
-        
+
         elif node_type == "parameter":
             colors = THEME["parameter"]
             net.add_node(node, label=label, title=tooltip,
@@ -362,7 +362,7 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
                 shape="box", size=12, borderWidth=1.0,
                 font={"size": 10, "color": "#0F172A", "multi": False, "align": "center"},
                 margin=4, widthConstraint={"minimum": 70, "maximum": 110})
-        
+
         elif node_type == "action":
             colors = THEME["action"]
             net.add_node(node, label=label, title=tooltip,
@@ -370,7 +370,7 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
                 shape="box", size=14, borderWidth=1.0,
                 font={"size": 10, "color": "#0F172A", "multi": False, "align": "center"},
                 margin=4, widthConstraint={"minimum": 70, "maximum": 110})
-        
+
         elif node_type == "object":
             colors = THEME["object"]
             net.add_node(node, label=label, title=tooltip,
@@ -378,7 +378,7 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
                 shape="box", size=14, borderWidth=1.0,
                 font={"size": 10, "color": "#0F172A", "multi": False, "align": "center"},
                 margin=4, widthConstraint={"minimum": 80, "maximum": 130})
-        
+
         else:
             if data.get("safety_critical"):
                 colors = THEME["step_safety"]
@@ -386,13 +386,13 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
                 colors = THEME["step_resources"]
             else:
                 colors = THEME["step"]
-            
+
             net.add_node(node, label=label, title=tooltip,
                 color={"background": colors["bg"], "border": colors["border"]},
                 shape="box", size=22, borderWidth=1.2,
                 font={"size": 11, "color": "#0F172A", "multi": False, "align": "center"},
                 margin=6, widthConstraint={"minimum": 100, "maximum": 150})
-    
+
     for u, v, data in G.edges(data=True):
         edge_type = data.get("edge_type", "NEXT")
         if edge_type == "NEXT":
@@ -419,7 +419,7 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
         elif edge_type == "ON":
             net.add_edge(u, v, color={"color": THEME["edge_on"]}, width=1.0,
                 arrows={"to": {"enabled": True, "scaleFactor": 0.45}})
-    
+
     net.set_options("""{
         "physics": {
             "enabled": true,
@@ -431,7 +431,7 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
         "edges": {"smooth": {"enabled": false}},
         "interaction": {"hover": true, "tooltipDelay": 30, "zoomView": true, "dragView": true, "keyboard": true}
     }""")
-    
+
     with tempfile.NamedTemporaryFile(delete=False, suffix=".html") as tmp:
         net.save_graph(tmp.name)
         tmp.seek(0)
@@ -440,7 +440,7 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
         os.unlink(tmp.name)
     except OSError:
         pass
-    
+
     styles = """<style>
     *{box-sizing:border-box}
     html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;font-family:-apple-system,Segoe UI,Roboto,sans-serif;background:#FFFFFF}
@@ -448,17 +448,17 @@ def generate_interactive_graph_html(result: ExtractionResult, height="600px", wi
     div.vis-tooltip{background:#FFFFFF!important;border:1px solid #E5E7EB!important;border-radius:4px!important;padding:8px!important;font-size:12px!important;box-shadow:none!important;color:#0F172A}
     .panel{position:fixed;background:#FFFFFF;border-radius:4px;padding:10px 12px;border:1px solid #E5E7EB;font-size:11px;z-index:1000;color:#0F172A}
     </style>"""
-    
+
     # removed overlays for a clean, print-ready look
-    
+
     script = """<script>
     (function(){var i=setInterval(function(){if(typeof network!=='undefined'){clearInterval(i);
         network.on('stabilizationIterationsDone',function(){setTimeout(function(){network.fit({padding:40})},100)});
         document.addEventListener('keydown',function(e){if(e.key==='f'||e.key==='F')network.fit({padding:40})});
     }},100)})();
     </script>"""
-    
+
     html = html.replace('</head>', styles + '</head>')
     html = html.replace('</body>', script + '</body>')
-    
+
     return html

@@ -44,14 +44,14 @@ class PromptStrategy(ABC):
 
     def _parse_json(self, response: str, chunk: str) -> ChunkExtraction:
         """Parse LLM response into ChunkExtraction.
-        
+
         Robustly attempts to find JSON in the response.
         """
         payload = _extract_json_payload(response)
         if not payload:
             logger.warning("No JSON found in response. Response length: %d", len(response))
             return ChunkExtraction()
-            
+
         try:
             data = json.loads(payload)
         except json.JSONDecodeError:
@@ -62,7 +62,7 @@ class PromptStrategy(ABC):
             except json.JSONDecodeError:
                 logger.warning("Failed to parse JSON payload from response: %.80s...", payload.replace("\n", " "))
                 return ChunkExtraction()
-        
+
         # flexible key matching
         steps_key = next((k for k in data.keys() if k.lower() in ["steps", "procedures", "actions"]), "steps")
         constraints_key = next((k for k in data.keys() if k.lower() in ["constraints", "conditions", "rules"]), "constraints")
@@ -71,13 +71,13 @@ class PromptStrategy(ABC):
         steps = _ensure_dict_list(data.get(steps_key))
         constraints = _ensure_dict_list(data.get(constraints_key))
         entities = _build_entities(_ensure_dict_list(data.get(entities_key)), chunk)
-        
+
         return ChunkExtraction(entities=entities, steps=steps, constraints=constraints)
 
 
 def _extract_json_payload(text: str) -> Optional[str]:
     """Return the JSON portion from an LLM response.
-    
+
     Priority:
     1. Content between <json> and </json> tags (explicit)
     2. Content between ```json and ``` (code blocks)
@@ -103,7 +103,7 @@ def _extract_json_payload(text: str) -> Optional[str]:
     candidates = []
     stack = []
     start = -1
-    
+
     for i, char in enumerate(text):
         if char == '{':
             if not stack:
@@ -114,7 +114,7 @@ def _extract_json_payload(text: str) -> Optional[str]:
                 stack.pop()
                 if not stack:
                     candidates.append(text[start : i + 1])
-    
+
     # If we found candidates, try to parse them backwards (assuming the last one is the result)
     for candidate in reversed(candidates):
         try:
@@ -127,7 +127,7 @@ def _extract_json_payload(text: str) -> Optional[str]:
     clean_text = text.strip()
     if clean_text.startswith("{") and clean_text.endswith("}"):
         return clean_text
-        
+
     return None
 
 
