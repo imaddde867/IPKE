@@ -1,0 +1,75 @@
+{
+  "procedure": {
+    "doc_id": "olsk_small_cnc_v1_workbook",
+    "title": "OLSK Small CNC electronic box assembly excerpt",
+    "version": "V1",
+    "domain": "assembly_workbook"
+  },
+  "steps": [
+    {
+      "id": "S1",
+      "label": "Assemble the electronic box top and bottom frame",
+      "action_verb": "assemble",
+      "action_object": "electronic box frame",
+      "constraints": []
+    },
+    {
+      "id": "S2",
+      "label": "Install the electronic box bottom panel",
+      "action_verb": "install",
+      "action_object": "bottom panel",
+      "constraints": [
+        {
+          "id": "C2",
+          "type": "precondition",
+          "text": "Remove the protective foils before attaching the panel.",
+          "attached_to": [
+            "S2"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S3",
+      "label": "Install the motor drivers and motor power supply in the electronic box",
+      "action_verb": "install",
+      "action_object": "drivers and power supply",
+      "constraints": [
+        {
+          "id": "C4",
+          "type": "warning",
+          "text": "Pay attention to the position of the motor drivers and motor power supply.",
+          "attached_to": [
+            "S3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S4",
+      "label": "Attach the vertical profiles to the prepared top and bottom frame",
+      "action_verb": "attach",
+      "action_object": "vertical profiles",
+      "constraints": [
+        {
+          "id": "C5",
+          "type": "order",
+          "text": "Attach the brackets to the vertical profiles before attaching them to the frame.",
+          "attached_to": [
+            "S4"
+          ]
+        },
+        {
+          "id": "C6",
+          "type": "postcondition",
+          "text": "Tighten the screws together at the end.",
+          "attached_to": [
+            "S4"
+          ]
+        }
+      ]
+    }
+  ],
+  "constraints": [],
+  "relations": []
+}

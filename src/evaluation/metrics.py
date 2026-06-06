@@ -187,15 +187,19 @@ CONSTRAINT_LINK_KEYS = (
 def normalize_doc_constraints(doc: Dict[str, Any]) -> List[Dict[str, Any]]:
     """Return a flat list of constraints with at least one step link.
 
-    Accepts two gold/pred shapes:
+    Accepts three gold/pred shapes:
       * flat: ``doc["constraints"] = [{id, text, applies_to|steps|...}, ...]``
-      * nested: each ``doc["steps"][i]["constraints"]`` is a dict keyed by
+      * nested-list: each ``doc["steps"][i]["constraints"]`` is a list of
+        constraint dicts (typically with ``attached_to: [step_id]``).
+      * nested-dict: each ``doc["steps"][i]["constraints"]`` is a dict keyed by
         ``precondition|postcondition|guard|acceptance_criteria|warning|...``
-        with a list of constraint dicts.
+        with a list of constraint dicts (thesis gold shape, no ``attached_to``).
 
-    Nested constraints are flattened and given ``applies_to`` set to the parent
-    step id when no explicit link key is present. Flat constraints are returned
-    untouched. Idempotent.
+    Nested constraints are flattened. In the nested-dict case, ``applies_to`` is
+    synthesised from the parent step id when no explicit link key is present. In
+    the nested-list case, existing link keys (``attached_to``, ``applies_to``,
+    etc.) are preserved as-is; ``applies_to`` is synthesised only when none
+    exist. Flat constraints are returned untouched. Idempotent.
     """
     top = doc.get("constraints")
     if isinstance(top, list) and top:
@@ -207,6 +211,16 @@ def normalize_doc_constraints(doc: Dict[str, Any]) -> List[Dict[str, Any]]:
             continue
         sid = step.get("id")
         nested = step.get("constraints")
+        if isinstance(nested, list):
+            for item in nested:
+                if not isinstance(item, dict):
+                    continue
+                new_item = dict(item)
+                has_link = any(new_item.get(k) for k in CONSTRAINT_LINK_KEYS)
+                if sid and not has_link:
+                    new_item["applies_to"] = sid
+                flat.append(new_item)
+            continue
         if not isinstance(nested, dict):
             continue
         for kind in NESTED_CONSTRAINT_KINDS:

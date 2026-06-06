@@ -1,0 +1,1616 @@
+document_id: nasa_npr_8715_3d_general_safety
+source_family: NASA
+title: NASA General Safety Program Requirements NPR 8715.3D
+direct_url: https://nodis3.gsfc.nasa.gov/npg_img/N_PR_8715_003D_/N_PR_8715_003D_.pdf
+sha256: 4f33dcfb269821ad90b6594c8aa009fca90b30e58a43e17546db4c01f60b1d32
+
+| NODIS Library | Program Management(8000s) | Search |
+
+NASA
+Procedural
+Requirements
+NPR 8715.3D
+Effective Date: December 16,
+2021
+Expiration Date: December 21,
+2026
+COMPLIANCE IS MANDATORY FOR NASA EMPLOYEES
+NASA General Safety Program Requirements
+Responsible Office: Office of Safety and Mission Assurance
+Table of Contents
+NPI 8715.93, NASA Policy Instructions: Impacts of NSPM-20 on NASA Nuclear Flight Safety
+Requirements and Practices.
+Change Log
+Preface
+P.1 Purpose
+P.2 Applicability
+P.3 Authority
+P.4 Applicable Document and Forms
+P.5 Measurement/Verification
+P.6 Cancellation
+Chapter 1. Programmatic Safety Requirements
+1.1 Overview of the NASA Safety Program
+1.2 NASA General Safety Program Roles and Responsibilities
+1.3 Public Safety
+1.4 Institutional Roles and Responsibilities in the NASA Safety Program - RESERVED
+1.5 Program Management Roles and Responsibilities in the NASA Safety Program
+1.6 Risk Assessment and Risk Acceptance
+1.7 Technical Safety Requirements for NASA-Unique Designs and Operations
+1.8 SMA Program Reviews
+1.9 Advisory Panels, Committees, and Boards
+1.10 Coordination with Organizations External to NASA - RESERVED
+1.11 Safety Motivation and Awards Program - RESERVED
+NPR 8715.3D -- TOC
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 1 of 47
+NPR 8715.3D -- TOC
+Page 1 of 47
+
+1.12 Safety Management Information - RESERVED
+1.13 Relief from Agency-level SMA Requirements
+1.14 Hazardous Work Activities That Are Outside NASA Operational Control
+Chapter 2. System Safety
+2.1 Introduction
+2.2 Institutional Roles and Responsibilities
+2.3 System Safety Framework
+2.4 Scope of System Safety Modeling
+2.5 Core Requirements for System Safety Process
+2.6 System Safety Reviews
+2.7 Change Review
+2.8 Documentation
+Chapter 3. Operational Safety - Cancelled by NPR 8715.1B
+Chapter 4. Aviation Safety - Cancelled by NPR 8715.1B
+Chapter 5. Fire Safety - Cancelled by NPR 8715.1B
+Chapter 6. Nuclear Safety for Launching of Radioactive
+Materials - Cancelled by NPR 8715.26
+Chapter 7. Safety Training and Personnel Certification -
+Cancelled by NPR 8715.1B
+Chapter 8. Safety for Facility Acquisition, Construction,
+Activation, and Disposal - Cancelled by NPR 8715.1B
+Chapter 9. Safety and Risk Management for NASA Contracts
+9.1 Purpose
+9.2 Applicability and Scope
+9.3 Authority and Responsibility
+9.4 Requirements
+APPENDIX A. Definitions
+APPENDIX B. Acronyms
+NPR 8715.3D -- TOC
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 2 of 47
+NPR 8715.3D -- TOC
+Page 2 of 47
+
+APPENDIX C. Safety Motivation and Awards Program -
+RESERVED
+APPENDIX D. Activity and Radioactive Material Limits: Basic
+A1/A2 Values - RESERVED
+APPENDIX E. Sample Safety and Health Plan for Service or
+Operations Contracts - RESERVED
+APPENDIX F. Sample System Safety Technical Plan for
+Systems Acquisition, Research, and Development Programs -
+RESERVED
+APPENDIX G. References
+NPR 8715.3D -- TOC
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 3 of 47
+NPR 8715.3D -- TOC
+Page 3 of 47
+
+Change Log
+Ch#
+Office
+Date
+Description
+1
+Chief, Safety
+and Mission
+Assurance
+10/29/2018
+Updated with 1400 compliance in the Authority and
+Reference documents section and corrected spelling.
+2
+Chief, Safety
+and Mission
+Assurance
+02/01/2021
+Chapters 3-5 and 7-8 Cancelled by NPR 8715.1B
+3
+Chief, Safety
+and Mission
+Assurance
+04/13/2021
+The following administrative changes were made:
+1. Updated to ensure consistency with NPR 8715.1B.
+Removed the institutional safety roles, responsibilities,
+and requirements (parts of Chapter 1, and all of chapters
+3, 4, 5, 7, and 8, and appendices C, E, and F) that are
+now addressed in NPR 8715.1. Cleaned up the P.1
+Purpose and P.2 Applicability to reflect changes.
+Removed outdated and unused references, definitions,
+and acronyms primarily related to institutional safety.
+2. Removed other unnecessary and outdated content such
+as Section 1.6, Risk Assessment and Risk Acceptance
+(addressed in NPR 8000.4), and Section 2.3, System
+Safety Framework (addressed in system safety
+handbooks).
+4
+Chief, Safety
+and Mission
+Assurance
+12/16/2021
+Added in Section 13.11, which used to be NPR 8715.3,
+Chapter 7. Safety Training and Personnel Certification, to
+ensure safety training requirements for employees are
+properly documented and to document who is
+responsible to ensure the employees are properly trained.
+5
+Chief, Safety
+and Mission
+Assurance
+03/29/2023
+Appendix D is cancelled by NPR 8715.26.
+6
+Chief, Safety
+and Mission
+Assurance
+07/25/2023
+Removed the note and included NPR 8715.26 title.
+NPR 8715.3D -- ChangeLog
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 4 of 47
+NPR 8715.3D -- ChangeLog
+Page 4 of 47
+
+NPR 8715.3D -- ChangeLog
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 5 of 47
+NPR 8715.3D -- ChangeLog
+Page 5 of 47
+
+Preface
+P.1 Purpose
+The purpose of this directive is to assure mission success. This directive defines NASA roles and
+responsibilities for assuring safety and mission success of NASA missions, and describes processes
+and evidence necessary to provide that assurance. NASA roles, responsibilities, and processes for
+protecting the public, workforce, and non-mission assets from NASA activities are defined in NPR
+8715.1, NASA Safety and Health Programs.
+P.2 Applicability
+a. This directive is applicable to NASA Headquarters and NASA Centers, including Component
+Facilities and Technical and Service Support Centers. This language applies to the Jet Propulsion
+Laboratory (a Federally-Funded Research and Development Center), other contractors, recipients of
+grants, cooperative agreements, or other agreements only to the extent specified or referenced in the
+applicable contracts, grants, or agreements.
+b. This directive is applicable to NASA missions and NASA controlled activities in support of
+NASA missions.
+c. In this directive, all mandatory actions (i.e., requirements) are denoted by statements containing
+the term "shall." The term "may" denotes a discretionary privilege or permission, "can" denotes
+statements of possibility or capability, "should" denotes a good practice and is recommended, but
+not required, "will" denotes expected outcome, and "are/is" denotes descriptive material.
+d. In this directive, the word "project" refers to a unit of work performed in programs, projects, and
+activities. Management of a work unit is referred to as "project management," which includes
+managing programs, projects, and activities.
+e. In this directive, all document citations are assumed to be the latest version unless otherwise
+noted. Use of more recent versions of cited documents may be authorized by the responsible Safety
+and Mission Assurance Technical Authority.
+P.3 Authority
+a. The National Aeronautics and Space Act, 51 U.S.C. ch. 201.
+b. Procedures for Implementing the National Environmental Policy Act (NEPA), 14 CFR § 1216.3.
+c. Presidential Directive/National Security Council Memorandum Number 25 (PD/NSC-25),
+Scientific or Technological Experiments with Possible Large-Scale Adverse Environmental Effects
+and Aerospace Use of Major Radioactive Sources.
+d. NPD 1000.0, NASA Governance and Strategic Management Handbook.
+e. NPD 1000.3, The NASA Organization.
+NPR 8715.3D -- Preface
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 6 of 47
+NPR 8715.3D -- Preface
+Page 6 of 47
+
+f. NPD 8700.1, NASA Policy for Safety and Mission Success.
+P.4 Applicable Documents and Forms
+a. NPR 1441.1, NASA Records Management Program Requirements.
+b. NPR 7120.5, NASA Space Flight Program and Project Management Requirements.
+c. NPR 8715.1, NASA Safety and Health Programs.
+d. NASA-STD-8739.8, Software Assurance and Software Safety Standard.
+e. IAEA Safety Series Number 6, International Atomic Energy Agency (IAEA), Safety Series
+Number 6, Regulations for the Safe Transport of Radioactive Material.
+P.5 Measurement/Verification
+Compliance with the requirements contained in this directive is continuously monitored by the
+Center Institutional Safety Discipline Leads, by the project Safety and Mission Assurance Technical
+Authority, and by the NASA Office of Safety and Mission Assurance. Compliance may also be
+verified as part of selected life cycle reviews and by assessments, reviews, and audits of the
+requirements and processes defined within this directive.
+P.6 CANCELLATION
+NPR 8715.3C, NASA General Safety Program Requirements, dated March 12, 2008.
+NPR 8715.3D -- Preface
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 7 of 47
+NPR 8715.3D -- Preface
+Page 7 of 47
+
+Chapter 1. Programmatic Safety
+Requirements
+1.1 Overview of the NASA Safety Program
+1.1.1 This document provides the procedural requirements that define the NASA Safety Program.
+Safety program responsibility starts at the top with senior management's role of developing policies
+and providing strategies and resources necessary to implement and manage a comprehensive safety
+program. The NASA Safety Program is executed by the responsible Mission Directorate Associate
+Administrators, Center Directors, Office of Safety and Mission Assurance (OSMA), component
+facility managers, safety managers, project managers, systems engineers, supervisors, line
+organizations, employees, and NASA contractors.
+Note: The basic principles for governing, managing, implementing, monitoring, and
+controlling work at NASA are addressed in NPD 1000.0, which provides direction for
+Mission Directorates and Centers to execute programs and projects.
+1.1.2 As stated in NPD 8700.1, the objectives of the NASA Safety Program are to protect the public
+from harm, ensure the safety of employees, and affect positively the overall success rate of missions
+and operations through preventing damage to high-value equipment and property.
+1.1.3 In general, the success or failure of an organization's safety efforts can be predicted by a
+combination of leading indicators (e.g., the number of open vs. closed inspection findings,
+awareness campaigns, training metrics, progress towards safety goals/objectives, the amount of
+hazard and safety analyses completed, and close calls) and its achievement measured by lagging
+indicators (e.g., the number of incidents involving injury or death to personnel, lost productivity [lost
+or restricted workdays], environmental damage, or loss of, or damage to, property). Like many
+successful corporations, NASA has learned that aggressively preventing mishaps is good
+management and a sound business practice.
+1.1.4 NASA undertakes many activities involving high risk. Management of this risk is one of
+NASA's most challenging activities and is an integral part of NASA's safety efforts.
+1.1.5 Policies, requirements, and procedures for mishap investigations are provided in NPR 8621.1.
+1.1.6 NASA identifies issues of concern through a strong network of oversight councils and internal
+auditors including the Aerospace Safety Advisory Panel (ASAP).
+1.1.7 NASA's goal is to maintain a world-class safety program based on management and employee
+commitment and involvement; system and worksite safety and risk assessment; hazard and risk
+prevention, mitigation, and control; and safety and health training.
+1.2 NASA General Safety Program Roles and Responsibilities
+Per NPD 1000.3, Mission Directorate Associate Administrators, through their project managers, and
+Center Directors, through their line managers, are responsible for the safety of the public and of their
+NPR 8715.3D -- Chapter1
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 8 of 47
+NPR 8715.3D -- Chapter1
+Page 8 of 47
+
+assigned personnel, facilities, and mission systems from hazards created or controlled by the
+Mission Directorate or Center. Toward that end, they shall establish a safety and health program in
+accordance with NPR 8715.1, NASA Safety and Health Programs and meet the requirements of this
+NPR.
+1.3 Public Safety
+Mission Directorate Associate Administrators and Center Directors shall ensure operational safety in
+accordance with NPR 8715.1.
+1.4 Institutional Roles and Responsibilities in the NASA Safety
+Program - RESERVED
+1.5 Program Management Roles and Responsibilities in the
+NASA Safety Program
+1.5.1 Mission Directorate Associate Administrators shall ensure that program and project Safety and
+Mission Assurance (SMA) Plans:
+a. Addresses life cycle safety-relevant functions and activities.
+b. Reflects a life cycle SMA process perspective, addressing areas including: procurement,
+management, design and engineering, design verification and test, software design, software
+verification and test, manufacturing, manufacturing verification and test, operations, and preflight
+verification and test.
+c. Contains data and information to support each section of the SMA Plan for each major milestone
+review to include the Safety and Mission Success Review.
+d. Contains trending and metrics utilized to display progress and to predict growth towards SMA
+goals and requirements.
+e. As a minimum, addresses the following topics and associated requirements:
+(1) Safety and mission success per this NPR.
+(2) Risk classification of NASA payloads per NPR 8705.4.
+(3) Reliability and maintainability per NPD 8720.1.
+(4) Risk assessment per NPR 8705.5.
+(5) Quality assurance per NPR 8735.2.
+(6) Software safety and assurance per and NASA-STD-8739.8.
+(7) Public and workforce safety and health per host Center requirements and consistent with NPR
+8715.1.
+(8) Range safety per per host Center requirements and consistent with NPR 8715.5.
+NPR 8715.3D -- Chapter1
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 9 of 47
+NPR 8715.3D -- Chapter1
+Page 9 of 47
+
+(9) Payload safety per host Center requirements and consistent with NPR 8715.7.
+(10) Orbital debris mitigation requirements per NPR 8715.6.
+(11) Planetary protection requirements per NPR 8020.12, NID 8715.128, and NID 8715.129.
+(12) Nuclear flight safety per chapter 6 of this NPR.
+(13) Human-rating per NPR 8705.2.
+(14) Mishap reporting per NPR 8621.1.
+(15) Compliance verification, SMA audits, reviews, and assessments per NPR 8705.6.
+1.5.2 Project managers shall ensure that contractor operations and designs are evaluated for
+consistency and compliance with the safety and health provisions provided in their contractual
+agreements.
+1.6 Risk Assessment and Risk Acceptance
+Requirements for risk assessment and acceptance are addressed as part of risk management in NPR
+8000.4, Agency Risk Management Procedural Requirements.
+1.7 Technical Safety Requirements for NASA-Unique Designs
+and Operations
+1.7.1 Risk Reduction Protocol
+1.7.1.1 Project managers shall ensure that hazards and dominant contributors to risk are controlled
+according to the following:
+a. Eliminate accident scenarios (e.g., eliminate hazards or initiating events by design).
+b. Reduce the likelihood of accident scenarios through design and operational changes (hazard
+control).
+c. Reduce the severity of accident consequences (hazard mitigation).
+d. Improve the state-of-knowledge regarding key uncertainties that drive the risk associated with a
+hazard (uncertainty reduction to support implementation of the above strategies).
+Note: Designs for hazard control and accident prevention and mitigation should include
+considerations for the possibility of human errors. The level of hazard control should be
+based on the level of risk associated with that hazard. Examples of risk reduction
+strategies include: control of system and operational characteristics, incorporation of
+safety devices, use of caution and warning devices, and the use of operational and
+management procedures and training. Some hazards may require a combination of
+several of these approaches for prevention, mitigation, and/or control. Providing
+protective clothing and equipment is considered an operational procedure.
+NPR 8715.3D -- Chapter1
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 10 of 47
+NPR 8715.3D -- Chapter1
+Page 10 of 47
+
+1.7.2 Reliability and Failure Tolerance
+1.7.2.1 Safety critical operations must have high reliability. High reliability is verified by reliability
+analysis using accepted modeling techniques and data in which uncertainties are incorporated.
+Where this cannot be accomplished with a specified confidence level, the design of safety critical
+operations shall have failure tolerance and safety margins in which critical operability and
+functionality are ensured. Failure tolerance is the ability of a system to perform its function(s) or
+maintain control of a hazard in the presence of failures of its subsystems. Failure tolerance may be
+accomplished through like or unlike redundancy. Safety margins are the difference between as-built
+factor of safety and the ratio of actual operating conditions to the maximum operating conditions
+specified during design.
+Note: For human space systems, failure tolerance requirements are provided in NPR
+8705.2. Applicable failure tolerance requirements in this NPR pertain to all other
+systems.
+1.7.2.2 To assure operability and functionality and to achieve failure tolerance, project managers
+shall use these design considerations.
+a. Design safety critical systems such that the critical operation or its necessary functions can be
+assured. To provide assurance, design the component, subsystem, or system so it is are capable of
+being tested, inspected, and maintained.
+b. Where high reliability cannot be verified by reliability analysis using accepted data in which
+uncertainties are incorporated, design safety critical systems so that no combination of two failures
+and/or operator errors (fail-safe, fail-safe as a minimum) will result in loss of life.
+Note: Safety-critical operational controls are applied to conditions, events, signals,
+processes, or items for which proper recognition, control, performance, or tolerance are
+essential to safe system operation, use, or function.
+c. Where high reliability cannot be verified by reliability analysis using accepted data in which
+uncertainties are incorporated, design safety critical operations so that no single failure or operator
+error (fail-safe) will result in system loss/damage or personal injury.
+d. Where high reliability cannot be verified by reliability analysis using accepted data in which
+uncertainties are incorporated, provide functional redundancy where there is insufficient time for
+recovery or system restoration. Where there is sufficient time between a failure and the
+manifestation of its effect, design for restoration of safe operation using spares, procedures, or
+maintenance provides an alternative means of achieving failure tolerance.
+e. Design safety critical systems and operations to have a safety margin.
+f. When using redundancy, verify that common cause failures (e.g., contamination, close proximity)
+do not invalidate the assumption of failure independence.
+g. When using redundancy in operations that could cause or lead to severe injury, major damage, or
+mission failure (safety critical operations), verify operability under conditions that singularly or
+separately added together represent the operating intended condition.
+h.. When using reliability analyses, assess the probability of failure and associated uncertainties to
+NPR 8715.3D -- Chapter1
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 11 of 47
+NPR 8715.3D -- Chapter1
+Page 11 of 47
+
+provide the function and the time to restore the function, where loss of life, serious injury, or
+catastrophic system loss can occur. The time to restore the function shall include the active time to
+repair and the time associated with the logistics or administrative downtime that affects the ease or
+rapidity of achieving full restoration of the failed function.
+1.7.2.3 To assure functional protection, project managers shall ensure that:
+a. Loss of functional protection for safety-critical operations requires termination of the operation at
+the first stable configuration.
+b. At least one single level of functional protection is used to protect high-value facilities and flight
+systems.
+1.7.3 Inhibits
+1.7.3.1 Where high reliability is not verified by reliability analysis using accepted data with
+uncertainties incorporated, the project manager shall ensure that:
+a. Operations that require the control of a condition, event, signal, process, or item for which proper
+recognition, performance, or tolerance is essential to safe system operation, use, or function are
+designed such that an inadvertent or unauthorized event cannot occur (inhibit).
+b. Operations have three inhibits where loss of life can occur.
+c. Operations have two inhibits where personal injury, illness, mission loss, or system loss or
+damage can occur.
+d. The capability of inhibits or control procedures when required in operations by this paragraph are
+verified under operational conditions including the verification of independence among multiple
+inhibits.
+Note: Inhibits (designs that specifically prevent an inadvertent or unauthorized event
+from occurring) are not to be confused with the lockout/tagout program, which is a
+program to isolate or control facility system hazards; e.g., electrical, mechanical,
+hydraulic, pneumatic,chemical, thermal, or other energy.
+1.8 SMA Program Reviews
+Requirements for conducting and supporting independent SMA audits, reviews, and assessments are
+provided in NPR 8705.6.
+1.9 Advisory Panels, Committees, and Boards
+The Aerospace Safety Advisory Panel and the Independent Verification and Validation Board of
+Advisors are addressed in NPD 1000.3.
+1.10 Coordination with Organizations External to NASA -
+RESERVED
+NPR 8715.3D -- Chapter1
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 12 of 47
+NPR 8715.3D -- Chapter1
+Page 12 of 47
+
+1.11 Safety Motivation and Awards Program - RESERVED
+1.12 Safety Management Information - RESERVED
+1.13 Tailoring Agency Mission SMA Requirements
+1.13.1 This section is applicable to programs and projects governed by NPR 7120.5 and NPR
+7120.8. Processes for tailoring Agency SMA requirements will follow the requirement tailoring
+principles defined in NPRs 7120.5 and 7120.8.
+1.13.2 NPR 8715.1, NASA Safety and Health Programs, describes the process for tailoring
+institutional safety and health requirements.
+1.13.3 The Chief, SMA delegates the authority to approve tailoring of Agency mission SMA
+requirements imposed on programs and projects, including the acceptance of alternate technical
+standards, to the Center-level SMA TA except for the following areas for which the Chief, SMA
+retains this authority:
+a. Orbital debris mitigation, including requirements in NPR 8715.6, NASA Procedural Requirements
+for Limiting Orbital Debris and Evaluating the Meteoroid and Orbital Debris Environments, and
+standards incorporated by reference therein.
+b. Planetary protection, including requirements in NPR 8715.24, Planetary Protection Provisions for
+Robotic Extraterrestrial Missions, NID 8715.129, Biological Planetary Protection for Human
+Missions to Mars, and agreed to standards used to implement those requirements.
+c. NPR 8715.26, Nuclear Flight Safety, including requirements in Chapter 6, Nuclear Safety for
+Launching of Radioactive Materials, and agreed to standards used to implement those requirements.
+d. Human-rating spaceflight systems, including requirements in NPR 8705.2, Human-Rating
+Requirements for Space Systems, excluding standards incorporated by reference therein.
+e. Mission risk classification, including requirements in NPR 8705.4, Risk Classification for NASA
+Payloads, excluding standards incorporated by reference therein.
+f. Mishap investigations, including requirements in NPR 8621.1, NASA Procedural Requirements
+for Mishap and Close Call Reporting, Investigating, and Recordkeeping.
+g. NASA interim directives that replace or augment the documents cited above.
+1.13.4 The Chief, SMA will consult on the tailoring of requirements in those areas with the
+Associate Administrator, Administrator, or other authorities as appropriate.
+1.13.5 When tailoring requirements, the Mission Directorate Associate Administrator, or designee,
+shall include the following information in the request:
+a. Identify the requirement(s) being tailored.
+b. Describe the tailoring of the requirement (i.e., the nature of the proposed departure from the
+requirement).
+c. Justify the reasons for the tailoring, why it is not possible, or desirable, to comply with the
+NPR 8715.3D -- Chapter1
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 13 of 47
+NPR 8715.3D -- Chapter1
+Page 13 of 47
+
+requirement .
+d. Describe the resulting change in risk to the public, workforce, high-value property, and orbital and
+planetary environments.
+e. Describe the resulting change in risk to crew safety and mission success.
+f. Confirm the tailoring does not conflict with applicable Federal statutes or regulations, or with
+Agency policy or higher-level requirement.
+g. Indicate when and whether compliance will be achieved.
+h. Describe alternate actions to be taken for managing the risk.
+i. Describe findings and recommendations from the project-level SMA TA regarding the technical
+merits of the case.
+j. For matters involving human safety risk, obtain formal agreement to assume the risk from the
+actual risk taker(s) (or official spokesperson[s] and applicable supervisory chain).
+1.13.6 NPR 8000.4 contains requirements for decisions to accept risk to safety and mission success.
+1.14 Hazardous Work Activities That Are Outside NASA
+Operational Control
+Note: Non-spaceflight activities are now addressed in NPR 8715.1, in particular section
+4.3.10, Multiemployer Worksites - Worksites not under NASA control, and section 13.8,
+Test / Operations Safety, for requirements on NASA civil servant participation in
+hazardous work activities outside NASA operational control.
+1.14 Hazardous Work Activities That Are Outside NASA Operational Control
+1.14.1 It is NASA policy to formally review and approve NASA participation in hazardous work
+activities that are outside NASA operational control as needed to ensure that NASA safety and
+health responsibilities are satisfied. This policy applies unconditionally to NASA participation in
+commercial human spaceflight where current federal regulations do not necessarily provide for the
+safety of spaceflight vehicle occupants. This policy is non-retroactive and applies to hazardous
+ground or flight activities that involve research, development, test and evaluation, operations, or
+training, where all five of the following conditions exist:
+a. NASA civil service personnel, Government detailees, specified contractors, or specified grantees
+are performing work for NASA.
+Note 1: Paragraph 1.14 of this NPR applies to contractors and grantees only as
+specified by the responsible NASA manager in consultation with the cognizant NASA
+Center SMA organization based on an assessment of NASA safety responsibilities
+and/or obligations with regard to the activity.
+Note 2: This policy only applies to personnel participating in activities within their
+official NASA duties.
+b. The activity is outside NASA's direct operational control/oversight.
+NPR 8715.3D -- Chapter1
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 14 of 47
+NPR 8715.3D -- Chapter1
+Page 14 of 47
+
+c. An assessment by the responsible NASA manager indicates there are insufficient safeguards
+and/or oversight in place.
+Note: This policy does not apply to activities where safety oversight and/or safety
+regulations of other entities provide for safety of the participants (e.g., FAA, DoD,
+OSHA, ESA, JAXA) and foreign government-associated safety regulatory regimes.
+d. The activity is not covered by a basic contract, grant, or agreement where Federal, State, and/or
+local requirements address personnel safety.
+e. The nature of the activity is such that, if NASA were controlling it, a formal safety and/or health
+review would be required as part of the NASA approval process.
+Note: Paragraph 1.14 of this NPR applies to activities conducted in unusual or
+unforgiving environments (such as underwater or extreme temperature/altitude), as well
+as activities conducted in remote areas where there is little or no access to medical care
+or other assistance in an emergency.
+1.14.2 For NASA work activities that satisfy the conditions listed in paragraph 1.14.1 of this NPR, it
+is NASA policy to document and verify that risks are adequately controlled and any residual risk is
+acceptable following the steps below or through implementation of the System Safety process in
+Chapter 2 of this NPR:
+a. As early as practical, conduct a comprehensive, documented review of the planned activity (the
+review may address a series of related activities). (See paragraph 1.14.3.h of this NPR for
+requirements that apply to the review.)
+b. Document Agency approval by cognizant NASA officials, including formal acceptance of all
+associated risks.
+c. Ensure activity participants are fully briefed on the safety and health aspects of the activity and the
+associated risks and that they formally consent to take the risk.
+d. Ensure activity participants have all necessary training, equipment, and support.
+1.14.3 Roles and Responsibilities. The following roles and responsibilities apply with regard to
+implementing the policy stated in paragraph 1.14.2 of this NPR.
+a. The Chief, Safety and Mission Assurance shall oversee and resolve any questions regarding the
+implementation and applicability of this policy and related requirements to a proposed work activity.
+b. Each Center Safety and Mission Assurance Director shall:
+(1) Establish and implement processes and requirements needed to ensure compliance with this
+policy for applicable work activities within the scope of their authority.
+(2) Provide safety expertise as needed to assist programs and projects to successfully complete the
+required NASA review and approval of applicable work activities.
+(3) Formally concur in the scope of hazard assessments executed per paragraph 1.14.3.h.(2) for
+activities under their cognizance.
+NPR 8715.3D -- Chapter1
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 15 of 47
+NPR 8715.3D -- Chapter1
+Page 15 of 47
+
+(4) Maintain records of all approvals granted under this policy and track the status of each activity.
+c. The NASA official, at the appropriate level of authority in the supervisory chain over the
+participating personnel and any applicable non-NASA supervisor (identified by the Review Team
+per paragraph 1.14.3.h .(5) of this NPR), shall sign the approval documentation indicating consent
+for their assigned personnel to take the risk and participate in the activity.
+d. Where deemed applicable by the review, the following NASA officials shall sign the approval
+documentation indicating that the risks are properly characterized for their area of responsibility and
+that they concur with acceptance of the risks to personnel under NASA safety responsibility, risk to
+NASA property, and any public risk due to NASA's part in the activity:
+(1) The Center SMA official with cognizance over the activity (mandatory for any activity that
+involves safety risk to participants, the public, or to NASA property).
+(2) The Center Health and Medical official with cognizance over the activity (mandatory for any
+activity that involves health risk to participants or the public or involves medical equipment or
+operations as part of the safety risk mitigation strategy).
+(3) The NASA General Counsel or Center Chief Counsel (mandatory for any activity that involves
+U.S. or international law).
+(4) The designated Technical Authority(ies) with cognizance over the associated project/program
+(mandatory for any activity that involves system design changes or invocation of NASA technical
+requirements as part of the risk mitigation strategy).
+e. The personnel participating in the hazardous activity shall sign the approval documentation
+indicating that they are fully briefed on all safety and health risks inherent in the activity and are
+willing and able to participate.
+f. After signature by the officials/personnel identified in paragraphs 1.14.3.c, 1.14.3.d, and 1.14.3.e
+of this NPR, the NASA official, at the appropriate level, as identified by the review per paragraph
+1.14.3.h.(6) of this NPR, shall sign the approval documentation indicating formal acceptance of the
+associated risks to personnel under NASA safety responsibility, risk to NASA property, and any
+public risk due to NASA's part in the activity.
+g. NASA managers (program/project/grant/institutional/other) shall ensure that all aspects of the
+policy in paragraph 1.14.2 of this NPR are satisfied for applicable work activities under their
+authority. In accomplishing this, NASA managers shall:
+(1) Identify work activities that fall under the applicability of this policy in consultation with the
+cognizant Center SMA organization.
+Note: Per paragraph 1.14.3a of this NPR, the Chief, Safety and Mission Assurance is
+responsible for resolving any questions regarding the applicability of this policy to a
+work activity.
+(2) Satisfy local SMA processes and requirements designed to implement this policy.
+(3) Establish a Review Team (see paragraph 1.14.3.h of this NPR for Review Team responsibilities)
+in consultation with the cognizant SMA, Health and Medical, Engineering, and Legal organizations;
+and ensure that the Review Team incorporates all necessary expertise as required.
+NPR 8715.3D -- Chapter1
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 16 of 47
+NPR 8715.3D -- Chapter1
+Page 16 of 47
+
+(4) Ensure that funding and other resources needed to satisfy this policy are budgeted and allocated.
+Note: This includes any funding needed to staff the Review Team, obtain data, and
+develop the various review products required by the Review Team, such as the hazards
+analyses and risk assessments.
+(5) Ensure all conditions for NASA approval are met, including implementation of all actions
+identified by the Review Team.
+(6) Ensure the preparation and finalization of the approval documentation.
+h. The Review Team established per paragraph 1.14.3.g.(3) of this NPR and
+program/project/grant/institutional/other personnel as needed shall coordinate to:
+(1) Identify and evaluate the safety, health and medical, and any safety-legal aspects of the activity.
+(2) Identify and evaluate all associated hazards (design and/or operational), including evaluation of
+existing hazard/risk mitigations and safety requirements being implemented.
+Note: The extent of this hazard evaluation is determined by the Review Team with the
+concurrence of the cognizant Center SMA Director and may vary depending on the
+specific safety concerns associated with the work activity.
+(3) Assess and characterize any residual safety risks to personnel, public, and property.
+Note: Characterization of the safety risks may be quantitative or qualitative as
+determined by the Review Team and as needed to ensure that NASA officials understand
+any risks they are asked to accept. The basis for the risk assessment includes the current
+NASA policies, requirements, and standards that would apply if NASA were controlling
+the activity.
+(4) If the initial risks are unacceptable, identify actions that must be implemented to mitigate the
+risks as conditions for NASA approval to participate.
+Note: This may include implementation of NASA technical standards and/or processes
+(or portions there of).
+(5) Identify the NASA official(s), at the appropriate level of authority in the supervisory chain over
+the participating personnel and any non-NASA supervisor(s) (in the event that non-NASA personnel
+are involved), who must consent for the personnel to take the risk and participate in the activity.
+Note: In accomplishing this, the Review Team identifies the appropriate level of NASA
+management in the supervisory chain with authority to represent the participating
+personnel based on the risk level and the applicable NASA risk management policy.
+(6) Identify the NASA official who must formally accept the risks associated with and grant final
+approval of the activity.
+Note: In accomplishing this, the Review Team identifies the appropriate level of NASA
+program/project management with authority for final approval based on the risk level
+and the applicable NASA risk management policy.
+NPR 8715.3D -- Chapter1
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 17 of 47
+NPR 8715.3D -- Chapter1
+Page 17 of 47
+
+(7) For a series of related activities (that may involve the same or different participants over a period
+of time), identify a NASA readiness process to be implemented for each activity.
+i. If the Review Team determines that a series of activities is a repetition of, or essentially the same
+as, a previously reviewed and approved activity, the Review Team may recommend that the NASA
+approving official (identified per paragraph 1.14.3.h.(6) of this NPR) grant a standing approval that
+will remain in effect until there are substantive changes in the activity, personnel, or a specified
+period of time has elapsed, not to exceed 5 years.
+j. The Assistant Administrator for Procurement, NASA Grant and Contracting Officers, and
+Cooperative Agreement, and other agreement officers shall ensure that grants, contracts, and
+agreements governing activities performed in support of NASA allow for implementation of this
+policy where specified by the cognizant NASA manager in consultation with the cognizant NASA
+Center SMA organization (per paragraph 1.14.3.g(1) of this NPR).
+NPR 8715.3D -- Chapter1
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 18 of 47
+NPR 8715.3D -- Chapter1
+Page 18 of 47
+
+Chapter 2. System Safety
+2.1 Introduction
+2.1.1 This chapter establishes requirements for the implementation of system safety processes to
+support decision making aimed at ensuring human safety, asset integrity, and mission success in
+programs/projects.
+2.1.2 System safety assessment is a disciplined, systematic approach to the analysis of risks resulting
+from hazards that can affect humans, the environment, and mission assets. It is a critical first step in
+the development of risk management strategies. System safety covers the total spectrum of technical
+risk and management activities including safety and risk assessments and safety performance
+monitoring.
+2.1.3 The format of this chapter is different than that of the rest of this NPR because of the need to
+discuss advanced concepts in system safety by the references.
+2.2 Institutional Roles and Responsibilities
+2.2.1 Mission Directorate Associate Administrators, Center Directors, program and project
+managers, and line managers shall ensure that system safety activities are conducted for all programs
+and projects including system acquisitions, in-house developments (research and technology),
+design, construction, fabrication and manufacture, experimentation and test, packaging and
+transportation, storage, checkout, launch, flight, reentry, retrieval and disassembly, maintenance and
+refurbishment, modification, and disposal.
+2.2.2 Center Directors, through their Center SMA Directors, shall ensure that knowledgeable system
+safety and technical risk analysts are made available to program/project managers and Center
+engineering directors to define and conduct system safety activities, including assurance of prime
+contractor system safety activities.
+2.3 System Safety Framework
+NASA's framework for system safety is described in NASA/SP-2010-580, NASA System Safety
+Handbook, Volume 1: System Safety Framework and Concepts for Implementation, and
+NASA/SP-2014-612, NASA System Safety Handbook Volume 2: System Safety Concepts,
+Guidelines, and Implementation Examples.
+2.4 Scope of System Safety Modeling
+2.4.1 Decision makers throughout the entire life cycle of the project, beginning with concept design
+and concluding with decommissioning, must consider safety. However, the level of formality and
+rigor that is involved in implementing the system safety processes should match project potential
+consequences, life cycle phase, life cycle cost, and strategic importance. To assist in determining the
+scope of activities for safety evaluations as a function of project characteristics, two tables are
+NPR 8715.3D -- Chapter2
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 19 of 47
+NPR 8715.3D -- Chapter2
+Page 19 of 47
+
+provided. The categorization scheme identified in Table 2.1 is used to determine a project priority.
+This table is similar to Table 1 from NPR 8705.5, Probabilistic Risk Assessment (PRA) Procedures
+for NASA Programs and Projects.
+Table 2.1, Criteria for Determining the Project Priority
+CONSEQUENCE
+CATEGORY
+CRITERIA / SPECIFICS
+Project
+Priority
+Ranking
+Human Safety and
+Health
+Public
+Safety
+and Health
+Planetary Protection
+Program Requirement
+I
+White House Approval
+(PD/NSC-25)
+Space Missions with
+Flight Termination
+Systems
+Human Space Flight
+Mission Success
+(for non-human
+rated missions)
+High Strategic Importance Projects
+Limited Window
+High Cost (See NPR 7120.5)
+Medium Cost (See NPR 7120.5)
+II
+Low Cost (See NPR 7120.5)
+III
+2.4.2 Once the project priority is determined, the scope of system safety modeling is determined
+using Table 2.2.
+2.4.3 Projects identified as "Priority I" ranking from Tables 2.1 are generally the most visible and
+complex of NASA's product lines. Because of this, the system safety technical processes for Priority
+I projects must include probabilistic risk assessment as specified in NPR 8705.5, Probabilistic Risk
+Assessment (PRA) Procedures for NASA Programs and Projects. For Priority II or III projects,
+Table 2.2 provides latitude to adjust the scope of system safety modeling. This graded approach to
+the application of system safety modeling also operates on another dimension. That is, the level of
+rigor and detail associated with system safety modeling activities must be commensurate with the
+availability of design and operational information. The two-dimensional nature of the graded
+approach is intended to ensure that allocation of resources to system safety technical activities
+considers the visibility and complexity of the project and to ensure that the level of rigor associated
+with system safety models follows the level of maturity of the system design.
+Note: For example, during the formulation phase, an order-of-magnitude or bounding
+assessment may be performed. In this type of assessment, the probability and/or the
+magnitude of consequence is approximated or bounded instead of deriving a
+best-estimate. These assessments are useful for screening purposes and initial risk
+tradeoff studies.
+NPR 8715.3D -- Chapter2
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 20 of 47
+NPR 8715.3D -- Chapter2
+Page 20 of 47
+
+Table 2.2, Graded Approach to System Safety Modeling
+Priority
+Ranking
+Scope (The level of rigor and details are commensurate with
+the level of design maturity)
+I
+Probabilistic risk assessment (per NPR 8705.5) supported by
+qualitative system safety analysis
+II
+Qualitative system safety analysis supplemented by
+probabilistic risk assessment where appropriate
+III
+Qualitative system safety analysis
+2.5 Core Requirements for System Safety Processes
+2.5.1 The system safety modeling approaches previously described should be
+implemented as part of technical processes that represent system safety activities.
+Conceptually, system safety activities consist of three major technical processes as
+shown in the circular flow diagram in Figure 2.6. These processes are designed to
+systematically and objectively analyze hazards and identify the mechanism for their
+elimination or control. These processes begin in the conceptual phase and extend
+throughout the life cycle of a system including disposal. In general, requirements for
+safety system technical processes must provide a risk-informed perspective to decision
+makers participating in the project life cycle. The three critical technical processes to a
+successful system safety program are (1) system safety modeling, (2) life cycle
+applications of models for risk-informed decisions and, (3) monitoring safety
+performance. The circular flow indicates that these technical processes are linked and are
+performed throughout the project life cycle. A System Safety Technical Plan is used to
+guide the technical processes and establish roles and responsibilities. This plan is
+established early in the formulation phase of each project and updated throughout the
+project life cycle.
+
+NPR 8715.3D -- Chapter2
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 21 of 47
+NPR 8715.3D -- Chapter2
+Page 21 of 47
+
+Figure 2.1, The System Safety Technical Processes
+NPR 8715.3D -- Chapter2
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 22 of 47
+NPR 8715.3D -- Chapter2
+Page 22 of 47
+
+2.5.2 System Safety Technical Plan (SSTP)
+2.5.2.1 The SSTP is designed to be a technical planning guide for the technical
+performance and management of the system safety activities. The SSTP can be a
+stand-alone document, or part of the SMA plan or the Systems Engineering Management
+Plan (SEMP). It provides the specifics of the system safety modeling activities and
+describes what and how safety adverse consequences will be modeled, how system
+safety models (qualitative and probabilistic risk assessments) will be integrated and
+applied for risk-informed decision making and safety monitoring, how the technical
+team(s) responsible for generating and maintaining system safety models will interact
+with the system engineering organizations, the reporting protocol, and the cost and
+schedule associated with accomplishing system safety modeling activities in relation to
+the critical or key events during all phases of the life cycle.
+2.5.2.2 Project managers shall:
+a. Ensure, for Category I project/programs, that the SSTP is approved by the governing
+Program Management Council (PMC) and has concurrence by the cognizant SMA
+managers and the project's senior engineer.
+b. Ensure that the System Safety Manager and the prime contractor (for out-of-house
+projects) have the resources to implement the SSTP.
+c. Ensure, for Category I project/programs, that changes to the SSTP are approved by the
+governing PMC and have concurrence by the Chief, Safety and Mission Assurance.
+d. When the SSTP is not an integral part of the SEMP, ensure the SSTP is coordinated
+with the SEMP for the integration of system safety activities with other system
+engineering technical processes.
+2.5.2.3 The Center SMA Director shall:
+a. In coordination with the program/project manager, assign a System Safety Manager to
+have specific responsibility for the development and implementation of the SSTP.
+b. Ensure that the assigned System Safety Manager has demonstrated expertise in safety
+analysis including, in the case of Category I and II projects, the application of
+probabilistic risk assessment techniques.
+c. Ensure that all personnel with project safety oversight responsibilities are funded by
+other than direct project funding sources.
+2.5.2.4 The assigned System Safety Manager shall:
+a. Develop a SSTP during the project formulation phase and update the plan throughout
+the system life cycle.
+b. Ensure that the scope of system safety technical processes in the SSTP follows the
+graded approach specified in Tables 2.1 and 2.2.
+c. Ensure that the SSTP provides the specifics of the system safety modeling activities
+and their application to risk-informed decision making and safety monitoring throughout
+the project life cycle.
+NPR 8715.3D -- Chapter2
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 23 of 47
+NPR 8715.3D -- Chapter2
+Page 23 of 47
+
+d. In consultation with the project managers, establish and document in the SSTP the
+objectives and scope of the system safety tasks and define applicable safety deliverables
+and performance measures.
+e. Provide technical direction and manage implementation of system safety activities as
+specified in the SSTP.
+f. Ensure that system safety engineering activities are integrated into system engineering
+technical processes.
+g. Determine the acceptability of residual risk stemming from safety assessments.
+h. Ensure that specific safety requirements are integrated into overall programmatic
+requirements and are reflected in applicable program and planning documents including
+the statement of work for contractor designs.
+i. Maintain appropriate safety participation in the program design, tests, operations,
+failures and mishaps, and contractor system safety activities at a level consistent with
+mishap potential for the life of the program.
+j. Establish an independent safety reporting channel to keep the Center SMA Director
+apprised of the system safety status (including tests and operations), particularly
+regarding problem areas that may require assistance from the Center, the NASA
+Engineering and Safety Center, or Headquarters.
+k. Support OSMA requirements for audits, assessments, and reviews.
+2.5.3 System Safety Modeling
+2.5.3.1 Developing and maintaining technically sound and tractable safety models are
+essential activities for ensuring safety. In these activities, analysts use all the relevant
+and available information including design documents, operational procedures, test
+results, operational history, and human and software performance to develop
+comprehensive system safety models. Developing these models is multidisciplinary and
+may involve diverse and geographically dispersed groups. Thus, it is important for the
+safety modeling activities to be coordinated in order to ensure consistency and technical
+quality.
+2.5.3.2 Safety models need to be synchronized with the system design and operational
+state-of-knowledge to ensure the models match the collected engineering information
+during operation with model predictions.
+2.5.3.3 System Safety Managers shall ensure that the system safety modeling activities
+are fully integrated into system engineering and are supported by domain, systems, and
+specialty engineers.
+2.5.3.4 System engineers shall:
+a. Ensure that system safety models use systematic, replicable, and scenario-based
+techniques to identify hazards, to characterize the risk of accidents, to identify risk
+control measures, and to identify key uncertainties.
+b. Initially conduct system safety analyses during project formulation and design concept
+NPR 8715.3D -- Chapter2
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 24 of 47
+NPR 8715.3D -- Chapter2
+Page 24 of 47
+
+phases (prior to the Preliminary Design Review) and maintain and update these analyses
+continuously throughout the project life cycle.
+c. Ensure, for Category I and II program/projects, probabilistic risk assessment
+techniques are used for system safety analysis.
+d. Ensure that the system safety models are developed in an iterative process to allow
+model expansion, model updating, and model integration as the design evolves and
+operational experience is acquired.
+Note 1: Relevant leading-indicator (or precursor) events should be
+documented and evaluated for their impact on the system safety analyses
+assumptions. Trending of these precursor events should be conducted and
+contrasted to applicable performance measures.
+Note 2: A precursor is an occurrence of one or more events that have
+significant failure or risk implications.
+e. Use system specific and all relevant data including failure histories, mishap
+investigation findings, and the NASA Lessons Learned Information System in system
+safety analysis.
+f. Maintain an up-to-date database of identified hazards, accident scenarios, probabilities
+and consequences, and key uncertainties throughout the life of the program.
+g. Document the bases for the system safety analyses including key assumptions,
+accident scenarios, probabilities, consequence severities, and uncertainties such that
+they are traceable.
+2.5.4 Application of System Safety Models for Risk-informed Decisions
+2.5.4.1 Safety and technical risk considerations are critical in the decision-making
+process. When faced with a decision, several conflicting alternatives may be available to
+the decision maker. In a risk-informed decision-making framework, the decision maker
+considers safety and other technical attributes as well as programmatic attributes, such as
+cost and schedule, to select the best decision alternative.
+2.5.4.2 Program/project managers shall:
+a. Ensure that a framework is constructed for systematically incorporating system safety
+analysis results into the evaluation of decision alternatives.
+b. Establish and document a formal and transparent decision-making process for hazard
+closure and formally accepting residual risk that has been determined to be acceptable
+by the cognizant technical authority.
+Note: Closure of a hazard condition or other safety issue is the
+demonstration that all safety requirements expressly formulated to address
+the condition or issue have been satisfied.
+NPR 8715.3D -- Chapter2
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 25 of 47
+NPR 8715.3D -- Chapter2
+Page 25 of 47
+
+c. Ensure acceptable residual risks are accepted in writing. (See paragraph 1.6 of this
+NPR.)
+Note: Residual risk is the level of risk that remains present after applicable
+safety-related requirements have been satisfied. In a risk-informed context,
+such requirements may include measures and provisions intended to reduce
+risk from above to below a defined acceptable level.
+d. Ensure that decisions to accept risk are coordinated with the governing SMA
+organization and communicated to the next higher level of management for review. (See
+paragraph 1.6.2 of this NPR.)
+e. Where residual risks have been determined by either the cognizant technical authority
+or the cognizant SMA authority as "unacceptable," initiate risk mitigation/control
+activities, as appropriate, to reduce the risk to an acceptable level.
+f. Ensure that the requirements of this Chapter are specified in related contracts,
+memoranda of understanding, and other agreement documents. (See Chapter 9 of this
+NPR.)
+2.5.4.3 The System Safety Manager shall:
+a. Ensure that system safety models are constructed to support the implementation of the
+risk-informed decision framework.
+b. Ensure that the system safety models incorporate all the safety attributes important to
+risk-informed decision making by working with the project manager and other decision
+makers as deemed appropriate.
+c. Establish the methods and tools that are used in the risk-informed framework.
+d. Check and validate the methods and tools before implementation and obtain
+concurrence from the project manager.
+e. Document the bases for the methods and tools used and analytical results.
+2.5.5 Performance Monitoring
+2.5.5.1 Safety, like other performance attributes, is monitored during the entire life cycle
+to ensure that an acceptable level of safety is maintained.
+2.5.5.2 Project managers shall ensure that the performance attributes and precursors that
+are identified as being important indicators of system safety are monitored.
+2.5.5.3 The System Safety Manager shall:
+a. Establish the methods and tools that are used in the performance monitoring and
+precursor assessments.
+b. Check and validate the methods and tools used for performance monitoring and
+precursor assessments before implementation.
+c. Maintain an up-to-date database of the performance monitoring results and precursor
+NPR 8715.3D -- Chapter2
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 26 of 47
+NPR 8715.3D -- Chapter2
+Page 26 of 47
+
+results.
+d. Ensure that the performance monitoring and precursor data are fed back into system
+safety analyses and the results updated.
+e. Document the bases for the methods and tools that are used in the performance
+monitoring and precursor assessments.
+2.6 System Safety Reviews
+2.6.1 System Safety and Mission Success Program Reviews are conducted in
+conjunction with other program milestones. The purpose of these reviews is to evaluate
+the status of system safety and risk analyses, risk management, verification techniques,
+technical safety requirements, and program implementation throughout all the phases of
+the system life cycle.
+2.6.2 The program/project manager shall:
+a. Conduct periodic system safety and mission success reviews of their program/project
+depending on the complexity of the system.
+Note: The greater the risks, complexity of the system, or visibility of the
+programs, the greater the independence and formality of the reviews.
+b. Document the periodicity of the System Safety and Mission Success Program
+Reviews in the SSTP.
+c. Ensure that the System Safety and Mission Success Program Reviews focus on the
+evaluation of management and technical documentation, hazard closure, and the safety
+residual risks remaining in the program at that stage of development.
+d. Establish and maintain dedicated independent assessment activities for Priority I
+programs and projects, such as the Constellation Program.
+2.6.3 The System Safety Manager shall:
+a. Conduct periodic independent reviews of the system safety tasks keyed to project
+milestones.
+b. Assist and support independent review groups established to provide independent
+assessments of the program.
+c. Support the OSMA independent safety assessment process to determine readiness to
+conduct tests and operations having significant levels of safety risks.
+2.7 Change Review
+2.7.1 Systems are changed during their life cycle to enhance capabilities, improve
+safety, provide more efficient operation, and incorporate new technology. With each
+change, the original safety aspects of the system can be impacted, either increasing or
+NPR 8715.3D -- Chapter2
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 27 of 47
+NPR 8715.3D -- Chapter2
+Page 27 of 47
+
+reducing the risk. Any aspect of controlling hazards can be weakened, risks can be
+increased, or conversely, risks can be decreased. Even a change that appears
+inconsequential could have significant impact on the baseline risk of the system.
+Accordingly, proposed system changes should be subjected to a safety review or
+analysis, as appropriate, to assess the safety and risk impacts, including implications on
+controls and mitigations for significant hazards and failure modes.
+2.7.2 The project manager and the System Safety Manager shall:
+a. Update the system safety analyses to identify any change in risk.
+b. Ensure that safety personnel assess the potential safety impact of the proposed change
+and any changes to the baseline risk and previously closed hazards.
+c. Ensure that proposed changes to correct a safety problem are analyzed to determine
+the amount of safety improvement (or detriment) that would result from incorporation of
+the change.
+d. Ensure that the safety impact for every change that is proposed to a program baseline
+(even if the statement is "No Impact") is documented.
+2.8 Documentation
+2.8.1 The maintenance of the SSTP is required to provide ready traceability from the
+baseline safety requirements, criteria, and efforts planned in the conceptual phases
+through the life cycle of the program.
+2.8.2 The project manager (or designated agent) and the System Safety Manager shall:
+a. Ensure that all pertinent details of the system safety analysis and review are traceable
+from the initial identification of the risks through their resolution and any updates in the
+SSTP.
+b. Ensure that records are maintained per NPR1441.1, NASA Records Retention
+Schedules.
+2.8.3 The System Safety Manager shall:
+a. Submit a system safety analysis report to the program/project manager at each
+milestone (formulation, evaluation, implementation, or other equivalent milestones [e.g.,
+Safety Requirements Review, Preliminary Design Review, Critical Design Review, and
+Flight Readiness Review]) detailing the results of the system safety analyses completed
+to date to document the status of system safety tasks.
+Note: Safety requirements include both deterministic and risk-informed
+requirements. A deterministic safety requirement is the qualitative or
+quantitative definition of a threshold of action or performance that must be
+met by a mission-related design item, system, or activity in order for that
+item, system, or activity to be acceptably safe. A risk-informed requirement
+is a safety requirement that has been established, at least in part, on the
+basis of the consideration of a safety-related risk metric and its associated
+NPR 8715.3D -- Chapter2
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 28 of 47
+NPR 8715.3D -- Chapter2
+Page 28 of 47
+
+uncertainty.
+b. Ensure that each submitted revision to the system safety analysis report
+lists the risks that have been addressed, the risks that have yet to be
+addressed, and expected residual risks that will remain following the
+implementation of risk reduction strategies.
+c. Ensure that the system safety analysis report documents management and
+technical changes that affect the established safety baseline (by changes in
+the planned approach, design, requirements, and implementation) and is
+revised when required.
+d. Ensure that a final approved system safety analysis report is produced that
+contains a verification of the resolution of the risks and a written acceptance
+of the residual risks from the program/project manager to complete the audit
+trail.
+NPR 8715.3D -- Chapter2
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 29 of 47
+NPR 8715.3D -- Chapter2
+Page 29 of 47
+
+Chapter 3. Operational Safety
+This chapter on Operational Safety was cancelled by NPR 8715.1B. NPR 8715.1 provides the
+requirements for ensuring operational safety.
+NPR 8715.3D -- Chapter3
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 30 of 47
+NPR 8715.3D -- Chapter3
+Page 30 of 47
+
+Chapter 4. Aviation Safety
+This chapter on Aviation Safety was cancelled by NPR 8715.1B. NPR 8715.1 and NPR 7900.3,
+Aircraft Operations Management, provide the requirements for ensuring aviation safety.
+NPR 8715.3D -- Chapter4
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 31 of 47
+NPR 8715.3D -- Chapter4
+Page 31 of 47
+
+Chapter 5. Fire Safety
+This chapter on Fire Safety was cancelled by NPR 8715.1B. NPR 8715.1 provides the requirements
+for ensuring fire and life safety.
+NPR 8715.3D -- Chapter5
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 32 of 47
+NPR 8715.3D -- Chapter5
+Page 32 of 47
+
+Chapter 6. Nuclear Safety for Launching of
+Radioactive Materials
+This chapter on Nuclear Safety for Launching of Radioactive Materials was cancelled by NPR
+8715.26. NPR 8715.26 provides the requirements for ensuring NASA's nuclear flight safety
+activities.
+NPR 8715.3D -- Chapter6
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 33 of 47
+NPR 8715.3D -- Chapter6
+Page 33 of 47
+
+Chapter 7. Safety Training and Personnel Certification
+This chapter on Safety Training and Personnel Certification was cancelled by NPR 8715.1B. NPR
+8715.1 provides the requirements for ensuring safety training and personnel certification.
+NPR 8715.3D -- Chapter7
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 34 of 47
+NPR 8715.3D -- Chapter7
+Page 34 of 47
+
+Chapter 8. Safety for Facility Acquisition, Construction,
+Activation, and Disposal
+This chapter on Safety for Facility Acquisition, Construction, Activation, and Disposal was
+cancelled by NPR 8715.1B. NPR 8715.1 provides the requirements for ensuring safety during
+facility acquisition, construction, activation, and disposal.
+NPR 8715.3D -- Chapter8
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 35 of 47
+NPR 8715.3D -- Chapter8
+Page 35 of 47
+
+Chapter 9. Safety and Risk Management for
+NASA Contracts
+9.1 Purpose
+This chapter provides the procedural requirements for assuring that NASA contractors have
+effective safety and risk management programs. This chapter provides requirements for NASA
+officials with responsibility for assuring safety under NASA contracts.
+9.2 Applicability and Scope
+9.2.1 When NASA activities include contractor involvement, Center Directors and project managers
+shall include contractors in the NASA Safety Program.
+9.2.2 Center SMA Directors, project managers, Contracting Officers (CO), and Contracting Officers
+Technical Representatives (COTR) shall ensure that NASA contracts are written to hold contractors
+accountable for the safety of their employees, their services, their products, and for complying with
+NASA and Center safety requirements.
+9.3 Authority and Responsibility
+9.3.1 Project managers shall:
+a. Work with cognizant safety officials to develop and approve safety requirements and objectives
+for efforts to be contracted, and advise COs and COTRS of specific safety concerns or issues related
+to contract performance.
+b. Ensure that the application of the requirements in Chapter 2 of this NPR are specified in related
+contracts memoranda of understanding, and other documents for joint ventures between NASA and
+other parties including commercial services, interagency efforts, and international partnerships.
+c. Ensure that NASA responsibilities are specified in contracts, memoranda of understanding, and
+other documents for joint ventures between NASA and other parties including commercial services,
+interagency efforts, and international partnerships.
+d. Ensure that contracts contain safety, mission success, and risk management requirements for
+design, development, fabrication, test, and the operations of systems, equipment, and facilities in
+consultation with Center SMA Directors.
+e. Use the software safety requirements in NASA-STD-8739.8, as the basis for contracts,
+memoranda of understanding, and other documents related to software.
+f. Provide specific safety tasks to the CO for incorporation into contracts.
+g. Define the surveillance of contractor safety matters with respect to the nature of the procurement.
+h. Ensure that performance-based contracts have a surveillance plan.
+NPR 8715.3D -- Chapter9
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 36 of 47
+NPR 8715.3D -- Chapter9
+Page 36 of 47
+
+9.3.2 Project Managers, COs, and COTRs shall:
+a. Develop system safety requirements and objectives that are clearly delineated in contract
+specifications in conjunction with project officials.
+b. Establish system safety performance as an element to be evaluated in contracts with fee plans.
+c. Participate in onsite visits and pre-bid conferences to ensure potential bidders understand safety
+provisions.
+d. Review, comment, and approve (or disapprove) the contractors' system safety risk assessment,
+submitted in response to paragraph 9.3.3, before the start of any hazardous deliverable work or
+support operations.
+e. Coordinate any matter regarding proposed requests for relief to safety requirements of 48 CFR pt.
+1823.70, with the OSMA or designated representative.
+f. Implement NPR 5100.4.
+g. Implement 48 CFR pts. 1807; 1823; 1842, and 1846.
+9.3.3 COs or the COTR shall ensure the contractors' safety risk assessments are developed and
+provided to NASA for approval before the start of any hazardous deliverable work or support
+operations.
+9.3.4 Project Managers shall:
+a. Assist the CO and COTR in evaluating the prospective contractor's system safety program.
+b. Assist the CO and COTR in applying any special system safety provisions to grants or cooperative
+agreements (see paragraph 2.7).
+c. During the pre-award phase of acquisition, develop, document and provide to the CO criteria for
+the system safety performance elements to be evaluated in contracts with fee plans in a timely
+manner to ensure inclusion in the solicitation.
+9.4 Requirements
+9.4.1 Project managers, COs and COTRs shall ensure that system safety and risk management
+evaluation criteria and solicitation instructions are developed in conjunction with responsible project
+personnel and Center SMA organization representatives.
+9.4.2 Center Directors, SMA Directors, COs, and COTRs shall ensure that contracts contain
+appropriate institutional safety and health requirements as required by NPR 8715.1, NASA Safety
+and Health Programs.
+NPR 8715.3D -- Chapter9
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 37 of 47
+NPR 8715.3D -- Chapter9
+Page 37 of 47
+
+APPENDIX A. Definitions
+Accident. A severe perturbation to a mission or program, usually occurring in the form of a
+sequence of events, that can cause safety adverse consequences, in the form of death, injury,
+occupational illness, damage to or loss of equipment or property, or damage to the environment.
+Assessment. Review or audit process, using predetermined methods, that evaluates hardware,
+software, procedures, technical and programmatic documents, and the adequacy of their
+implementation.
+Assurance. Providing a measure of increased confidence that applicable requirements, processes,
+and standards are being fulfilled.
+Audit. Formal review to assess compliance with hardware or software requirements, specifications,
+baselines, safety standards, procedures, instructions, codes, and contractual and licensing
+requirements.
+Catastrophic. (1) A hazard that could result in a mishap causing fatal injury to personnel, and/or
+loss of one or more major elements of the flight vehicle or ground facility. (2) A condition that may
+cause death or permanently disabling injury, major system or facility destruction on the ground, or
+loss of crew, major systems, or vehicle during the mission.
+Center SMA Director. As used in this directive, this term includes all Center management
+personnel designated by the Center Director to implement SMA audits, reviews, and assessments
+requirements.
+Critical. A condition that may cause severe injury or occupational illness, or major property damage
+to facilities, systems, or flight hardware.
+Emergency. Unintended circumstance bearing clear and present danger to personnel or property
+which requires an immediate response.
+Exposure. (1) Vulnerability of a population, property, or other value system to a given activity or
+hazard; or (2) other measure of the opportunity for failure or mishap events to occur.
+Factor of Safety (Safety Factor). Ratio of the design condition to the maximum operating
+conditions specified during design (see also Safety Margin and Margin of Safety).
+Fail-Safe. Ability to sustain a failure and retain the capability to safely terminate or control the
+operation.
+Failure. Inability of a system, subsystem, component, or part to perform its required function within
+specified limits.
+Failure Tolerance. Built-in capability of a system to perform as intended in the presence of
+specified hardware or software failures.
+Functional Redundancy. A situation where a dissimilar device provides safety backup rather than
+NPR 8715.3D -- AppendixA
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 38 of 47
+NPR 8715.3D -- AppendixA
+Page 38 of 47
+
+relying on multiple identical devices.
+Hazard. A state or a set of conditions, internal or external to a system that has the potential to cause
+harm.
+Hazard Control. Means of reducing the risk of exposure to a hazard.
+Independent Verification and Validation. Test and evaluation process by an independent third
+party.
+Inhibit. Design feature that prevents operation of a function.
+Mission Assurance. Providing increased confidence that applicable requirements, processes, and
+standards for the mission are being fulfilled.
+Mission Success. Meeting all mission objectives and requirements for performance and safety.
+Nuclear Flight Safety Assurance Manager (NFSAM). The person in the Office of Safety and
+Mission Assurance responsible for assisting the project offices in meeting the required nuclear
+launch safety analysis/evaluation.
+Operability. As applied to a system, subsystem, component, or device is the capability of
+performing its specified function(s) including the capability of performing its related support
+function(s).
+Operational Safety. That portion of the total NASA safety program dealing with safety of personnel
+and equipment during launch vehicle ground processing, normal industrial and laboratory
+operations, use of facilities, special high hazard tests and operations, aviation operations, use and
+handling of hazardous materials and chemicals from a safety viewpoint.
+Oversight. The transition in NASA from a strict compliance-oriented style of management to one
+which empowers line managers, supervisors, and employees to develop better solutions and
+processes.
+Precursor. An occurrence of one or more events that have significant failure or risk implications.
+Programs. For the purposes of this NPR the term "programs" is interpreted to include programs,
+projects, and acquisitions.
+Quality. The composite of material attributes including performance features and characteristics of a
+product or service to satisfy a given need.
+Radiological Control Center (RADCC). A temporary information clearinghouse established on an
+as-needed basis to coordinate actions that could be required for mitigation, response, and recovery of
+an incident involving the launching of nuclear material.
+Range Safety. Application of safety policies, principles, and techniques to ensure the control and
+containment of flight vehicles to preclude an impact of the vehicle or its pieces outside of
+NPR 8715.3D -- AppendixA
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 39 of 47
+NPR 8715.3D -- AppendixA
+Page 39 of 47
+
+predetermined boundaries from an abort which could endanger life or cause property damage.
+Where the launch range has jurisdiction, prelaunch preparation is included as a safety responsibility.
+Redundancy. Use of more than one independent means to accomplish a given function.
+Reliability. The probability that a system of hardware, software, and human elements will function
+as intended over a specified period of time under specified environmental conditions.
+Reliability Analysis. An evaluation of reliability of a system or portion thereof. Such analysis
+usually employs mathematical modeling, directly applicable results of tests on system hardware,
+estimated reliability figures, and non-statistical engineering estimates to ensure that all known
+potential sources of unreliability have been evaluated.
+Residual Risk. The level of risk that remains after applicable safety-related requirements have been
+satisfied. In a risk-informed context, such requirements may include measures and provisions
+intended to reduce risk from above to below an acceptable level.
+Risk. The combination of (1) the probability (qualitative or quantitative) of experiencing an
+undesired event, (2) the consequences, impact, or severity that would occur if the undesired event
+were to occur and (3) the uncertainties associated with the probability and consequences.
+Risk Management. An organized, systematic decision-making process that efficiently identifies,
+analyzes, plans, tracks, controls, communicates, and documents risk to increase the likelihood of
+achieving project goals.
+Risk (Safety) Assessment. Process of qualitative risk categorization or quantitative risk (safety)
+estimation, followed by the evaluation of risk significance.
+Safety. Freedom from those conditions that can cause death, injury, occupational illness, damage to
+or loss of equipment or property, or damage to the environment. In a risk-informed context, safety is
+an overall mission and program condition that provides sufficient assurance that accidents will not
+result from the mission execution or program implementation, or, if they occur, their consequences
+will be mitigated. This assurance is established by means of the satisfaction of a combination of
+deterministic criteria and risk criteria.
+Safety Analysis. Generic term for a family of analyses, which includes but is not limited to,
+preliminary hazard analysis, system (subsystem) hazard analysis, operating hazard analysis, software
+hazard analysis, sneak circuit, and others.
+Safety Analysis Report (SAR). A safety report of considerable detail prepared by or for the
+program detailing the safety features of a particular system or source.
+Safety Analysis Summary (SAS). A brief summary of safety considerations for minor sources; a
+safety report of less detail than the SAR.
+Safety Critical. Term describing any condition, event, operation, process, equipment, or system that
+could cause or lead to severe injury, major damage, or mission failure if performed or built
+improperly, or allowed to remain uncorrected.
+NPR 8715.3D -- AppendixA
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 40 of 47
+NPR 8715.3D -- AppendixA
+Page 40 of 47
+
+Safety Device. A device that is part of a system, subsystem, or equipment that will reduce or make
+controllable hazards which cannot be otherwise eliminated through design selection.
+Safety Evaluation Report (SER). A safety report prepared by the INSRP detailing the INSRP's
+assessment of the nuclear safety of a particular source or system based upon INSRP's evaluation of
+the program-supplied SAR and other pertinent data.
+Safety Margin. Difference between as-built factor of safety and the ratio of actual operating
+conditions to the maximum operating conditions specified during design.
+Safety Oversight. Maintaining functional awareness of program activities on a real-time basis to
+ensure risk acceptability.
+Safety Program. The implementation of a formal comprehensive set of safety procedures, tasks,
+and activities to meet safety requirements, goals, and objectives.
+Serious. When used with "hazard," "violation," or "condition," denotes there is a substantial
+probability that death or serious physical harm could result.
+System Safety. Application of engineering and management principles, criteria, and techniques to
+optimize safety and reduce risks within the constraints of operational effectiveness, time, and cost
+throughout all phases of the system life cycle.
+System Safety Manager. A designated management person who, qualified by training and/or
+experience, is responsible to ensure accomplishment of system safety tasks.
+Validation. (1) An evaluation technique to support or corroborate safety requirements to ensure
+necessary functions are complete and traceable; or (2) the process of evaluating software at the end
+of the software development process to ensure compliance with software requirements.
+Verification (Software). (1) The process of determining whether the products of a given phase of
+the software development cycle fulfill the requirements established during the previous phase (see
+also validation); or (2) formal proof of program correctness; or (3) the act of reviewing, inspecting,
+testing, checking, auditing, or otherwise establishing and documenting whether items, processes,
+services, or documents conform to specified requirements.
+NPR 8715.3D -- AppendixA
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 41 of 47
+NPR 8715.3D -- AppendixA
+Page 41 of 47
+
+APPENDIX B: Acronyms
+CO
+Contracting Officer
+COTR
+Contracting Officers Technical Representative
+DOE
+Department of Energy
+IAEA
+International Atomic Energy Agency
+INSRP
+Interagency Nuclear Safety Review Panel
+NEPA
+National Environmental Policy Act
+NFSAM
+Nuclear Flight Safety Assurance Manager
+OCHMO
+Office of the Chief Health and Medical Officer
+OPR
+Office of Primary Responsibility
+OSMA
+Office of Safety and Mission Assurance
+OSTP
+Office of Science and Technology Policy
+PD/NSC
+Presidential Directive/National Security Council
+PMC
+Program Management Council
+RADCC
+Radiological Control Center
+SAS
+Safety Analysis Summary
+SEMP
+Systems Engineering Management Plan
+SER
+Safety Evaluation Report
+SMA
+Safety and Mission Assurance
+SSTP
+System Safety Technical Plan
+NPR 8715.3D -- AppendixB
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 42 of 47
+NPR 8715.3D -- AppendixB
+Page 42 of 47
+
+APPENDIX C. Safety Motivation and Awards Program -
+RESERVED
+NPR 8715.3D -- AppendixC
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 43 of 47
+NPR 8715.3D -- AppendixC
+Page 43 of 47
+
+Appendix D. Activity and Radioactive Material Limits - Basic Al
+/A2 Values - RESERVED
+NPR 8715.3D -- AppendixD
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 44 of 47
+NPR 8715.3D -- AppendixD
+Page 44 of 47
+
+Appendix E. Sample Safety and Health Plan for Service or
+Operations Contracts - RESERVED
+NPR 8715.3D -- AppendixE
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 45 of 47
+NPR 8715.3D -- AppendixE
+Page 45 of 47
+
+Appendix F. Sample System Safety Technical Plan for Systems
+Acquisition, Research, and Development Programs -
+RESERVED
+NPR 8715.3D -- AppendixF
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 46 of 47
+NPR 8715.3D -- AppendixF
+Page 46 of 47
+
+Appendix G. References
+G.1 NPR 7120.5, NASA Space Flight Program and Project Management Requirements.
+G.2 NPR 7120.8, NASA Research and Technology Program and Project Management Requirements.
+G.3 NPR 7123.1, Systems Engineering Procedural Requirements.
+G.4 NPR 7150.2, NASA Software Engineering Requirements.
+G.5 NPR 8000.4, Agency Risk Management Procedural Requirements.
+G.6 NPR 8621.1, NASA Procedural Requirements for Mishap and Close Call Reporting, Investigating, and Recordkeeping.
+G.7 NPR 8705.2, Human-Rating Requirements for Space Systems.
+G.8 NPR 8705.4, Risk Classification for NASA Payloads.
+G.9 NPR 8705.5, Probabilistic Risk Assessment (PRA) Procedures for NASA Programs and Projects.
+G.10 NPR 8715.5, Range Flight Safety Program.
+G.11 NPR 8715.6, NASA Procedural Requirements for Limiting Orbital Debris and Evaluating the Meteoroid and Orbital Debris Environments.
+G.12 NPR 8715.7, Payload Safety Program.
+G.13 NPR 8715.24, Planetary Protection Provisions for Robotic Extraterrestrial Missions.
+G.14 NPR 8715.26, Nuclear Flight Safety
+G.15 NPR 8735.2, Hardware Quality Assurance Program Requirements for Programs and Projects.
+G.16 NID 8715.129, Biological Planetary Protection for Human Missions to Mars.
+G.17 NASA-STD-8729.1, NASA Reliability and Maintainability (R&M) Standard for Spaceflight and Support Systems.
+G.18 NASA-STD-8739.8, Software Assurance and Software Safety Standard.
+G.19 NASA/SP-2010-580, NASA System Safety Handbook, Volume 1: System Safety Framework and Concepts for Implementation,
+https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/20120003291.pdf.https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/20120003291.pdf
+G.20 NASA/SP-2014-612, NASA System Safety Handbook Volume 2: System Safety Concepts, Guidelines, and Implementation Examples,
+https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/20150015500.pdf.
+G.21 MIL-STD-882, Standard Practice for Safety Systems.
+G.22 S. Kaplan and B.J. Garrick, "On the Quantitative Definition of Risk," Risk Analysis, 1, 11-27, 1981.
+G.23 National Research Council's report "Understanding Risk: Informing Decisions in a Democratic Society," National Academy Press,
+Washington, DC, 1996.
+NPR 8715.3D -- AppendixG
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 47 of 47
+NPR 8715.3D -- AppendixG
+Page 47 of 47

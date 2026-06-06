@@ -1,0 +1,3355 @@
+document_id: epa_guidance_preparing_sops_qag6
+source_family: EPA
+title: Guidance for Preparing Standard Operating Procedures (QA/G-6)
+direct_url: https://www.epa.gov/sites/default/files/2015-06/documents/g6-final.pdf
+sha256: 5979164568a888c8af67a7652bf4e4633bb39aae2b9876b4666e52238fb45f63
+
+United States
+
+
+Office of Environmental
+
+
+
+Environmental Protection
+Information
+
+
+
+EPA/600/B-07/001
+
+Agency
+
+
+Washington, DC 20460
+
+
+April 2007
+
+Guidance for Preparing
+Standard Operating
+Procedures (SOPs)
+
+EPA QA/G-6
+
+
+
+
+
+EPA QA/G-6
+
+April 2007
+ii
+
+
+FOREWORD
+
+
+
+The U.S. Environmental Protection (EPA) Agency has developed an Agency-wide
+program of quality assurance for environmental data. EPA’s Quality System requires
+documentation of both management and technical activities. This guidance document, Guidance
+for Preparing Standard Operating Procedures (SOPs) provides a standard working tool that can
+be used to document routine quality system management and technical activities. It replaces
+EPA’s March 2001’s Guidance for Preparing Standard Operating Procedures (SOPs)
+EPA/240/B-01-004 with minimal revisions in text and new examples of both technical and
+administrative SOPs.
+
+
+This document is one of the U.S. Environmental Protection Agency Quality System
+Series documents. These documents describe the EPA policies and procedures for planning,
+implementing, and assessing the effectiveness of the Quality System. As required by EPA
+Manual 5360 A1 (May 2000), this document is valid for a period of up to five years from the
+official date of publication. After five years, this document will be reissued without change,
+revised, or withdrawn from the U.S. Environmental Protection Agency Quality System Series
+documents.
+
+
+Questions regarding this document or other Quality System Series documents should be
+directed to the Quality Staff at:
+
+U.S. EPA
+Quality Staff (2811R)
+1200 Pennsylvania Ave., NW
+Washington, DC 20460
+Phone: (202) 564-6830
+FAX: (202) 565-2441
+E-mail: quality@epa.gov
+
+
+Copies of EPA Quality System Series documents may be obtained from the Quality Staff
+directly or by downloading them from the Quality Staff Home Page: www.epa.gov/quality
+
+
+
+
+
+
+
+
+
+
+
+
+
+EPA QA/G-6
+
+April 2007
+iii
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+EPA QA/G-6
+
+April 2007
+iv
+
+
+TABLE OF CONTENTS
+
+
+
+
+
+
+
+
+
+
+
+
+
+Page
+
+FOREWORD..................................................................................................................... iii
+
+1.0
+INTRODUCTION ...................................................................................................1
+
+1.1 Overview............................................................................................................1
+
+1.2 Purpose...............................................................................................................1
+
+1.3 Benefits ..............................................................................................................1
+
+1.4 Writing Styles ....................................................................................................2
+
+2. 0
+SOP PROCESS........................................................................................................3
+
+2.1 SOP Preparation.................................................................................................3
+
+2.2 SOP Review and Approval................................................................................3
+
+2.3 Frequency of Revisions and Reviews................................................................3
+
+2.4 Checklists...........................................................................................................4
+
+2.5 Document Control..............................................................................................4
+
+2.6 SOP Document Tracking and Archival .............................................................4
+
+3.0
+SOP GENERAL FORMAT....................................................................................6
+
+3.1 Title Page ...........................................................................................................6
+
+3.2 Table of Contents...............................................................................................6
+
+3.3 Text ....................................................................................................................6
+
+4.0
+TYPES OF SOPs .....................................................................................................8
+
+4.1 Technical SOP Text Information Guidelines.....................................................8
+
+4.2 Administrative SOP Text Information Guidelines ..........................................10
+
+5.0
+EXAMPLE SOPS.................................................................................................12
+
+6.0
+REFERENCES .....................................................................................................13
+
+APPENDIX A: Preparation of Fish Tissue for Metal Analysis by ICP or Furnace AA ...14
+
+APPENDIX B: Multiple Tube Fermentation and Most Probable Number .......................19
+
+APPENDIX C: Waste Water Sample Collection...............................................................30
+
+APPENDIX D: Joint Air Compliance Overview Inspection.............................................38
+
+APPENDIX E: Preparing, Numbering, Retaining, Indexing, Revising, and Using..........47
+Standard Operating Procedures
+
+
+EPA QA/G-6
+
+April 2007
+v
+
+
+GUIDANCE FOR PREPARING
+STANDARD OPERATING PROCEDURES
+
+
+1.0
+INTRODUCTION
+
+1.1
+Overview
+
+
+A Standard Operating Procedure (SOP) is a set of written instructions that document a
+routine or repetitive activity followed by an organization. The development and use of SOPs are
+an integral part of a successful quality system as it provides individuals with the information to
+perform a job properly, and facilitates consistency in the quality and integrity of a product or
+end-result. The term “SOP” may not always be appropriate and terms such as protocols,
+instructions, worksheets, and laboratory operating procedures may also be used. For this
+document “SOP” will be used.
+
+
+SOPs describe both technical and fundamental programmatic operational elements of an
+organization that would be managed under a work plan or a Quality Assurance (QA) Project Plan
+[EPA Requirements for QA Project Plans (QA/R-5) (EPA 2001a)], or Chapter 5 of the EPA
+Quality Manual for Environmental Programs, (EPA Manual 5360 A) and under an organization’s
+Quality Management Plan [EPA Requirements for Quality Management Plans (QA/R-2) (EPA
+2001b)], or Chapter 3 of the EPA Quality Manual. This document is designed to provide
+guidance in the preparation and use of an SOP within a quality system.
+
+1.2
+Purpose
+
+
+SOPs detail the regularly recurring work processes that are to be conducted or followed
+within an organization. They document the way activities are to be performed to facilitate
+consistent conformance to technical and quality system requirements and to support data quality.
+They may describe, for example, fundamental programmatic actions and technical actions such
+as analytical processes, and processes for maintaining, calibrating, and using equipment. SOPs
+are intended to be specific to the organization or facility whose activities are described and assist
+that organization to maintain their quality control and quality assurance processes and ensure
+compliance with governmental regulations.
+
+
+If not written correctly, SOPs are of limited value. In addition, the best written SOPs will
+fail if they are not followed. Therefore, the use of SOPs needs to be reviewed and re-enforced by
+management, preferably the direct supervisor. Current copies of the SOPs also need to be
+readily accessible for reference in the work areas of those individuals actually performing the
+activity, either in hard copy or electronic format, otherwise SOPs serve little purpose.
+
+1.3
+Benefits
+
+
+The development and use of SOPs minimizes variation and promotes quality through
+consistent implementation of a process or procedure within the organization, even if there are
+temporary or permanent personnel changes. SOPs can indicate compliance with organizational
+EPA QA/G-6
+
+April 2007
+1
+
+
+and governmental requirements and can be used as a part of a personnel training program, since
+they should provide detailed work instructions. It minimizes opportunities for
+miscommunication and can address safety concerns. When historical data are being evaluated
+for current use, SOPs can also be valuable for reconstructing project activities when no other
+references are available. In addition, SOPs are frequently used as checklists by inspectors when
+auditing procedures. Ultimately, the benefits of a valid SOP are reduced work effort, along with
+improved comparability, credibility, and legal defensibility.
+
+
+SOPs are needed even when published methods are being utilized. For example, if an
+SOP is written for a standard analytical method, the SOP should specify the procedures to be
+followed in greater detail than appear in the published method. It also should detail how, if at
+all, the SOP differs from the standard method and any options that this organization follows. As
+noted in ASTM D5172-91 (2004), Standard Guide for Documenting the Standard Operating
+Procedures Used for the Analysis of Water, “a significant part of the variability of results
+generated by different laboratories analyzing the same samples and citing the same general
+reference is due to differences in the way the analytical test methods and procedures are actually
+performed in each laboratory. These differences are often caused by the slight changes or
+adjustments allowed by the general reference, but that can affect the final results." Using a
+correct well-written SOP can minimize such differences.
+
+1.4
+Writing Styles
+
+
+SOPs should be written in a concise, step-by-step, easy-to-read format. The information
+presented should be unambiguous and not overly complicated. The active voice and present verb
+tense should be used. The term "you" should not be used, but implied. The document should not
+be wordy, redundant, or overly lengthy. Keep it simple and short. Information should be
+conveyed clearly and explicitly to remove any doubt as to what is required. Also, use a flow
+chart to illustrate the process being described. In addition, follow the style guide used by your
+organization, e.g., font size and margins.
+EPA QA/G-6
+
+April 2007
+2
+
+
+2.0
+SOP PROCESS
+
+2.1
+SOP Preparation
+
+
+The organization should have a procedure in place for determining what procedures or
+processes need to be documented. Those SOPs should then be written by individuals
+knowledgeable with the activity and the organization's internal structure. These individuals are
+essentially subject-matter experts who actually perform the work or use the process. A team
+approach can be followed, especially for multi-tasked processes where the experiences of a
+number of individuals are critical, which also promotes “buy-in” from potential users of the SOP.
+
+
+SOPs should be written with sufficient detail so that someone with limited experience
+with or knowledge of the procedure, but with a basic understanding, can successfully reproduce
+the procedure when unsupervised. The experience requirement for performing an activity should
+be noted in the section on personnel qualifications. For example, if a basic chemistry or
+biological course experience or additional training is required that requirement should be
+indicated.
+
+2.2
+SOP Review and Approval
+
+
+SOPs should be reviewed (that is, validated) by one or more individuals with appropriate
+training and experience with the process. It is especially helpful if draft SOPs are actually tested
+by individuals other than the original writer before the SOPs are finalized.
+
+
+The finalized SOPs should be approved as described in the organization’s Quality
+Management Plan or its own SOP for preparation of SOPs. Generally the immediate supervisor,
+such as a section or branch chief, and the organization’s quality assurance officer review and
+approve each SOP. Signature approval indicates that an SOP has been both reviewed and
+approved by management. As per the Government Paperwork Elimination Act of 1998, use of
+electronic signatures, as well as electronic maintenance and submission, is an acceptable
+substitution for paper, when practical.
+
+2.3
+Frequency of Revisions and Reviews
+
+
+SOPs need to remain current to be useful. Therefore, whenever procedures are changed,
+SOPs should be updated and re-approved. If desired, modify only the pertinent section of an
+SOP and indicate the change date/revision number for that section in the Table of Contents and
+the document control notation.
+
+
+SOPs should be also systematically reviewed on a periodic basis, e.g. every 1-2 years, to
+ensure that the policies and procedures remain current and appropriate, or to determine whether
+the SOPs are even needed. The review date should be added to each SOP that has been
+reviewed. If an SOP describes a process that is no longer followed, it should be withdrawn from
+the current file and archived.
+
+
+The review process should not be overly cumbersome to encourage timely review. The
+frequency of review should be indicated by management in the organization’s Quality
+EPA QA/G-6
+
+April 2007
+3
+
+
+Management Plan. That plan should also indicate the individual(s) responsible for ensuring that
+SOPs are current.
+
+2.4
+Checklists
+
+
+Many activities use checklists to ensure that steps are followed in order. Checklists are
+also used to document completed actions. Any checklists or forms included as part of an activity
+should be referenced at the points in the procedure where they are to be used and then attached to
+the SOP.
+
+
+In some cases, detailed checklists are prepared specifically for a given activity. In those
+cases, the SOP should describe, at least generally, how the checklist is to be prepared, or on what
+it is to be based. Copies of specific checklists should be then maintained in the file with the
+activity results and/or with the SOP.
+
+
+Remember that the checklist is not the SOP, but a part of the SOP.
+
+2.5
+Document Control
+
+
+Each organization should develop a numbering system to systematically identify and
+label their SOPs, and the document control should be described in its Quality Management Plan.
+Generally, each page of an SOP should have control documentation notation, similar to that
+illustrated below. A short title and identification (ID) number can serve as a reference
+designation. The revision number and date are very useful in identifying the SOP in use when
+reviewing historical data and is critical when the need for evidentiary records is involved and
+when the activity is being reviewed. When the number of pages is indicated, the user can
+quickly check if the SOP is complete. Generally this type of document control notation is
+located in the upper right-hand corner of each document page following the title page.
+
+Short Title/ID #
+Rev. #:
+Date:
+Page 1 of
+
+
+
+
+
+
+2.6
+SOP Document Tracking and Archival
+
+
+The organization should maintain a master list of all SOPs. This file or database should
+indicate the SOP number, version number, date of issuance, title, author, status, organizational
+division, branch, section, and any historical information regarding past versions. The QA
+Manager (or designee) is generally the individual responsible for maintaining a file listing all
+current quality-related SOPs used within the organization. If an electronic database is used,
+automatic “Review SOP” notices can be sent. Note that this list may be used also when audits
+are being considered or when questions are raised as to practices being followed within the
+organization.
+
+EPA QA/G-6
+
+April 2007
+4
+
+
+
+As noted above in Section 2.3, the Quality Management Plan should indicate the
+individual(s) responsible for assuring that only the current version is used. That plan should also
+designated where, and how, outdated versions are to be maintained or archived in a manner to
+prevent their continued use, as well as to be available for historical data review.
+
+
+Electronic storage and retrieval mechanisms are usually easier to access than a hard-copy
+document format. For the user, electronic access can be limited to a read-only format, thereby
+protecting against unauthorized changes made to the document.
+EPA QA/G-6
+
+April 2007
+5
+
+
+3.0
+SOP GENERAL FORMAT
+
+
+SOPs should be organized to ensure ease and efficiency in use and to be specific to the
+organization which develops it. There is no one “correct” format; and internal formatting will
+vary with each organization and with the type of SOP being written. Where possible break the
+information into a series of logical steps to avoid a long list. The level of detail provided in the
+SOP may differ based on, e.g., whether the process is critical, the frequency of that procedure
+being followed, the number of people who will use the SOP, and where training is not routinely
+available. A generalized format is discussed next.
+
+3.1
+Title Page
+
+
+The first page or cover page of each SOP should contain the following information: a title
+that clearly identifies the activity or procedure, an SOP identification (ID) number, date of issue
+and/or revision, the name of the applicable agency, division, and/or branch to which this SOP
+applies, and the signatures and signature dates of those individuals who prepared and approved
+the SOP. Electronic signatures are acceptable for SOPs maintained on a computerized database.
+
+3.2
+Table of Contents
+
+
+A Table of Contents may be needed for quick reference, especially if the SOP is long, for
+locating information and to denote changes or revisions made only to certain sections of an SOP.
+
+3.3
+Text
+
+
+Well-written SOPs should first briefly describe the purpose of the work or process,
+including any regulatory information or standards that are appropriate to the SOP process, and
+the scope to indicate what is covered. Define any specialized or unusual terms either in a
+separate definition section or in the appropriate discussion section. Denote what sequential
+procedures should be followed, divided into significant sections; e.g., possible interferences,
+equipment needed, personnel qualifications, and safety considerations (preferably listed in bold
+to capture the attention of the user). Finally, describe next all appropriate QA and quality control
+(QC) activities for that procedure, and list any cited or significant references.
+
+
+As noted above, SOPs should be clearly worded so as to be readily understandable by a
+person knowledgeable with the general concept of the procedure, and the procedures should be
+written in a format that clearly describes the steps in order. Use of diagrams and flow charts help
+to break up long sections of text and to briefly summarize a series of steps for the reader.
+
+
+Attach any appropriate information, e.g., an SOP may reference other SOPs. In such a
+case, the following should be included:
+
+
+1. Cite the other SOP and attach a copy, or reference where it may be easily located.
+
+2. If the referenced SOP is not to be followed exactly, the required modification should
+be specified in the SOP at the section where the other SOP is cited.
+
+EPA QA/G-6
+
+April 2007
+6
+
+
+
+More information on text is contained in Section 4.1 for Technical SOPs and Section 4.2
+for Administrative SOPs.
+
+EPA QA/G-6
+
+April 2007
+7
+
+
+4.0
+TYPES OF SOPs
+
+
+SOPs may be written for any repetitive technical activity, as well as for any
+administrative or functional programmatic procedure, that is being followed within an
+organization. General guidance for preparing both technical and administrative SOPs follows
+and examples of each are located in the Appendix.
+
+4.1
+Guidelines for Technical SOP Text
+
+
+Technical SOPs can be written for a wide variety of activities. Examples are SOPs
+instructing the user how to perform a specific analytical method to be followed in the laboratory
+or field (such as field testing using an immunoassay kit), or how to collect a sample in order to
+preserve the sample integrity and representativeness (such as collection of samples for future
+analysis of volatile organic compounds or trace metals), or how to conduct a bioassessment of a
+freshwater site. Technical SOPs are also needed to cover activities such as data processing and
+evaluation (including verification and validation), modeling, risk assessment, and auditing of
+equipment operation.
+
+
+Citing published methods in SOPs is not always acceptable, because cited published
+methods may not contain pertinent information for conducting the procedure-in-house.
+Technical SOPs need to include the specific steps aimed at initiating, coordinating, and recording
+and/or reporting the results of the activity, and should be tailored only to that activity. Technical
+SOPs should fit within the framework presented here, but this format can be modified, reduced,
+or expanded as required. Examples of technical SOPs are located in the Appendices A, B, and
+C.
+
+
+In general, technical SOPs will consist of five elements: Title page, Table of Contents,
+Procedures, Quality Assurance/Quality Control, and References:
+
+
+1. Title Page - See Section 3.1.
+
+
+2. Table of Contents - See Section 3.2.
+
+
+3. Procedures - The following are topics that may be appropriate for inclusion in
+technical SOPs. Not all will apply to every procedure or work process being detailed.
+
+a. Scope and Applicability (describing the purpose of the process or procedure
+and any organization or regulatory requirements, as well as any limits to the use
+of the procedure),
+
+
+
+b. Summary of Method (briefly summarizing the procedure),
+
+
+c. Definitions (identifying any acronyms, abbreviations, or specialized terms
+used),
+
+EPA QA/G-6
+
+April 2007
+8
+
+
+
+d. Health & Safety Warnings (indicating operations that could result in personal
+injury or loss of life and explaining what will happen if the procedure is not
+followed or is followed incorrectly; listed here and at the critical steps in the
+procedure),
+
+
+e. Cautions (indicating activities that could result in equipment damage,
+degradation of sample, or possible invalidation of results; listed here and at the
+critical steps in the procedure),
+
+
+f. Interferences (describing any component of the process that may interfere with
+the accuracy of the final product),
+
+
+g. Personnel Qualifications/Responsibilities (denoting the minimal experience the
+user should have to complete the task satisfactorily, and citing any applicable
+requirements, like certification or “inherently governmental function”),
+
+
+h. Equipment and Supplies (listing and specifying, where necessary, equipment,
+materials, reagents, chemical standards, and biological specimens),
+
+
+i. Procedure (identifying all pertinent steps, in order, and the materials needed to
+accomplish the procedure such as:
+
+
+
+• Instrument or Method Calibration and Standardization
+
+
+• Sample Collection
+
+
+• Sample Handling and Preservation
+
+• Sample Preparation and Analysis (such as extraction, digestion, analysis,
+identification, and counting procedures)
+
+
+• Troubleshooting
+
+• Data Acquisition, Calculations & Data Reduction Requirements (such as
+listing any mathematical steps to be followed)
+
+• Computer Hardware & Software (used to store field sampling records,
+manipulate analytical results, and/or report data), and
+
+
+j. Data and Records Management (e.g., identifying any calculations to be
+performed, forms to be used, reports to be written, and data and record storage
+information).
+
+4. Quality Control and Quality Assurance Section - QC activities are designed to allow
+self-verification of the quality and consistency of the work. Describe the preparation of
+appropriate QC procedures (self-checks, such as calibrations, recounting, reidentification)
+and QC material (such as blanks - rinsate, trip, field, or method; replicates; splits; spikes;
+and performance evaluation samples) that are required to demonstrate successful
+performance of the method. Specific criteria for each should be included. Describe the
+frequency of required calibration and QC checks and discuss the rationale for decisions.
+Describe the limits/criteria for QC data/results and actions required when QC data exceed
+EPA QA/G-6
+
+April 2007
+9
+
+
+QC limits or appear in the warning zone. Describe the procedures for reporting QC data
+and results.
+
+5. Reference Section - Documents or procedures that interface with the SOP should be
+fully referenced (including version), such as related SOPs, published literature, or
+methods manuals. Citations cannot substitute for the description of the method being
+followed in the organization. Attach any that are not readily available.
+
+4.2
+Guidelines for Administrative or Fundamental Programmatic SOP Text
+
+
+As with the technical SOPs, these SOPs can be written for a wide variety of activities,
+e.g., reviewing documentation such as contracts, QA Project Plans and Quality Management
+Plans; inspecting (auditing) the work of others; determining organizational training needs;
+developing information on records maintenance; validating data packages; or describing office
+correspondence procedures. Administrative SOPs need to include a number of specific steps
+aimed at initiating the activity, coordinating the activity, and recording and/or reporting the
+results of the activity, tailored to that activity. For example, audit or assessment SOPs should
+specify the authority for the assessment, how auditees are to be selected, what will be done with
+the results, and who is responsible for corrective action. Administrative SOPs should fit within
+the framework presented here, but this format can be modified, reduced, or expanded. An
+example of administrative SOPs can be found in Appendix E.
+
+
+In general, administrative/programmatic SOPs will consist of five elements: Title page,
+Table of Contents, Purpose, Procedures, Quality Assurance/Quality Control, and References.
+
+
+1. Title Page - See Section 3.1.
+
+
+2. Table of Contents - See Section 3.2.
+
+
+3. Procedures -The following are topics that may be appropriate for inclusion in
+administrative SOPs:
+
+
+
+a. Purpose – (identifying the intended use of the process)
+
+
+
+b. Applicability/Scope (identifying when the procedure is to be followed),
+
+
+
+c. Summary of Procedure,
+
+
+d. Definitions (defining any words, phrases, or acronyms having special meaning
+or application),
+
+
+e. Personnel Qualifications/Responsibilities (identifying any special qualifications
+users should have such as certification or training experience and/or any
+individual or positions having responsibility for the activity being described),
+
+
+
+f. Procedure,
+EPA QA/G-6
+
+April 2007
+10
+
+
+
+
+g. Criteria, checklists, or other standards that are to be applied during the
+procedure such as citing this document as guidance for reviewing SOPs), and
+
+
+h. Records Management (specifically, e.g., as forms to be used and locations of
+files).
+
+4. Quality Control and Quality Assurance Section - Describe any control steps and
+provisions for review or oversight prior to acceptance of the product or deliverable. This
+can include test plans such as verification and validation plans for software or running a
+“spell-check” program on the finished document.
+
+5. Reference Section - Cite all references noted in the body of the SOP. A copy of any
+cited references not readily available should be attached to the SOP.
+EPA QA/G-6
+
+April 2007
+11
+
+
+5.0
+EXAMPLE SOPS
+
+
+Example SOPS can be found in Appendices A-E. These examples are not purported to
+be perfect or complete in content, nor is their use endorsed or recommended. They are provided
+merely to illustrate application of SOP format to technical and administrative subjects. They
+should not be cited or followed as actual procedure specification or guidance. Attachments cited
+by the individual examples are not included.
+EPA QA/G-6
+
+April 2007
+12
+
+
+6.0
+REFERENCES
+
+American Society for Quality. 2004. ANSI/ASQC E4-2004, Specifications and Guidelines for
+Quality Systems for Environmental Data Collection and Environmental Technology Programs.
+Milwaukee, WI.
+
+American Society for Testing and Materials. ASTM D 5172-91 (2004), Standard Guide for
+Documenting the Standard Operating Procedures Used for the Analysis of Water. 2004.
+American Society for Testing and Materials, West Conshohocken, PA.
+
+Code of Federal Regulations. July 1, 1999. 40 CFR Part 160. Good Laboratory Practice
+Standards.
+
+Escoe, Adrienne. 1997. Nimble Documentation. The Practical Guide for World-Class
+Organizations. Milwaukee, Wisconsin: American Society for Quality, Quality Press.
+
+Garner, Willa Y. and Maureen S. Barge, editors, "Good Laboratory Practices. An Agrochemical
+Perspective," ACS Symposium Series 369, American Chemical Society.
+
+U.S. Environmental Protection Agency. 2000. EPA Quality Manual for Environmental Programs
+(EPA Manual 5360 A1). Office of Environmental Information, Washington, DC.
+
+U.S. Environmental Protection Agency. 2001a. EPA Requirements for Quality Assurance Project
+Plans (QA/R-5), EPA/240/B-01/003, Office of Environmental Information, Washington, DC.
+
+U.S. Environmental Protection Agency. 2001b. EPA Requirements for Quality Management
+Plans (QA/R-2), EPA/240/B-01/002, Office of Environmental Information, Washington, DC.
+
+U.S. Environmental Protection Agency. 2005. Manual for the Certification of Laboratories
+Analyzing Drinking Water. Criteria and Procedures/Quality Assurance, fifth ed. EPA 815-R-
+05-004. Washington, DC. Office of Water, Cincinnati, OH.
+
+
+
+
+
+
+
+
+
+
+EPA QA/G-6
+
+April 2007
+13
+
+
+APPENDIX A
+
+
+
+
+
+
+
+
+
+
+
+PREPARATION OF FISH TISSUE FOR METAL ANALYSIS by ICP or FURNACE AA
+
+LABORATORY OPERATING PROCEDURE
+# 54.0
+
+September 5, 2006
+
+By
+
+Lisa Mathews
+
+
+
+
+
+
+DRAFT EXAMPLE – DO NOT QUOTE OR CITE
+
+
+
+
+
+
+
+APPROVED:
+(Signature and date on file)
+Inorganic Section Chief/date
+
+(Signature and date on file)
+Regional Laboratory Branch Chief/date
+
+(Signature and date on file)
+Laboratory QA Officer/date
+EPA QA/G-6
+
+April 2007
+14
+
+
+LOP #54.0
+
+09/05/06
+Page 2 of 5
+
+A. SCOPE AND APPLICABILITY
+
+
+This method is applicable to fish tissue samples ground with commercial meat processing
+equipment. It may be used for the graphite furnace atomic absorption (AA) analysis of As, Se,
+Sb, Cd, Pb, or the inductively coupled plasma (ICP) analysis for Ag, Al, Ba, Be, Cd, Cop, Cr,
+Cu, Fe, Mn, Mo, Ni, Pb, V, Zn, Mg, and Na. This method has not been evaluated for Ti, Ca, K,
+or Mg. This LOP is based on EPA Method 200.3.
+
+B. SUMMARY OF METHOD
+
+
+Fish tissue is dissolved in concentrated HNO3 and concentrated HCl with gentle heating.
+Since all organic material is not removed, to insure acceptable precision and accuracy, all
+graphite furnace atomic absorption analyses must be performed utilizing a method of standard
+additions.
+
+C. INTERFERENCES
+
+
+There are no known interferences. All metals mentioned above have been found to
+produce acceptable precision and accuracy.
+
+D. SAFETY
+
+
+1. Care should be taken when doing the hot-acid digestion using concentrated nitric acid.
+Digestion is done in a block digester, in a fume hood. The analyst should wear protective
+clothing, safety glasses, and protective gloves. The hood sash should be lowered when samples
+are digesting. Solid samples sometimes bump.
+
+
+2. EPA-RCRA regulations require the proper disposal of metal samples and wastes. In
+this laboratory, disposal operations are handled by the designated Laboratory Safety Coordinator.
+See LOP 32.3 for details.
+
+E. APPARATUS AND MATERIALS
+
+
+1. Digestion Containers:
+
+
+100 mL polypropylene calibrated digestion containers with lids
+
+
+2. Apparatus:
+
+
+Block Digester-Technicon-BD-40, in a fume hood
+
+
+Centrifuge or 10 mL syringes with PVDF filters
+EPA QA/G-6
+
+April 2007
+15
+
+
+LOP #54.0
+
+09/05/06
+Page 3 of 5
+
+F. REAGENTS AND CHEMICALS
+
+
+1. DI Water – DI water from the laboratory taps can be used after allowing it to run for
+several minutes before collection.
+
+
+2. Acids and Bases
+
+
+a. Concentrated Nitric Acid: Use “Baker Intra-Analyzed” reagent grade acid
+specifically for trace metal analysis, or equivalent.
+
+
+
+b. Concentrated Hydrochloric Acid: Use reagent grade acid specially for trace
+metal analysis, or equivalent.
+
+
+
+
+
+c. Thirty percent (30%) hydrogen peroxide.
+
+
+
+3. Spiking Solutions
+
+
+
+a. Spiking solutions 1 and 5 are made according to the spike solution log book in
+the metals digestion lab. Copies of the standards used and the initial run of the spikes will be
+kept in this log book. SPEX standards, or equivalent, should be used for the spiking solutions.
+Do not use the same standards used for the calibration standards as discussed in LOP #201.0 and
+202.1. For AA analysis, 200 µL of solution 5 is added to a fish tissue sample. For ICP analysis,
+500 µL of solution 1 is added.
+
+
+4. Reference Standards
+
+
+
+a. Samples, with known concentrations of the elements under analysis, obtained
+from the following external sources. They include, but are not limited to:
+
+
+(1) NBS oyster tissue (SRM-1566)
+
+
+(2) EPA trace metals in fish
+
+
+
+Use only 1 gm of dried reference.
+
+
+5. Calibration Standards
+
+
+
+For preparation of instrument calibration standards, see LOP #201.0 and 202.1.
+
+G. SAMPLE COLLECTION, PRESERVATION, AND HANDLING
+
+
+Fish samples are collected by standard field procedures and, when received in the
+laboratory, are kept frozen until analysis. Samples are ground, using commercial meat
+processing equipment, and a portion of the ground sample is placed into an 8-oz glass jar for
+metals analysis.
+EPA QA/G-6
+
+April 2007
+16
+
+
+LOP #54.0
+
+09/05/06
+Page 4 of 5
+
+
+H. QUALITY CONTROL
+
+
+The following QC samples should be prepared and analyzed at the same time as unknown
+samples. They are to be done on a frequency of one per batch or one per every 20 samples,
+whichever is greater.
+
+
+a. Method Blank. Digested blank carried through the entire process with all reagents but
+without sample. Deionized water is used for water matrices.
+
+
+b. Laboratory Fortified Blank. This digested standard is prepared in the same manner as
+spiked samples except with no sample. For water, 100 mL of DI water is used. This quality
+control standard is required with water samples and may also be used with fish samples.
+
+
+c. Laboratory Control Sample (LCS). This solid sample of known concentration is
+digested and analyzed along with the unknown solid samples as a measure of the analytical
+performance.
+
+
+d. Matrix Spike (MS). An aliquot of standards added to the sample prior to digestion.
+The spiking procedure may be found in Section K or in the appropriate sample preparation
+method.
+
+
+e. Matrix Spike Duplicate (MSD). A second aliquot of the same sample as d, spiked in
+the same way. It must be run at the same time as the matrix spike.
+
+I. SAMPLE PREPARATION PROCEDURE
+
+
+
+1. Sample Preparation
+
+
+
+a. Weigh approximately 2 gm of fish tissue to the nearest 0.01 gm into 100 mL
+polypropylene digestion containers. Add 5 mL concentrated HNO3. Heat in the block digester
+at 40 oC until tissue is dissolved or at room temperature overnight. Increase temperature to 110
+oC and heat solution until it begins to turn brown – about 1 hour. Cool sample, and then add 2
+mL of concentrated nitric acid and return solution to block digester at 110oC and heat until the
+solution again begins to turn brown, about 30 minutes. Cool sample, then add 2 mL of 30%
+hydrogen peroxide to the sample, return to the block digester at 110oC and reduce the solution
+volume to 5-10 mL. Allow sample to cool, then dilute to 100 mL volume with deionized water.
+
+
+2. Sample Analysis
+
+
+a. Refer to LOP # 312.3 for ICAP analysis and LOP # 311.2 for AA analysis.
+
+EPA QA/G-6
+
+April 2007
+17
+
+
+LOP #54.0
+
+09/05/06
+Page 5 of 5
+
+
+J. CALCULATIONS AND DATA REPORTING
+
+
+Refer to LOP #312.3 for ICAP analysis and LOP # 311.2 for AA analysis.
+
+K. REFERENCES
+
+1. EPA Method 200.3, “Sample Preparation Procedure for Spectrochemical
+Determination of Total Recoverable Elements in Biological Tissues”, current version.
+
+
+2. LOP #312.3, “Analysis of Metals by PE Optima 4300 ICAP”, current version.
+
+
+3. LOP # 311.2, “Determination of Trace Elements by Stabilized Temperature Graphite
+Furnace Atomic Absorption”, current revision.
+
+
+4. LOP # 32.3, “Sample Disposal”, current revision.
+EPA QA/G-6
+
+April 2007
+18
+
+
+APPENDIX B
+
+Environmental Biology
+MTF/MPN
+Jackson State Laboratory
+SOP: JSL-EB-103
+Rev. No. 4
+
+Date: February 2007
+Page 1 of 11
+
+
+
+
+
+
+Jackson State Environmental Laboratory
+Environmental Biology
+
+
+JS NELAP Laboratory ID# 59867
+NPDES Laboratory ID# JS 20849
+
+
+
+
+Standard Operating Procedure JSEL-EB-103
+
+Multiple Tube Fermentation (MTF) and Most Probable Number (MPN)
+
+
+
+
+
+
+DRAFT EXAMPLE – DO NOT QUOTE OR CITE
+
+
+
+
+
+
+
+Author: _________________________________________________________
+Senior Microbiologist Nancy Morse
+
+Approved: ________________________________________________________
+
+Laboratory Director
+Ellen H. Bailey
+
+
+EPA QA/G-6
+
+April 2007
+19
+
+Environmental Biology
+MTF/MPN
+Jackson State Laboratory
+SOP: JSL-EB-103
+Rev. No. 4
+
+Date: February 2007
+Page 2 of 11
+
+Distribution
+
+Ellen H. Bailey, Quality Assurance Officer and
+Environmental Biology Laboratory Director
+
+Laboratory Copy, maintained by Ellen H. Bailey
+
+Paul Hines, Quality Assurance Officer
+Jackson State Environmental Laboratory
+
+Revision Record
+
+Revision
+
+Date
+
+Responsible Person
+
+Description of Change
+
+1
+
+June 2001
+
+Ellen H Bailey
+
+Initial Release
+
+2
+
+May 2003
+
+Ellen H. Bailey
+
+Additional description; minor
+ypographical errors; QAO
+t
+
+3
+
+December 2005
+
+Ellen H. Bailey
+
+Add 8.2.4; add clarification to
+.3.8, 10.0 and 10.1.
+9
+
+4
+
+February 2007
+
+Ellen H. Bailey
+
+Change Lab Director
+
+
+
+
+Environmental Biology
+MTF/MPN
+Jackson State Laboratory
+SOP: JSL-EB-103
+Rev. No. 4
+
+Date: February 2007
+Page 3 of 11
+
+
+The following laboratory staff have read this Manual. A copy of this page will be
+distributed to the employee training record file.
+
+
+
+Signature Title Date
+
+21
+
+
+
+
+Environmental Biology
+MTF/MPN
+Jackson State Laboratory
+SOP: JSL-EB-103
+Rev. No. 4
+
+Date: February 2007
+Page 4 of 11
+
+
+TABLE OF CONTENTS
+
+
+
+1.0. Scope and
+Application………………………………………………………………………5
+
+2.0. Method
+Summary…………………………………………………………………………...5
+
+3.0.
+Definitions……………………………………………………………………………………5
+
+4.0 Health and Safety Warnings…………………………………………………………….…..5
+
+5.0. Interferences…………………………………………………………………………………6
+
+6.0. Handling and Preservation…………………………………………………………………6
+
+7.0. Equipment and Supplies…………………………………………………………………....6
+7.1. Laboratory
+Apparatus………………………………………………………………6
+
+7.2. Media…………………………………………………………………………………7
+
+8.0. Quality Control……………………………………………………………………………...7
+
+8.1. Calibration and standardization…………………………………………………...7
+
+8.2. Quality Control……………………………………………………………………...7
+
+9.0. Procedures…………………………………………………………………………………..8
+9.1. General Testing Procedures………………………………………………………..8
+9.2. Sample Preparation…………………………………………………………………9
+9.3 Analysis……………………………………………………………………………….9
+9.4 Interpretation……………………………………………………………………….10
+
+10.0. Data Analysis and Calculations………………………………………………………….11
+
+11.0. Waste Management……………………………………...……………………………….11
+
+12.0. References…………………………………………………………………………………11
+
+
+22
+
+
+
+Environmental Biology
+MTF/MPN
+Jackson State Laboratory
+SOP: JSL-EB-103
+Rev. No. 4
+
+Date: February 2007
+Page 5 of 11
+
+
+1. SCOPE AND APPLICATION. These methods are used to detect estimated numbers of total
+coliforms, and fecal coliforms or E. coli in 100 ml of potable (drinking) water or 100 ml source
+water samples, and in marine and wastewater samples. In addition, this method is used by public
+health officials to test shellfish and their overlying waters for evidence of recent contamination.
+The detection limits for this method range from less than 1.1 colony forming units (CFU) to
+infinite).
+
+2. METHOD SUMMARY. A series of 5 to 10 tubes containing lauryl tryptose broth (LTB) are
+inoculated with aliquots of sample. If a five tube series is performed, at least three 10-fold
+dilutions of sample are inoculated into tubes containing LTB. The tubes are incubated at 35.0 ±
+0.5 oC for 48 hours. If potable drinking water is being analyzed, 100 ml of water must be
+analyzed. The tubes are examined at 24 and 48 hours for presence of growth and gas. Tubes
+with growth and gas are considered presumptively positive for total coliform. Tubes are
+transferred to confirmatory broth (BGBL for total coliform and EC broth or EC/MUG broth for
+fecal coliform and/or E. coli) and incubated at the required temperature for a designated time.
+
+3. DEFINITIONS. The coliform group comprises several genera of bacteria belonging to the
+family Enterobacteriaceae. The historical definition of the group is based on the method used for
+detection rather than on the tenets of systematic bacteriology.
+3.1 MTF – Multiple Tube Fermentation
+
+3.2 MPN (Most Probable Number) – when multiple tubes are used in the fermentation
+technique, results of the examination of replicate tubes and dilutions are reported in terms
+of the most probable number of organisms present. This number, based on certain
+probability formulas, is an estimate of the mean density of coliforms in the sample per
+100ml.
+
+4. HEALTH AND SAFETY WARNINGS.
+
+4.1 Microbiological analyses involve the culturing of potentially pathogenic organisms.
+Standard biosafety level 2 precautions should be followed.
+
+
+4.2 Observe all safety procedures discussed in the “JSEL Chemical Hygiene Plan”.
+
+
+4.3 All microbiologically contaminated media in the laboratory shall be autoclaved prior
+to disposal.
+
+
+4.4 Laboratory equipment and benches shall be disinfected at least twice daily.
+
+
+4.5 Mouth pipetting is prohibited.
+
+
+
+23
+
+
+
+Environmental Biology
+MTF/MPN
+Jackson State Laboratory
+SOP: JSL-EB-103
+Rev. No. 4
+
+Date: February 2007
+Page 6 of 11
+
+
+4.6 All accidents, particularly those which may result in infection, shall be reported to the
+Laboratory Supervisor.
+
+
+4.7 MSDS sheets detailing the hazards of media and reagents are available in the
+laboratory.
+
+5. INTERFERENCES. High concentrations of chlorine can interfere with growth of coliform
+organisms. For this reason, if chlorine is expected, sodium thiosulfate shall be added to sample bottle
+prior to autoclaving.
+
+6. HANDLING AND PRESERVATION.
+
+6.1 Samples for microbiological analysis shall be collected in approved sample bottles in
+accordance with procedures set forth in Doc No. JSEL-QA-101, “Jackson State
+Environmental Laboratory Quality Manual.”
+
+
+6.2 A completed Request for Analysis form should accompany each sample submitted for
+analysis.
+
+
+6.3 Sample bottles that contain thiosulfate to neutralize chlorine and shall not be washed
+out of the sample bottles prior to sample collection.
+
+
+6.4 Sample collectors are encouraged to hold samples at <10 oC during transit to the
+laboratory.
+
+
+6.5 Analysis of potable waters shall begin within 30 hours of sample collection. Analysis
+of samples from all other waters sources shall begin within 8 hours of sample collection.
+
+7. EQUIPMENT AND SUPPLIES
+7.1. Laboratory Apparatus
+7.1.1 Air-jacketed fan circulating air incubator set at 35.0 ± 0.5oC
+
+7.1.2 Circulating water bath set at 44.5 ± 0.2oC
+
+7.1.3 Disposable (plastic/borosilicate) 10, 5, 1mL serological pipets (sterile)
+
+7.1.4 Hardwood applicator sticks, sterilized by hot air oven.
+
+7.1.5 Cotton-tipped applicator sticks, sterile
+
+7.1.6 Fischer-Scientific 99mL sterile PBS blanks (or equivalent brand)
+
+
+
+24
+
+
+
+Environmental Biology
+MTF/MPN
+Jackson State Laboratory
+SOP: JSL-EB-103
+Rev. No. 4
+
+Date: February 2007
+Page 7 of 11
+
+7.1.7. Borosilicate culture tubes, 150 x 20mm and 150 x 18mm containing
+inverted fermentation vials 75 x 10mm
+
+7.1.8 Loose fitting/screw cap tops
+
+7.1.9 Pyrex 100mL graduated cylinders
+
+7.1.10 Culture tube racks
+
+
+7.2.
+Preparation of Medium
+Use media commercially available. Avoid preparing media from initial
+ingredients.
+7.2.1 Presumptive test – Lauryl tryptose broth.
+Make up lx, 2x, 3x and/or 6x broth so that final concentration (after sample
+addition) is not less than the standard medium. Follow manufacturer’s
+recommendations for preparation. Final pH should be 6.8 ±0.2.
+
+7.2.2 Confirmed test – Brilliant green bile lactose (BGBL) broth (2%) and
+EC/MUG medium
+Prepare media following manufacturer’s recommendation. Final pH for BGBL is
+7.2 ±0.2 and for EC/MUG, 6.9 ±0.2.
+
+8. QUALITY CONTROL
+8.1. Calibration and standardization. Check and record temperatures in incubator
+twice daily, separated by at least 4 hours. Thermometers must be checked at least
+annually against a NIST-certified thermometer using the protocol specified in SOP JSEL-
+EB-111. For calibration of laboratory equipment, check JSEL Quality Manual appendix
+G for list of equipment and their SOP numbers.
+
+8.2. Quality Control.
+8.2.1 Analyze a minimum of one known positive sample per quarter using this
+method, if no positive samples have been processed.
+
+8.2.2 Media – each lot of prepared media is checked for the following
+parameters:
+
+8.2.1 Sterility – each lot is incubated for 24 hours at 35.0±0.5°C and
+examined for presence of growth and gas. If a tube is positive for growth
+or gas, the entire lot is discarded.
+
+
+
+25
+
+
+
+Environmental Biology
+MTF/MPN
+Jackson State Laboratory
+SOP: JSL-EB-103
+Rev. No. 4
+
+Date: February 2007
+Page 8 of 11
+
+8.2.2 pH – pH of the media is measured prior to, and after, autoclaving. If
+the pH is outside the manufacturer’s specifications prior to autoclaving it
+can be adjusted by addition of NaOH or HCl. If the pH exceeds these
+specifications after autoclaving, the entire prepared batch must be
+discarded.
+
+8.2.3 Proper reactions using standard culture controls that include a total
+coliform, fecal coliform and/or E coli and a non-coliform will be used to
+evaluate the results with each set of samples.
+
+8.2.3 Successfully analyze a set of commercially available performance samples
+twice a year. In lieu of measurement of uncertainty studies for the
+presence/absence format, the method performance is demonstrated by
+acceptable analysis of a set of performance test unknowns semi-annually.
+Method performance for the quantitative format has been established at
+this laboratory through a measurement of uncertainty study performed
+March 2005.
+
+8.2.4 For general quality assurance/quality control procedures associated with
+this method and the associated laboratory procedures see Appendix J of
+the JSEL Quality Manual.
+
+9. PROCEDURES
+9.1. General Testing Procedures
+9.1.1. Disinfect work area before and after analysis.
+
+9.1.2.. Ensure that sample complies with Sample Acceptance Policy (see JSEL-A
+609.3).
+
+9.1.3. All samples shall be numbered, opened and handled individually to avoid
+mixing of samples.
+
+
+
+
+
+
+
+
+
+
+
+26
+
+
+
+Environmental Biology
+MTF/MPN
+Jackson State Laboratory
+SOP: JSL-EB-103
+Rev. No. 4
+
+Date: February 2007
+Page 9 of 11
+
+9.2. Sample Preparation
+9.2.1 Water samples with high solids – blending of sediments, primary
+effluents, sludge, and highly turbid waters is essential for representative
+subsampling. Blend the entire water sample containing in a laboratory
+scientific blender. Use only autoclavable borosilicate glass, stainless steel,
+or plastic blender containers with safety screw covers to prevent release of
+aerosols. Limit blending to no more than 30 seconds at about 5000 RPM
+to avoid overheating or shearing damage. Dilute sediments or soils
+containing limited amounts of water at a 1:1, 1:2 ratio or more with
+dilution water to ensure good blending action and to reduce heat
+generation. Use of a smaller blender container rather than smaller blender
+units will also reduce heat production.
+
+9.2.2 Analysis of shellfish samples performed similarly to section 9.1, except
+that the shellfish are aseptically shucked prior to blending. A minimum of
+6 - 8 shellfish are used to provide statistically reliable data. See reference
+“Recommended Procedures for the Examination of Sea Water and
+Shellfish” 1970 for details.
+
+
+9.3. Analysis
+9.3.1 Presumptive phase– arrange tubes in rows with the number of dilutions
+dependent upon the quality and character of the samples. For potable
+water use ten 10mL portions or a single bottle of 100mL portion. If a
+single bottle of 100 mL is used, the color indicator, bromocresol purple is
+added. For non-potable waters use five tubes per dilution with a minimum
+of three 10 fold serial dilutions.
+9.3.2 Shake sample and sample-containing dilution bottles vigorously about 25
+times over an arc of 12 inches in less than 7 seconds. Remove cap from
+sample bottle. Inoculate each tube in a set of five with replicate sample
+volumes in decreasing volumes. If necessary, mix test portions in the
+medium by gentle agitation.
+
+9.2.3 After incubating inoculated tubes or bottles at 35 ±0.5oC for 24 ± 2 hours,
+gently agitate the bottles and tubes in the rack and examine for gas
+production or effervescence, growth and acidic reaction. If no gas or acid
+production has occurred, re-incubate and re-examine at the end of 48 ± 3
+hours. Record presence or absence of heavy growth, gas and/or acid
+production. Since the fecal coliform test can be run in parallel, transfer to
+EC/MUG and BGBL at the same time. At the end of 48 hours, if there is
+heavy growth, but no gas, follow through with the confirmation phase.
+Environmental Biology
+MTF/MPN
+Jackson State Laboratory
+SOP: JSL-EB-103
+Rev. No. 4
+
+27
+
+
+
+Date: February 2007
+Page 10 of 11
+
+9.4 Interpretation
+9.4.1 Production of gas and growth formation in the tubes or bottles after the
+required incubation time constitutes a positive presumptive reaction.
+Submit tubes with a positive presumptive reaction to the confirmed phase.
+The absence of growth or gas at the end of the required incubation period
+constitutes a negative test.
+
+9.4.2 Confirmed phase – Submit all primary tubes/bottles showing heavy
+growth, any amount of gas, or acidic growth within 24 hours incubation to
+the confirmed phase. If additional primary tubes/bottles show active
+fermentation or growth at the end of a 48-hour incubation period, submit
+these to the confirmation phase. Gently shake the primary tubes or bottles
+showing gas/growth to resuspend the organisms. With a set of two sterile
+wood sticks held side-by-side, transfer some liquid from each presumptive
+tube to a tube containing EC/MUG, first, and then a tube containing
+BGBL. Remove the wooden sticks and discard. Repeat this for all
+presumptive tubes/bottles. Incubate the inoculated EC/MUG broth tube
+24 hours at 44.5 ±0.2oC and the inoculated BGBL tubes for 24-48 hours at
+35.0 ±0.5oC. Examine the BGBL at 24 and 48 hours for the presence of
+growth/gas. The formation of any amount of gas in this tube within the
+48-hour incubation constitutes a positive confirmed phase. The EC/MUG
+tube is examined at 24 hours as prescribed by “For detection of E coli in
+drinking water.”
+
+9.4.3 Completed phase – Not required for potable drinking water samples.
+Streak one LES Endo agar or MacConkey agar plate from each positive
+BGBL tube so that single colonies can be isolated. Incubate plates at 35.0
+±0.5oC for 24 ± 2 hours. Typical colonies are pink to dark red with a
+green metallic surface sheen. Select one or more isolated colonies and
+streak onto nutrient agar slant and inoculate one or more LTB tubes.
+Incubate broth tubes at 35.0 ±0.5oC for 24 -48 hours and observe for gas
+production. In addition, develop a Gram-stain preparation from the agar
+slant incubated at the same temperature and time sequence and look for
+the presence of gram negative rods.
+
+9.4.4. Record results on appropriate record sheet (JSEL-EB-103A). Call in
+positive results, or if requested by submitting agency.
+
+
+
+
+
+28
+
+
+
+Environmental Biology
+MTF/MPN
+Jackson State Laboratory
+SOP: JSL-EB-103
+Rev. No. 4
+
+Date: February 2007
+Page 11 of 11
+
+10. DATA ANALYSIS AND CALCULATIONS
+
+10.1 The results of the confirmed or completed test may be obtained from an MPN table
+based on the number of positive tubes in each dilution. See attachment A or reference
+noted in section 12 below. Note that 100mL sample aliquots of potable water are
+reported as presence/absence only.
+
+10.2. Positive results are immediately called in to local health departments. Phone calls
+are recorded on the result sheet, including the date and time of call, and on the Request
+for Analysis form including the date, time, person to whom the information was reported,
+results reported, and caller. Negative results are called in only if a request to do so is
+made on the Request for Analysis form OR any time the sample is related to an illness
+(this data is supplied on the Request for Analysis form.) A list containing salient phone
+numbers is posted in the laboratory.
+
+10.3. Worksheets are compared against reported results and the Request for Analysis
+form to ensure the lack of transcription errors. Worksheets and reports are signed or
+initialed and dated by the supervisor or the deputy after accuracy has been ascertained.
+If mistakes in transcription have occurred, the report is re-submitted to data entry for
+immediate correction.
+
+11. WASTE MANAGEMENT. All infectious waste shall be autoclaved prior to disposal.
+Glassware is reused. Follow “Pollution Prevention Plan for the Jackson State Environmental
+Laboratory” located in the JSEL Quality Manual.
+
+12. REFERENCES
+Method 9221 – Multiple-Tube Fermentation Technique for Members of the Coliform Group. In:
+Standard Methods for the Examination of Water and Wastewater, 21st edition or most current
+EPA approved version. American Public Health Association. Washington, D.C.
+
+Recommended Procedures for the Examination of Sea Water and Shellfish. 1970. American
+Public Health Association, Washington, D.C.
+
+Chemical Hygiene Plan. Jackson State Environmental Laboratory. Current version.
+
+Pollution Prevention Plan. Jackson State Environmental Laboratory. Current version.
+
+Jackson State Environmental Laboratory Quality Manual, Doc No. JSEL-QA-101. Current
+version.
+
+29
+
+
+APPENDIX C
+SOP #2334.3B
+November 2006
+Page 1 of 8
+
+
+
+
+
+
+WASTEWATER SAMPLE COLLECTION
+
+November 18, 2006
+
+Janice Bland
+EMB/ESAD
+
+
+
+
+DRAFT EXAMPLE – DO NOT QUOTE OR CITE
+
+
+
+
+
+APPROVED:
+
+
+_________________________________________
+
+____________________
+Author
+
+
+
+
+
+
+
+
+Date
+
+_________________________________________
+
+____________________
+Manager, Environmental Monitoring Branch
+
+
+
+Date
+
+_________________________________________
+
+____________________
+Quality Assurance Officer
+Environmental Science and Assessment Division
+
+
+
+Date
+
+
+Annual Reviewer
+
+
+
+Date
+
+
+
+
+
+
+30
+
+
+SOP #2334.3B
+November 2006
+Page 2 of 8
+
+
+TABLE OF CONTENTS
+
+
+
+A. Purpose and Applicability……………………………………………………………………...3
+
+B. Summary of Method Page……………………………………………………………………...3
+
+C. Definitions……………………………………………………………………………………...3
+
+D. Health and Safety Warnings…………………………………………………………………...3
+
+E. Cautions………………………………………………………………………………………...4
+
+F. Interferences……………………………………………………………………………………4
+
+G. Personnel Qualifications……………………………………………………………………….4
+
+H. Equipment and Supplies………………………………………………………………………..4
+
+I. Procedural Steps………………………………………………………………………………...4
+
+J. Data and Records Management…………………………………………………………………8
+
+K. Quality Assurance and Quality Control………………………………………………………..9
+
+L. References……………………………………………………………………………………...9
+
+M. Attachments/Checklists………………………………………………………………………..9
+
+Attachments:
+
+1. Equipment List (2 pages).
+
+
+31
+
+
+
+SOP #2334.3B
+November 2006
+Page 3 of 8
+
+
+A. PURPOSE AND APPLICABILITY
+
+The purpose of this Standard Operation Procedure (SOP) is to establish a uniform
+procedure for collecting wastewater samples for the analysis of non-organic parameters specified
+in National Pollutant Discharge Elimination System (NPDES) permits and in pretreatment
+agreements. The procedures outlined in this SOP are applicable to all Regional inspectors who
+collect samples of wastewater at federal, municipal and industrial facilities in support of water
+compliance regulations.
+
+B. SUMMARY OF THE METHOD
+
+Compliance samples of a wastewater stream are collected in accordance with permit
+requirements. They can be instantaneous (grab) samples, and/or composites. A composite
+sample is a sample in which, over a period of time, representative aliquots of a wastewater
+stream are collected manually or automatically using a portable compositor. Normally, the
+aliquots are combined into one sample in the compositor. At the end of sampling, the sample is
+divided among one or more containers and preserved, if needed. The sample is then packed in
+ice and shipped to the EPA Region 21’s Laboratory (RLAB). The resultant data are then
+compared to permit limits to determine compliance or are used to establish new permit limits.
+
+C. DEFINITIONS
+
+1. Non-organic parameters. Parameters that: 1) require analysis off site; and 2) are not
+identified as “organics” in SOP 2334.20 1. Examples include: nutrients, metals, cyanide, oxygen
+demand parameters, oil and grease, residues, chlorides, sulfides, sulfates, hardness, alkalinity,
+specific conductance, total organic carbon, acute and chronic toxicity and others listed in 40 CFR
+136.3.
+
+
+2. Permittee. The holder of an NPDES permit or a pretreatment agreement.
+
+
+3. Facility. A wastewater treatment plant (WWTP) or an industry that generates a
+regulated process wastewater that discharges directly to the environment or to a WWTP.
+
+D. HEALTH AND SAFETY WARNINGS
+
+Wastewater can be classified as sanitary, process, or combined (sanitary plus process).
+Some process wastewaters that do not come in contact with product, such as non-contact cooling
+or boiler blow-down, may appear innocuous. However, the sampler should treat all sources of
+wastewater as though each contained a chemical and/or a biological agent that could cause
+illness. The sampler should wear protective gloves, and the sample containers should be handled
+with care. The sampler should also wear safety gear such as steel-toed boots, a hard hat, safety
+glasses and earplugs to protect him or her from other environmental hazards. In the winter time,
+the sampler should take extra precautions when working outside in the cold. The sampler should
+test surfaces for slipperiness and pay particular attention to conditions when working at the edge
+of cavernous basins. Also, pay particular attention to icy roads when traveling.
+
+32
+
+
+SOP #2334.3B
+November 2006
+Page 4 of 8
+
+
+E. CAUTIONS
+
+Concentrated strong acids (nitric, sulfuric) are used to preserve metals and nutrient
+samples and sodium hydroxide is used to preserve cyanide samples. All three preservatives are
+corrosive and toxic. Care must be taken when handling them.
+
+F. INTERFERENCES
+
+The purpose of representative sampling is to characterize the true picture of the
+wastewater at the time of sampling. Contaminants introduced into the sample containers through
+careless handling, or by using “dirty” preservatives can bias the true picture.
+
+G. PERSONNEL QUALIFICATIONS
+
+This SOP is written specifically for NDPES inspectors. All personnel who perform
+activities with this SOP must have the Basic Inspector Training and the Hazardous Waster
+Operations Training (including the 8 hour refresher). Additional training could include NPDES
+permitting and regulations as well as on-the-job training.
+
+H. EQUIPMENT AND SUPPLIES
+
+The reader is referred to Attachment 1. This attachment lists equipment, sample
+containers, preservatives and other paraphernalia the sampler will need to consider when
+conducting a sampling inspection. SOP 2334.20 addresses equipment and supplies needed for
+organics sample collection.
+
+I. PROCEDURAL STEPS
+
+1. As a rule, wastewater sampling is associated with a compliance inspection of a facility
+that discharges a regulated wastewater. In addition to this SOP, SOP 2332.2 2 covers aspects of
+sampling inspections that the inspector should be familiar with. Included are facility selection,
+sample planning, analytical requests, field sheets, chain of custody, label and equipment
+preparation, inspection protocol and data management. This SOP focuses on the collection of
+wastewater samples that best represent the effluent stream during the period of sampling. Other
+helpful SOPs include SOP 2334.20 and SOP 2333.1 3.
+
+
+2. Conditions encountered in the field can be quite variable. The sampler will find
+himself, or herself, in situations in which he must make decisions based on common sense and a
+few fundamentals. Instead of hard-and-fast rules, the procedures listed in this SOP are
+guidelines meant to provide the fundamentals on which to make good decisions.
+
+
+
+3. The objectives of the sampling activity will dictate which wastewater streams should
+be sampled and where they should be sampled at any particular facility. In most cases, the actual
+sampling point for compliance monitoring has been previously established. However, for good
+reason (brought to light in his or her inspection report) the sampler may elect to pick a new
+sampling point in lieu of the traditional one. Guidelines to consider when picking a sampling
+point include:
+
+33
+
+
+SOP #2334.3B
+November 2006
+Page 5 of 8
+
+
+a. Sample where the wastewater is well mixed.
+
+b. Sample in the center of the channel at about half depth where the velocity of flow is
+average or above average and the chances of solids settling are minimal.
+
+c. Sample where flow is measured.
+
+d. If sampling from a faucet, valve or other line tap device, allow sufficient flushing
+before collecting.
+
+
+4. Wastewater Treatment Plants
+
+Influent samples at wastewater treatment plants should be collected upstream of any
+recirculation flows such as supernatant, filtrate, sludge and filter backwash, or any treatment. In
+many cases, an influent sampling point has already been established. The sampler should check
+to see if that point is upstream of any of the above flow sources before selecting it. The
+following are preferred influent sampling points:
+a. At the throat of a Parshall flume or other flow measuring device.
+
+b. Downstream of a comminutor, bar screen or other screening device.
+
+c. Inlet to the distribution box or channel following a raw wastewater pumping station or
+force main from a main lift station.
+
+d. Inlet to a grit chamber.
+
+e. Wet well of a raw wastewater pumping station.
+
+
+Effluent samples at wastewater treatment plants should be collected at the most
+representative site downstream of all entering waste streams and treatment prior to being
+discharged to the receiving water body. The most desirable location may not be accessible.
+Therefore, the sampler must select the next best location to obtain a representative sample. The
+preferred effluent sampling points include:
+a. At the end of the outfall pipe (e.g., Outfall 001).
+
+b. At the throat of a Parshall flume or similar flow measuring device if it is downstream
+of the last treatment unit.
+
+c. At the outlet from the last treatment unit such as the final clarifier or disinfection
+system.
+
+
+34
+
+
+SOP #2334.3B
+November 2006
+Page 6 of 8
+
+
+
+5. Industries
+
+
+Unless specified otherwise in the pre-treatment agreement, sample discharges at
+the end of process wastewater pre-treatment (or no treatment, as the case may be) before
+mixing with other wastewater from the facility.
+
+
+6. Sample types (grabs or composites):
+
+a. Collect the type of sample specified in the permit of the facility being
+inspected, unless directed otherwise by the client.
+
+
+b. When the permit requires collecting a composite sample for pH, dissolved
+oxygen, chlorine, purgeable organics, oil and grease, cyanide, hexavalent chromium
+and/or coliform bacteria, the sampler should sample according to the permit. However,
+because of holding time or preservation requirements, the sample should be collected as a
+grab sample, and the sampler should note this under Findings in his or her inspection
+report. The sampler may wish to collect both grabs and composites to demonstrate
+differences.
+
+
+7. Sample Collection
+
+a. Composite Sampling - Use an automatic composite sampler that is clean and
+contains new pump tubing. Pumping tubing will have been checked for contamination by
+following the SOP 2334.14 4 “Tubing Blanks”. The sample collection container used in
+the automated sampler will have adequate capacity to hold all of the sample used to
+perform anticipated analysis. In most cases, the sample collection container may be
+plastic but samples for organic analysis will only be collected in glass. Pump intake
+tubing can be plastic except all organic samples shall be collected using Teflon intake
+tubing. The Teflon tubing will have been checked for organic contamination by
+following SOP 2334.14.
+
+
+The sampler should collect aliquots of sample at an adequate volume and
+frequency that provides a representative sample with enough volume to perform the
+intended analysis. Another consideration is the variability of the flow both in volume and
+content. Where flow characteristics are not highly variable, the sampler should collect an
+aliquot each hour or less time intervals. As a general rule, where the flow appears more
+variable, the time interval between aliquots collected should be reduced to account for the
+variability. If the variability cannot be determined, the sampler should collect aliquots at
+a more frequent time interval. For a highly variable flow, the interval might be as short
+as five or 10 minutes.
+
+
+Another consideration would be the collection of samples over less than 24 hours.
+If a sample is to be collected for a discharge of 12 hours or less, the frequency of sample
+collection should be at shorter intervals and a high volume to help assure a representative
+sample of adequate volume.
+
+35
+
+
+
+
+SOP #2334.3B
+November 2006
+Page 7 of 8
+
+b. Grab sampling - Insert the sample container directly into the wastewater with the
+mouth of the container facing upstream.
+1. If direct insertion is impractical, then use a pre-cleaned plastic or stainless steel
+bucket on a rope to dip into the waste stream, and then pour the wastewater into
+the sample container(s).
+
+2. For oil and grease, use a single length or double length pole sampler for
+immersing the glass bottle into the wastewater.
+
+3. If access to the wastewater is a manhole, and the manhole cover is permanently
+attached but with a port for accepting the intake line for a composite sampler, use
+a composite sampler for collecting the grab sample.
+
+c. Field measurements - For on-site measurements of pH, temperature, dissolved oxygen,
+or conductivity, immerse the probe of the meter directly into the waste stream. Otherwise,
+collect a grab sample for these measurements and preserve the sample immediately with
+the correct preservative.
+
+8. Using the facility’s sampling equipment.
+
+If conditions preclude the use of the inspector’s sampling equipment, he, or she, may use
+the facility’s equipment provided the equipment meets the inspector’s approval. Considerations
+should include the: 1) security of the sampler; 2) location of the sampler intake with respect to
+the wastewater flow stream; 3) cleanliness of the intake tubing and collection bottle(s); 4)
+ambient temperature around the collection bottle; 5) aliquot volumes; and 6) sampling intervals
+(if time driven) or sample volumes (if flow driven).
+
+9. Parameters to be analyzed:
+a. When sampling facilities for permit compliance, the permit parameters that have limits
+should be sampled, as a minimum.
+b. Exclude parameters that the laboratory cannot analyze and/or the holding times cannot
+be met.
+
+10. Preparing samples for shipment to the laboratory.
+a. Secure the sample label to the container with 2-inch, clear, adhesive tape. Wrap the
+tape around the container at least one time. This will insure that the label will not separate
+from the container as water accumulates from the melting ice in the ice chest.
+
+b. Samples received by RLAB are required to be at 4-6° Centigrade. When the inspector
+ships samples to RLAB in a cooler (ice chest), he or she should place the samples in a
+large, heavy duty plastic bag that does not leak water. Enough ice should be packed
+
+
+36
+
+
+SOP #2334.3B
+November 2006
+Page 8 of 8
+
+
+around the samples in the bag in the ice chest to ensure their arrival at the right
+temperature.
+
+
+The samples must be accompanied by the sample field sheets and a chain-of-
+custody record placed in the ice chest, but outside the bag. A custody seal, signed and
+dated, should be placed on the ice chest between the lid and the body of the ice chest. A
+practical method is to place in a zip lock bag the documents and tape the bag to the inside
+lid of the ice chest.
+
+J. DATA AND RECORDS MANAGEMENT
+
+A data summary will be provided by RLAB and will be attached to the facility inspection
+report or trip report. A hard copy and an electronic copy of the data will also be kept by RLAB
+along with all bench data. The NPDES and Facilities Branch (NFB) maintains the inspection
+reports in the Regional Records Center (RRC) located on the ground floor of the EPA Region
+21’s main office. NFB maintains four types of record filing which follow EPA Records Series
+211A. These include NPDES Compliance files, Performance Audit Inspection Compliance files,
+Pretreatment Compliance files and Tribal Compliance files. The File Break for compliance files
+occurs annually with any active material identified and brought forward by program personnel.
+The inactive material remains in the RRC for one year after the File Break and is then transferred
+to the Federal Records Center five years after the File Break the material is destroyed.
+
+K. QUALITY ASSURANCE AND QUALITY CONTROL
+1. A field blank is prepared for each parameter requiring a preservative. If the parameter
+of interest is detected in a sample and also in the field blank, the inspector is to ignore it’s
+presence in the sample unless it is found at a concentration 10 times, or more, than that
+found in the blank. If, indeed, the concentration in the sample is 10 times that found in
+the field blank, the inspector is to accept the reported sample value as is.
+
+2. Other inspection and sampling procedures not covered in this SOP will be done in
+accordance with SOPs 2332.2 and 2334.20.
+
+L. REFERENCES
+
+1. SOP 2334.20
+Organics Sampling Collection.
+
+2. SOP 2332.2
+NPDES Compliance Sampling Inspection.
+
+3. SOP 2333.1
+Field Equipment Calibration and Maintenance.
+
+4. SOP 2334.14
+Tubing Blanks.
+
+M. ATTACHMENTS / CHECKLISTS
+
+Equipment List (2 pages).
+
+NOTE: Appendices, Checklists, and Attachments are not added to this example SOP.
+
+
+37
+
+
+
+APPENDIX D
+SOP #231.11C
+March 2007
+Page 1 of 9
+
+
+
+
+
+JOINT AIR COMPLIANCE OVERVIEW INSPECTION
+
+December 20, 2006
+
+By
+
+Paul Hershey,
+ACB/ESAD/EPA Region XXI
+
+
+
+
+
+
+
+
+
+DRAFT EXAMPLE – DO NOT QUOTE OR CITE
+
+
+
+
+APPROVED:
+
+___electronic signature and date___________________________________________________
+Author, Paul Hershey, Air Compliance Branch
+
+___electronic signature and date ___________________________________________________
+Peer Reviewer, Air Compliance Branch
+
+___electronic signature and date ___________________________________________________
+Chief, Air Compliance Branch
+
+____electronic signature and date __________________________________________________
+Independent Quality Assurance Reviewer, EPA Region XXI
+
+
+Recertified:
+initials
+
+
+
+
+date
+/ /2008
+/ /2009
+/ /2010
+/ /2011
+
+38
+
+
+SOP #2311.11C
+March 2007
+Page 2 of 9
+
+TABLE OF CONTENTS
+
+
+A. Purpose…………………………………………………………………………………………3
+
+B. Applicability……………………………………………………………………………............3
+
+C. Summary of Method……………………………………………………………………………3
+
+D. Definitions.……………………………………………………………………………………..4
+
+E. Personnel Qualifications………………………………………………………………………..4
+
+F. Procedural Steps…………………………………………………………………………..........4
+
+1. Inspection Selection…………………………………………………………………………….4
+
+2. Preparation for Inspection………………………………………………………………………5
+
+3. Field Procedures………………………………………………………………………………...6
+
+4. Inspection Report……………………………………………………………………………….7
+
+G. Records Management……………………………………………………………………..........8
+
+H. Quality Control and Quality Assurance………………………………………………………..9
+
+I. References……………………………………………………………………………………....9
+
+Attachments
+
+A. Joint Overview Inspection Checklist, 3 pages.
+
+B. Joint Overview Inspection Report Checklist, 1 page.
+
+C. Example Report Format, 2 pages.
+
+
+
+39
+
+
+SOP #231.11C
+March 2007
+Page 3 of 9
+
+
+A. PURPOSE
+
+The purpose of this Standard Operating Procedure (SOP) is to establish uniform procedures
+pertaining to the preparation for, the performance of, and the reporting of joint (State/EPA) air
+compliance overview inspections (JOIs) as performed by the Air Compliance Branch (ACM),
+Environmental Science and Assessment Division (ESAD). The JOIs are performed as a means
+of evaluating the effectiveness, reliability, and completeness of the state/local agency's
+inspection procedures in the administration and enforcement of its air compliance inspection
+program established pursuant to Section 114 of the Clean Air Act (CAA). The SOP will aid in
+ensuring credibility, accuracy, and completeness of all joint overview air compliance inspections
+and reports completed by ACB.
+
+Specifically, the JOIs are designed to provide a critique of individual state inspector-conducted
+air compliance monitoring inspections as a mechanism for assessing the quality of the field
+activities for obtaining and documenting information.
+
+The inspector may deviate from these procedures when necessary due to unexpected or unique
+problems that may occur in the field. Any deviation must be discussed in the report.
+
+B. APPLICABILITY
+
+The policies and procedures of the SOP are applicable to all personnel involved in the planning,
+coordination, preparation, conducting, and reporting of joint air compliance overview
+inspections.
+
+C. SUMMARY OF METHOD
+
+The JOIs are performed as part of the EPA's quality assurance function in assessing the state's air
+compliance inspection program. An important objective is to evaluate inspection procedures to
+ensure continuing compliance of the sources. The JOI provides EPA the opportunity to
+overview the effectiveness and the level of the state/local agency's on-site compliance assurance
+activities for all stationary sources. The JOI will be conducted as a Compliance Evaluation
+Report (CER), unless otherwise indicated by the Air Permitting and Compliance Division
+(APCD). A CER is defined in SOP #231.1C, Air Compliance Monitoring Inspections.
+
+During the JOI, the state/local agency inspector assumes the lead role while the EPA inspector
+evaluates their performance with no interruption. After the inspection, the EPA inspector
+completes the Joint Air Compliance Overview Inspection Checklist (Attachment A) which is
+reviewed, discussed, and signed by both inspectors. The Joint Air Compliance Overview
+Inspection Report Checklist (Attachment B) is completed after the state/local inspector's
+inspection report is received by the EPA inspector. The completed JOI report is sent to the APC
+Division.
+
+40
+
+
+SOP #231.11C
+March 2007
+Page 4 of 9
+
+
+D. DEFINITIONS
+
+1. Compliance Evaluation Report (CER): A comprehensive evaluation of the compliance status
+of the entire facility. It addresses all regulated pollutants at all regulated emission points.
+
+2. EPA Inspector: The EPA Inspector who is assigned to perform the JOI.
+
+E. PERSONNEL QUALIFICATIONS
+
+Certain duties and responsibilities have been assigned to specific Regional personnel as follows:
+
+1. Branch Manager: The person responsible for assigning an EPA Inspector to perform the
+necessary coordination and/or to conduct and complete the JOI in a timely manner and to ensure
+that the personnel within their area of responsibility adhere to the policies and procedures
+outlined in this SOP.
+
+2. EPA Inspector: The EPA Inspector assigned to conduct the JOI. The personnel performing
+JOIs should have completed all required training to be a lead inspector as defined in EPA Order
+3500.1, Training and Development of Lead Compliance Inspectors/Field Investigators.
+Personnel should also be a senior level inspector, with adequate experience to evaluate the
+state/local inspector. Have the responsibility of conducting JOI activities in accordance with the
+SOP and references.
+
+F. PROCEDURAL STEPS
+
+Joint Air Compliance Overview Inspections involve the selection of the candidates, the
+preparation for the field procedures, the field procedures and the documentation of findings in
+the report.
+
+1. INSPECTION SELECTION
+At the beginning of each fiscal year, APCB will provide ACB with a target number of joint
+inspections and the selected State inspectors. The EPA Inspector will coordinate with the
+selected State Inspector on an appropriate inspection candidate and schedule. The facility to be
+inspected will be chosen based on its difficulty and the state/local inspector’s schedule. More
+difficult facilities are preferred to better evaluate the inspector’s abilities. When the specific JOI
+has been chosen, it will be communicated to APCD.
+
+
+41
+
+
+
+SOP #231.11C
+March 2007
+Page 5 of 9
+
+To schedule a JOI:
+
+a. Contact appropriate state/local inspector and explain JOIs.
+b. Determine if any of his/her prospective inspections might be candidates for a JOI.
+c. Choose the JOI source and schedule tentative inspection date with state/local inspector.
+d. Contact APCD and discuss tentative JOI.
+
+2. PREPARATION FOR INSPECTION
+After the EPA inspector has scheduled a JOI with the appropriate state/local inspector,
+preparation for the inspection should commence. The EPA inspector should be familiar with the
+facility to be inspected in order to objectively evaluate the state/local inspector's performance. In
+preparation for the JOI, the EPA inspector will:
+
+a. Contact the APCD state coordinator to discuss the proposed inspection and any special
+issues related to the source or the JOI.
+
+b. Contact the appropriate state/local agency personnel where the inspection is to be
+performed to:
+(1) Make arrangements to review state/local agency files, if practical, or request
+copies of pertinent information from it.
+(2) Coordinate participation in the inspection.
+
+c. Initiate a search of the APCD files, state/local agency files and data systems for the
+following information:
+(1) List and description of each process or unit.
+(2) List and description of each emission point and attendant air pollution control
+equipment.
+(3) List of all applicable regulations for each emission point.
+(4) Baseline operational parameters for each air pollution source, where available.
+(5) Potential and/or real problems.
+(6) Citizen complaints.
+(7) Compliance status history.
+
+d. Initiate a search of other files which may contain pertinent information, e.g.,
+Aerometric Informational Retrieval System (AIRS), Water Compliance, RCRA
+Compliance, etc.
+
+e. Review the regulations for each emission point, e.g., State Implementation Plan (SIP),
+New Source Performance Standards (NSPS), National Emission Standards for Hazardous
+Air Pollutants (NESHAP), Prevention of Significant Deterioration (PSD), construction
+and operating permits, etc.
+
+
+42
+
+
+
+SOP #231.11C
+March 2007
+Page 6 of 9
+
+f. Review appropriate references, e.g., inspection manuals, guidelines, etc.
+
+g. Prepare a file for the inspection which contains the following:
+(1) Applicable JOI inspection forms.
+(2) Process Summary Sheets, completed with the point source information
+compiled during the inspection preparation.
+(3) Visible Emissions Data Evaluation Sheets.
+(4) Background information from pre-inspection file reviews.
+
+h. Since safety is of utmost concern during a JOI, the procedures outlined in publication
+number EPA-340/1-85-002a, Air Pollution Source Inspection Safety Procedures, should
+be understood before and utilized during the inspection.
+
+i. Assemble and prepare appropriate inspection and safety equipment.
+
+3. FIELD PROCEDURES
+The JOI consists of an EPA inspector accompanying a state/local agency inspector on an actual
+Compliance Evaluation Report (CER) inspection of a regulated facility. The state/local agency
+inspector will take the lead role in the performance of the inspection. The EPA inspector will
+observe, with no interference, and evaluate the state/local agency inspector's procedures.
+
+a. Preliminary Procedures (prior to site entry):
+(1) Meet with the state/local agency inspector to finalize the conduct of the
+inspection,
+(2) Complete the Inspection Preparation Activities and Pre-entry Procedures
+sections of the Joint Air Compliance Overview Inspection Checklist (Attachment
+A).
+
+b. Site Entry:
+(1) Upon obtaining access to the facility and presenting the appropriate
+credentials to the responsible official in charge of the facility, the official shall be
+informed that the state/local agency inspector has the lead role in SOP No.
+2312.11C conducting the inspection and that the EPA inspector is observing the
+state/local agency inspector. The EPA inspector should not take an active role in
+conducting the inspection.
+
+(2) Sign-in. The EPA inspector need only provide identification and must not sign
+a release of liability. If the facility requires sign-in for safety/security reasons,
+make sure that it is not a waiver of any rights. If unsure, do not sign anything.
+
+43
+
+
+SOP #231.11C
+March 2007
+Page 7 of 9
+
+c. Facility Tour:
+(1) Follow the state/local agency inspector through the conduct of the inspection.
+(2) Take notes regarding the inspection procedures of the state/local agency
+inspector.
+(3) Complete the Joint Air Compliance Overview Inspection Checklist during
+and/or immediately after the inspection.
+(4) Take notes regarding unusual occurrences of operation and problems at the
+facility.
+
+d. Exit Interview: During the exit interview, the state/local inspector should discuss
+inspection findings with the authorized facility personnel.
+
+e. Post-Inspection Procedures: When the facility inspection has been completed, conduct
+a review of the Joint Air Compliance Overview Inspection Checklist with the state/local
+agency inspector.
+(1) Complete the Joint Air Compliance Overview Inspection Checklist.
+(2) Discuss the inspection findings with the state/local agency inspector.
+(3) Provide immediate feedback, positive and negative, to the state/local inspector
+regarding the quality of the inspection using the Joint Air Compliance Overview
+Inspection Checklist.
+(4) Discuss and record in the comment section of the Joint Air Compliance
+Overview Inspection Checklist any clarifications, additions and differences of
+opinion raised by you or the state/local inspector.
+(5) If, after the post-inspection discussion, the state/local inspector suggests
+returning to the source, ACB will recommend that the state/local inspector
+indicate this in the state/local inspection report.
+(6) Obtain the signature of state/local inspector attesting to the fact that he/she has
+reviewed and discussed the JOI checklist findings.
+(7) Request that a copy of the state/local agency inspection report be submitted to
+the EPA inspector within fifteen (15) days of completion of the JOI.
+(8) Upon receipt of inspection report, review and complete the Joint Air
+Compliance Overview Inspection Report Checklist (Section G).
+
+4. INSPECTION REPORT
+The EPA inspector will prepare a formal report to document the inspection findings. This report
+will consist of the completed checklist.
+
+All inspection reports will contain the information and be presented in the format described as
+follows. (See Attachment C for an example report format):
+
+44
+
+
+
+SOP #231.11C
+March 2007
+Page 8 of 9
+
+a. Heading - This indicates the type of inspection performed, e.g., JOINT AIR
+COMPLIANCE OVERVIEW INSPECTION REPORT
+
+b. Facility Identification - This includes the name, location, telephone number, AIRS
+Facility Subsystem (AFS) Plant I.D., the date of the inspection and the regional office
+conducting the inspection.
+
+c. Introduction - This section describes the purpose and objectives of the inspection. This
+section also includes the date and time of the inspection and the weather conditions
+during the inspection.
+
+d. Participants - This section includes the name, title and affiliation of each participant.
+
+e. Inspection Procedures - This section briefly describes the activities conducted during
+the inspection.
+
+f. Process/Facility Description - This section should contain a description of the process
+including the Standard Industrial Classification (SIC) number and a description of the
+facility, its process and air pollution control equipment. The detail included will depend
+on the facility inspected and the extent to which information is current and available in
+the files from previous inspections. Applicable previous inspection information should be
+referenced.
+
+g. Discussion of Inspection Procedures - This section contains discussion of the specific
+inspection procedures used by the state/local inspector. This section should include
+specific procedures used by the state/local inspector and comments on those procedures.
+Any problems, discrepancies and deficiencies, as well as positive aspects should be
+discussed. The discussion should be based on observations of the inspector's activities
+and the information contained on the Joint Overview Air Compliance Inspection and
+Report Checklists.
+
+h. Summary/Recommendations - This is based upon the previous sections and should
+include conclusions which can be made about the state/local agency inspector's activities
+and state/local agency inspection policies. Both positive and negative comments should
+be included. Also discuss any influence your actions might have had on the state/local
+inspector's inspection. This section should be oriented toward improving the state/local
+agency's air compliance inspections.
+
+45
+
+
+SOP #231.11C
+March 2007
+Page 9 of 9
+
+i. Signatures - The inspector will sign the report. The date signed will be included, e.g.:
+(Inspector’s Name) Environmental Engineer and Date:
+
+j. Attachments - These are identified by a number (e.g., Attachment 1) and placed in
+numerical sequence in the report. They may include:
+(1) Joint Air Compliance Overview Inspection Checklist.
+(2) Joint Air Compliance Overview Inspection Report Checklist.
+(3) State/local Agency Inspection Report.
+(4) Other appropriate documents, i.e., photographs and any documents obtained
+during the inspection.
+
+G. RECORDS MANAGEMENT
+
+The original, signed final report is transmitted to APCD.
+
+H. QUALITY CONTROL AND QUALITY ASSURANCE
+
+After the field portion of the inspection, the EPA Inspector documents the inspection in a written
+report. The draft of the written report is first peer-reviewed for technical content by the Team
+Leader or by a member of the inspection staff. The draft is then reviewed by the Branch Manager
+for final approval. The final report is completed and transmitted to the Air Permitting and
+Compliance Division (APCD).
+
+I. REFERENCES
+
+1. Training and Development of Lead Compliance Inspectors/Field Investigators, EPA Order
+3500.1.
+
+2. Air Pollution Source Inspection Safety Procedures, EPA-340/1-85-002a.
+
+3. US EPA, Region XXI, Air Compliance Monitoring Inspections, SOP #232.1C.
+
+
+
+NOTE: Appendices, Checklists, and Attachments are not added to this example SOP.
+
+46
+
+
+APPENDIX E
+
+SOP # A-101.2
+Revision No. 2
+
+Page 47 of 9
+Supersedes A-100
+
+Effective Date: 06/07/07
+
+
+
+
+
+
+PREPARING, NUMBERING, RETAINING, INDEXING, REVISING, and USING
+STANDARD OPERATING PROCEDURES
+
+June 7, 2007
+
+Halifax Environmental Laboratory
+
+
+
+
+
+DRAFT EXAMPLE - DO NOT QUOTE OR CITE
+
+
+
+
+AUTHOR:
+
+_______________________________________________________
+_________________
+
+
+
+
+
+
+
+
+
+
+Date
+
+APPROVED:
+
+________________________________________________________
+__________________
+Manager
+
+
+
+
+
+
+
+
+Date
+
+________________________________________________________
+__________________
+Quality Assurance Manager
+
+
+
+
+
+Date
+
+
+Reviewed
+Initials
+
+
+
+
+Date
+
+
+
+
+
+
+Halifax Environmental Laboratory, an ISO xxxxx Certified Laboratory
+
+47
+
+
+SOP # A-101.2
+Revision No. 2
+
+Page 2 of 9
+Supersedes A-100
+
+Effective Date: 06/07/07
+
+
+TABLE OF CONTENTS
+
+
+
+SECTION
+
+SECTION TITLE
+
+
+
+
+
+PAGE
+
+
+A.
+
+PURPOSE AND APPLICABILITY
+
+
+
+3
+
+B.
+
+SUMMARY OF METHOD
+
+
+
+
+3
+
+C.
+
+DEFINITIONS
+
+
+
+
+
+
+3
+
+D.
+
+RESPONSIBILITIES
+
+
+
+
+
+3
+
+E.
+
+PROCEDURAL STEPS
+
+
+
+
+
+4
+PREPARING SOPS
+
+
+
+
+
+
+4
+NUMBERING SOPS
+
+
+
+
+
+
+6
+SOP INDEXING
+
+
+
+
+
+
+6
+REVISION OF SOPS
+
+
+
+
+
+
+6
+
+
+USE OF SOPS
+
+
+
+
+
+
+7
+
+
+
+F.
+
+RECORDS MANAGEMENT
+
+
+
+
+8
+
+
+ACCESS AND LOCATION OF SOPS
+
+
+
+
+8
+SOP RETENTION
+
+
+
+
+
+
+8
+
+G.
+
+QUALITY ASSURANCE & QUALITY CONTROL
+
+9
+
+H.
+
+REFERENCES
+
+
+
+
+
+
+9
+
+
+
+
+
+
+
+
+
+
+
+
+Halifax Environmental Laboratory, an ISO xxxxx Certified Laboratory
+
+48
+
+
+SOP # A-101.2
+Revision No. 2
+
+Page 3 of 9
+Supersedes A-100
+
+Effective Date: 06/07/07
+
+
+A.
+PURPOSE AND APPLICABILITY:
+
+The purpose of this document is to establish a uniform process for the preparation and review of
+Halifax Environmental Laboratory standard operating procedures (SOPs). This SOP is
+applicable to this laboratory only.
+
+B.
+SUMMARY OF METHOD
+
+Standard operating procedures (SOPs) are written to describe study methods or processes in
+sufficient detail so as to ensure the quality and integrity of the data, and serve the following
+functions:
+1.
+Document established procedures that lead to quality data;
+2.
+Provide the technical staff with references for specific tasks;
+3.
+Construct checklists and quality controls for inspections and audits;
+4.
+Help management evaluate the adequacy of the procedures; and
+5.
+Provide an historical record of the procedures in use for a given study at a given time,
+thus allowing for the reconstruction of the study at a later date.
+
+To achieve these functions, SOPs must be written by an individual experienced in the process to
+be described; the completed SOPs then must be reviewed and approved by peer reviewers, the
+QA Manager, and appropriate management prior to the use of the SOP. A set format in styling,
+information required, and a numbering system is needed, as well as biannual or annual review to
+ensure that the procedure is up-to-date. An archival system is needed to ensure that an historical
+record can be maintained and only current SOPs are available for staff use.
+
+C.
+DEFINTIONS
+a. Addendum: an addendum is written when the scope of the procedure is expanded.
+b. Administrative SOP: a standard operating procedure which does not involve
+environmental data manipulation activities, e.g., how to conduct an inspection.
+c. Clarification: a clarification is written when one or more of the procedural steps
+lack sufficient detail or when additional steps are added to ensure the
+quality/integrity of the data.
+d. Technical SOP: a standard operating procedure which involves environmental
+data generation, manipulation, or compilation, e.g., an analytical process.
+
+D.
+RESPONSIBLITIES
+1.
+It is the responsibility of staff to identify the need for development or revision of a
+standard operating procedure (SOP) and to convey that need to their immediate
+supervisor and/or the QA Manager (QAM).
+
+
+Halifax Environmental Laboratory, an ISO xxxxx Certified Laboratory
+
+49
+
+
+
+SOP # A-101.2
+Revision No. 2
+
+Page 4 of 9
+Supersedes A-100
+
+Effective Date: 06/07/07
+
+
+2.
+It is the responsibility of the author of an individual SOP to include sufficient detail
+that the process or procedure can be followed by another person when needed.
+
+3.
+It is the responsibility of the author to request peers to review the SOP to determine
+whether it contains sufficient detail.
+
+4.
+It is the responsibility of the immediate supervisor and the QA Manager to review and
+approve the SOP prior to its use.
+
+5.
+It is the responsibility of both the staff, and the QAM, to ensure that the procedure or
+process follows the details noted in the individual SOP and to detail in writing when
+the SOP or a component of that SOP has not been followed.
+
+6.
+It is the responsibility of the manager to ensure that all routine operations and
+activities in their area are documented by SOPs.
+
+7.
+It is the responsibility of the QAM to oversee the appropriate preparation, numbering,
+retention, indexing, revision, and use of SOPs.
+
+E.
+PROCEDURAL STEPS
+
+PREPARING SOPS
+1.
+Identify the need for an SOP or the revision of an existing one by informing the
+appropriate supervisor.
+
+2.
+Once the need for a particular SOP is established, it should be drafted immediately.
+
+3.
+SOPs are drafted by laboratory or supervisory staff qualified to perform the
+procedure. Next the SOP is reviewed by other staff, where possible, and then
+approved by the QA Manager (QAM) and management, such as immediate
+supervisor. Circulation to staff members for review/comment is advisable prior to
+acquiring management approval.
+
+4.
+The SOPs should be written to describe study methods or processes in sufficient
+detail so as to ensure the quality and integrity of the data or procedure to be followed.
+
+
+
+Halifax Environmental Laboratory, an ISO xxxxx Certified Laboratory
+
+50
+
+
+
+SOP # A-101.2
+Revision No. 2
+
+Page 5 of 9
+Supersedes A-100
+
+Effective Date: 06/07/07
+
+
+5.
+When writing SOPs, the detail used may include both procedural requirements (exact
+instructions) and guidance information (general information) on the procedure.
+
+6.
+Procedural requirements must be followed exactly, while guidance information is
+used to help perform the procedure; it is not a mandatory requirement and, therefore,
+it does not have to be followed exactly.
+
+7.
+Procedural requirements can be distinguished from guidance elements, based on the
+context they are used (e.g., MUST or SHALL indicates the action as a procedural
+requirement and command statements, such as “Remove the animal from its cage”).
+
+8.
+Follow office standard format for margins, font, and font size.
+
+9.
+Official SOPs will have a colored header and footer on each page, dated signatures on
+the front title page, and be printed on ivory colored paper with a watermark.
+
+10.
+Use an outline format and include alpha and/or numeric characters to indicate levels
+of information.
+
+11.
+The SOP must include the following information where applicable:
+a) Header and footer, detailing:
+1)
+SOP No. (assigned by QAM and established based on defined categories,
+e.g., A is used for administrative processes, and B and C are used for
+biological chemical procedures, respectively
+2)
+Page X (current page) of Y (total number of pages)
+3)
+Revision No. (new SOPs will be indicated by the use of a zero after the
+procedure number and subsequent revisions will be marked as 1, 2,
+3…..etc.)
+
+4)
+Effective date (date when procedure has been approved by all parties for
+use)
+b) Title Page
+1)
+Identifier: Standard Operating Procedure for ……….
+2)
+Signature lines minimally for author, QAM, and immediate supervisor
+c) Table of Contents (not needed if SOP is three pages or less)
+d) Purpose and Applicability
+e) Summary of Method
+f) Definitions (if any terms need to be defined)
+g) Personnel Responsibilities/Qualifications (applying primarily to administrative
+and technical SOPs respectively)
+
+Halifax Environmental Laboratory, an ISO xxxxx Certified Laboratory
+
+51
+
+
+SOP # A-101.2
+Revision No. 2
+
+Page 6 of 9
+Supersedes A-100
+
+Effective Date: 06/07/07
+
+
+h) Health and Safety Warnings (primarily for technical SOPs)
+i) Cautions (primarily for technical SOPs)
+j) Interferences (primarily for technical SOPs)
+j) Equipment and Supplies (primarily for technical SOPs)
+k) Procedural Steps
+l) Data and Records Management
+m) Quality Assurance and Quality Control
+n) References
+
+NUMBERING SOPS
+
+1.
+SOPs are numbered sequentially based on assignment to a specific category, such
+as:
+100-199
+General Information and Quality Assurance
+200-299
+Instrument and Equipment Calibration, Maintenance, and Testing
+
+
+300-399
+Routine Procedures
+
+
+400-499
+Specialized Procedures
+
+
+500-599
+Data and Records Management
+
+
+600-
+
+Miscellaneous or unassigned.
+
+2.
+The QAM is responsible for assigning SOP numbers and determining category.
+Numbers are assigned sequentially and may only be used once, i.e., numbers
+cannot be reused even if a procedure is eliminated or incorporated into another
+SOP.
+
+SOP INDEXING
+
+1.
+Each SOP will be listed numerically in the “Table of Contents” and “Alphabetical
+Index” in the laboratory Quality Manual.
+
+2.
+The QAM is responsible for maintaining both the “Table of Contents” and the
+“Alphabetical Index”.
+
+3.
+The author of the SOP is responsible for providing up to 3 keywords to the QAM
+for indexing the SOP.
+
+REVISING SOPS
+1. If the SOP does not accurately describe the procedure, then the SOP must be revised.
+Any change in the procedure must be incorporated into the SOP. However, prior to
+any change to the SOP, management must be advised of, and approve, the change.
+
+Halifax Environmental Laboratory, an ISO xxxxx Certified Laboratory
+
+52
+
+
+
+SOP # A-101.2
+Revision No. 2
+
+Page 7 of 9
+Supersedes A-100
+
+Effective Date: 06/07/07
+
+
+2. Finalized SOPs, containing typographical errors, printing errors, e.g., wrong page
+numbers or misaligned sentences) or any errors that do not affect the scope of the
+procedure may be correctly immediately and reprinted. These types of errors do not
+require full SOP revision, thus a revision number will not be generated and
+management approval is not needed. If the error occurs on the signature page then the
+signature page will be resigned. These types of corrections will be traceable since the
+historical file will reflect all corrections including typographical errors. Specifically,
+the historical SOP file will contain both the SOP with the correct page(s) as well as the
+page(s) containing the error. The page with the error will not be removed from the
+historical file.
+
+3. Additions can be made to an SOP via a clarification or an addendum.
+
+4. Clarifications and addenda must be attached to the applicable SOP until such time that
+the SOP can be revised. Generally, the revision will be incorporated during the
+biannual review process.
+
+5. When the SOP is revised, the revision number is updated. Revisions, clarifications,
+and addenda are prepared by appropriate personnel, but must be approved by
+management.
+
+6. An SOP can be eliminated when it is no longer applicable. Management must approve
+the elimination of an SOP. Two or more SOPs can be consolidated; in this case one
+SOP supersedes the other, but management approval is required for consolidation of
+procedures.
+
+7. The signed revised SOP must be sent to the historical file for archiving.
+
+USING SOPS
+
+1.
+Prior to performing a procedure for the first time, the individual must document in
+writing that they have read and reviewed the specific SOP.
+
+2.
+In addition, the staff should review all SOPs at least once every two years to ensure
+that each SOP accurately describes the procedure in use. The biannual review will be
+documented in writing. SOP review signature logs will be maintained the company’s
+archives.
+
+3.
+All procedures must be performed in accordance with the written SOPs.
+
+Halifax Environmental Laboratory, an ISO xxxxx Certified Laboratory
+
+53
+
+
+SOP # A-101.2
+Revision No. 2
+
+Page 8 of 9
+Supersedes A-100
+
+Effective Date: 06/07/07
+
+
+4.
+If a given procedure is not performed in accordance with the pertinent SOP, the all
+SOP deviations must be written to document the change in the procedure.
+
+5.
+The laboratory section chief must be informed and must acknowledge in writing the
+occurrence of the SOP deviation and must determine the effect, if any, the deviation
+may have on the integrity of the data.
+
+6.
+All deviations must be filed with the study information.
+
+F.
+RECORDS MANAGEMENT
+
+ACCESS AND LOCATION OF SOPS
+1.
+Appropriate SOPs will be placed in green binders to be found in a designated spot in
+each work area, e.g., laboratory, equipment rooms, the library, etc., and shall be
+available to staff and managers. These binders will not be located in the supervisor’s
+office. Removal of an individual SOP requires completion of the sign-out located on
+the insider of the binder. The binder must not be removed from its designated spot by
+anyone other than the QAM or laboratory director.
+
+2.
+It is the responsibility of the QAM to update each binder as individual SOPs are
+revised.
+
+3.
+The staff is required to read any revised SOP within 7 working days of issuance if the
+SOP is applicable to their work.
+
+4.
+Reading of the updated SOP requires signature on the SOP review sheet.
+
+
+SOP RETENTION
+1.
+An historical file is created for each SOP that is approved by management and
+will be maintained in the company’s archives by the QAM.
+
+2.
+The historical file will consist of the original signed SOP and all subsequent
+modifications thereof.
+
+3.
+Official SOPs will have both colored header and footer lines, and be printed on
+watermarked ivory colored paper. All copies of the original will be black and
+white, initialed, numbered, and placed in the appropriate binder located in each
+office.
+
+
+Halifax Environmental Laboratory, an ISO xxxxx Certified Laboratory
+
+54
+
+
+
+SOP # A-101.2
+Revision No. 2
+
+Page 9 of 9
+Supersedes A-100
+
+Effective Date: 06/07/07
+
+
+4.
+If a procedure is incorporated into another SOP (superseded), a copy of the
+superseded version is placed in the historical file of both SOPs.
+
+G.
+QUALITY ASSURANCE AND QUALITY CONTROL
+1.
+All SOPs are reviewed by the applicable supervisor at least every two years in
+order to maintain their relevancy.
+
+2.
+Before January 31st of each calendar year, a list of all SOPs which are at more
+than one year old is provided by the QAM to each supervisor.
+
+3.
+For those SOPs which do not require a revision, documentation attesting to that
+fact must be submitted to the QAM who in turn initials and dates the table located
+at the bottom of the title page of the original SOP.
+
+H.
+REFERENCES
+
+1.
+Quality Manual. Halifax Environmental Laboratory. Current version.
+2.
+Guidance for the Preparation of Standard Operating Procedures. U.S. EPA. Current
+Version.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Halifax Environmental Laboratory, an ISO xxxxx Certified Laboratory
+
+55

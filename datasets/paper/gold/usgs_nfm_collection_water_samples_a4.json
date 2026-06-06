@@ -1,0 +1,141 @@
+{
+  "procedure": {
+    "doc_id": "usgs_nfm_collection_water_samples_a4",
+    "title": "USGS equal-width-increment sampling excerpt",
+    "version": "Version 2.0",
+    "domain": "field_sampling_sop",
+    "source": {
+      "doc_id": "usgs_nfm_collection_water_samples_a4",
+      "page": "43-44",
+      "section": "Steps for the EWI sampling method"
+    }
+  },
+  "steps": [
+    {
+      "id": "S1",
+      "label": "Set out safety equipment and park the vehicle to avoid sample contamination",
+      "action_verb": "set out",
+      "action_object": "safety equipment and vehicle position",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C1",
+          "type": "warning",
+          "text": "Park the vehicle so that emissions do not contaminate the sample area.",
+          "attached_to": [
+            "S1"
+          ]
+        }
+      ],
+      "flags": {
+        "safety_critical": true
+      },
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "page": "43",
+        "section": "Step 1a"
+      }
+    },
+    {
+      "id": "S2",
+      "label": "Assemble the sampling equipment and set up a clean work space",
+      "action_verb": "assemble",
+      "action_object": "sampling equipment",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C2",
+          "type": "selection_rule",
+          "text": "Use fluorocarbon polymer, glass, or metal components for organic-compound sampling and avoid non-fluorocarbon plastics.",
+          "attached_to": [
+            "S2"
+          ]
+        },
+        {
+          "id": "C3",
+          "type": "selection_rule",
+          "text": "Use inert plastic or glass for inorganic constituents and avoid metal or rubber for trace-element sampling.",
+          "attached_to": [
+            "S2"
+          ]
+        }
+      ],
+      "flags": {
+        "safety_critical": true
+      },
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "page": "43",
+        "section": "Step 1b"
+      }
+    },
+    {
+      "id": "S3",
+      "label": "Inspect the stream cross section and document flow and contamination features",
+      "action_verb": "inspect",
+      "action_object": "stream cross section",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C4",
+          "type": "documentation",
+          "text": "Document stagnant water, eddies, backwater, reverse flow, and other cross-section features.",
+          "attached_to": [
+            "S3"
+          ]
+        }
+      ],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "page": "44",
+        "section": "Step 2a"
+      }
+    },
+    {
+      "id": "S4",
+      "label": "Determine the equal-width increment count and locate the first sampling vertical",
+      "action_verb": "determine",
+      "action_object": "increment width and first vertical",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C5",
+          "type": "requirement",
+          "text": "The number of increments must be a whole number.",
+          "attached_to": [
+            "S4"
+          ]
+        },
+        {
+          "id": "C6",
+          "type": "location_rule",
+          "text": "Locate the first vertical one-half increment width from the edge of the water.",
+          "attached_to": [
+            "S4"
+          ]
+        }
+      ],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "page": "44",
+        "section": "Step 2d-2e"
+      }
+    }
+  ],
+  "constraints": [],
+  "relations": [],
+  "quality": {
+    "annotation_scope": "bounded_excerpt",
+    "review_status": "reviewed"
+  }
+}

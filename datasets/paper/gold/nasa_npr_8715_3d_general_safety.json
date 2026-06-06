@@ -1,0 +1,107 @@
+{
+  "procedure": {
+    "doc_id": "nasa_npr_8715_3d_general_safety",
+    "title": "NASA safety planning and risk reduction excerpt",
+    "version": "NPR 8715.3D",
+    "domain": "safety_requirements",
+    "source": {
+      "doc_id": "nasa_npr_8715_3d_general_safety",
+      "page": "8-9",
+      "section": "1.5.1-1.7.1.1"
+    }
+  },
+  "steps": [
+    {
+      "id": "S1",
+      "label": "Ensure that the Safety and Mission Assurance plan addresses life-cycle safety functions and activities",
+      "action_verb": "ensure",
+      "action_object": "SMA plan coverage",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {
+        "safety_critical": true
+      },
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "page": "8",
+        "section": "1.5.1.a-b"
+      }
+    },
+    {
+      "id": "S2",
+      "label": "Include the required safety, risk, quality, and compliance topics for each major milestone review",
+      "action_verb": "include",
+      "action_object": "required SMA topics",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C1",
+          "type": "requirement",
+          "text": "Support each section of the SMA plan with data and information for the milestone review.",
+          "attached_to": [
+            "S2"
+          ]
+        }
+      ],
+      "flags": {
+        "safety_critical": true
+      },
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "page": "8-9",
+        "section": "1.5.1.c-e"
+      }
+    },
+    {
+      "id": "S3",
+      "label": "Evaluate contractor operations and designs for compliance with contractual safety provisions",
+      "action_verb": "evaluate",
+      "action_object": "contractor operations and designs",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {
+        "safety_critical": true
+      },
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "page": "9",
+        "section": "1.5.2"
+      }
+    },
+    {
+      "id": "S4",
+      "label": "Control hazards by elimination, likelihood reduction, consequence mitigation, and uncertainty reduction",
+      "action_verb": "control",
+      "action_object": "hazards and dominant contributors to risk",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C2",
+          "type": "warning",
+          "text": "Consider the possibility of human error when selecting hazard controls.",
+          "attached_to": [
+            "S4"
+          ]
+        }
+      ],
+      "flags": {
+        "safety_critical": true
+      },
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "page": "9",
+        "section": "1.7.1.1"
+      }
+    }
+  ],
+  "constraints": [],
+  "relations": [],
+  "quality": {
+    "annotation_scope": "bounded_excerpt",
+    "review_status": "reviewed"
+  }
+}

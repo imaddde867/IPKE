@@ -1,0 +1,224 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ipke.local/schemas/ipke_annotation.schema.json",
+  "title": "IPKE Procedure-Level Gold Annotation",
+  "type": "object",
+  "required": [
+    "procedure",
+    "steps"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "procedure": {
+      "type": "object",
+      "required": [
+        "doc_id",
+        "title"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "doc_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "domain": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "source": {
+          "$ref": "#/$defs/provenance"
+        }
+      }
+    },
+    "steps": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/step"
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/constraint"
+      }
+    },
+    "relations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    "resources": {
+      "type": [
+        "array",
+        "object"
+      ]
+    },
+    "resources_catalog": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "canon": {
+      "type": "object",
+      "additionalProperties": true
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "$defs": {
+    "step": {
+      "type": "object",
+      "required": [
+        "id",
+        "label"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "action_verb": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "action_object": {
+          "type": [
+            "object",
+            "string",
+            "null"
+          ],
+          "additionalProperties": true
+        },
+        "arguments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "resources": {
+          "type": [
+            "object",
+            "array"
+          ]
+        },
+        "parameters": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": true
+          }
+        },
+        "constraints": {
+          "type": [
+            "object",
+            "array"
+          ]
+        },
+        "flags": {
+          "type": "object",
+          "additionalProperties": {
+            "type": [
+              "boolean",
+              "string",
+              "number",
+              "null"
+            ]
+          }
+        },
+        "provenance": {
+          "$ref": "#/$defs/provenance"
+        }
+      }
+    },
+    "constraint": {
+      "type": "object",
+      "additionalProperties": true,
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "text": {
+          "type": "string"
+        },
+        "applies_to": {
+          "type": [
+            "string",
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          }
+        },
+        "provenance": {
+          "$ref": "#/$defs/provenance"
+        }
+      }
+    },
+    "provenance": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": true,
+      "properties": {
+        "doc_id": {
+          "type": "string"
+        },
+        "char_start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "char_end": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sentence_id": {
+          "type": [
+            "integer",
+            "string"
+          ]
+        },
+        "page": {
+          "type": [
+            "integer",
+            "string"
+          ]
+        },
+        "section": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
