@@ -1,0 +1,137 @@
+{
+  "procedure": {
+    "doc_id": "olsk_small_cnc_v1_workbook",
+    "title": "OLSK Small CNC electronic box assembly excerpt",
+    "version": "V1",
+    "domain": "assembly_workbook",
+    "source": {
+      "doc_id": "olsk_small_cnc_v1_workbook",
+      "page": "worksheet excerpt",
+      "section": "01.1-01.4"
+    }
+  },
+  "steps": [
+    {
+      "id": "S1",
+      "label": "Assemble the electronic box top and bottom frame",
+      "action_verb": "assemble",
+      "action_object": "electronic box frame",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C1",
+          "type": "warning",
+          "text": "The frame does not need to be absolutely precise at this stage.",
+          "attached_to": [
+            "S1"
+          ]
+        }
+      ],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "olsk_small_cnc_v1_workbook",
+        "section": "01.1"
+      }
+    },
+    {
+      "id": "S2",
+      "label": "Install the electronic box bottom panel",
+      "action_verb": "install",
+      "action_object": "bottom panel",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C2",
+          "type": "precondition",
+          "text": "Remove the protective foils before attaching the panel.",
+          "attached_to": [
+            "S2"
+          ]
+        },
+        {
+          "id": "C3",
+          "type": "warning",
+          "text": "Pay attention to the top and bottom of the panel and mark the front with the red dot sticker.",
+          "attached_to": [
+            "S2"
+          ]
+        }
+      ],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "olsk_small_cnc_v1_workbook",
+        "section": "01.2"
+      }
+    },
+    {
+      "id": "S3",
+      "label": "Mount the motor drivers and motor power supply in the electronic box",
+      "action_verb": "mount",
+      "action_object": "drivers and power supply",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C4",
+          "type": "warning",
+          "text": "Pay attention to the position of the motor drivers and motor power supply.",
+          "attached_to": [
+            "S3"
+          ]
+        }
+      ],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "olsk_small_cnc_v1_workbook",
+        "section": "01.3"
+      }
+    },
+    {
+      "id": "S4",
+      "label": "Attach the vertical profiles to the prepared top and bottom frame",
+      "action_verb": "attach",
+      "action_object": "vertical profiles",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C5",
+          "type": "order",
+          "text": "Attach the brackets to the vertical profiles before attaching them to the frame.",
+          "attached_to": [
+            "S4"
+          ]
+        },
+        {
+          "id": "C6",
+          "type": "postcondition",
+          "text": "Tighten the screws together at the end.",
+          "attached_to": [
+            "S4"
+          ]
+        }
+      ],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "olsk_small_cnc_v1_workbook",
+        "section": "01.4"
+      }
+    }
+  ],
+  "constraints": [],
+  "relations": [],
+  "quality": {
+    "annotation_scope": "bounded_excerpt",
+    "review_status": "reviewed"
+  }
+}

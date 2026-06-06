@@ -90,6 +90,41 @@ def test_normalize_flattens_nested_step_constraints():
     assert by_id["C3"]["applies_to"] == "S2"
 
 
+def test_normalize_flattens_nested_list_constraints():
+    """PR #57 gold shape: steps[i].constraints is a list with attached_to."""
+    doc = {
+        "steps": [
+            {
+                "id": "S2",
+                "label": "Chalk the tape",
+                "constraints": [
+                    {
+                        "id": "C1",
+                        "type": "purpose",
+                        "text": "Use blue chalk so the wetted mark shows.",
+                        "attached_to": ["S2"],
+                    }
+                ],
+            },
+            {
+                "id": "S3",
+                "label": "Lower the tape",
+                "constraints": [
+                    {"id": "C2", "type": "guard", "text": "Do not touch sides."},
+                ],
+            },
+        ],
+    }
+    flat = normalize_doc_constraints(doc)
+    assert len(flat) == 2
+    by_id = {c["id"]: c for c in flat}
+    # C1 already has attached_to — must be preserved, no applies_to added.
+    assert by_id["C1"]["attached_to"] == ["S2"]
+    assert "applies_to" not in by_id["C1"]
+    # C2 has no link key — applies_to synthesised.
+    assert by_id["C2"]["applies_to"] == "S3"
+
+
 def test_normalize_idempotent_on_flat_shape():
     doc = {
         "steps": [{"id": "S1", "label": "do thing"}],

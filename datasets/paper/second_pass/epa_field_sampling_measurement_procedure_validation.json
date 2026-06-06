@@ -1,0 +1,83 @@
+{
+  "procedure": {
+    "doc_id": "epa_field_sampling_measurement_procedure_validation",
+    "title": "EPA LSASD non-standard procedure validation excerpt",
+    "version": "LSASDPROC-012-R6",
+    "domain": "field_procedure_validation"
+  },
+  "steps": [
+    {
+      "id": "S1",
+      "label": "Inform the customer in writing that a non-standard procedure will be used",
+      "action_verb": "inform",
+      "action_object": "customer",
+      "constraints": [
+        {
+          "id": "C1",
+          "type": "precondition",
+          "text": "Use this branch only when a non-standard sampling or measurement procedure is necessary.",
+          "attached_to": [
+            "S1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S2",
+      "label": "Document that the customer agrees with the non-standard procedure",
+      "action_verb": "document",
+      "action_object": "customer agreement",
+      "constraints": []
+    },
+    {
+      "id": "S3",
+      "label": "Record the customer request and justification in the project file",
+      "action_verb": "record",
+      "action_object": "project file justification",
+      "constraints": [
+        {
+          "id": "C2",
+          "type": "documentation",
+          "text": "Record both the request description and why the project required the non-standard procedure.",
+          "attached_to": [
+            "S3"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S4",
+      "label": "Develop a validation plan with objective acceptance criteria and testing scope",
+      "action_verb": "develop",
+      "action_object": "validation plan",
+      "constraints": [
+        {
+          "id": "C3",
+          "type": "requirement",
+          "text": "The validation plan should address the objective, acceptance criteria, testing level, and peer review.",
+          "attached_to": [
+            "S4"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "S5",
+      "label": "Provide documented training before staff implement the accepted operating procedure",
+      "action_verb": "provide",
+      "action_object": "staff training",
+      "constraints": [
+        {
+          "id": "C4",
+          "type": "postcondition",
+          "text": "Document competency for each staff member assigned to implement the procedure.",
+          "attached_to": [
+            "S5"
+          ]
+        }
+      ]
+    }
+  ],
+  "constraints": [],
+  "relations": []
+}
