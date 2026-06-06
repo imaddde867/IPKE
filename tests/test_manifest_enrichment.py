@@ -96,3 +96,23 @@ def test_manifest_is_fresh() -> None:
     assert not drift, f"manifest drift: {drift}"
     for status in EXPECTED_STATUSES:
         assert any(row[status] for row in report["rows"] if status in row), status
+
+
+def test_licenses_and_attribution_files_exist() -> None:
+    for path in (Path("LICENSES.md"), Path("ATTRIBUTION.md")):
+        assert path.exists(), f"missing {path}"
+        text = path.read_text(encoding="utf-8")
+        assert len(text) > 200, f"{path} looks empty"
+
+
+def test_licenses_documents_olsk_share_alike() -> None:
+    text = Path("LICENSES.md").read_text(encoding="utf-8")
+    assert "CC BY-SA 4.0" in text
+    assert "OLSK" in text
+    assert "17 USC 105" in text or "U.S. Public Domain" in text
+
+
+def test_attribution_lists_each_source_family() -> None:
+    text = Path("ATTRIBUTION.md").read_text(encoding="utf-8")
+    for family in ("USGS", "FAA", "EPA", "CDC_NIOSH", "NASA", "OLSK"):
+        assert family in text, f"missing attribution for {family}"
