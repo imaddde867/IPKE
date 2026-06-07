@@ -348,3 +348,28 @@ def test_eval_multiseed_dry_run_rejects_malformed_gold(tmp_path):
         "--dry-run",
     ])
     assert rc == 1, "--dry-run must exit 1 for malformed gold JSON"
+
+
+def test_eval_multiseed_allow_unreviewed_still_rejects_malformed_gold(tmp_path):
+    """--allow-unreviewed must not bypass malformed-JSON detection.
+
+    The flag relaxes the human-review requirement only; it must not suppress
+    failures caused by unreadable or syntactically broken gold files.
+    """
+    from scripts.eval_multiseed import main
+
+    gold_dir = tmp_path / "gold"
+    text_dir = tmp_path / "text"
+    gold_dir.mkdir()
+    text_dir.mkdir()
+
+    (gold_dir / "doc1.json").write_text("{bad json")
+    (text_dir / "doc1.txt").write_text("step content")
+
+    rc = main([
+        "--gold-dir", str(gold_dir),
+        "--text-dir", str(text_dir),
+        "--seeds", "1",
+        "--allow-unreviewed",
+    ])
+    assert rc == 1, "--allow-unreviewed must not suppress malformed-gold detection"

@@ -251,6 +251,7 @@ class UnifiedConfig:
             'llm_max_tokens': _env_int('LLM_MAX_TOKENS', default=cls.llm_max_tokens, min_value=64),
             'llm_max_chunks': _env_int('LLM_MAX_CHUNKS', default=cls.llm_max_chunks, min_value=0),
             'max_workers': _env_int('MAX_WORKERS', default=cls.max_workers, min_value=1),
+            'llm_model_path': _get_env_value('LLM_MODEL_PATH', default=cls.llm_model_path),
             'llm_model_id': _get_env_value('LLM_MODEL_ID', default=cls.llm_model_id),
             'llm_quantization': _get_env_value('LLM_QUANTIZATION', default=cls.llm_quantization),
             'llm_backend': _get_env_value('LLM_BACKEND', default=cls.llm_backend),
