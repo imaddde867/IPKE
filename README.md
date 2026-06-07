@@ -57,8 +57,8 @@ ENABLE_CHUNK_DEDUP=true
 uv run python scripts/experiments/run_all_chunking_experiments.py \
   --documents datasets/archive/test_data/text/*.txt
 
-# API surface
-uv run python main.py  # http://localhost:8000/docs
+# API surface (requires the `app` extra)
+uv run uvicorn src.api.app:app --host 0.0.0.0 --port 8000  # http://localhost:8000/docs
 ```
 
 Research distribution for academic and regulated industrial settings. See `LICENSE`.

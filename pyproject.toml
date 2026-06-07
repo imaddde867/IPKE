@@ -51,9 +51,6 @@ extras = [
     "openai-whisper>=20231117",
 ]
 
-[project.scripts]
-ipke-api = "main:main"
-
 [dependency-groups]
 dev = [
     "pytest>=7.4.0",
