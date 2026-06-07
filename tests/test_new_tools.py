@@ -323,3 +323,28 @@ def test_eval_multiseed_rejects_malformed_gold(tmp_path):
         "--seeds", "1",
     ])
     assert rc == 1
+
+
+def test_eval_multiseed_dry_run_rejects_malformed_gold(tmp_path):
+    """--dry-run must still exit 1 when a gold file is malformed JSON.
+
+    Malformed files are a correctness problem independent of review status;
+    --dry-run must not bypass JSON validation.
+    """
+    from scripts.eval_multiseed import main
+
+    gold_dir = tmp_path / "gold"
+    text_dir = tmp_path / "text"
+    gold_dir.mkdir()
+    text_dir.mkdir()
+
+    (gold_dir / "doc1.json").write_text("{not valid json")
+    (text_dir / "doc1.txt").write_text("step content")
+
+    rc = main([
+        "--gold-dir", str(gold_dir),
+        "--text-dir", str(text_dir),
+        "--seeds", "1",
+        "--dry-run",
+    ])
+    assert rc == 1, "--dry-run must exit 1 for malformed gold JSON"

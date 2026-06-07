@@ -335,25 +335,28 @@ def main(argv: list[str] | None = None) -> int:
         print("ERROR: no (gold, text) pairs found.", file=sys.stderr)
         return 1
 
+    # Always parse gold JSON — malformed files must fail closed regardless of flags.
+    parsed_gold: dict[str, Any] = {}
+    bad_gold: list[tuple[str, Exception]] = []
+    for gf, _ in pairs:
+        try:
+            parsed_gold[gf.name] = json.loads(gf.read_text(encoding="utf-8"))
+        except Exception as exc:  # noqa: BLE001
+            bad_gold.append((gf.name, exc))
+    if bad_gold:
+        print("ERROR: could not read or parse gold files:", file=sys.stderr)
+        for name, exc in bad_gold:
+            print(f"  {name}: {exc}", file=sys.stderr)
+        return 1
+
     # Reject unreviewed gold unless explicitly overridden.
-    # Unreviewed files are AI-assisted drafts; results over them cannot be
-    # used as paper evidence.
+    # Unreviewed files are AI-assisted drafts; results cannot be used as paper evidence.
     if not args.dry_run and not args.allow_unreviewed:
-        unreviewed = []
-        bad_gold = []
-        for gf, _ in pairs:
-            try:
-                data = json.loads(gf.read_text(encoding="utf-8"))
-                status = data.get("quality", {}).get("review_status", "")
-                if status != "reviewed":
-                    unreviewed.append(gf.name)
-            except Exception as exc:  # noqa: BLE001
-                bad_gold.append((gf.name, exc))
-        if bad_gold:
-            print("ERROR: could not read or parse gold files:", file=sys.stderr)
-            for name, exc in bad_gold:
-                print(f"  {name}: {exc}", file=sys.stderr)
-            return 1
+        unreviewed = [
+            gf.name
+            for gf, _ in pairs
+            if parsed_gold[gf.name].get("quality", {}).get("review_status", "") != "reviewed"
+        ]
         if unreviewed:
             print(
                 "ERROR: the following gold files are not reviewed "
