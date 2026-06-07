@@ -54,6 +54,14 @@ def test_extraction_to_draft_missing_text_falls_back_to_id():
     assert draft["steps"][0]["label"] == "S1"
 
 
+def test_extraction_to_draft_quality_uses_review_status():
+    payload = {"steps": [{"id": "S1", "text": "Do thing", "order": 1}], "constraints": []}
+    draft = _extraction_to_draft("doc1", payload, "T", "domain")
+    quality = draft["quality"]
+    assert quality.get("review_status") == "unreviewed", "must use review_status not status"
+    assert "status" not in quality, "old 'status' field must not appear"
+
+
 def test_extraction_to_draft_validates_against_schema(tmp_path):
     payload = {
         "steps": [{"id": "S1", "text": "Do the thing", "order": 1}],
@@ -203,3 +211,165 @@ def test_bootstrap_null_gives_high_pvalue():
 def test_bootstrap_mismatched_lengths_raises():
     with pytest.raises(ValueError):
         paired_bootstrap_pvalue([0.5, 0.6], [0.5])
+
+
+def test_eval_multiseed_rejects_unreviewed_gold(tmp_path):
+    """Guard blocks full sweep when gold has review_status != 'reviewed'."""
+    import json
+    from scripts.eval_multiseed import main
+
+    gold_dir = tmp_path / "gold"
+    text_dir = tmp_path / "text"
+    gold_dir.mkdir(); text_dir.mkdir()
+
+    # Unreviewed gold file
+    (gold_dir / "doc1.json").write_text(json.dumps({
+        "procedure": {"doc_id": "doc1", "title": "t"},
+        "steps": [{"id": "S1", "label": "step"}],
+        "quality": {"review_status": "unreviewed"},
+    }))
+    (text_dir / "doc1.txt").write_text("step content")
+
+    rc = main([
+        "--gold-dir", str(gold_dir),
+        "--text-dir", str(text_dir),
+        "--seeds", "1",
+    ])
+    assert rc == 1
+
+
+def test_eval_multiseed_dry_run_skips_guard(tmp_path):
+    """--dry-run bypasses the unreviewed guard."""
+    import json
+    from scripts.eval_multiseed import main
+
+    gold_dir = tmp_path / "gold"
+    text_dir = tmp_path / "text"
+    gold_dir.mkdir(); text_dir.mkdir()
+
+    (gold_dir / "doc1.json").write_text(json.dumps({
+        "procedure": {"doc_id": "doc1", "title": "t"},
+        "steps": [{"id": "S1", "label": "step"}],
+        "quality": {"review_status": "unreviewed"},
+    }))
+    (text_dir / "doc1.txt").write_text("step content")
+
+    rc = main([
+        "--gold-dir", str(gold_dir),
+        "--text-dir", str(text_dir),
+        "--seeds", "1",
+        "--dry-run",
+    ])
+    assert rc == 0
+
+
+def test_eval_multiseed_allow_unreviewed_bypasses_guard(tmp_path, monkeypatch, capsys):
+    """--allow-unreviewed must bypass the guard; test must not load real models."""
+    import json
+    import scripts.eval_multiseed as em
+    from scripts.eval_multiseed import main
+
+    # Stub heavy infrastructure so the test stays fast and model-free.
+    async def _fake_extract(text_path, doc_id, seed):
+        return {"steps": [], "constraints": []}
+
+    monkeypatch.setattr(em, "_extract_one", _fake_extract)
+    import src.evaluation.metrics as metrics_mod
+    monkeypatch.setattr(metrics_mod, "prepare_evaluator", lambda *a, **kw: (None, None))
+
+    gold_dir = tmp_path / "gold"
+    text_dir = tmp_path / "text"
+    gold_dir.mkdir()
+    text_dir.mkdir()
+
+    (gold_dir / "doc1.json").write_text(json.dumps({
+        "procedure": {"doc_id": "doc1", "title": "t"},
+        "steps": [{"id": "S1", "label": "step"}],
+        "quality": {"review_status": "unreviewed"},
+    }))
+    (text_dir / "doc1.txt").write_text("step content")
+
+    # No --dry-run: guard must not fire even though gold is unreviewed.
+    main([
+        "--gold-dir", str(gold_dir),
+        "--text-dir", str(text_dir),
+        "--seeds", "1",
+        "--allow-unreviewed",
+    ])
+    captured = capsys.readouterr()
+    assert "not reviewed" not in captured.err, (
+        "--allow-unreviewed must bypass the unreviewed-gold guard"
+    )
+    assert "quality.review_status != 'reviewed'" not in captured.err
+
+
+def test_eval_multiseed_rejects_malformed_gold(tmp_path):
+    """Malformed gold JSON must block the sweep (fail closed), not silently pass."""
+    import json
+    from scripts.eval_multiseed import main
+
+    gold_dir = tmp_path / "gold"
+    text_dir = tmp_path / "text"
+    gold_dir.mkdir()
+    text_dir.mkdir()
+
+    # Truncated JSON — parse will fail
+    (gold_dir / "bad.json").write_text("{")
+    (text_dir / "bad.txt").write_text("some procedure text")
+
+    rc = main([
+        "--gold-dir", str(gold_dir),
+        "--text-dir", str(text_dir),
+        "--seeds", "1",
+    ])
+    assert rc == 1
+
+
+def test_eval_multiseed_dry_run_rejects_malformed_gold(tmp_path):
+    """--dry-run must still exit 1 when a gold file is malformed JSON.
+
+    Malformed files are a correctness problem independent of review status;
+    --dry-run must not bypass JSON validation.
+    """
+    from scripts.eval_multiseed import main
+
+    gold_dir = tmp_path / "gold"
+    text_dir = tmp_path / "text"
+    gold_dir.mkdir()
+    text_dir.mkdir()
+
+    (gold_dir / "doc1.json").write_text("{not valid json")
+    (text_dir / "doc1.txt").write_text("step content")
+
+    rc = main([
+        "--gold-dir", str(gold_dir),
+        "--text-dir", str(text_dir),
+        "--seeds", "1",
+        "--dry-run",
+    ])
+    assert rc == 1, "--dry-run must exit 1 for malformed gold JSON"
+
+
+def test_eval_multiseed_allow_unreviewed_still_rejects_malformed_gold(tmp_path):
+    """--allow-unreviewed must not bypass malformed-JSON detection.
+
+    The flag relaxes the human-review requirement only; it must not suppress
+    failures caused by unreadable or syntactically broken gold files.
+    """
+    from scripts.eval_multiseed import main
+
+    gold_dir = tmp_path / "gold"
+    text_dir = tmp_path / "text"
+    gold_dir.mkdir()
+    text_dir.mkdir()
+
+    (gold_dir / "doc1.json").write_text("{bad json")
+    (text_dir / "doc1.txt").write_text("step content")
+
+    rc = main([
+        "--gold-dir", str(gold_dir),
+        "--text-dir", str(text_dir),
+        "--seeds", "1",
+        "--allow-unreviewed",
+    ])
+    assert rc == 1, "--allow-unreviewed must not suppress malformed-gold detection"

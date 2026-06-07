@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import random
 from dataclasses import dataclass
-from typing import Dict, Iterable, List, Sequence, Set, Tuple
+from typing import Dict, Iterable, Sequence, Set, Tuple
 
 
 Triples = Sequence[Tuple[str, str, str]]

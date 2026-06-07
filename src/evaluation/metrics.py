@@ -12,15 +12,15 @@ REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-import networkx as nx
-import numpy as np
-import spacy
-from scipy.optimize import linear_sum_assignment
-from scipy.stats import kendalltau
-from sentence_transformers import SentenceTransformer
-from tqdm import tqdm
+import networkx as nx  # noqa: E402
+import numpy as np  # noqa: E402
+import spacy  # noqa: E402
+from scipy.optimize import linear_sum_assignment  # noqa: E402
+from scipy.stats import kendalltau  # noqa: E402
+from sentence_transformers import SentenceTransformer  # noqa: E402
+from tqdm import tqdm  # noqa: E402
 
-from src.evaluation.smatch import compute_smatch
+from src.evaluation.smatch import compute_smatch  # noqa: E402
 
 
 HEADLINE_METRICS_ORDER = [

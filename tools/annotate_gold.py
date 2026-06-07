@@ -148,7 +148,7 @@ def _extraction_to_draft(
         "relations": [],
         "quality": {
             "annotator": "draft_llm",
-            "status": "unreviewed",
+            "review_status": "unreviewed",
         },
     }
 

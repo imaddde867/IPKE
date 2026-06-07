@@ -71,10 +71,10 @@ have not been corrected by a human annotator. Until human correction is complete
 documented, these files are drafts, not reviewed gold.
 
 The paper must state: "Gold annotations were drafted using [model] and corrected by
-[annotator name]. Files whose `quality.status` field reads `unreviewed` have not
+[annotator name]. Files whose `quality.review_status` field reads `unreviewed` have not
 completed the correction pass and are excluded from paper claims."
 
-Do not update `quality.status` from `unreviewed` until a human has read and corrected
+Do not update `quality.review_status` from `unreviewed` until a human has read and corrected
 the file and recorded the correction date.
 
 ---
