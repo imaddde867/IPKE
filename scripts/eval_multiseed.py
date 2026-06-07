@@ -351,6 +351,16 @@ def main(argv: list[str] | None = None) -> int:
     for gf, _ in pairs:
         print(f"  {gf.stem}")
 
+    # Validate all gold files before dry-run check so that --dry-run never
+    # exits 0 on a broken dataset (malformed JSON must be caught immediately).
+    loaded_gold: dict[str, dict] = {}
+    for gf, _ in pairs:
+        try:
+            loaded_gold[gf.stem] = json.loads(gf.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError) as exc:
+            print(f"ERROR: cannot read or parse gold file {gf}: {exc}", file=sys.stderr)
+            return 1
+
     if args.dry_run:
         print("\n[dry-run] No extraction performed.")
         return 0
@@ -372,7 +382,7 @@ def main(argv: list[str] | None = None) -> int:
 
         for gf, tf in pairs:
             doc_id = gf.stem
-            gold = json.loads(gf.read_text(encoding="utf-8"))
+            gold = loaded_gold[doc_id]
             for seed in seeds:
                 print(f"  {doc_id}  seed={seed} ...", end=" ", flush=True)
                 try:

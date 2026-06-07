@@ -62,6 +62,7 @@ class LlamaCppBackend(LLMBackendBase):
             "use_mlock": llm_config["use_mlock"],
             "use_mmap": llm_config["use_mmap"],
             "verbose": llm_config["verbose"],
+            "seed": llm_config["random_seed"],
         }
         self.generation_params = {
             "max_tokens": llm_config["max_tokens"],
@@ -113,6 +114,8 @@ class TransformersBackend(LLMBackendBase):
             "do_sample": True,
         }
         logger.info("Loaded transformers backend: %s", llm_config["model_id"])
+        # TODO(#65): wire random_seed into transformers generation.
+        # All active sweep configs use llama_cpp; deferred.
 
     def _resolve_device(self, llm_config) -> str:
         if torch is None:
