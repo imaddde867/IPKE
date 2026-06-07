@@ -61,6 +61,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
+from src.evaluation.metrics import compute_phi as phi
 
 METRIC_COLUMNS = [
     "StepF1",
@@ -85,14 +86,6 @@ DEFAULT_PHI_WEIGHTS = [(0.5, 0.3, 0.2)]
 # ---------------------------------------------------------------------------
 # Pure helpers (testable without model)
 # ---------------------------------------------------------------------------
-
-def phi(coverage: float | None, step_f1: float | None, kendall: float | None,
-        w_cov: float = 0.5, w_step: float = 0.3, w_tau: float = 0.2) -> float:
-    c = coverage or 0.0
-    s = step_f1 or 0.0
-    k = kendall or 0.0
-    return w_cov * c + w_step * s + w_tau * k
-
 
 def _ci95(values: list[float]) -> tuple[float, float]:
     from scipy.stats import t as t_dist
