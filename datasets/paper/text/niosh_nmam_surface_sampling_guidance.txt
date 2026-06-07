@@ -1,0 +1,1886 @@
+document_id: niosh_nmam_surface_sampling_guidance
+source_family: CDC_NIOSH
+title: NIOSH NMAM Surface Sampling Guidance Considerations and Methods in Occupational Hygiene
+direct_url: https://www.cdc.gov/niosh/nmam/pdf/NMAM_Chap_SG-508.pdf
+sha256: 49e1d057bb989c8d1bc812960c47327bde6baf55672da2e68ca9080bf3595cf3
+chars: 118363
+selected_for_gold: false
+held_out_for: dsc_lambda_calibration_and_poc
+
+            NIOSH Manual of Analytical Methods (NMAM), 5th Edition
+
+
+
+Surface Sampling Guidance,
+Considerations, and Methods in
+Occupational Hygiene
+by Kendra Broadwater MPH, CIH, CSP, NIOSH; Kevin Ashley, PhD, NIOSH (ret.); and Ronnee Andrews
+PhD, NIOSH
+
+
+
+
+      1   Introduction                                                                      SG-2
+      2   Rationale for surface sampling                                                    SG-2
+      3   Collection methods                                                                SG-6
+      4   Sampling strategies                                                              SG-18
+      5   Criteria for surface contamination                                               SG-23
+      6   Consensus standards and other resources for published surface sampling methods   SG-24
+      7   Bulk sample collection                                                           SG-29
+      8   Summary                                                                          SG-29
+      9   References                                                                       SG-30
+
+
+      DEPARTMENT OF HEALTH AND HUMAN SERVICES
+      Centers for Disease Control and Prevention
+      National Institute for Occupational Safety and Health
+                      Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+1 Introduction
+Work surfaces can become contaminated with chemical, biological, or radiological agents in
+different circumstances: during typical and emergency work activities, after accidental or
+intentional agent release and dispersal, or during naturally occurring processes. Skin (dermal)
+contact with contaminated surfaces has been recognized as an occupational exposure route
+resulting in dermal absorption and/or accidental ingestion [Boeniger 2003; Cherrie et al. 2006; EPA
+1995b, 2008; Ness 1994]. Surfaces can be sampled to assess these exposures or the potential for
+them. In fact, surface sampling followed with analysis is now widely used to evaluate contamination
+levels in workplaces [ASTM 2011b]. The data collected from surface and dermal sampling can be
+used when designing and evaluating mitigation and prevention strategies and can complement
+workplace air monitoring and other types of exposure assessments.
+
+Analytes of interest can often be sampled and analyzed using more than one method [Ashley et al.
+2011; Lichtenwalner 1992; McArthur 1992; Ness 1994]. Consistency in sampling and analyzing
+surface agents in occupational settings can be achieved by standardizing methods. Standardization
+allows for reliable and high-quality comparisons of analytical results from samples collected across
+different investigators, locations or surfaces, times, and sampling methods. Because sample
+collection is usually responsible for the greatest measurement uncertainty in sampling and analysis,
+developing and using standardized sampling methods should be a priority. Some standardized
+methods for surface sampling have already been developed, validated, and published. However, for
+substances that do not have such methods, careful planning, consideration, and documentation of
+the sampling strategies and methods used is necessary for high data quality and reliability.
+
+This chapter provides information that will (1) aid in the selection of collection methods (e.g.,
+surface sampling medium, wetting agent, and sampling technique), sample locations, and number
+of samples; and (2) describe available resources for these decisions (e.g., standardized methods,
+consensus standards, and regulations and their accompanying guidance).
+
+While we focus on surface and dermal sample collection and analyses here, other evaluation
+techniques, such as using direct reading instruments (e.g., X-ray fluorescence, chemical spot tests),
+also apply.
+
+
+2 Rationale for surface sampling
+Surface sampling data can provide important information about surface contamination, or lack
+thereof, in workplaces. Understanding and defining the purpose for collecting surface samples
+
+
+         NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-2 of SG-42
+                      Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+before making a decision to take the samples or creating a sampling strategy are critical. The
+purposes and objectives for the surface sampling dictate several aspects of the sampling plan, such
+as the collection method, location, sample number, and analytical method. Primary objectives
+should include that the surface sampling data collected be defensible and meet the preestablished
+goals.
+
+The sampling strategy, which includes number, location, and method, will define how the data can
+be used. Therefore, these should be decided and thoroughly documented before sampling begins.
+Make sure the sample collection and analysis methods will meet the data quality objectives and
+performance requirements for the selected goals. Other concerns are the potential location and
+temporal variability in surface contamination. The change in contamination levels over time, or
+temporal variability, is related (1) to when and how the contaminating process happens and (2) to
+exposure controls such as containment or cleaning. These impact whether the collected samples
+accurately represent the contamination and partially dictate where samples should be taken (e.g.,
+select locations likely to be highly contaminated). Collecting enough samples and using sampling
+areas of adequate size are required for defensible and useful data that meet the sampling strategy
+objectives.
+
+Some purposes for surface sampling in occupational settings are outlined in ASTM D7659-21
+Standard Guide for Strategies for Surface Sampling of Metals and Metalloids for Worker Protection
+and summarized here [2021b]:
+
+  •   Hazard identification – To identify and quantify analyte(s) of interest in the workplace. This
+      information is used to evaluate risk, to develop and recommend worker protection
+      requirements, and to assess the probability of adverse health effects.
+  •   Source and exposure pathway identification – To determine the process or origin that
+      contribute to the presence of the analyte(s) of interest, the fraction of emission coming from
+      each source, and how workers may be exposed during these processes. Exposure pathway
+      identification may also look at if contaminants migrate into workers’ vehicles or homes
+      [NIOSH 1995].
+  •   Exposure assessment – To measure or evaluate potential exposure when a health hazard is
+      known or suspected to be present. Assessment may be conducted for similar exposure groups
+      (workers in the same location or in the same role with similar exposure potential). Select,
+      whenever possible, instrumentation and methods that offer the lowest available analytical
+      reporting limits for the analyte that is undergoing assessment. The reporting limit should be
+      below any regulatory limit for a particular agent or level that can lead to adverse health
+      outcomes, if that level is known.
+
+
+
+         NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-3 of SG-42
+                      Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+  •   Site characterization – To find the surface contamination levels within a facility at an initial
+      or baseline point, during or after process or engineering controls operations, or as part of
+      facility decommissioning.
+  •   Selection of exposure controls – To determine which exposure controls (engineering,
+      administrative, personal protective equipment) should be used and how efficient collection or
+      capture control devices need to be to reduce or eliminate deposition or to remove material
+      that has already been deposited.
+  •   Evaluation of controls, including housekeeping – To measure the efficiency of exposure
+      controls, amount of the analyte(s) of interest passing or escaping from an exposure control,
+      and to help identify the reason (e.g., poor design, leaks, wear, damage, inadequate
+      maintenance, overloading, or accidents). Surface sampling before and after housekeeping or
+      decontamination can be used evaluate the cleaning methods or materials.
+  •   Compliance with regulations and standards – To satisfy regulatory or legal requirements and
+      determine if exposures and/or contaminant surface concentrations in the workplace are
+      below regulatory or guidance limits.
+  •   Education and training – To educate workers and managers in the importance of the
+      hierarchy of controls, which includes elimination and substitution, engineering controls, and
+      administrative (e.g., training, policy and procedures, housekeeping, and good work practices)
+      controls and personal protective equipment.
+  •   Complaint or concern investigation – To look into concerns of workers, management,
+      regulatory agencies, or other interested parties.
+
+Results from surface sampling and analysis should not be used to the exclusion of other information
+concerning potential chemical, radiological, and biological hazards; rather, surface sampling data
+should be used to augment data from other sources of contamination or exposure. For instance,
+additional sources of exposure information may include occupational air sampling, bioassay and
+biomonitoring results, clinical observations, quality and process control data, records of facility
+operations, visual inspections, and material balance studies. Different types of samples can be paired
+together to increase sampling strategy efficiency. For example, direct reading qualitative and semi-
+quantitative colorimetric methods using wipes, or swabs and a reagent such as those for lead (Pb)
+(NIOSH 9105) and hexavalent chromium [Cr(VI)] (NIOSH 9101) can be used alone. However, they
+can also be used for on-site screening, to discern where surface samples for subsequent quantitative
+analysis should be collected. Direct reading screening methods exist for methamphetamine and
+fentanyl on surfaces and can be carried out using colorimetry and/or immunochemical assay
+techniques [Angelini et al. 2019; Snawder et al. 2011]. These techniques (Table 1) can be used to
+complement surface wipe measurement methods for methamphetamines.
+
+
+
+
+         NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-4 of SG-42
+                      Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+Consider these technical factors and variables when sampling a surface for any contaminant
+[adapted from Connor et al. 2016]:
+
+Location and sample surface(s) considerations:
+   • Design and layout of area to be sampled
+   • Locations that are to be sampled relative to process and work
+   • Nature of surface to be sampled (e.g., surface texture, loading, shape)
+   • Surface size(s) and area(s) to sample
+   • Chemicals in use at site(s) that could be present
+   • Loading/contamination level: trace, highly contaminated, variability across surface, etc.
+
+
+Sampling process considerations:
+   • Type and material of sampler to be used
+   • Validated sampling and analytical methods used
+   • Recovery efficiency from surface with given sampling method (typically unknown, unless
+      trials are conducted or efficiencies have been published)
+   • Wetting agent to maximize recovery efficiency
+   • Exposure controls for investigators conducting sampling
+
+Analytical considerations:
+   • Number of samples to be taken
+   • Presence and identification of possible interferences
+   • Chemistry (e.g., polarity, pH) of extraction solvent
+   • Dynamic range of analytical method: accuracy at low, medium, and high levels of analyte
+   • Extraction efficiency from surface sampling media
+   • Compatibility of extraction solution with analytical reagents
+   • Properties of the analytes
+   • Stability of analyte in extraction solvent/sampling medium or media
+   • Limits of detection and quantitation for analyte
+
+One should also consider the history of the surface being sampled, for instance, the time and
+duration of its last use, any contaminating process, and the time and method of its last cleaning. The
+analyte’s possible origins should also be considered and documented beforehand. This information
+can be used to determine the timing and technique for sampling the surface, relative to any
+contaminating processes and housekeeping activities. It can be helpful to understand this history
+during data interpretation.
+
+
+
+         NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-5 of SG-42
+                               Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+Table 1. NIOSH methods for sample collection from surfaces in workplaces and related
+environments*
+ Method No. Sampling               Target Analyte(s)     Comments
+              Media/Substrate
+
+ NIOSH 9100          Wetted wipe               Pb                            Harmonized with ASTM E1728; subsequent
+                                                                             analysis by atomic spectrometry or
+                                                                             electroanalysis
+
+ NIOSH 9101          Settled dust sample       Cr(VI)                        Qualitative colorimetric screening method
+                                                                             using diphenylcarbazide
+
+
+ NIOSH 9102          Wetted wipe               Elements                      Harmonized with ASTM D6966; subsequent
+                                                                             analysis by atomic spectrometry
+
+ NIOSH 9105          Wetted wipe               Pb                            Qualitative colorimetric screening method
+                                                                             using rhodizonate
+
+ NIOSH 9106          Solvent-wetted wipe       Methamphetamine               Harmonized with ASTM D6661; liquid-
+                                               and related drugs and         liquid extraction sample preparation
+                                               compounds                     followed by gas chromatography-mass
+                                                                             spectrometric analysis
+
+ NIOSH 9109          Solvent-wetted wipe       Methamphetamine               Harmonized with ASTM D6661; solid-phase
+                                               and related drugs and         extraction sample preparation followed by
+                                               compounds                     gas chromatography-mass spectrometric
+                                                                             analysis
+
+ NIOSH 9110          Wetted wipe               Be                            Harmonized with ASTM D7202; subsequent
+                                                                             analysis by molecular fluorescence
+
+ NIOSH 9111          Solvent-wetted wipe       Methamphetamine               Harmonized with ASTM D6661; desorption
+                                                                             using sulfuric acid followed by liquid
+                                                                             chromatography-mass spectrometric
+                                                                             analysis
+
+*Methods available at www.cdc.gov/niosh/nmam. Pb = lead; Be = beryllium; Cr(VI) = hexavalent chromium
+
+
+
+    3 Collection methods
+     Sample collection methods include the sample medium and technique appropriate for use based on
+     the physical nature of surface to be sampled. The following materials, qualities, or conditions are
+
+                 NIOSH Manual of Analytical Methods  5th Edition  Chapter SG             August 2022   Page SG-6 of SG-42
+                      Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+examples of what to consider to better understand representative surfaces, contamination types and
+amount, and sample media that are of interest for surface (including dermal) sampling [Ashley et al.
+2011]:
+       • Physical nature of surfaces
+          o      Hard or soft
+          o      Smooth or rough
+          o      Porous or nonporous
+          o      Fragile or durable substrates
+       • Cleanliness of surfaces
+          o      Oily or coated surfaces
+          o      Grossly contaminated surfaces
+       • Skin (exposed and/or protected)
+       • Clothing and personal protective equipment
+       • Bulk materials, for example, soils, deposited dusts, spilled materials
+
+Available sample media can be made from a variety of materials (e.g., polyvinyl alcohol, quartz
+fiber, mixed cellulose ester, polycarbonate membrane, cellulose sponge, continuous filament cloth,
+macrofoam sponge, polyurethane foam) and come in several formats, such as dry or wetted wipes,
+swabs, and filters. When vacuum sampling, a container or a filter is needed. Sampling can also be
+done using rinses, typically for dermal sampling, or adhesive tapes. Collecting multiple analytes can
+require distinct media or sample preparation for each analyte or class of analyte and, thus, need
+multiple, nonoverlapping surface samples.
+
+ a. Collection efficiency
+     Understanding measurement accuracy, variability, and sample collection efficiency is
+     fundamental when collecting surface samples. Collection efficiency is the amount of analyte
+     collected and measured from a surface material divided by the total amount deposited on the
+     area sampled. It is reported as a percentage, so the result is multiplied by 100. Together,
+     sample medium, wetting agent, and collection technique will affect collection efficiency and
+     the analytical/quantitative results. Collection efficiency can also be affected by the degree to
+     which a contaminant is physically or chemically bound to the surface being sampled.
+
+     Collection efficiency differs from sampler extraction efficiency. Sampler extraction efficiency
+     is the fraction of total analyte recovered from the sampling media and measured during
+     analysis. It is determined using analyte deposited directly on the sampling media. Collection
+     efficiency can be characterized through experiments prior to sampling. When available,
+     characterization can be found through literature reviews about the target analyte, sampling
+
+
+         NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-7 of SG-42
+                  Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+  surface characteristics (e.g., porosity, material) and sampling data, and sampling method.
+  OSHA describes one method of characterizing collection efficiency that entails sampling a
+  smooth and nonporous surface deposited with a known amount of analyte [OSHA 2000].
+  OSHA suggests that a collection efficiency of below 50% for a method on an ideal surface
+  would be insufficient and an alternative wetting agent or sampling medium should then be
+  evaluated [OSHA 2000]. ASTM established a minimum of 75% collection efficiency for wipe
+  sampling materials for Pb and beryllium (Be) in surface dust [ASTM 2020, 2021c].
+
+  The collection efficiency for a specific collection method can be impacted by surface
+  conditions as well as the manner the contaminant deposited on the surface (e.g., settling,
+  impaction, static forces). Ideally, sampling collection efficiencies should be characterized using
+  the same physical form as the material present on workplace surfaces. For example, when
+  conducting collection efficiency experiments, analytes of interest may need to be deposited on
+  a surface in a manner similar to workplace conditions rather than using a liquid spike of the
+  analyte. Collection efficiencies are included in some published surface sampling methods or in
+  research cited in the method [ASTM 2017a,b, 2018a,b, 2020, 2021c; Dufay and Archuleta
+  2006; EPA 1995b; ISO 2011; Millson et al. 1994; NIOSH 2003, 2011a,b; Roberts et al. 1991;
+  Wheeler and Stancliffe 1998]. The collection efficiency depends on several factors, such as the
+  collection method, surface type, and surface condition (e.g., cleanliness, temperatures, skin).
+  Collection efficiencies from surfaces for the agent and sampling method should be evaluated
+  and documented, along with results, absent previously reported research or methods for the
+  employed collection method (sampling media, wetting agent, sampling technique) and surface
+  type.
+
+  Sequential or serial sampling—taking and analyzing multiple samples of a templated area or
+  hands—can be an option to increase collection from a surface, particularly if the amount of
+  contaminant (or debris) on the surface is high. However, limited research evaluating or
+  characterizing serial sampling is available. Some work has evaluated recovery from dermal
+  surfaces using multiple wipes [Beaucham et al. 2019; Boeniger 2006]. Thus far, this practice
+  has not been included in many standard and reference surface sampling methods, while others
+  (e.g., NIOSH 9106, NIOSH 9212, ASTM D6661-17) allow its use with appropriate
+  documentation and/or for specific purposes, such as estimating residual contamination at
+  regular sampling [ASTM 2017b; NIOSH 2011a].
+
+b. Sampling with wet or dry media
+  Wetting sampling media often improves collection efficiency and should be considered and
+  evaluated for appropriateness [Ashley et al. 2009]. Wipes can be wetted with a variety of
+
+
+
+     NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-8 of SG-42
+                Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+liquids (e.g., deionized/distilled water, ascorbic acid, phosphate buffers, alcohols, or organic
+solvents). Sampling methods for elements (metals and metalloids) normally entail the use of
+wipes wetted with water, whereas surface wipe sampling for methamphetamine and related
+compounds uses wipes dosed with solvents such as methanol or isopropanol (2-propanol).
+While wetting agents may be chosen to increase the absorptive capacity of the media for a
+particular media relative to dry media, their desorptive properties (i.e., the ability to remove
+the agent from the media for analysis) vary [Venables and Schmuttenmaer 2000]. Review
+available literature and method documentation before selecting sampling media and deciding
+whether it will be used wet or dry, and with which wetting agent.
+
+A hierarchy of sample collection methods is generally referred to when choosing surface
+sampling media for metals [ASTM 2021b]. First, consider wetted wipe sampling, particularly
+if collecting material from smooth, hard, nonporous, and nonelectrified substrates. As an
+example, wipe sampling has been shown to be an effective means for assessing aerosol
+deposition in occupational settings [Nygren 2006]. Sometimes wetted wipe sampling may not
+be desirable, and dry sample collection techniques are required. For example, when surface
+materials or components must be protected against potential damage from the wetting agents
+or when the wetting agents may cause the contaminant to migrate into a porous or complex
+surfaces (e.g., wood, concrete, carpet). In these situations, less aggressive methods (such as
+nondrying or noncorrosive) or methods more compatible with the substrate being sampled
+are sometimes called for. These can include mild vacuuming, tape lifting, rinsing methods, or
+the use of dry swabs. For example, museum artifacts preserved using mercury or arsenic
+should be sampled with methods that preserve the surface’s integrity [Makos 2001; Sirois
+2001].
+
+When sampling surfaces quantitatively as a surrogate for possible exposure, the sample
+collection method should not degrade the sample surface in a way that contributes to an
+inaccurate overestimation of analyte available on the surface. For samples that undergo
+microscopy, dry collection methods such as tape lifting would often be appropriate. Select
+dermal surface sampling methods (i.e., medium, wetting agent, and technique) that minimize
+irritation, damage, and other health effects and prevent the contaminant or wetting agent
+from migrating across the dermal barrier [ASTM 2011b; ISO 2011; Ness 1994]. For example,
+to sample polycyclic aromatic hydrocarbons (PAHs) on skin, one might use corn or sunflower
+oil rather than hexane [Fent et al. 2014; Fent et al. 2017; OSHA 2000; Väänänen et al. 2005].
+
+Collection efficiencies using wetted wipes for collecting lead oxide dust from smooth, hard
+surfaces, have been evaluated and exceed 75% [Chavalitnitikul and Levin 1984; EPA 1995b].
+In related work, a comparison of wet vs. dry sampling was performed on hard, smooth
+
+
+   NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-9 of SG-42
+                Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+surfaces spiked with Be [Dufay and Archuleta 2006]. They found that wetted wipe sampling
+usually results in a much higher collection efficiency (64%–106%) than does sample collection
+using dry wipes (14%–43%). In earlier studies, a comparison of wipe sampling methods for Be
+was carried out wherein dry, water-wetted, and alcohol-based wipe methods were evaluated
+for how effective each was in removing beryllium-containing dust from painted surfaces [Kerr
+2004]. The study found alcohol to be most effective for removing Be dust from oily surfaces,
+while dry wipes were least effective for this purpose. These studies have served to provide
+necessary data in support of standardized wipe sampling protocols for metals (e.g., ASTM
+D6966).
+
+Wetted wipes have been studied for assessing antibiotics and antineoplastic drugs surface
+contamination. Using cellulosic wipes wetted with ethanol, recoveries of various antibiotic
+substances from different surface materials were analyzed with high-performance liquid
+chromatography-mass spectrometry (HPLC-MS) [Nygren and Lindahl 2011]. Sampling
+recoveries from smooth surfaces were determined acceptable (i.e., quantitative or semi-
+quantitative) for several antibiotics, but the high reactivity of certain agents led to low or
+erratic recoveries for some substances.
+
+Surface sampling studies of pesticide residues showed wetted wipes offered the highest
+recovery efficiencies. A comparison study between solvent-moistened wipes and a press
+sampler found solvent-wetted wipe sampling from hard surfaces removed 84%–97% of all
+pesticides while a press sampler recovered only 17%–55% [Bernard et al. 2008]. A press
+sampler consists of a handle, sampling block, and cassette assembly that uses springs to press a
+sampling material, cotton or polyurethane in this study, against the surface being sampled.
+
+Studies of wipe materials and wetting agents for collecting pesticide residues from hard
+surfaces have shown that isopropanol-wetted cellulosic wipes yielded acceptable recoveries for
+a variety of pesticides and their residues, as well as related organic compounds [Cettier et al.
+2015; Deziel et al. 2011]. In other work, wipe materials and solvents were evaluated for surface
+sampling of chemical warfare agents and for wipe recoveries from representative surfaces
+[Willison 2012, 2015]. These wipe sampling protocols are harmonized with a relevant
+voluntary consensus standard for sampling nonvolatile organic compounds, ASTM D6661
+(Table 2).
+
+
+
+
+  NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-10 of SG-42
+                              Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+Table 2. Selected ASTM standards for sample collection from surfaces in workplaces and related
+environments*
+ ASTM Standard           Sampling         Target Substrate(s)               Comments
+   Designation        Media/Device              Sampled
+ ASTM D5438              Modified upright            Floors                       Applicable to sampling from carpets;
+                         vacuum cleaner                                           multiple analytes
+ ASTM D5755              Micro-vacuum sampler        General surfaces             Applicable to collection of asbestos fibers
+ ASTM D6333              Polyurethane foam roller    Floors                       Applicable to collection of pesticide
+                                                                                  residues
+ ASTM D6480              Low-fiber/continuous        Smooth surfaces              Applicable to collection of asbestos fibers
+                         filament wipe
+ ASTM D6602              Cotton balls, wipes or      General surfaces             Applicable to sampling of soot, carbon
+                         tape lift                                                black, biofilms, etc.
+ ASTM D6661              Solvent-wetted wipe         Smooth surfaces              Applicable to sampling of non-volatile
+                                                                                  organic compounds
+ ASTM D6966              Wetted wipe                 Smooth surfaces              Various wetting agents can be used;
+                                                                                  applicable to metals and metalloids
+ ASTM D7144              Sampling cassette with      Rough, porous, uneven        “Micro-vacuum” dust sampling for
+                         collection nozzle           surfaces; fragile surfaces   metals and metalloids; potentially
+                                                                                  applicable to other agents
+ ASTM D7296              Dry wipe                    Fragile surfaces             Applicable to Be—special cases;
+                                                                                  potentially extendable to other analytes
+ ASTM D7707              Be wipe specification       Smooth surfaces              Applicable to Be sampling; potential
+                                                                                  applicability to other elements;
+                                                                                  regulatory applications
+ ASTM D7789              Swab sampler (sterile)      General surfaces             Applicable to sampling of fungi
+ ASTM D7910              Adhesive tape               General surfaces             Applicable to sampling of fungi
+ ASTM E1216              Adhesive tape               Smooth surfaces              Applicable to multiple analytes; poor
+                                                                                  collection efficiency for ultrafine
+                                                                                  particles; might damage fragile substrates
+ ASTM E1728              Wetted wipe                 Smooth surfaces              Applicable to Pb sampling; regulatory
+                                                                                  applications
+ ASTM E1792              Pb wipe specification       Smooth surfaces              Applicable to Pb sampling; potential
+                                                                                  applicability to other elements;
+                                                                                  regulatory applications
+ ASTM E2458              Swab sampler                General surfaces             Applicable to suspected biological agents
+                                                                                  in powders
+*Standards available at www.astm.org. Pb = lead; Be = beryllium
+
+
+       c. Vacuum sampling
+            Consider vacuum sampling when the surface cannot be wiped, when surface wipe methods are
+            not expected to have acceptable collection efficiencies, or when the analyte or the physical
+
+
+              NIOSH Manual of Analytical Methods  5th Edition  Chapter SG           August 2022       Page SG-11 of SG-42
+                Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+form is best collected via vacuum. Vacuum sampling is generally preferred for soft or rough,
+porous surfaces and has been done for a variety of agents, including bacterial spores. Vacuum-
+based sampling methods have been evaluated for their ability to recover Bacillus spores from
+surfaces [Calfee et al. 2013; Calfee et al. 2019]. Relative and absolute recoveries of a Bacillus
+anthracis surrogate for four commonly used vacuum sampling devices from three
+representative surface types (carpet, concrete, and upholstery) were measured after dosing the
+surfaces with aerosolized spores. Generally, higher relative recoveries were obtained by using a
+micro-vacuum sampling filtration method, which is harmonized with a consensus standard
+technique (ASTM D7144; Table 2). These and similar data can be used to support the
+validation of standardized vacuum sampling techniques [Creek et al. 2006] for microbiological
+samples.
+
+The ASTM International high-volume vacuum collection method for worn carpeted surfaces
+(ASTM D5438; Table 2) has been evaluated using reference material. Dust collection
+efficiencies of about 80% and greater were reported for various types of carpets, and recoveries
+were higher from new carpets [Svendsen et al. 2006]. Previous investigations of vacuum
+collection systems reported low collection efficiencies of dust on carpets (<75%) and effective
+collection (>75%) on smooth, hard surfaces [EPA 1995b]. A study evaluated a low-air volume
+“micro-vacuum” collection method developed by ASTM International (ASTM D7144; Table
+2) [Ashley et al. 2007]. Here, collection efficiencies from a variety of representative substrates
+were reported based on gravimetric analysis. Although recoveries were generally lower
+(<75%), researchers emphasized that standardizing the micro-vacuum sampling technique
+should ensure data comparison through harmonization of the sampling device and collection
+procedure. However, losses were reported because significant amounts of material were
+captured within the collection nozzles of the micro-vacuum samplers. Improving the design of
+vacuum samplers, where the collection inlet is incorporated into the body of the samplers,
+may improve collection efficiencies in the future [Creek et al. 2006]. While removing the
+material from within the collection nozzles may be possible, in practice this is difficult to
+achieve.
+
+In air sampling, researchers have identified material losses to the sampling cassette’s walls.
+Guidance has been developed to recover those losses, such as using conductive cassettes,
+improving the cassette design, using cassette inserts, or wiping or washing the inside of the
+cassette [ASTM 2021a; NIOSH 2016a]. Similar corrective measures can be considered to
+minimize cassette and collection nozzle losses during vacuum surface sampling.
+
+
+
+
+  NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-12 of SG-42
+                  Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+d. Dermal sampling
+  Dermal sampling, including removal and interception techniques, can be one component of a
+  dermal exposure assessment [Boeniger et al. 2015; Semple and Cherrie 2003]. Hundreds of
+  chemicals have been identified to have risks for significant dermal exposures (i.e., transdermal
+  absorption, systemic toxicity, or allergic sensitization). However, the importance of dermal
+  exposures has been often overlooked or underestimated relative to inhalational exposures
+  largely because of the lack of dermal exposure criteria [ACGIH 2021; NIOSH 2010]. An
+  extensive bibliography on occupational dermal health effects has been compiled [NIOSH
+  2009]. This document serves as a general resource for information on occupational dermal
+  exposures and health effects.
+
+  Numerous studies have proposed what to consider for occupational dermal exposure
+  assessments [Fenske 1993; Frasch et al. 2014; Schneider et al. 1999]. In view of this, the
+  International Organization for Standardization (ISO) published a standard technical report
+  (ISO/RD 14294:2011) outlining criteria for the assessment of occupational dermal exposure
+  [ISO 2011]. This international standard complements the dermal sampling methods listed in
+  Table 3. In general, there are four main objectives for assessing dermal exposure [Fenske
+  1993]:
+       1. Research on the adverse health effects of chemical exposures to include (a)
+           conducting epidemiological investigations and risk assessments, (b) studying possible
+           associations between skin exposure and adverse health effects, (c) developing
+           exposure-response relationships for risk assessment, and (d) estimating disease
+           burden due to skin exposures.
+       2. Evaluation of exposure processes and pathways to assist in developing, implementing,
+           and evaluating exposure control measures or interventions.
+       3. Compliance, compensation claims, forensics, or litigation (if applicable).
+       4. Education and training, including intervention protocols that might include the use
+           of screening techniques to aid in workers’ understanding of their (and, potentially,
+           their household members’) exposure pathways.
+
+
+
+
+    NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-13 of SG-42
+                           Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+Table 3. Standardized guidance and procedures for sample collection from dermal surfaces
+ Method(s)                Sampling                Target Analyte(s)       Comments
+                          Media/Procedure
+
+ ASTM D7822                  Wetted wipe                   Elements on delineated        Subsequent analysis by
+                                                           area of skin                  atomic spectrometry or
+                                                                                         equivalent technique(s)
+
+ ISO/TR 14294                Wipes, patch samples,         Multiple analytes on          Guidance on sampling
+                             dermal rinses, gloves,        dermal or interception        strategies and specific
+                             clothing, etc.                surfaces                      dermal exposure
+                                                                                         assessment protocols
+
+ NIOSH* 3600, 3601,          Patch samples, hand           Multiple analytes on          Applicable to pesticides,
+ 9200, 9201, 9202, 9205      rinses                        dermal surfaces               metalworking fluids, etc.;
+                                                                                         may apply to other agents
+
+ NIOSH* 9100, 9102, 9110     Wetted wipe                   Elements on delineated        Harmonized with ASTM
+                                                           area of skin                  D7822; subsequent
+                                                                                         quantitative analysis
+
+ NIOSH* 9101, 9105           Wipe: nonwetted               Cr(VI) or Pb on dermal        Qualitative colorimetric
+                             (Cr(VI)); prewetted (Pb)      surfaces                      screening techniques
+
+ OSHA (various) [OSHA        Patch samples, hand           Multiple analytes on          Various sampling and
+ 2003b]                      rinses                        dermal surfaces               analytical protocols; also
+                                                                                         clothing, gloves, etc.
+
+*NIOSH methods available at www.cdc.gov/niosh/nmam. Pb = lead; Cr(VI)= hexavalent chromium
+
+
+          Conceptual models of dermal exposure have been outlined based on the body of relevant
+          scientific literature [Boeniger et al. 2015; Fenske 1993]. Specific models include
+          RISKOFDERM, DeRmal Exposure Assessment Methodology, the American Industrial
+          Hygiene Association (AIHA) conceptual model for dermal exposure assessment, and the
+          ECETOC Targeted Risk Assessment model [Boeniger et al. 2015; ECETOC 2004, 2009, 2010;
+          van Wendel de Joode et al. 2005]. Other exposure models, such as the EPA ChemSTEER and
+          Consumer Exposure Models, have dermal components [EPA 2013, 2019]. The models can
+          form the bases for choosing measurement methods for assessing dermal exposures and
+          pathways. Dermal exposure assessment is often carried out through direct sampling from skin
+          via wipe sampling, tape stripping, rinsing techniques, or direct reading (in situ) measurement
+          methods [Frasch et al. 2014; Schneider et al. 1999]. Indirect dermal exposure assessment
+
+
+
+             NIOSH Manual of Analytical Methods  5th Edition  Chapter SG        August 2022     Page SG-14 of SG-42
+                Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+methods include interception methods such as patch sampling and sampling of clothing or
+gloves [Fenske 1993; Frasch et al. 2014; ISO 2011; Schneider et al. 1999].
+
+Characterizing dermal exposure via sampling, particularly of volatile compounds, can entail
+skin tape sampling and interception sampling. Skin taping removes a thin layer of skin cells
+for subsequent analysis. Interception sampling techniques include the application of sorptive
+samplers on the skin or clothing that are worn during work and then removed for analysis
+[OSHA 2014]. Volatile and semivolatile compounds may not completely remain on the skin to
+be sampled using removal sampling techniques, leading to an underestimate of exposure if the
+volatile fraction is not accounted for. Residence time on the skin can impact collection
+efficiency [ASTM 2019]. Conversely, sampling methods or media that capture volatile
+fractions that never made contact with the skin can lead to overestimation of exposure.
+
+Many of the considerations for carrying out dermal sampling mirror those outlined earlier for
+collecting nondermal surface samples. When planning hand or skin wipe sampling, consider
+the source of the analyte. For agents found both inside and outside the occupational
+environment, such as flame retardants, preshift hand washing can reduce the risk of
+attributing non-occupational contamination to the workplace, and preshift dermal sampling
+can reveal the amount of contamination present before the participant enters the workplace.
+
+Standardized methods that pertain to dermal sample collection and analysis are summarized
+in Table 3. Applications to the sampling and analysis of metals and organics are exemplified in
+a number of these protocols. Techniques for dermal wipe sampling for subsequent elemental
+analysis are published in ASTM D7822 [ASTM 2019]. Dermal sampling protocol using patch
+samples or rinses has been described briefly in several OSHA and NIOSH methods (Table 3).
+Many dermal sampling techniques need to be further standardized, particularly for organic
+analytes (such as pharmaceuticals) and reactive species (such as isocyanates) [ASTM 2011b].
+
+NIOSH researchers studied the effectiveness of dermal wipe sampling for Pb using different
+wipe sample media [Boeniger 2006]. More than half of the leaded dust (≈60%) was recovered
+after collecting a sample with one wipe; successive wiping increased lead dust removal (≈90%)
+from hands. In related research, effective decontamination of Pb on workers’ hands using a
+specially formulated handwipe was shown to perform better than ordinary soap and
+commercial skin cleansers [Esswein et al. 2011; NIOSH 1996]. Such techniques can also be
+useful to decontaminate Pb and other metals in workplace environments. To date, apart from
+exceptions shown in Table 3, dermal sampling procedures have not been well standardized.
+This has led to difficulties in evaluating and comparing data from a variety of different studies
+[Brouwer et al. 2000; ISO 2011].
+
+
+  NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-15 of SG-42
+                  Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+  Data collected by dermal sample techniques are often confounded by multiple factors. These
+  can include the reactivity of the agent(s) of concern, the ability of the analyte to pass through
+  the skin, the variability of contaminant levels between different areas of the body, and
+  variances in skin surfaces [Fenske 1993; Schneider et al. 1999]. Nevertheless, dermal sampling
+  methods for chemicals (e.g., pesticides, metalworking fluids) and biological agents (e.g.,
+  bacteria, viruses) should be harmonized to the extent possible. This task remains an important
+  area for further research and development.
+
+  Under Section 4 of the Toxic Substances and Control Act of 2016 (TSCA), the EPA can
+  require chemical manufacturers and importers to develop and submit information on existing
+  chemicals for subsequent risk evaluation. Test orders can require dermal wipe sampling to
+  complement other exposure and skin permeation testing, but do not proscribe the sampling
+  method [EPA 2021a].
+
+e. Sampling area and technique
+  Sampling techniques are often standardized by the sample area, sampling pattern, and the
+  number of passes across a fixed sample area. Normally, the minimum area for sample
+  collection is 100 square centimeters (cm2), which is about 16 square inches (in2). This is
+  typically delineated using templates of standard sample areas (i.e., 100 cm2, 4 in2, 1 ft2). Using a
+  template and a specified sample area are particularly important to compare samples or to
+  follow regulatory or consensus limits, such as Be, Pb, and polychlorinated biphenyls
+  (PCBs)[10 CFR § 850, 1999; 40 CFR § 761, 1978].
+
+  To prevent cross contamination between samples, use a new, disposable template for each
+  sample. Although it is not best practice, reusable templates may be used and cleaned between
+  samples, unless disallowed by the published method being followed. To the same end, gloves
+  should be worn and changed between samples, particularly when the sampling media is
+  handled during sampling [OSHA 2000]. For samples where a handle is attached to the media
+  (e.g., swab sample) and where the tip is broken into a sample container for storage before
+  analysis, gloves aren’t essential to prevent cross-contamination. Most NIOSH surface
+  sampling methods are harmonized with related ASTM standards (Table 2).
+
+  Methods may call for the surface area to be sampled/wiped in a “Z or S” pattern in two or
+  three complete passes with the media being folded between passes to prevent analyte loss back
+  to the surface and to use the entire medium collection surface. Swab techniques might call for
+  turning the swab during sampling. The passes on a surface within a template are typically in
+  different directions (i.e., one sampling pass being perpendicular to the subsequent pass). For
+
+
+
+    NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-16 of SG-42
+                  Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+  example, NIOSH sampling methods for Bacillus anthracis spores from smooth, nonporous
+  surfaces instruct the sample collector to take multiple passes and use the full surface area of
+  the sample media [NIOSH 2012]. NIOSH developed two methods: one using a cellulose
+  sponge and a 100 in2 template, the other using a macrofoam swab and a 4 in2 template. Both
+  techniques use a buffer that inactivates halogen disinfectants and quaternary ammonium
+  compounds and require a specific sampling pattern. Each was meant for a particular type of
+  surface, distinct from each other. NIOSH researchers created videos to demonstrate and train
+  sampling staff [NIOSH 2015].
+
+f. Other sampling considerations
+  Details should be decided upon during the planning process. For example, sample storage and
+  transportation needs should be accounted for. Samples may have to be refrigerated to
+  maintain analyte stability while awaiting analysis. Any possible analytical interferences present
+  at the site should be reported to the analytical laboratory. Samples for a reactive or unstable
+  compound may need to be treated with a stabilizing or derivatizing agent immediately after
+  sampling [OSHA 2000]. Some sampling materials, like the wetting agent or analyte, may have
+  shipping label and safety regulatory requirements.
+
+  Additionally, a job hazard analysis should be done for the sampling process to determine
+  which exposure controls are needed during surface sample collection. For example, sample
+  collectors should use gloves to prevent skin absorption of hexane-wetted gauze during surface
+  wipe sampling for PCBs. The sample collector’s exposures should be characterized and not
+  exceed occupational exposure limits or safety limits (e.g., recommended exposure limits
+  [RELs], permissible exposure limits [PELs], threshold limit values [TLVs®], concentrations
+  immediately dangerous to life or health [IDLH]). Such exposures could be related to the
+  operations in the workplace undergoing assessment or to sampling (e.g., volatile solvent
+  wetting agents). Sample collectors should be trained on the selected sampling technique and
+  exposure controls that should be used to protect the sample collector. Generally, at minimum,
+  gloves should be worn during the entire sample collection process to prevent both exposure to
+  possibly hazardous agents and external contamination of the sample or surface being sampled.
+
+
+
+
+    NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-17 of SG-42
+                   Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+4 Sampling strategies
+ a. Number and statistical considerations in selecting a
+    sampling approach
+   Developing a sampling strategy requires careful selection of sampling location and number to
+   meet sampling goals. Two primary sampling strategy categories when it comes to sample
+   location and number are judgement sampling and random sampling. Traditionally, selection
+   of sample locations and numbers has relied on targeted judgement. In targeted judgement
+   sampling (also called professional judgement, best engineering judgement, or targeted
+   sampling), information about the process and history of the workplace is used to choose
+   sample locations. Typically, work surfaces employees have contact with and that are
+   determined to most likely be contaminated or to have the highest contamination are selected
+   for sampling. Targeted judgement sampling commonly includes surfaces that may pose the
+   greatest risk of exposure for workers. These surfaces can be used for initial site
+   characterization to identify the extent of contamination and locations for cleaning and re-
+   sampling. However, because the selected surfaces are not random, the results of this type of
+   sampling are intrinsically biased. Therefore, statistical conclusions cannot be made as to how
+   much amount analyte is on unsampled surfaces. Targeted judgement sampling is useful in
+   emergent situations and for screening ahead of random sampling. Additionally, the success of
+   this strategy to identify contaminated areas relies on the accuracy of the judgments being
+   made about the contaminating process. The accuracy of professional judgement to identify
+   areas of high surface contamination has not been systematically assessed in peer-reviewed
+   literature, but professional judgement of air sampling concentrations has been shown to
+   improve with experience, education, and trainings [Logan et al. 2011].
+
+   The number of samples collected should be determined by the purpose of the sampling, need
+   and ability to collect representative samples, and statistical considerations. If it is determined
+   that as a single sample is unlikely to be representative of the range of surface contamination
+   levels, taking multiple samples on a single surfaces may need to be investigated. Surface
+   sampling is limited to the amount of surface area available, potentially constraining the
+   number of surface samples that can be taken. The precision of surface contamination
+   estimates increases with the number of samples collected. The accuracy of the sampling may
+   or may not increase with the number of samples collected. Some published consensus
+   methods state that sample numbers should be sufficient to perform desired statistical
+   comparisons [ASTM 2018c, 2021b].
+
+
+
+
+     NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-18 of SG-42
+                Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+When planning, it is essential to consider how certain measurements would impact how the
+results are used. For example, values for censored data (results below a specified reporting
+limit) need to be agreed upon before sampling and may increase the number of samples
+needed to perform statistical comparisons. Be regulations call for sufficient sampling to meet a
+minimum confidence level [DOE 1999]. For some surfaces, the surface area will dictate the
+number of samples that can be collected. The Pacific Northwest National Laboratory (PNNL)
+has developed a software tool, Visual Sample Plan (https://www.pnnl.gov/projects/visual-
+sample-plan), that can assist in decisions about the number of samples needed to meet given
+sampling objectives.
+
+1.) Statistical sampling approaches
+    In cases where statistical confidence is needed as to the cleanliness or contamination of
+    both sampled and unsampled surfaces in a building or workplace, random sampling
+    strategies can provide information to make statistics-based statements about
+    contamination or cleanliness. Random sampling is also called probabilistic sampling.
+    Purely random sampling strategies may be very costly and time-intensive to fully
+    characterize surface contamination and to meet precision objectives without the benefit
+    of targeted or professional judgement.
+
+    Hybrid approaches combining random sampling and targeted judgement strategies [EPA
+    2021c, d; Sego et al. 2007; Seiler et al. 1987] can increase efficiency by using professional
+    judgement in the design and reducing sampling cost and time. Targeted judgement and
+    random techniques can be performed in sequence to increase efficiency. Hybrid
+    approaches include stratified random sampling and some ranked set sampling [EPA
+    2021c]. The EPA outlines goals, sampling scenarios, and associated appropriate
+    environmental sampling strategies that can be applied to surface sampling [EPA 2021c]:
+    • Judgmental sampling: where sample locations are selected using professional
+       judgement and prior information and fewer samples are taken relative to random or
+       hybrid techniques.
+    • Simple random sampling: sampling locations are selected randomly (via random
+       number generator or equivalent).
+    • Stratified random sampling: location and/or process information is used to create
+       groups that are independently and randomly sampled.
+    • Systematic and grid sampling: an initial sampling point is selected randomly and
+       then subsequent sampling locations are chosen using a fixed pattern (e.g., temporal,
+       distance, geometric pattern).
+
+
+
+
+  NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-19 of SG-42
+               Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+   •   Ranked set sampling: screening sampling is conducted on a random sample,
+       locations and grouped according to relative contamination, and then subsequent
+       samples are taken from those groups.
+   •   Adaptive cluster sampling: random sampling is followed by adjacent sampling near
+       the original sample if the results are of interest, such as above a laboratory reporting
+       limit or predetermined threshold.
+
+2.) Selecting sampling locations
+   Before developing a sampling strategy, information about the sampling site and processes
+   must be gathered. The following should be considered and documented within any type
+   of sampling strategy, and can be used to select sampling locations when using hybrid or
+   targeted judgement approaches:
+   • Location of the worker
+   • Potential sources and routes of exposure
+   • Workplace processes and any controls releasing or removing the contaminant
+   • Physical state of the agent (e.g., particulate)
+   • Mechanisms of transport (e.g., natural or mechanical ventilation, liquid transport)
+       and deposition (sedimentation or diffusion)
+   • Housekeeping methods and frequency
+   • Cleaning and contamination history (e.g., when was the surface last cleaned)
+   • Possible interferences
+   • Need for comparisons within and/or between work locations
+   • Regulatory requirements
+
+   When designing hybrid and targeted judgement sampling plans, the surface cleaning and
+   contamination history should be documented in any type of sampling strategy and
+   considered when choosing sampling locations. Engineering and administrative controls
+   (such as local exhaust ventilation and housekeeping procedures) should be documented
+   along with process activities that can result in contamination. This information should be
+   identified beforehand and thoroughly noted during sampling to best interpret sampling
+   results. Gather information about cleaning practices in the areas being sampled, for
+   example, cleaning method, materials used, date last cleaned, cleaning frequency, and if
+   attempts to determine cleaning efficacy have been made. For instance, if certain surfaces
+   are identified as surrogates for air deposition or material migration, the time elapsed
+   since the sampled surfaces were last cleaned should recorded to be able to make
+   comparisons across locations. Further, researchers should understand where, when, and
+   how often the contaminating processes occur relative to the surface sampled. Lastly,
+
+
+ NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-20 of SG-42
+                  Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+      document the extent of contact between workers and the surface being sampled either
+      quantitatively (e.g., measures or estimated surface area of skin exposed, number,
+      frequency, or duration of contact) or qualitatively (e.g., noting presence or absence of
+      contact). These data or information could be used in risk assessment and to identify
+      exposure controls or interventions, but that is beyond the scope of this chapter. This
+      auxiliary information can be used as justification for surface selection during targeted
+      judgement or hybrid sampling.
+
+      When assessing the efficacy of housekeeping and controls used to contain contamination
+      to specific workspaces (e.g., not moving tools outside of a contaminated zone or placing
+      showers and locker rooms to separate clean and contaminated areas), samples may need
+      to be taken from locations that are occupied by workers but removed from the process
+      generating the agent being sampled. Examples include breakrooms, bathrooms, office or
+      nonindustrial spaces, locker rooms, or work vehicles.
+
+b. Case study: Sampling for Bacillus anthracis
+  A hybrid approach would be appropriate when sampling for Bacillus anthracis spores after a
+  suspected release or contamination event. The Government Accountability Office (GAO) led
+  a multi-agency project to evaluate anthrax sampling procedures in a post-release
+  environment. The GAO called upon agencies to develop statistical surface sampling strategies
+  for Bacillus anthracis to increase confidence in negative results. Respondents to this request
+  published proposed sampling strategies for sampling and clearance of suspected contaminated
+  areas [GAO 2005; Piepel et al. 2013; Sego et al. 2007]. Response to a release event may require
+  two phases of surface sampling. The first phase is site characterization to determine if and
+  where surfaces are contaminated. The second phase is verification that decontamination was
+  effective to a nondetect or acceptable level [Sego et al. 2007]. Alternatively, targeted judgement
+  sampling can be used in parallel with random sampling to reduce the number of random
+  samples needed to achieve confidence that an area or room is uncontaminated [Sego et al.
+  2007].
+
+c. Sampling strategies for regulatory compliance
+  Some regulations dictate when and where sampling must be conducted. For example, states
+  and local authorities have surface limits for methamphetamine in remediated sites that were
+  previously clandestine methamphetamine production sites [EPA 2021e], and post-
+  remediation sampling is required. As more states adopt fentanyl laboratory remediation
+  requirements, fentanyl and fentanyl-analogue wet sampling methods are being developed with
+  the intent of optimizing collection efficiency and lowering limits of quantitation [Ciesielski et
+
+
+    NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-21 of SG-42
+                  Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+  al. 2021]. In contrast, the Occupational Health and Safety Administration (OSHA) regulations
+  for Pb and Be on workplace surfaces are not explicit and instruct employers to maintain
+  workplace surfaces “as free as practicable” of the contaminant; they do not dictate a particular
+  sampling strategy nor specific limits that must be met [OSHA 2020]. However, a 1993
+  Compliance Directive recommends the use of the Department of Housing and Urban
+  Development (HUD) acceptable decontamination level for Pb on floors in evaluating
+  changing area, storage facilities, lunchrooms, and eating areas—indicating that those locations
+  should be sampled for comparison to that limit [OSHA 1993, 2003a].
+
+d. Composite sampling
+  Composite sampling is where individual samples are collected and then combined and
+  analyzed together. Generally, this technique is used to reduce the number of analyses required,
+  thereby reducing analytical costs while maintaining a representative number of samples. The
+  decision to use composite sampling is based first on whether the resulting data will fit the
+  sampling strategy goals. Composite sampling should not be used when the results for
+  individual sampling locations are necessary, as that information is lost during composite
+  analysis. All samples included in the composite should be from the same surface or type of
+  surface being evaluated. Sample compositing is most often done in the workplace when the
+  analyte is expected to be low. Compositing can increase the likelihood that a laboratory
+  detection or reporting limit is reached or establish that surfaces are not contaminated if
+  composited sample results remain below the reporting limit or below selected criteria for
+  action.
+
+  If it is decided that composite sampling can be used to meet the sampling strategy goals, then
+  these choices should be determined: analysis method, sample media, and criteria for
+  comparison and re-sampling. Samples that make up a composite sample should be taken with
+  the same media and technique and in the same sampling area [HUD 2012; NIOSH 2011a].
+  Applying limits or criteria designed for discrete samples (noncomposited) is not typically
+  appropriate for composite samples. Conditions for surface resampling should be decided on
+  before carrying out composite sampling. In the United States, the residential Pb clearance
+  regulatory requirements explicitly allow for the compositing of up to four wipe samples, if
+  they were all taken of the same component, as long as the samples are tested by a laboratory
+  recognized by the National Lead Laboratory Accreditation Program [ASTM 2011a; HUD
+  2012]. Composite sampling can be used for post-clean-up of methamphetamine sampling,
+  particularly when contamination is expected to be uniform [EPA 2021e].
+
+
+
+
+    NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-22 of SG-42
+                      Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+     The limit of detection for composite samples may be higher than that for discrete samples
+     because of the increased volume of desorption liquid required for a large sampling media
+     material [NIOSH 2011b]. NIOSH recommends that the composite results be reported over the
+     total sample area, rather than averaged to the area of a single sample [NIOSH 2011c]. If the
+     sampling goals require information about the average contamination, then an average
+     contamination over a single sample area is useful [EPA 1995a]. However, if the goal is to
+     compare results to criteria meant for a single sample, calculating the maximum possible
+     amount of contaminant on a single sample would be more appropriate for comparison. If that
+     maximum possible amount of contaminant exceeds an action level or limit, then resampling
+     of those areas or similar areas is necessary because composited surface samples cannot be
+     analyzed separately after they have been combined. Additional samples would need to be
+     taken to elucidate the variation in surface contamination. Therefore, the plan should account
+     for whether a surface has sufficient area to be resampled and how that would be done,
+     depending on composite sample results.
+
+     Compositing wipe samples can lead to analytical difficulties [NIOSH 2003]. For example,
+     compositing samples may lead to increased background signal or analytical noise, ending with
+     increased total dissolved solid concentrations that may require dilution for analysis,
+     depending on the analysis technique and/or instrument configuration. When considering
+     composite sampling, verify that the analytical laboratory has the capacity to analyze composite
+     samples, and if so, that it can be done with the necessary sensitivity to meet the sample
+     strategy objectives [EPA 2018].
+
+
+5 Criteria for surface contamination
+In the United States, national regulatory surface contamination levels have been established for Pb,
+Be, and PCBs [DOE 1999; EPA 2021b; 10 CFR § 850, 1999; 40 CFR § 745.227, 2000; 40 CFR § 761,
+1978]. To comply with residential EPA Pb contamination regulations, clearance surface samples
+must be collected using documented methodologies that incorporate adequate quality control
+procedures and are reviewed by a certified inspector or risk assessor [40 CFR § 745.227] [OSHA
+2020, 2003a]. Very low Be surface regulatory levels for housekeeping and decontamination have
+been established to reduce the risk of Be sensitization through contact with the skin [Rondeau
+2009]. Not all regulations for Pb and Be surface levels are explicit. For example, OSHA requires
+work surfaces to be “as free as practicable” from Pb and Be [OSHA 2020]. Specific criteria have not
+been established by OSHA for these contaminants, but some interpretation guidance has been
+provided [OSHA 2003a]. The regulations establishing Be surface contamination limits do not
+provide for a required standard sample collection method, leaving the sampling methodology up to
+
+
+        NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-23 of SG-42
+                      Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+individual sites, although the analysis must be conducted by a laboratory accredited by AIHA or
+equivalent. DOE has provided an implementation guidance to professionals on exposure sampling,
+including surface sampling [DOE 2010].
+
+Few consensus surface limits have been established for occupational exposures. Starting in 2019, the
+American Conference of Governmental Industrial Hygienists (ACGIH®) began publishing surface
+limit threshold limit values (TLV®-SL) for some chemicals. These limits are intended to supplement
+their published airborne limits, particularly for agents with known skin absorption and sensitization
+capacities [ACGIH 2021]. These limits are expressed as a mass per 100 cm2 and may correspond
+with the dose permitted by the 8-hour time-weighted average TLV® unless data are available about
+effects related to dermal exposure alone. As of 2021, ACGIH® had established TLV®-SLs for two
+chemicals, o-phthalaldehyde and methyltetrahydrophthalic anhydride [ACGIH 2021].
+
+Worker exposure to pharmaceutical substances through contact with the skin is a hazard being
+addressed, in part, by the development of guidelines for acceptable surface limits (ASLs) for such
+compounds [Kimmel et al. 2011]. Beyond the factors considered for sampling and analysis, some
+essential criteria to account for in establishing ASLs include skin penetration or dermal uptake,
+concentration of active pharmaceutical ingredient(s), mechanisms of toxicity and identified health
+outcomes, duration and frequency of contact, and individual susceptibility. In efforts to prevent
+dermal exposures, related “guidance values” for surface monitoring of antineoplastic drugs have
+been proposed for selected chemotherapy agents [Kiffmeyer et al. 2013; Schierl et al. 2009].
+
+If limits are established for a given analyte, the sensitivity of the method should be able to
+quantitatively detect the analyte of interest well below the limit. This normally requires that the
+method detection limit (MDL) be at most one tenth of the limit. To reiterate, it is essential that the
+sampling and analytical method be considered when establishing limit values for chemical and
+biological agents on surfaces.
+
+
+6 Consensus standards and other resources for
+  published surface sampling methods
+When identifying methods to meet sampling goals, using standardized protocols can enable data
+comparisons; foster consistency, defensibility, and reproducibility; and help maintain expected data
+quality. ASTM International have published consensus standards for surface sampling, including
+the Standard Guide for Strategies for Surface Sampling of Metals and Metalloids for Worker
+Protection (ASTM D7659) [ASTM 2021b]. Many of the considerations outlined in this standard are
+
+
+
+
+        NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-24 of SG-42
+                      Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+applicable to other potentially hazardous agents besides metals, such as organics, radioactive
+materials, and biological agents.
+
+U.S. government agencies are directed by the National Technology Transfer and Advancement Act
+(NTTAA) to contribute to the development of voluntary consensus standards. They are further
+instructed to include these standards in regulatory requirements in lieu of developing unique
+government regulations where practicable and consistent with applicable laws [OMB 2016]. Many
+published occupational exposure assessment consensus standards, and those under development,
+are based initially on existing government agency methods, guides, and procedures. Ultimately, it is
+intended that the use of consensus standards will enhance data comparability for surface or dermal
+samples obtained from different investigators, for various substances, from a variety of locations,
+surfaces, etc.
+
+Various ASTM standards that apply to surface sampling in occupational settings and related locales
+have been published and are summarized in Table 2. ASTM standards describing wetted wipe
+sample collection for metals and metalloids have been published (ASTM D6966, ASTM E1728).
+Using ASTM wipe sampling methods, when carried out with wetted wipes meeting performance
+specifications (e.g., ASTM E1792 or ASTM D7707), have been shown to provide collection
+efficiencies of >75% for target metallic analytes (i.e., Pb and Be) [Dufay and Archuleta 2006; EPA
+1995b]. ASTM has implemented a surface tape stripping method (ASTM E1216) that applies to
+multiple analytes and published a surface tape stripping method for sampling fungal spores (ASTM
+D7910).
+
+When the sampling surface is rough or porous, and wet wipe sampling or tape stripping is deemed
+impractical, vacuum collection methods (e.g., ASTM D5438, ASTM D5755, and ASTM D7144) are
+used in lieu of wiping or stripping techniques [Creek et al. 2006]. In rare cases where the surface to
+be sampled is energized, fragile, or reactive, and if Be is the only analyte of interest, dry-wipe
+sampling (ASTM D7296) is an option for sample collection. In addition, ASTM has published
+procedures for the following: surface sampling of asbestos by vacuum sampling (ASTM D5755) or
+wiping (ASTM D6840), wipe sampling of organic compounds (ASTM D6661), swab collecting of
+fungi (ASTM D7789) and other biological agents (ASTM E2458), and collecting pesticide residues
+from floors (ASTM D6333) (Table 2). Consider the limitations in the published standards when
+developing a sampling plan. For example, ASTM 6661-17, a standard practice for collecting organic
+compounds from surfaces using wipe sampling, is not intended to be used to collect dust samples
+nor to conduct sampling to estimate human exposure to contaminated surfaces [ASTM 2017b].
+
+Consensus surface sampling methods for Pb, Be, and asbestos were developed, largely in response to
+regulations in the United States [Ashley et al. 1996; Ashley et al. 2009; Kominsky and Millette 2011].
+
+
+        NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-25 of SG-42
+                           Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+    Besides the ASTM standard surface sampling guide for metals (ASTM D7659) already mentioned,
+    ASTM also developed an analogous standard sampling guide for asbestos (ASTM D7390) [ASTM
+    2018c]. An ASTM standard having several different surface sampling and analytical applications
+    describes various sample collection methods, such as tape stripping, wipes, cotton balls, for biofilms,
+    carbon black, soot, etc. (ASTM D6602). This standard has been used in outdoor urban applications
+    [Millette et al. 2011].
+
+    Other ASTM standards relating to surface sampling and assessing surface contamination have been
+    developed to address applications in clean rooms and aerospace (Table 4). While these voluntary
+    consensus standard protocols are targeted for specialized uses, there may be situations where the
+    standards could be applied to assessing contamination in occupational, indoor, and other
+    environments.
+
+Table 4. ASTM International standard procedures for surface sampling in aerospace and clean room
+applications*
+ ASTM Standard          Sampling                 Target Substrate(s)      Comments
+ Designation            Media/Device             Sampled
+
+ ASTM F303                   Rinse method                  Aerospace components          Collection of particulate
+                                                                                         matter for assessment of
+                                                                                         cleanliness
+
+ ASTM F51                    Particle sizing instrument    Clean room garments           Evaluation of
+                                                                                         contamination from
+                                                                                         fibers and particles
+
+ ASTM E2088                  “Witness” test surface        Clean room surfaces           Measurement of particle
+                                                                                         deposition
+
+ ASTM F24                    Optical particle counter      Electronic components         Assessment of surface
+                                                                                         contamination
+
+      *Standards are available at www.astm.org.
+
+
+      a. Radioisotopes
+         ISO has made available a three-part international standard, ISO 7503, that addresses the
+         measurement of surface contamination by radioactive materials [ISO 2016]. These three
+         standards entail the measurement of radioisotopes on surfaces of equipment and in facilities,
+         but they do not apply to the evaluation of radioactive contamination on skin or clothing.
+         Methods for direct and indirect measurement of radionuclides collected from surfaces are
+
+
+             NIOSH Manual of Analytical Methods  5th Edition  Chapter SG       August 2022      Page SG-26 of SG-42
+                  Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+  described in these ISO standards. Part 1 of ISO 7503 describes general principles relating to
+  the assessment of surface radioactive contamination by direct and indirect measurements.
+  Part 2 of the standard addresses wipe testing measurement protocols, and Part 3 covers the
+  calibration aspects of instruments used for the evaluation of radioactive surface
+  contaminations.
+
+b. Healthcare settings
+  Wipe sampling and analysis has been used effectively for surface monitoring of antineoplastic
+  drugs and related drug residues in healthcare settings [Connor et al. 2016; Nygren 2006;
+  Nygren and Lindahl 2011]. Guidance values for wipe sampling have been proposed for
+  chemotherapy drugs such as cisplatin and 5-fluorouracil, based on extensive data from surface
+  monitoring in pharmacies [Schierl et al. 2009]. Recommendations on surface “threshold
+  guidance values” for antineoplastic drugs and related compounds can help pharmacists (and
+  others potentially exposed workers) assess controls (e.g., safe material handling,
+  cleaning/decontamination efficacy) and maintain contaminant-free work environments.
+
+  Research shows that implementing safety measures and monitoring work practices reduced
+  contamination by antineoplastic drugs in healthcare settings, as determined through surface
+  sampling [Kopp et al. 2013]. Field screening methods for on-site, near real-time monitoring of
+  several antineoplastic drugs in surface samples have been developed and undergone some
+  validation [Smith et al. 2016]. For exposure prevention efforts, these screening techniques can
+  be used in complementary fashion with definitive fixed-site laboratory methods using mass
+  spectrometric analysis [Pretty et al. 2012].
+
+c. Reference and standard surface sampling and
+   analytical methods
+  Table 1 lists existing NIOSH surface sampling and analytical methods, which NIOSH
+  continues to review and update in the NIOSH Manual of Analytical Methods (NMAM).
+  NMAM 5th edition (www.cdc.gov/niosh/nmam) should be consulted for the most up-to-date
+  information on NIOSH methods [NIOSH 2022]. Another useful source with several surface
+  sampling methods for industrial hygiene applications is the OSHA analytical methods manual
+  [OSHA 2003b], which offers surface sample collection protocols for inorganic and organic
+  analytes. OSHA has also released evaluation guidelines for surface sampling and analytical
+  methods [OSHA 2000]. These guidelines are complementary to guidance and
+  recommendations offered by other sources, such as NIOSH, ASTM, AIHA, ACGIH, ISO, and
+  Brookhaven National Laboratory (BNL), among others.
+
+
+
+    NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-27 of SG-42
+                  Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+BNL has disseminated guidance on surface sampling based on NIOSH 9100 and related
+standardized methods [BNL 2017]. The various sampling media, wetting agents, and
+templates, depending on the analyte(s) of interest and surface area to be sampled, are
+summarized below:
+
+Sampling media
+
+•     Gauze, cotton (5 or 10 cm dia.)
+•     Filter paper, ashless (4–10 cm dia.)
+•     Premoistened wipe, e.g., cellulosic, polyvinyl alcohol (PVA)
+•     Filter, polyvinyl chloride (PVC) or quartz fiber (for Cr(VI) sampling)
+
+Solvents
+
+•     Distilled water
+•     Alcohol: 2-propanol, ethanol, methanol
+•     n-Hexane
+
+Templates
+
+•     10 × 10 cm or 30 × 30 cm square
+•     11.3 cm diameter circle (for 100 cm2 area)
+
+
+
+Required and recommended criteria for surface sampling for metals are summarized in BNL
+guidance [BNL 2017]. Elemental sampling normally entails the use of a wipe of a material that
+is appropriate for the agent, wetted with deionized water and a minimum sample collection
+area of 100 cm2. These protocols for metals are harmonized with the standardized elemental
+sampling methods that are summarized in Table 2. An exception is when sampling Cr(VI),
+which is carried out in accordance with OSHA method W4001 [OSHA 2001]. This procedure
+uses dry, inert filters for surface sampling to prevent reduction of Cr(VI) by wetting agents
+during or after sample collection. The filters are placed into a basic carbonate buffer
+immediately after sampling to stabilize Cr(VI) in the collected sample. Recommendations for
+surface sampling of PAHs entail the use of an organic solvent as a wetting agent, in
+accordance with ASTM D6661 (Table 2).
+
+The DOE established an action level for Be, and the EPA established an action level for Pb,
+both of which are regulatory, and thus have associated sampling methods or sampling
+guidance [DOE 1999; EPA 2021b].
+
+
+    NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-28 of SG-42
+                      Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+7 Bulk sample collection
+While methods for obtaining bulk samples (e.g., settled, rafter, or floor dusts) are beyond the scope
+of this chapter, we briefly mention them here as these techniques often complement surface and/or
+dermal sampling and may provide insights about particulates and aerosols that may have been
+airborne at one time. EPA provides information on bulk sampling methods for soils, solid waste,
+field equipment, etc. and published a comprehensive document covering issues including the
+following [EPA 2002]:
+       • Sampling strategies and design
+       • Sampling techniques, media, and equipment
+       • Standardized sampling procedures developed through voluntary consensus (notably
+           ASTM International standards)
+       • Data quality considerations pertaining to sample collection, sample handling, and
+           transport
+
+Relevant ASTM standards on collecting bulk samples are in a compendium publication on
+environmental sampling [ASTM 2014]. Additional research is needed on situations when it is more
+appropriate to use bulk sampling in lieu of surface sampling. For occupational environments,
+performance data and guidelines on bulk sampling are rather limited.
+
+
+8 Summary
+Surface sampling considerations include first developing a sampling rationale and goals, and then
+constructing a strategy that supports the sampling objectives. Choosing appropriate sample
+collection media and using techniques that are validated and applicable to surface and dermal
+sampling in occupational settings are also critical sampling plan components. While this chapter
+highlights available standardized surface sample collection methods, it is not meant to be an
+exhaustive review; rather, it presents guidance and examples of pertinent research and related
+recommendations and standards. The NTTAA directs government agencies to contribute to the
+development of consensus standards and to utilize them when available and relevant [OMB 2016].
+Methods for surface sampling from smooth, hard surfaces are now reasonably well-documented
+and standardized for several analytes, as evidenced by the availability of relevant international
+voluntary consensus standards for various contaminants. Additionally, vacuum sampling methods
+for collecting dust from rough, porous (and other) surfaces have also been standardized in the form
+of ASTM procedures (ASTM D5438, D5755, D7144).
+
+
+
+
+        NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-29 of SG-42
+                       Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+Dermal sampling methods for chemical and biological agents require additional harmonization and
+evaluation despite some newer protocols and guidance documents. These final summary
+recommendations should be underscored. The following essential to consider for surface sampling
+and analysis before collecting samples:
+      • Existence and accessibility of sensitive and specific analytical methods for the analytes of
+          interest, including accredited laboratory analytical capability and availability
+      • Existing validated sampling methods or research that document reliability or
+          representativeness to measure: stability, reactivity, toxicity, volatility, etc.
+      • Characteristics of the surface(s) to be sampled: smooth or rough, hard vs. porous, inert or
+          reactive, dermal, orientation and location
+      • Availability of sampling media: uncontaminated background, analyte and sampling
+          recovery, chemical compatibility, ruggedness/durability
+      • Wetting agent or extraction solution: aqueous—neutral/acid/basic; organics—low/high
+          polarity; recovery from extractant
+      • Loading/contamination level: trace; highly contaminated; variability across surface, etc.
+      • Dynamic range of analytical method: accuracy at low, medium, and high levels of analyte.
+      • Considerations for storage and transportation of samples (e.g., storage stability,
+          temperature considerations, shipping regulations)
+      • Exposure controls (e.g., training, personal protective equipment) required for sample
+          collection
+
+Disclaimer
+
+Mention of any company or product does not constitute endorsement by the National Institute for
+Occupational Safety and Health (NIOSH), Centers for Disease Control and Prevention (CDC). In
+addition, citations to websites external to NIOSH do not constitute NIOSH endorsement of the
+sponsoring organizations or their programs or products. Furthermore, NIOSH is not responsible for
+the content of these websites. All web addresses referenced in this document were accessible as of the
+publication date.
+
+
+9 References
+Chronic Beryllium Disease Prevention Program. 10 CFR § 850 (1999).
+
+Work practice standards for conducting lead-based paint activities: target housing and child-
+occupied facilities. 40 CFR § 745.227 (2000).
+
+
+
+
+         NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-30 of SG-42
+                       Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+Polychlorinated biphenyls (PCBS) manufacturing, processing, distribution in commerce, and use
+prohibitions. 40 CFR § 761 (1978).
+
+ACGIH [2021]. TLVs and BEIs based on the documentation of the threshold limit values for
+chemical substances and physical agents and biological exposure indices. Cincinnati, Ohio:
+American Conference of Governmental Industrial Hygienists.
+
+Angelini DJ, Biggs TD, Maughan MN, Feasel MG, Sisco E, Sekowski JW [2019]. Evaluation of a
+lateral flow immunoassay for the detection of the synthetic opioid fentanyl. Forensic Sci Int 300:75–
+81, https://doi.org/10.1016/j.forsciint.2019.04.019.
+
+Ashley K, Applegate GT, Wise TJ, Fernback JE, Goldcamp MJ [2007]. Evaluation of a standardized
+micro-vacuum sampling method for collection of surface dust. J Occup Environ Hyg 4(3):215–223,
+https://doi.org/10.1080/15459620601177461.
+
+Ashley K, Braybrooke G, Jahn SD, Brisson MJ, White KT [2009]. Analytical performance criteria.
+Standardized surface dust sampling methods for metals, with emphasis on beryllium. J Occup
+Environ Hyg 6(12):D97–D100, https://doi.org/10.1080/15459620903022597.
+
+Ashley K, Brisson M, White K [2011]. Review of standards for surface and dermal sampling. J ASTM
+Int 8(6):1–9, http://doi.org/10.1520/JAI103678.
+
+Ashley K, Schlecht PC, Song R, Feng A, Dewalt G, McKnight ME [1996]. ASTM sampling methods
+and analytical validation for lead in paint, dust, soil, and air. In: Sampling environmental media, STP
+1282. Morgan JH, ed. West Conshohocken, PA: American Society for Testing and Materials.
+
+ASTM [2011a]. Development of two sample preparation methods for determination of lead in
+composite dust wipe samples. J ASTM Int 8(3):103466, http://doi.org/10.1520/JAI103466.
+
+ASTM [2011b]. ASTM STP 1533 Surface and dermal sampling. Ashley K, ed. American Society for
+Testing and Materials. West Conshohocken, PA: ASTM International,
+https://doi.org/10.1520/STP1533-EB.
+
+ASTM [2014]. ASTM Standards related to environmental sampling. 5th ed. American Society for
+Testing and Materials. West Conshohocken, PA: ASTM International.
+
+ASTM [2017a]. D5438-17 Standard practice for collection of floor dust for chemical analysis.
+American Society for Testing and Materials. West Conshohocken, PA: ASTM International,
+https://doi.org/10.1520/D5438-17.
+
+
+
+
+         NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-31 of SG-42
+                      Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+ASTM [2017b]. D6661-17 Standard practice for field collection of organic compounds from surfaces
+using wipe sampling. American Society for Testing and Materials. West Conshohocken, PA: ASTM
+International, .https://www.astm.org/d666-17.
+
+ASTM [2018a]. D6966-18 Standard practice for collection of settled dust samples using wipe
+sampling methods for subsequent determination of metals. American Society for Testing and
+Materials. West Conshohocken, PA: ASTM International, https://www.astm.org/D6966-18.
+
+ASTM [2018b]. D7296-18 Standard practice for collection of settled dust samples using dry wipe
+sampling methods for subsequent determination of beryllium and compounds. American Society
+for Testing and Materials. West Conshohocken, PA: ASTM International, https://www.astm.org/
+D7296-18.
+
+ASTM [2018c]. D7390-18e1 Standard guide for evaluating asbestos in dust on surfaces by
+comparison between two environments. American Society for Testing and Materials. West
+Conshohocken, PA: ASTM International, https://www.astm.org/D7390-18E01.
+
+ASTM [2019]. D7822-18 Standard practice for dermal wipe sampling for the subsequent
+determination of metals and metalloids. American Society for Testing and Materials. West
+Conshohocken, PA: ASTM International, https://www.astm.org/D7822-18.
+
+ASTM [2020]. E1792-20 Standard specification for wipe sampling materials for lead in surface dust.
+American Society for Testing and Materials. West Conshohocken, PA: ASTM International,
+https://www.astm.org/e1792-20.html.
+
+ASTM [2021a]. ASTM D8358-21 Standard guide for assessment and inclusion of wall deposits in the
+analysis of single-stage samplers for airborne particulate matter. American Society for Testing and
+Materials. West Conshohocken, PA: ASTM International, https://www.astm.org/D8358-21.html.
+
+ASTM [2021b]. D7659-21 Standard guide for strategies for surface sampling of metals and
+metalloids for worker protection. American Society for Testing and Materials. West Conshohocken,
+PA: ASTM International, https://doi.org/10.1520/D7659-21.
+
+ASTM [2021c]. D7707-21 Standard specification for wipe sampling materials for beryllium in
+surface dust. American Society for Testing and Materials. West Conshohocken, PA: ASTM
+International, https://doi.org/10.1520/D7707-21.
+
+Beaucham CC, Ceballos D, Mueller C, Page E, La Guardia MJ [2019]. Field evaluation of sequential
+hand wipes for flame retardant exposure in an electronics recycling facility. Chemosphere 219:472–
+481, https://doi.org/10.1016/j.chemosphere.2018.12.027.
+
+
+
+        NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-32 of SG-42
+                       Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+Bernard CE, Berry MR, Wymer LJ, Melnyk LJ [2008]. Sampling household surfaces for pesticide
+residues: comparison between a press sampler and solvent-moistened wipes. Sci Total Environ
+389(2):514–521, https://doi.org/10.1016/j.scitotenv.2007.08.044.
+
+BNL [2017]. Surface wipe sampling procedure (IH75190). Upton, NY: Brookhaven National
+Laboratory, https://www.bnl.gov/esh/shsd/sop/pdf/ih_sops/ih75190.pdf.
+
+Boeniger M [2006]. A comparison of surface wipe media for sampling lead on hands. J Occup
+Environ Hyg 3(8):428–434, https://doi.org/10.1080/15459620600802754.
+
+Boeniger M, Sahmel J, Walton J, Roy R [2015]. Dermal exposure monitoring and estimation of
+dermal exposures. Appendix II. In: A strategy for assessing and managing occupational exposures.
+Jahn SD, Bullock WH, Ignacio JS, eds. Falls Church, VA: American Industrial Hygiene Association.
+
+Boeniger MF [2003]. The significance of skin exposure. Ann Occup Hyg 47(8):591–593,
+https://doi.org/10.1093/annhyg/meg095.
+
+Brouwer DH, Boeniger MF, van Hemmen J [2000]. Hand wash and manual skin wipes. Ann Occup
+Hyg 44(7):501–510, https://doi.org/10.1093/annhyg/44.7.501.
+
+Calfee M, Shah S, Lee S, Mickelsen R, Cruz F, Karim K, Ackelsberg J, Gemelli M, Hofacre K [2019].
+Evaluation of analytical methods for the detection of Bacillus anthracis spores: compatibility with
+real-world samples collected from outdoor and subway surfaces. Washington, DC: U.S.
+Environmental Protection Agency, EPA/600/R-19/083,
+https://cfpub.epa.gov/si/si_public_record_report.cfm?Lab=NHSRC&dirEntryId=346146&fed_org_i
+d=1253.
+
+Calfee MW, Rose LJ, Morse S, Mattorano D, Clayton M, Touati A, Griffin-Gatchalian N, Slone C,
+McSweeney N [2013]. Comparative evaluation of vacuum-based surface sampling methods for
+collection of Bacillus spores. J Microbiol Methods 95(3):389–396,
+https://doi.org/10.1016/j.mimet.2013.10.015.
+
+Cettier J, Bayle ML, Béranger R, Billoir E, Nuckols JR, Combourieu B, Fervers B [2015]. Efficiency of
+wipe sampling on hard surfaces for pesticides and PCB residues in dust. Sci Total Environ 505:11–21,
+https://doi.org/10.1016/j.scitotenv.2014.09.086.
+
+Chavalitnitikul C, Levin L [1984]. A laboratory evaluation of wipe testing based on lead oxide surface
+contamination. Am Ind Hyg Assoc J 45(5):311–317, https://doi.org/10.1080/15298668491399848.
+
+
+
+
+         NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-33 of SG-42
+                      Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+Cherrie JW, Semple S, Christopher Y, Saleem A, Hughson GW, Philips A [2006]. How important is
+inadvertent ingestion of hazardous substances at work? Ann Occup Hyg 50(7):693–704,
+https://doi.org/10.1093/annhyg/mel035.
+
+Ciesielski AL, Wagner JR, Alexander-Scott M, Snawder J [2021]. An optimized method for sample
+collection, extraction, and analysis of fentanyl and fentanyl analogs from a non-porous surface.
+Talanta 228:122210, https://doi.org/10.1016/j.talanta.2021.122210.
+
+Connor TH, Zock MD, Snow AH [2016]. Surface wipe sampling for antineoplastic (chemotherapy)
+and other hazardous drug residue in healthcare settings: methodology and recommendations. J
+Occup Environ Hyg 13(9):658–667, https://doi.org/10.1080%2F15459624.2016.1165912.
+
+Creek KL, Whitney G, Ashley K [2006]. Vacuum sampling techniques for industrial hygienists, with
+emphasis on beryllium dust sampling. J Environ Monit 8(6):612–618,
+https://doi.org/10.1039/b601572g.
+
+DOE [1999]. Chronic beryllium disease prevention program, Washington DC: Department of
+Energy, https://www.energy.gov/ehss/chronic-beryllium-disease-prevention-program-10-cfr-850.
+
+DOE [2010]. 10 CFR Part 850 Implementation guide for use with chronic beryllium disease
+prevention program. Washington, DC: Department of Energy,
+https://www.directives.doe.gov/directives-documents/400-series/0440.1-EGuide-7a.
+
+Deziel NC, Viet SM, Rogers JW, Camann DE, Marker DA, Heikkinen MSA, Yau AY, Stout DM II,
+Dellarco M [2011]. Comparison of wipe materials and wetting agents for pesticide residue collection
+from hard surfaces. Sci Total Environ 409(20):4442–4448,
+https://doi.org/10.1016/j.scitotenv.2011.07.002.
+
+Dufay SK, Archuleta M [2006]. Comparison of collection efficiencies of sampling methods for
+removable beryllium surface contamination. J Environ Monit 8(6):630–633,
+https://doi.org/10.1039/b601526n.
+
+ECETOC [2004]. Targeted risk assessment. Technical Report No. 93. Brussels, Belgium: European
+Centre for Ecotoxicology and Toxicology of Chemicals, https://www.ecetoc.org/wp-
+content/uploads/2021/10/ECETOC-TR-093.pdf.
+
+ECETOC [2009]. TR 107 Addendum to ECETOC Targeted Risk Assessment Technical Report No.
+93. Brussels, Belgium, European Centre for Ecotoxicology and Toxicology of Chemicals, TR 107 -
+Addendum to ECETOC Targeted Risk Assessment Technical Report No. 93 - ECETOC.
+
+
+
+
+        NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-34 of SG-42
+                       Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+ECETOC [2010]. Targeted risk assessment (TRA) tool. Brussels, Belgium: European Centre for
+Ecotoxicology and Toxicology of Chemicals, https://www.ecetoc.org/tools/tra-main/.
+
+EPA [1995a]. EPA observational economy series, Vol. 1. Composite sampling. Washington, DC: U.S.
+Environmental Protection Agency, https://www.epa.gov/sites/default/files/2016-
+03/documents/comp-samp.pdf.
+
+EPA [1995b]. Sampling house dust for lead basic concepts and literature review. Washington, DC:
+U.S. Environmental Protection Agency, https://www.epa.gov/lead/sampling-house-dust-lead-basic-
+concepts-and-literature-review-final-report-epa-747-r-95-007.
+
+EPA [2002]. RCRA waste sampling draft technical guidance: planning, implementation and
+assessment. Washington, DC: U.S. Environmental Protection Agency,
+https://www.epa.gov/sites/default/files/2015-10/documents/rwsdtg_0.pdf.
+
+EPA [2008]. Guidance for the sampling and analysis of lead in indoor residental dust for use in the
+Integrated Exposure Uptake Biokinetic (IEUBK) model. Washington, DC: U.S. Environmental
+Protection Agency, https://semspub.epa.gov/work/11/174572.pdf.
+
+EPA [2013]. ChemSTEER user guide: chemical screening tool for exposures and environmental
+releases. Washington, DC: U.S. Environmental Protection Agency, https://www.epa.gov/tsca-
+screening-tools/chemsteer-chemical-screening-tool-exposures-and-environmental-releases.
+
+EPA [2018]. Answers to frequent questions about EPA’s Lead Renovation, Repair and Painting
+(RRP) Rule (March 22, 2018, revised March 21, 2022). Washington, DC: U.S. Environmental
+Protection Agency, https://www.epa.gov/lead/answers-frequent-questions-about-epas-lead-
+renovation-repair-and-painting-rrp-rule.
+
+EPA [2019]. Consumer Exposure Model (CEM) Version 2.1 user’s guide. Prepared for the EPA
+Office Of Pollution Prevention and Toxics by ICF under EPA Contract # EP-W-12-010.
+Washington, DC: U.S. Environmental Protection Agency, https://www.epa.gov/tsca-screening-
+tools/consumer-exposure-model-cem-version-21-users-guide.
+
+EPA [2021a]. Assessing and managing chemicals under TSCA Section 4 test orders. Washington,
+DC: U.S. Environmental Protection Agency, https://www.epa.gov/assessing-and-managing-
+chemicals-under-tsca/list-chemicals-subject-section-4-test-orders.
+
+EPA [2021b]. Review of dust-lead post abatement clearance levels, final rule. March 8. Washington,
+DC: U.S. Environmental Protection Agency, https://www.regulations.gov/document/EPA-HQ-
+OPPT-2020-0063-0382.
+
+
+
+         NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-35 of SG-42
+                      Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+EPA [2021c]. Selecting a sampling design. Washington, DC: U.S. Environmental Protection Agency,
+https://www.epa.gov/quality/selecting-sampling-design.
+
+EPA [2021d]. Using professional judgment to develop a sampling design. Washington DC: U.S.
+Environmental Protection Agency, https://www.epa.gov/quality/using-professional-judgment-
+develop-sampling-design.
+
+EPA [2021e]. Voluntary guidelines for methamphetamine and fentanyl laboratory cleanup.
+Washington DC: U.S. Environmental Protection Agency, EPA-540-B-21-002,
+https://www.epa.gov/emergency-response/voluntary-guidelines-methamphetamine-and-fentanyl-
+laboratory-cleanup-document.
+
+Esswein E, Boeniger M, Ashley K [2011]. Handwipe method for removing lead from skin. J ASTM
+Int 8(5):1–10, https://doi.org/10.1520/JAI103527.
+
+Fenske RA [1993]. Dermal exposure assessment techniques. Ann Occup Hyg 37(6):687–706,
+https://doi.org/10.1093/annhyg/37.6.687.
+
+Fent KW, Alexander B, Roberts J, Robertson S, Toennis C, Sammons D, Bertke S, Kerber S, Smith D,
+Horn G [2017]. Contamination of firefighter personal protective equipment and skin and the
+effectiveness of decontamination procedures. J Occup Enviro Hyg 14(10):801–814,
+https://doi.org/10.1080/15459624.2017.1334904.
+
+Fent KW, Eisenberg J, Snawder J, Sammons D, Pleil JD, Stiegel MA, Mueller C, Horn GP, Dalton J
+[2014]. Systemic exposure to PAHS and benzene in firefighters suppressing controlled structure
+fires. Ann Occup Hyg 58(7):830–845, https://doi.org/10.1093%2Fannhyg%2Fmeu036.
+
+Frasch HF, Dotson GS, Bunge AL, Chen C-P, Cherrie JW, Kasting GB, Kissel JC, Sahmel J, Semple S,
+Wilkinson S [2014]. Analysis of finite dose dermal absorption data: implications for dermal exposure
+assessment. J Expo Sci Environ Epidemiol 24(1):65–73, https://doi.org/10.1038/jes.2013.23.
+
+GAO [2005]. Anthrax detection: agencies need to validate sampling activities in order to increase
+confidence in negative results. Washington DC: United States Government Accountability Office,
+Report No. GAO-05-251.
+
+HUD [2012]. Guidelines for the evaluation and control of lead-based paint hazards in housing, 2nd
+ed. Washington, DC: Department of Housing and Urban Development, LBPH-02.PDF (hud.gov).
+
+ISO [2011]. ISO/TR 14294 Workplace atmospheres—measurement of dermal exposure—principles
+and methods. Technical report. Geneva, Switzerland: International Organization for
+Standardization, https://www.iso.org/standard/54575.html.
+
+
+        NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-36 of SG-42
+                      Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+ISO [2016]. ISO 7503 Measurement of radioactivity—measurement and evaluation of surface
+contamination, Parts 1–3. Geneva, Switzerland: International Organization for Standardization.
+
+Kerr K [2004]. Sampling for beryllium surface contamination using wet, dry and alcohol wipe
+sampling. Thesis. Warrensburg, MO: Central Missouri State University,
+https://doi.org/10.2172/837587.
+
+Kiffmeyer TK, Tuerk J, Hahn M, Stuetzer H, Hadtstein C, Heinemann A, Eickmann U [2013].
+Application and assessment of a regular environmental monitoring of the antineoplastic drug
+contamination level in pharmacies—the MEWIP project. Ann Occup Hyg 57(4):444–455,
+https://doi.org/10.1093/annhyg/mes081.
+
+Kimmel TA, Sussman R, Ku R, Ader A [2011]. Developing acceptable surface limits for occupational
+exposure to pharmaceutical substances. J ASTM Int 8(8):1–6, https://doi.org/10.1520/JAI103480.
+
+Kominsky J, Millette J [2011]. Evaluation of asbestos in dust on surfaces by micro-vacuum and wipe
+sampling. J ASTM Int 8(5):1–8, https://doi.org/10.1520/JAI103477.
+
+Kopp B, Schierl R, Nowak D [2013]. Evaluation of working practices and surface contamination with
+antineoplastic drugs in outpatient oncology health care settings. Int Arch Occup Environ Health
+86(1):47–55, https://doi.org/10.1007/s00420-012-0742-z.
+
+Lichtenwalner CP [1992]. Evaluation of wipe sampling procedures and elemental surface
+contamination. Am Ind Hyg Assoc J 53(10):657–659, https://doi.org/10.1080/15298669291360300.
+
+Logan PW, Ramachandran G, Mulhausen JR, Banerjee S, Hewett P [2011]. Desktop study of
+occupational exposure judgments: do education and experience influence accuracy? J Occup Enviro
+Hyg 8(12):746–758, https://doi.org/10.1080/15459624.2011.628607.
+
+Makos K [2001]. Hazard identification and exposure assessment related to handling and use of
+contaminated collection materials and sacred objects. Collection Forum 17(1–2):90–112.
+
+McArthur B [1992]. Dermal measurement and wipe sampling methods: a review. Appl Occup
+Environ Hyg 7(9):599–606, https://doi.org/10.1080/1047322X.1992.10388051.
+
+Millette J, Rook H, Compton S [2011]. Application of ASTM standard practice D6602 in the
+investigation of outdoor environmental surface particulate including darkening agents surface and
+dermal sampling, West Conshohocken, PA: American Society for Testing and Materials.
+
+Millson M, Eller PM, Ashley K [1994]. Evaluation of wipe sampling materials for lead in surface dust.
+Am Ind Hyg Ass J 55(4):339–342, https://doi.org/10.1080/15428119491018989.
+
+
+
+        NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-37 of SG-42
+                      Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+Ness S [1994]. Surface and dermal monitoring for toxic substances. New York: John Wiley & Son.
+
+NIOSH [1995]. Report to congress on workers’ home contamination study conducted under the
+Workers’ Family Protection Act (29 U.S.C. 671a). Cincinnati, OH: U.S. Department of Health and
+Human Services, Centers for Disease Control and Prevention, National Institute for Occupational
+Safety and Health, DHHS Publication No. (NIOSH) 95-123, https://stacks.cdc.gov/view/cdc/6334.
+
+NIOSH [1996]. Standard industries. By Esswein EJ, Boeniger MF, Hall RM, Mead K. Cincinnati, OH:
+U.S. Department of Health and Human Services, Centers for Disease Control and Prevention,
+National Institute for Occupational Safety and Health, Health Hazard Evaluation Report (HETA) 94-
+0268-2618, https://www.cdc.gov/niosh/hhe/reports/pdfs/1994-0268-2618.pdf.
+
+NIOSH [2003]. Lead in surface wipe samples: Method 9100. In: NIOSH manual of analytical
+methods. 4th ed. Schlecht PC, O’Connor PF, eds. Cincinnati, OH: U.S. Department of Health and
+Human Services, Centers for Disease Control and Prevention, National Institute for Occupational
+Safety and Health, DHHS (NIOSH) Publication No. 2003-154.
+
+NIOSH [2011a]. Methamphetamine and illicit drugs, precursors, and adulterants on wipes by liquid-
+liquid extraction: Method 9106. In: NIOSH manual of analytical methods. 5th ed. Ashley K,
+O’Connor PF, eds. Cincinnati, OH: U.S. Department of Health and Human Services, Centers for
+Disease Control and Prevention, National Institute for Occupational Safety and Health, DHHS
+(NIOSH) Publication No. 2014-151, https://www.cdc.gov/niosh/docs/2014-
+151/pdfs/methods/9106.pdf.
+
+NIOSH [2011b]. Methamphetamine and illicit drugs, precursors, and adulterants on wipes by solid
+phase extraction: Method 9109. In: NIOSH manual of analytical methods. 5th ed. Ashley K,
+O’Connor PF, eds. Cincinnati, OH: U.S. Department of Health and Human Services, Centers for
+Disease Control and Prevention, National Institute for Occupational Safety and Health, DHHS
+(NIOSH) Publication No. 2014-151, https://www.cdc.gov/niosh/docs/2014-
+151/pdfs/methods/9109.pdf.
+
+NIOSH [2011c]. Methamphetamine on wipes by liquid chromatography/mass spectrometry: Method
+9111. In: NIOSH manual of analytical methods. 5th ed. Ashley K, O’Connor PF, eds. Cincinnati, OH:
+U.S. Department of Health and Human Services, Centers for Disease Control and Prevention,
+National Institute for Occupational Safety and Health, DHHS (NIOSH) Publication No. 2014-151,
+https://www.cdc.gov/niosh/docs/2014-151/pdfs/methods/9111.pdf.
+
+NIOSH [2012]. Emergency response resources: surface sampling procedures for Bacillus anthracis
+spores from smooth, non-porous surfaces. Cincinnati, OH: U.S. Department of Health and Human
+
+
+
+        NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-38 of SG-42
+                      Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+Services, Centers for Disease Control and Prevention, National Institute for Occupational Safety and
+Health, https://www.cdc.gov/niosh/topics/emres/surface-sampling-bacillus-anthracis.html.
+
+NIOSH [2015]. Anthrax surface sampling: how to sample with macrofoam swab on nonporous
+surfaces. Video. Cincinnati, OH: U.S. Department of Health and Human Services, Centers for
+Disease Control and Prevention, National Institute for Occupational Safety and Health,
+https://www.cdc.gov/niosh/topics/anthrax/training.html.
+
+NIOSH [2016]. Factors affecting aerosol sampling. In: NIOSH manual of analytical methods. 5th ed.
+Ashley K, O’Connor PF, eds. Cincinnati, OH: U.S. Department of Health and Human Services,
+Centers for Disease Control and Prevention, National Institute for Occupational Safety and Health,
+DHHS (NIOSH) Publication No. 2014-151, https://www.cdc.gov/niosh/docs/2014-
+151/pdfs/chapters/chapter-ae.pdf.
+
+NIOSH [2022]. NIOSH manual of analytical methods. 5th ed. Andrews R, O’Connor PF, eds.
+Cincinnati, OH: U.S. Department of Health and Human Services, Centers for Disease Control and
+Prevention, National Institute for Occupational Safety and Health, DHHS (NIOSH) Publication No.
+2014-151, http://www.cdc.gov/niosh/nmam.
+
+Nygren O [2006]. Wipe sampling as a tool for monitoring aerosol deposition in workplaces. J
+Environ Monit 8(1):49–52, https://doi.org/10.1039/b511509b.
+
+Nygren O, Lindahl R [2011]. Development of a method for screening spill and leakage of antibiotics
+on surfaces based on wipe sampling and HPLC-MS/MS analysis surface. J ASTM Int 8(6):1–20,
+https://doi.org/10.1520/JAI103544.
+
+OMB [2016]. OMB Circular No. A-119: federal participation in the development and use of
+voluntary consensus standards and conformity assessment activities, final revision. Washington, DC:
+The White House, Office of Management and Budget,
+https://www.nist.gov/system/files/revised_circular_a-119_as_of_01-22-2016.pdf.
+
+OSHA [1993]. OSHA Instruction CPL 2-2.58. Lead exposure in construction. Interim final rule. 29
+CFR 1926.62: Inspection and compliance procedures, 29 CFR 1926.62, Lead Exposure In
+Construction; Interim Final Rule--Inspection and Compliance Procedures (osha.gov).
+
+OSHA [2000]. Evaluation guidelines for surface sampling methods, OSHA Salt Lake Technical
+Center. Salt Lake City, UT: U.S. Department of Labor, Occupational Safety and Health
+Administration, https://www.osha.gov/sites/default/files/methods/surfacesampling.pdf.
+
+
+
+
+        NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-39 of SG-42
+                      Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+OSHA [2001]. Method W4001 Hexavalent chromium (surface sampling method). OSHA Salt Lake
+Technical Center. Salt Lake City, UT: U.S. Department of Labor, Occupational Safety and Health
+Administration, https://www.osha.gov/sites/default/files/methods/t-w4001-fv-02-0104-m.pdf.
+
+OSHA [2003a]. Clarification of "as free as practicable" and lead contamination under 29 CFR
+1926.62. Washington, DC: U.S. Department of Labor, Occupational Safety and Health
+Administration, Clarification of "as free as practicable" and lead contamination under 29 CFR
+1926.62 (osha.gov).
+
+OSHA [2003b]. Sampling and analytical methods manual. Washington, DC: U.S. Department of
+Labor, Occupational Safety and Health Administration,
+https://www.osha.gov/chemicaldata/sampling-analytical-methods.
+
+OSHA [2014]. Surface contaminants, skin exposure, biological monitoring and other analyses. In:
+OSHA Technical Manual (OTM), Section II: Chapter 2. Washington, DC: U.S. Department of Labor,
+Occupational Safety and Health Administration, https://www.osha.gov/otm/section-2-health-
+hazards/chapter-2.
+
+OSHA [2020]. 1910 Subpart Z Toxic and hazardous substances. Washington, DC: U.S. Department
+of Labor, Occupational Safety and Health Administration, https://www.osha.gov/laws-
+regs/regulations/standardnumber/1910/1910SubpartZ.
+
+Piepel GF, Matzke BD, Sego LH, Amidan BG [2013]. Calculating confidence, uncertainty, and
+numbers of samples when using statistical sampling approaches to characterize and clear
+contaminated areas. Washington, DC: U.S. Department of Energy, Pacific Northwest National
+Laboratory Richland, Report No. PNNL-22395,
+https://www.pnnl.gov/main/publications/external/technical_reports/PNNL-22395.pdf.
+
+Pretty JR, Connor TH, Spasojevic I, Kurtz KS, McLaurin JL, B'Hymer C, Debord DG [2012].
+Sampling and mass spectrometric analytical methods for five antineoplastic drugs in the healthcare
+environment. J Oncol Pharm Pract 18(1):23–36, https://doi.org/10.1177%2F1078155210389215.
+
+Roberts JW, Budd WT, Ruby MG, Bond AE, Lewis RG, Wiener RW, Camann DE [1991].
+Development and field testing of a high volume sampler for pesticides and toxics in dust. J Expo
+Anal Environ Epidemiol 1(2):143–155.
+
+Rondeau GL [2009]. Surface sampling: successful surface samping for Beryllium. In: Beryllium:
+environmental analysis and monitoring. Brisson MJ, Ekechukwu A, eds. Cambridge, UK: Royal
+Society of Chemistry.
+
+
+
+
+        NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-40 of SG-42
+                      Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+Schierl R, Böhlandt A, Nowak D [2009]. Guidance values for surface monitoring of antineoplastic
+drugs in German pharmacies. Ann Occup Hyg 53(7):703–711,
+https://doi.org/10.1093/annhyg/mep050.
+
+Schneider T, Vermeulen R, Brouwer DH, Cherrie JW, Kromhout H, Fogh CL [1999]. Conceptual
+model for assessment of dermal exposure. Occup Environ Med 56(11):765–773,
+https://doi.org/10.1136/oem.56.11.765.
+
+Sego LH, Bennett J, Anderson KK, Gillen M, Matzke B, Wilson J, Sieber K, Pulsipher B, Shulman S
+[2007]. An environmental sampling model for combining judgmental and randomly placed samples.
+Washington, DC: U.S. Department of Energy, Pacific Northwest National Laboratory Richland,
+Report No. PNNL 16636,
+https://www.pnnl.gov/main/publications/external/technical_reports/PNNL-16636.pdf.
+
+Seiler FA, Davis HT, Kominsky JR, Ronan RJ, Kowka CD [1987]. Use of risk assessment methods in
+the certification of decontaminated buildings. Risk Anal 7(4):487–495,
+https://doi.org/10.1111/j.1539-6924.1987.tb00485.x.
+
+Semple S, Cherrie JW [2003]. Dermal exposure assessment. In: Exposure assessment in occupational
+and environmental epidemiology. Nieuwenhuijsen MJ, ed. Oxford Scholarship Online,
+https://doi.org/10.1093/acprof:oso/9780198528616.001.0001.
+
+Sirois PJ [2001]. The analysis of museum objects for the presence of arsenic and mercury: non-
+destructive analysis and sample analysis. Collection Forum 16(1–2):65–75.
+
+Smith JP, Sammons DL, Robertson SA, Pretty JR, DeBord DG, Connor TH, Snawder JE [2016].
+Detection and measurement of surface contamination by multiple antineoplastic drugs using
+multiplex bead assay. J Oncol Pharm Pract 22(1):60–67, https://doi.org/10.1177/1078155214554407.
+
+Snawder J, Striley C, Esswein E, Hessel J, Sammons D, Robertson S, Johnson B, Mackenzie B, Smith
+J, Walker C [2011]. Use of direct reading surface sampling methods for site characterization and
+remediation of methamphetamine contaminated properties. J ASTM Int 8(6):1–11,
+https://www.astm.org/jai103481.html.
+
+Svendsen E, Thorne P, O'Shaughnessy P, Zimmerman D, Reynolds S [2006]. House dust collection
+efficiency of the high volume small surface sampler on worn carpets. J Occup Enviro Hyg 3(6):334–
+341, https://doi.org/10.1080/15459620600700651.
+
+Väänänen V, Hämeilä M, Kalliokoski P, Nykyri E, Heikkilä P [2005]. Dermal exposure to polycyclic
+aromatic hydrocarbons among road pavers. Ann Occup Hyg 49(2):167–178,
+https://doi.org/10.1093/annhyg/meh094.
+
+
+        NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-41 of SG-42
+                       Surface Sampling Guidance, Considerations, and Methods in Occupational Hygiene
+
+
+
+van Wendel de Joode B, Vermeulen R, van Hemmen JJ, Fransman W, Kromhout H [2005]. Accuracy
+of a semiquantitative method for dermal exposure assessment (DREAM). Occup Environ Med
+62(9):623–632, https://doi.org/10.1136/oem.2004.018564.
+
+Venables DS, Schmuttenmaer CA [2000]. Spectroscopy and dynamics of mixtures of water with
+acetone, acetonitrile, and methanol. J Chem Phys 113(24):11222–11236,
+https://doi.org/10.1063/1.1328072.
+
+Wheeler JP, Stancliffe JD [1998]. Comparison of methods for monitoring solid particulate surface
+contamination in the workplace. Ann Occup Hyg 42(7):477–488.
+
+Willison SA [2012]. Wipe selection for the analysis of surface materials containing chemical warfare
+agent nitrogen mustard degradation products by ultra-high pressure liquid chromatography–tandem
+mass spectrometry. J Chromatogr A 1270:72–79, https://doi.org/10.1016/j.chroma.2012.11.013.
+
+Willison SA [2015]. Investigation of the persistence of nerve agent degradation analytes on surfaces
+through wipe sampling and detection with ultrahigh performance liquid chromatography-tandem
+mass spectrometry. Anal Chem 87(2):1034–1041, https://doi.org/10.1021/ac503777z.
+
+
+
+
+         NIOSH Manual of Analytical Methods  5th Edition  Chapter SG      August 2022       Page SG-42 of SG-42
+
