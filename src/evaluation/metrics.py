@@ -493,6 +493,22 @@ def derive_sequence_order(ids: List[str]) -> Dict[str, int]:
     return {identifier: idx for idx, identifier in enumerate(ids)}
 
 
+def compute_phi(
+    constraint_coverage: float | None,
+    step_f1: float | None,
+    kendall: float | None,
+    w_cov: float = 0.5,
+    w_step: float = 0.3,
+    w_tau: float = 0.2,
+    round_result: bool = False,
+) -> float:
+    c = 0.0 if constraint_coverage is None else constraint_coverage
+    s = 0.0 if step_f1 is None else step_f1
+    k = 0.0 if kendall is None else kendall
+    raw = w_cov * c + w_step * s + w_tau * k
+    return round3(raw) if round_result else raw
+
+
 def sort_steps_for_graph(steps: Sequence[Dict[str, Any]]) -> List[Dict[str, Any]]:
     ordered: List[Tuple[Tuple[float, int, int], Dict[str, Any]]] = []
     for idx, step in enumerate(steps):
@@ -616,11 +632,12 @@ def evaluate_tier_a_document(
 
     # Procedural Fidelity Score (Phi): 0.5*Coverage + 0.3*StepF1 + 0.2*Kendall
     if all(k in metrics for k in ["ConstraintCoverage", "StepF1", "Kendall"]):
-        constraint_coverage = 0.0 if metrics.get("ConstraintCoverage") is None else metrics["ConstraintCoverage"]
-        step_f1 = 0.0 if metrics.get("StepF1") is None else metrics["StepF1"]
-        kendall = 0.0 if metrics.get("Kendall") is None else metrics["Kendall"]
-        phi = 0.5 * constraint_coverage + 0.3 * step_f1 + 0.2 * kendall
-        metrics["Phi"] = round3(phi)
+        metrics["Phi"] = compute_phi(
+            constraint_coverage=metrics["ConstraintCoverage"],
+            step_f1=metrics["StepF1"],
+            kendall=metrics["Kendall"],
+            round_result=True,
+        )
     else:
         metrics["Phi"] = None
     if return_alignment_map:

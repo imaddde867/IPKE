@@ -17,7 +17,8 @@ if str(REPO_ROOT) not in sys.path:
 
 from tools.annotate_gold import _extraction_to_draft, _load_schema, _validate
 from scripts.compute_iaa import compare_annotations
-from scripts.eval_multiseed import _ci95, _summary_rows, paired_bootstrap_pvalue, phi, METRIC_COLUMNS
+from scripts.eval_multiseed import _ci95, _summary_rows, paired_bootstrap_pvalue, METRIC_COLUMNS
+from src.evaluation.metrics import compute_phi
 
 
 # ---------------------------------------------------------------------------
@@ -188,9 +189,9 @@ def test_summary_rows_handles_none_values():
 
 
 def test_phi_function():
-    assert abs(phi(0.6, 0.7, 0.8) - (0.5*0.6 + 0.3*0.7 + 0.2*0.8)) < 1e-9
+    assert abs(compute_phi(0.6, 0.7, 0.8) - (0.5*0.6 + 0.3*0.7 + 0.2*0.8)) < 1e-9
     # None treated as 0
-    assert phi(None, 0.7, None) == pytest.approx(0.3 * 0.7)
+    assert compute_phi(None, 0.7, None) == pytest.approx(0.3 * 0.7)
 
 
 def test_bootstrap_detects_real_difference():
