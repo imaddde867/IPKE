@@ -192,6 +192,9 @@ class UnifiedConfig:
     dsc_delta_window: int = 25
     dsc_threshold_k: float = 1.0
     dsc_use_headings: bool = True
+    # DP hyperparameters (ADR-0001). dsc_lambda=0.40 calibrated on niosh_nmam_5th_edition_ebook (peak cohesion 0.302 at λ=0.40 across sweep {0.05..0.50}); dsc_beta manually chosen, not tuned.
+    dsc_lambda: float = 0.40
+    dsc_beta: float = 0.2
     debug_chunking: bool = False
 
     # API
@@ -426,6 +429,8 @@ class UnifiedConfig:
                     'dsc_delta_window': _env_int('DSC_DELTA_WINDOW', default=cls.dsc_delta_window, min_value=1),
                     'dsc_threshold_k': _env_float('DSC_THRESHOLD_K', default=cls.dsc_threshold_k, min_value=0.0),
                     'dsc_use_headings': _env_bool('DSC_USE_HEADINGS', default=cls.dsc_use_headings),
+                    'dsc_lambda': _env_float('DSC_LAMBDA', default=cls.dsc_lambda, min_value=0.0),
+                    'dsc_beta': _env_float('DSC_BETA', default=cls.dsc_beta, min_value=0.0),
                 })
         return overrides
 
@@ -575,6 +580,8 @@ class UnifiedConfig:
                     'dsc_delta_window': self.dsc_delta_window,
                     'dsc_threshold_k': self.dsc_threshold_k,
                     'dsc_use_headings': self.dsc_use_headings,
+                    'dsc_lambda': self.dsc_lambda,
+                    'dsc_beta': self.dsc_beta,
                 })
         return config
 
