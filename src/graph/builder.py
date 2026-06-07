@@ -16,10 +16,11 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, Iterable, List, Optional, Sequence, Set, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Set, Union
 
 from .models import Condition, Edge, Graph, Step
 from src.validation.constraint_validator import ValidationReport, validate_constraints
+from src.graph.constants import ALLOWED_CONDITION_TYPES, collect_step_refs
 
 if TYPE_CHECKING:
     from .neo4j_connector import Neo4jConnector
@@ -27,15 +28,6 @@ if TYPE_CHECKING:
 
 ConditionType = Optional[str]
 Payload = Dict[str, Any]
-
-ALLOWED_CONDITION_TYPES = {
-    "precondition",
-    "postcondition",
-    "safety",
-    "environment",
-    "quality",
-    "exception",
-}
 
 
 class ProceduralGraphBuilder:
@@ -199,7 +191,7 @@ class ProceduralGraphBuilder:
             cid = ProceduralGraphBuilder._coerce_id(raw.get("id"), prefix="C", index=idx)
             if cid not in condition_lookup:
                 continue
-            targets = ProceduralGraphBuilder._collect_constraint_refs(raw)
+            targets = collect_step_refs(raw)
             for target in targets:
                 if target not in step_ids:
                     continue
@@ -207,46 +199,6 @@ class ProceduralGraphBuilder:
         return edges
 
     # ------------------------------------------------------------------ utils
-    @staticmethod
-    def _collect_constraint_refs(raw: Payload) -> Set[str]:
-        keys = [
-            "step",
-            "steps",
-            "step_id",
-            "attached_to",
-            "attached_step",
-            "attached_steps",
-            "applies_to",
-            "scope",
-            "targets",
-        ]
-        refs: Set[str] = set()
-        for key in keys:
-            value = raw.get(key)
-            if not value:
-                continue
-            refs.update(ProceduralGraphBuilder._flatten_ref_value(value))
-        return refs
-
-    @staticmethod
-    def _flatten_ref_value(value: Any) -> Set[str]:
-        if isinstance(value, str):
-            return {value}
-        if isinstance(value, dict):
-            out: Set[str] = set()
-            for key in ("id", "step_id"):
-                candidate = value.get(key)
-                if candidate:
-                    out.add(str(candidate))
-            return out
-        if isinstance(value, Iterable):
-            refs: Set[str] = set()
-            for item in value:
-                refs.update(ProceduralGraphBuilder._flatten_ref_value(item))
-            return refs
-        candidate = str(value).strip()
-        return {candidate} if candidate else set()
-
     @staticmethod
     def _ordered_step_ids(steps: Sequence[Step]) -> List[str]:
         enumerated = list(enumerate(steps))
