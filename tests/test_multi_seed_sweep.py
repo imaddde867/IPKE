@@ -86,6 +86,35 @@ def test_aggregate_results_marks_partial_rows_when_seeds_missing():
     )
 
 
+def test_aggregate_results_no_epsilon_bias_on_zero_metrics():
+    """aggregate_results must report exact 0.0 for zero-valued metrics, not 1e-12.
+
+    Adding +1e-12 before rounding is inert at 4-decimal precision but misleading:
+    a reader cannot tell whether 0.0001 in a paper table is a real signal or noise.
+    """
+    from scripts.experiments.multi_seed_sweep import aggregate_results, DEFAULT_CONFIGS
+
+    cfg = DEFAULT_CONFIGS[0]
+    seeds = [1]
+    all_metrics = {
+        cfg.config_id: {
+            1: {"macro_avg": {m: 0.0 for m in ["Phi", "StepF1", "AdjacencyF1", "Kendall", "ConstraintCoverage"]}},
+        }
+    }
+
+    summary_rows, _ = aggregate_results(
+        all_metrics=all_metrics,
+        seeds=seeds,
+        configs=[cfg],
+        n_bootstrap=10,
+    )
+
+    assert summary_rows[0]["Phi_mean"] == 0.0, (
+        f"Expected 0.0, got {summary_rows[0]['Phi_mean']} — epsilon bias in aggregate_results"
+    )
+    assert summary_rows[0]["StepF1_mean"] == 0.0
+
+
 def test_aggregate_results_marks_complete_rows_when_all_seeds_succeed():
     """aggregate_results must set partial=False when all seeds produced results."""
     from scripts.experiments.multi_seed_sweep import aggregate_results, DEFAULT_CONFIGS

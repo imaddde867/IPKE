@@ -22,7 +22,8 @@ def _write_pair(gold_dir: Path, text_dir: Path, stem: str, gold_content: str) ->
 
 def _run_main(argv: list[str]) -> int:
     """Import and invoke eval_multiseed.main() with the given argv."""
-    import importlib, sys
+    import importlib
+    import sys
     # Reload so module-level state from previous calls doesn't bleed in.
     import scripts.eval_multiseed as mod
     importlib.reload(mod)

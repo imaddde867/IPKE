@@ -54,6 +54,7 @@ from __future__ import annotations
 import argparse
 import asyncio
 import csv
+import importlib.metadata
 import json
 import logging
 import os
@@ -287,6 +288,16 @@ def collect_hardware_info() -> Dict[str, str]:
 # ---------------------------------------------------------------------------
 
 
+def _collect_library_versions() -> Dict[str, str]:
+    versions: Dict[str, str] = {}
+    for pkg in ("llama-cpp-python", "transformers", "numpy"):
+        try:
+            versions[pkg] = importlib.metadata.version(pkg)
+        except importlib.metadata.PackageNotFoundError:
+            versions[pkg] = "not installed"
+    return versions
+
+
 def write_run_config(
     run_dir: Path,
     seeds: List[int],
@@ -322,6 +333,7 @@ def write_run_config(
         "default_llm_temperature": cfg.llm_temperature,
         "default_llm_n_ctx": cfg.llm_n_ctx,
         "hardware": collect_hardware_info(),
+        "library_versions": _collect_library_versions(),
     }
     run_dir.mkdir(parents=True, exist_ok=True)
     (run_dir / "run_config.json").write_text(json.dumps(payload, indent=2), encoding="utf-8")
@@ -536,10 +548,10 @@ def aggregate_results(
             mean_val = float(np.mean(vals))
             std_val = float(np.std(vals, ddof=1)) if len(vals) > 1 else 0.0
             ci_lo, ci_hi = bootstrap_ci(vals, n_bootstrap)
-            row[f"{metric}_mean"] = round(mean_val + 1e-12, 4)
-            row[f"{metric}_std"] = round(std_val + 1e-12, 4)
-            row[f"{metric}_ci_lo"] = round(ci_lo + 1e-12, 4)
-            row[f"{metric}_ci_hi"] = round(ci_hi + 1e-12, 4)
+            row[f"{metric}_mean"] = round(mean_val, 4)
+            row[f"{metric}_std"] = round(std_val, 4)
+            row[f"{metric}_ci_lo"] = round(ci_lo, 4)
+            row[f"{metric}_ci_hi"] = round(ci_hi, 4)
         summary_rows.append(row)
 
         # Build per-doc rows.
@@ -557,9 +569,9 @@ def aggregate_results(
                     doc_row[f"{metric}_mean"] = None
                     doc_row[f"{metric}_std"] = None
                     continue
-                doc_row[f"{metric}_mean"] = round(float(np.mean(vals)) + 1e-12, 4)
+                doc_row[f"{metric}_mean"] = round(float(np.mean(vals)), 4)
                 doc_row[f"{metric}_std"] = (
-                    round(float(np.std(vals, ddof=1)) + 1e-12, 4) if len(vals) > 1 else 0.0
+                    round(float(np.std(vals, ddof=1)), 4) if len(vals) > 1 else 0.0
                 )
             per_doc_rows.append(doc_row)
 
