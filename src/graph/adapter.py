@@ -27,7 +27,6 @@ logger = logging.getLogger(__name__)
 
 from src.graph.constants import (
     LOWER_REL_MAP,
-    STEP_REF_KEYS,
     collect_step_refs,
     flatten_refs,
     normalize_id,
