@@ -57,6 +57,58 @@ def test_config_picks_up_llm_model_path(monkeypatch):
     )
 
 
+def test_aggregate_results_marks_partial_rows_when_seeds_missing():
+    """aggregate_results must set partial=True on rows where fewer seeds completed than requested."""
+    from scripts.experiments.multi_seed_sweep import aggregate_results, DEFAULT_CONFIGS
+
+    cfg = DEFAULT_CONFIGS[0]
+    seeds = [1, 2, 3]
+
+    # Only seed 1 succeeded; seeds 2 and 3 failed (None).
+    all_metrics = {
+        cfg.config_id: {
+            1: {"macro_avg": {"Phi": 0.7, "StepF1": 0.8, "ConstraintCoverage": 0.6}},
+            2: None,
+            3: None,
+        }
+    }
+
+    summary_rows, _ = aggregate_results(
+        all_metrics=all_metrics,
+        seeds=seeds,
+        configs=[cfg],
+        n_bootstrap=10,
+    )
+
+    assert len(summary_rows) == 1
+    assert summary_rows[0]["partial"] is True, (
+        "Row must be marked partial=True when fewer seeds completed than requested"
+    )
+
+
+def test_aggregate_results_marks_complete_rows_when_all_seeds_succeed():
+    """aggregate_results must set partial=False when all seeds produced results."""
+    from scripts.experiments.multi_seed_sweep import aggregate_results, DEFAULT_CONFIGS
+
+    cfg = DEFAULT_CONFIGS[0]
+    seeds = [1, 2]
+    all_metrics = {
+        cfg.config_id: {
+            1: {"macro_avg": {"Phi": 0.7, "StepF1": 0.8, "ConstraintCoverage": 0.6}},
+            2: {"macro_avg": {"Phi": 0.75, "StepF1": 0.82, "ConstraintCoverage": 0.65}},
+        }
+    }
+
+    summary_rows, _ = aggregate_results(
+        all_metrics=all_metrics,
+        seeds=seeds,
+        configs=[cfg],
+        n_bootstrap=10,
+    )
+
+    assert summary_rows[0]["partial"] is False
+
+
 def test_main_exits_nonzero_when_all_evaluations_fail(tmp_path, monkeypatch):
     """main() must exit non-zero when every _evaluate_one() call returns None.
 

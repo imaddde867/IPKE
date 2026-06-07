@@ -522,7 +522,11 @@ def aggregate_results(
 
         # Build macro summary row.
         n_completed = max((len(v) for v in macro_by_metric.values()), default=0)
-        row: Dict[str, Any] = {"config": cid, "n_seeds": n_completed}
+        row: Dict[str, Any] = {
+            "config": cid,
+            "n_seeds": n_completed,
+            "partial": n_completed < len(seeds),
+        }
         for metric in PAPER_METRICS:
             vals = macro_by_metric[metric]
             if not vals:
@@ -545,6 +549,7 @@ def aggregate_results(
                 "config": cid,
                 "doc_id": doc_id,
                 "n_seeds": doc_n,
+                "partial": doc_n < len(seeds),
             }
             for metric in PAPER_METRICS:
                 vals = metric_values.get(metric, [])
