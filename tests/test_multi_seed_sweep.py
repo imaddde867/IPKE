@@ -8,6 +8,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import pytest
+
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
 
@@ -53,3 +55,74 @@ def test_config_picks_up_llm_model_path(monkeypatch):
     assert cfg.llm_model_path == "/tmp/sentinel_model.gguf", (
         "LLM_MODEL_PATH must be reflected in config.llm_model_path after reload_config()"
     )
+
+
+def test_main_exits_nonzero_when_all_evaluations_fail(tmp_path, monkeypatch):
+    """main() must exit non-zero when every _evaluate_one() call returns None.
+
+    This guards against the silent-failure mode where evaluation exceptions are
+    swallowed and an incomplete summary.csv is written with exit code 0.
+    """
+    import scripts.experiments.multi_seed_sweep as sweep
+
+    # Stub Phase 1 (extraction) — no model needed.
+    async def _fake_extract(*args, **kwargs):
+        pass
+
+    monkeypatch.setattr(sweep, "_extract_one", _fake_extract)
+
+    # Stub _evaluate_one to simulate a total failure (returns None every time).
+    monkeypatch.setattr(sweep, "_evaluate_one", lambda **kwargs: None)
+
+    # TIER_A_TEST_DOCS values are joined with REPO_ROOT; an absolute path
+    # passes through unchanged (Python Path division semantics).
+    doc_file = tmp_path / "doc1.txt"
+    doc_file.write_text("content")
+    monkeypatch.setattr(sweep, "TIER_A_TEST_DOCS", {"doc1": str(doc_file)})
+
+    # parse_args() reads sys.argv directly — patch it to avoid pytest args leaking in.
+    monkeypatch.setattr(sys, "argv", [
+        "multi_seed_sweep.py",
+        "--configs", "mistral7b_dsc_p3",
+        "--seeds", "42",
+        "--output-root", str(tmp_path),
+    ])
+
+    with pytest.raises(SystemExit) as exc_info:
+        sweep.main()
+
+    assert exc_info.value.code != 0, (
+        "main() must exit non-zero when all _evaluate_one() calls fail"
+    )
+
+
+def test_resolve_model_path_with_model_dir_uses_filename_only():
+    """--model-dir must not double-prefix the models/llm/ directory segment."""
+    from scripts.experiments.multi_seed_sweep import _resolve_model_path
+
+    result = _resolve_model_path(
+        "models/llm/Mistral-7B-Instruct-v0.2-Q4_K_M.gguf",
+        model_dir=Path("/tmp/mymodels"),
+    )
+    assert result == "/tmp/mymodels/Mistral-7B-Instruct-v0.2-Q4_K_M.gguf", (
+        f"Expected filename-only join under model_dir, got: {result}"
+    )
+
+
+def test_resolve_model_path_absolute_unchanged():
+    """Absolute paths must pass through unchanged regardless of model_dir."""
+    from scripts.experiments.multi_seed_sweep import _resolve_model_path
+
+    result = _resolve_model_path(
+        "/abs/path/to/model.gguf",
+        model_dir=Path("/tmp/mymodels"),
+    )
+    assert result == "/abs/path/to/model.gguf"
+
+
+def test_resolve_model_path_no_model_dir_anchors_at_repo_root():
+    """Without model_dir, relative paths anchor at REPO_ROOT."""
+    from scripts.experiments.multi_seed_sweep import _resolve_model_path, REPO_ROOT
+
+    result = _resolve_model_path("models/llm/some.gguf", model_dir=None)
+    assert result == str(REPO_ROOT / "models/llm/some.gguf")

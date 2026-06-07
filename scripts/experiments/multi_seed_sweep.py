@@ -245,6 +245,15 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Print the run plan and exit without extracting or evaluating.",
     )
+    parser.add_argument(
+        "--allow-partial",
+        action="store_true",
+        help=(
+            "Continue and write CSVs even when some (config, seed) evaluations fail. "
+            "Partial runs are marked with n/a metrics. "
+            "Without this flag, any evaluation failure exits non-zero."
+        ),
+    )
     return parser.parse_args()
 
 
@@ -325,14 +334,21 @@ def write_run_config(
 
 
 def _resolve_model_path(model_path: str, model_dir: Path | None = None) -> str:
-    """Return an absolute model path. Relative paths anchor at model_dir, then REPO_ROOT."""
+    """Return an absolute model path.
+
+    With model_dir: joins model_dir with the filename only (strips any repo-relative
+    prefix such as models/llm/) so --model-dir ~/models/llm works as documented.
+    Without model_dir: anchors the full relative path at REPO_ROOT.
+    Absolute paths pass through unchanged.
+    """
     if not model_path:
         return ""
     p = Path(model_path)
     if p.is_absolute():
         return str(p)
-    base = model_dir if model_dir is not None else REPO_ROOT
-    return str(base / p)
+    if model_dir is not None:
+        return str(model_dir / p.name)
+    return str(REPO_ROOT / p)
 
 
 async def _extract_one(
@@ -675,6 +691,23 @@ def main() -> None:
                 out_path=out_path,
             )
             all_metrics[sweep_cfg.config_id][seed] = metrics
+
+    # Fail loudly if any evaluation failed, unless partial results are explicitly allowed.
+    failed_pairs = [
+        (cfg_id, seed)
+        for cfg_id, seed_map in all_metrics.items()
+        for seed, val in seed_map.items()
+        if val is None
+    ]
+    if failed_pairs and not args.allow_partial:
+        LOGGER.error(
+            "Evaluation failed for %d (config, seed) pair(s). "
+            "Re-run with --allow-partial to write incomplete tables.",
+            len(failed_pairs),
+        )
+        for cfg_id, seed in failed_pairs:
+            LOGGER.error("  config=%s  seed=%d", cfg_id, seed)
+        sys.exit(1)
 
     # ------------------------------------------------------------------
     # Phase 3: Aggregate + write tables
