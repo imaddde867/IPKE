@@ -270,7 +270,7 @@ class UnifiedConfig:
         """Production environment configuration"""
         kwargs = cls._parse_env_vars()
         cors_origins_raw = _get_env_value('CORS_ORIGINS', default='')
-        cors_origins = cors_origins_raw.split(',') if cors_origins_raw else []
+        cors_origins = [o.strip() for o in cors_origins_raw.split(',') if o.strip()] if cors_origins_raw else []
         kwargs.update({
             'environment': Environment.PRODUCTION,
             'debug': False,

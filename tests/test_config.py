@@ -210,5 +210,19 @@ def test_factory_methods_roundtrip(monkeypatch):
     assert testing.cors_origins == ["http://localhost:8501", "http://127.0.0.1:8501"]
 
 
+def test_prod_cors_origins_strips_whitespace(monkeypatch):
+    """CORS_ORIGINS values with spaces after commas must be stripped."""
+    monkeypatch.setenv("CORS_ORIGINS", "http://a.com, http://b.com ,http://c.com")
+    prod = UnifiedConfig._production_config()
+    assert prod.cors_origins == ["http://a.com", "http://b.com", "http://c.com"]
+
+
+def test_prod_cors_origins_empty_string_returns_empty_list(monkeypatch):
+    """Empty or unset CORS_ORIGINS must produce [] not ['']. """
+    monkeypatch.delenv("CORS_ORIGINS", raising=False)
+    prod = UnifiedConfig._production_config()
+    assert prod.cors_origins == []
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
