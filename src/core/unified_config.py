@@ -192,8 +192,8 @@ class UnifiedConfig:
     dsc_delta_window: int = 25
     dsc_threshold_k: float = 1.0
     dsc_use_headings: bool = True
-    # DP hyperparameters (ADR-0001). dsc_lambda calibrated on held-out doc; dsc_beta manually chosen, not tuned.
-    dsc_lambda: float = 0.1
+    # DP hyperparameters (ADR-0001). dsc_lambda=0.40 calibrated on niosh_nmam_5th_edition_ebook (peak cohesion 0.302 at λ=0.40 across sweep {0.05..0.50}); dsc_beta manually chosen, not tuned.
+    dsc_lambda: float = 0.40
     dsc_beta: float = 0.2
     debug_chunking: bool = False
 
