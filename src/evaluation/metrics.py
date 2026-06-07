@@ -493,6 +493,21 @@ def derive_sequence_order(ids: List[str]) -> Dict[str, int]:
     return {identifier: idx for idx, identifier in enumerate(ids)}
 
 
+def compute_phi(
+    constraint_coverage: float | None,
+    step_f1: float | None,
+    kendall: float | None,
+    w_cov: float = 0.5,
+    w_step: float = 0.3,
+    w_tau: float = 0.2,
+) -> float:
+    c = 0.0 if constraint_coverage is None else constraint_coverage
+    s = 0.0 if step_f1 is None else step_f1
+    k = 0.0 if kendall is None else kendall
+    raw = w_cov * c + w_step * s + w_tau * k
+    return round3(raw)
+
+
 def sort_steps_for_graph(steps: Sequence[Dict[str, Any]]) -> List[Dict[str, Any]]:
     ordered: List[Tuple[Tuple[float, int, int], Dict[str, Any]]] = []
     for idx, step in enumerate(steps):
