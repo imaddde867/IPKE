@@ -243,7 +243,10 @@ class UnifiedConfig:
 
     @classmethod
     def _testing_config(cls) -> 'UnifiedConfig':
-        """Testing environment configuration"""
+        """Testing environment configuration. Calls _parse_env_vars() first, so
+        env vars previously ignored by testing mode (e.g. LLM_N_CTX, MAX_WORKERS)
+        are now respected. Override any such field explicitly below when the
+        testing default must win regardless of the environment."""
         kwargs = cls._parse_env_vars()
         kwargs.update({
             'environment': Environment.TESTING,
@@ -267,7 +270,10 @@ class UnifiedConfig:
 
     @classmethod
     def _production_config(cls) -> 'UnifiedConfig':
-        """Production environment configuration"""
+        """Production environment configuration. Calls _parse_env_vars() first, so
+        env vars such as LLM_N_CTX, LLM_MAX_TOKENS, MAX_WORKERS, and LLM_MODEL_PATH
+        that were previously ignored by production mode are now respected. Override
+        any such field explicitly below when the production default must win."""
         kwargs = cls._parse_env_vars()
         cors_origins_raw = _get_env_value('CORS_ORIGINS', default='')
         cors_origins = [o.strip() for o in cors_origins_raw.split(',') if o.strip()] if cors_origins_raw else []

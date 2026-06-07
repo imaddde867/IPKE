@@ -192,6 +192,11 @@ def test_factory_methods_roundtrip(monkeypatch):
     assert prod.confidence_threshold == 0.75
     assert prod.quality_threshold == 0.85
     assert prod.cors_origins == []
+    # env vars newly respected by prod mode (was dataclass-default before)
+    assert prod.llm_n_ctx == 4096
+    assert prod.llm_max_tokens == 1024
+    assert prod.max_workers == 4
+    assert prod.llm_model_path == "models/llm/test.gguf"
 
     testing = UnifiedConfig._testing_config()
     assert testing.debug is False
@@ -208,6 +213,14 @@ def test_factory_methods_roundtrip(monkeypatch):
     assert testing.strict_schema_validation is True
     assert testing.validation_error_log == "logs/test_errors.jsonl"
     assert testing.cors_origins == ["http://localhost:8501", "http://127.0.0.1:8501"]
+    # env vars newly respected by testing mode (was dataclass-default before)
+    assert testing.llm_n_ctx == 4096
+    assert testing.llm_max_tokens == 1024
+    assert testing.max_workers == 4
+    assert testing.llm_model_path == "models/llm/test.gguf"
+    assert testing.llm_quantization == "8bit"
+    assert testing.llm_n_threads == 6
+    assert testing.llm_temperature == 0.2
 
 
 def test_prod_cors_origins_strips_whitespace(monkeypatch):
