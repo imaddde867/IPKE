@@ -134,6 +134,7 @@ class DualSemanticChunker(BreakpointSemanticChunker):
         dp[0] = 0.0
 
         for j in range(1, n + 1):
+            # j < n guard is intentional: j == n is the end-of-document sentinel, not a block-start, so there is no sentence at index n to check.
             heading_bonus = beta if (j < n and is_heading[j]) else 0.0
             # Only consider i such that block length (j-i) is within [min_sent, max_sent]
             i_start = max(0, j - max_sent)
@@ -141,6 +142,7 @@ class DualSemanticChunker(BreakpointSemanticChunker):
             if i_end < i_start:
                 continue
             for i in range(i_start, i_end + 1):
+                # _mean_similarity returns mean of sims[i..j-2] (consecutive-pair cosines via prefix sums), a tractable proxy for within-block cohesion — not all-pairs similarity.
                 cohesion = self._mean_similarity(prefix, i, j)
                 score = dp[i] + cohesion - lam + heading_bonus
                 if score > dp[j]:
