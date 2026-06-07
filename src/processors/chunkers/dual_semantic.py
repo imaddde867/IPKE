@@ -99,6 +99,9 @@ class DualSemanticChunker(BreakpointSemanticChunker):
         lam = float(getattr(self.cfg, "dsc_lambda", 0.1))
         beta = float(getattr(self.cfg, "dsc_beta", 0.2))
         use_headings = bool(getattr(self.cfg, "dsc_use_headings", True))
+        # Constrain parent block length to configured min/max sentences.
+        min_sent = max(1, int(getattr(self.cfg, "dsc_parent_min_sentences", 10)))
+        max_sent = max(min_sent, int(getattr(self.cfg, "dsc_parent_max_sentences", 120)))
 
         n = len(sentences)
         if n == 0:
@@ -124,13 +127,20 @@ class DualSemanticChunker(BreakpointSemanticChunker):
         # Global DP: dp[j] = best objective for sentences [0, j).
         # DP[j] = max_{i<j} { DP[i] + H(b_{i:j}) − λ + β·𝟙[j is heading] }
         # H(b_{i:j}) = mean within-block cosine similarity = (prefix[j-1] - prefix[i]) / (j-1-i)
+        # min_sent/max_sent are hard guardrails (not part of the thesis objective).
+        # λ is the primary splitting control; the guardrails prevent degenerate blocks.
         dp = np.full(n + 1, -np.inf)
         back = np.full(n + 1, -1, dtype=int)
         dp[0] = 0.0
 
         for j in range(1, n + 1):
             heading_bonus = beta if (j < n and is_heading[j]) else 0.0
-            for i in range(j):
+            # Only consider i such that block length (j-i) is within [min_sent, max_sent]
+            i_start = max(0, j - max_sent)
+            i_end = j - min_sent
+            if i_end < i_start:
+                continue
+            for i in range(i_start, i_end + 1):
                 cohesion = self._mean_similarity(prefix, i, j)
                 score = dp[i] + cohesion - lam + heading_bonus
                 if score > dp[j]:
@@ -142,7 +152,11 @@ class DualSemanticChunker(BreakpointSemanticChunker):
         idx = n
         while idx > 0:
             i = back[idx]
-            assert i != -1, f"DP invariant violated: back[{idx}] unset (dp[0]=0 should always propagate)"
+            if i == -1:
+                # Fallback: no valid partition found (e.g., n < min_sent).
+                # Return single block with all remaining sentences.
+                boundaries.append((0, idx))
+                break
             boundaries.append((i, idx))
             idx = i
         boundaries.reverse()
