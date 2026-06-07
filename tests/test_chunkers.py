@@ -18,6 +18,8 @@ class DummyCfg:
     dsc_delta_window = 2
     dsc_threshold_k = 0.5
     dsc_use_headings = True
+    dsc_lambda = 0.05
+    dsc_beta = 0.2
 
 
 @pytest.mark.integration
@@ -227,6 +229,123 @@ def test_char_cap_enforcement_on_fixed():
     assert len(chunks) >= 2
     for chunk in chunks:
         assert len(chunk.text) <= 250
+
+
+def _make_distances(sims):
+    """Convert similarity array to distances array for _parent_boundaries input."""
+    return 1.0 - np.array(sims, dtype=float)
+
+
+def _dummy_spans(n):
+    return [(i * 10, i * 10 + 9) for i in range(n)]
+
+
+def _dummy_sentences(n, prefix="Sentence"):
+    return [f"{prefix} {i}." for i in range(n)]
+
+
+def test_dp_two_clear_clusters_split_into_two_blocks():
+    """DP finds the globally optimal 2-block partition for well-separated embeddings."""
+
+    class Cfg(DummyCfg):
+        # λ=0.15 makes [(0,3),(3,6)] the global optimum.
+        # With λ<0.12 the DP splits more finely; with λ>0.87 it merges all.
+        dsc_lambda = 0.15
+        dsc_beta = 0.0
+        dsc_use_headings = False
+
+    chunker = DualSemanticChunker(Cfg())
+    # Sentences 0-2 high intra-cluster sim, sentences 3-5 high intra-cluster sim.
+    # Cross-cluster sim (between 2 and 3) is low.
+    sims = [0.95, 0.93,   # cluster A: pairs (0,1), (1,2)
+            0.10,          # boundary: pair (2,3)
+            0.92, 0.94]   # cluster B: pairs (3,4), (4,5)
+    distances = _make_distances(sims)
+    sentences = _dummy_sentences(6)
+    spans = _dummy_spans(6)
+
+    result = chunker._parent_boundaries(distances, sentences, spans, "")
+
+    assert result == [(0, 3), (3, 6)]
+
+
+def test_dp_high_lambda_produces_single_block():
+    """λ high enough → DP keeps all sentences as one block (splitting unprofitable).
+    The heuristic ignores λ for parent boundaries and uses max_len to force cuts,
+    so this test is RED under the heuristic."""
+
+    class Cfg(DummyCfg):
+        dsc_parent_max_sentences = 4  # heuristic would cut here
+        dsc_lambda = 0.99             # penalty per block near-equals max cohesion
+        dsc_beta = 0.0
+        dsc_use_headings = False
+
+    chunker = DualSemanticChunker(Cfg())
+    # 6 sentences, all same topic — uniform high similarity.
+    sims = [0.95, 0.95, 0.95, 0.95, 0.95]
+    distances = _make_distances(sims)
+    sentences = _dummy_sentences(6)
+
+    result = chunker._parent_boundaries(distances, sentences, _dummy_spans(6), "")
+
+    assert result == [(0, 6)]
+
+
+def test_dp_heading_bonus_pulls_split_to_heading_position():
+    """β bonus shifts the split point from the sim-dip to the heading sentence.
+
+    Without β, the DP splits at position 2 (lowest sim is sims[2]=0.3 but the
+    globally optimal greedy-pair path wins). With β=0.2 on sentence 3 (a heading),
+    dp[3] gains enough to make [(0,3),(3,6)] the global optimum instead.
+    """
+
+    class Cfg(DummyCfg):
+        dsc_lambda = 0.15
+        dsc_beta = 0.2        # paper value — matches ADR-0001
+        dsc_use_headings = True
+
+    chunker = DualSemanticChunker(Cfg())
+    # sims[2]=0.3 is the low-similarity pair; sentence 3 is a structural heading.
+    # Verified analytically: with β=0.2 the heading bonus on dp[3] makes
+    # [(0,3),(3,6)] score 1.50, beating all alternatives.
+    sims = [0.8, 0.8, 0.3, 0.8, 0.8]
+    distances = _make_distances(sims)
+    # Fixed regex requires trailing dot on Roman numerals, so common verbs (Verify,
+    # Inspect, Check) no longer false-positive as headings.
+    sentences = [
+        "Verify lubricant levels before start.",   # old regex: is_heading=True; fixed: False
+        "Inspect torque settings on each bolt.",    # old regex: is_heading=True; fixed: False
+        "Check seal integrity before proceeding.",  # old regex: is_heading=True; fixed: False
+        "1. New Section: Electrical checks.",       # matches \d+ → is_heading[3]=True
+        "Measure output at terminal A.",
+        "Record all readings in the log.",
+    ]
+
+    result = chunker._parent_boundaries(distances, sentences, _dummy_spans(6), "")
+
+    assert result == [(0, 3), (3, 6)]
+
+
+def test_heading_regex_requires_dot_after_roman_numeral():
+    """Verify/Inspect/Check must NOT trigger heading bonus; IV. must."""
+    import re
+    heading_re = re.compile(r"^\s*((\d+(\.\d+)*\.?)|([IVXLC]+\.)|([A-Z][\w\s]{0,60}:))")
+    assert not heading_re.match("Verify lubricant levels before start.")
+    assert not heading_re.match("Inspect the component.")
+    assert not heading_re.match("Check seal integrity.")
+    assert heading_re.match("IV. Calibration procedure")
+    assert heading_re.match("1. New Section: Electrical checks.")
+    assert heading_re.match("Safety Precautions:")
+
+
+def test_dp_single_sentence_returns_single_block():
+    """Single sentence → one block [(0, 1)] without errors."""
+
+    chunker = DualSemanticChunker(DummyCfg())
+    result = chunker._parent_boundaries(
+        np.array([], dtype=float), ["Only sentence."], [(0, 14)], ""
+    )
+    assert result == [(0, 1)]
 
 
 def test_dual_semantic_does_not_reach_into_breakpoint_private():

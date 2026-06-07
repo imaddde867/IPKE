@@ -48,6 +48,7 @@ class BreakpointSemanticChunker(BaseChunker):
         import spacy
 
         nlp = spacy.load("en_core_web_sm", disable=["ner", "parser"])
+        nlp.max_length = 5000000
         if "sentencizer" not in nlp.pipe_names:
             nlp.add_pipe("sentencizer")
         self._nlp = nlp
@@ -316,8 +317,12 @@ class BreakpointSemanticChunker(BaseChunker):
             return np.array([])
 
         model = self._load_embedder()
+        # Newer sentence_transformers calls urlparse() on each input to detect image paths.
+        # Sentences with bracket notation (e.g. "[CAS 12345]") can trigger
+        # "Invalid IPv6 URL" in urlparse. Replace bare brackets to avoid this.
+        safe = [s.replace("[", "(").replace("]", ")") for s in sentences]
         embeddings = model.encode(
-            sentences,
+            safe,
             show_progress_bar=False,
             convert_to_numpy=True,
             normalize_embeddings=True

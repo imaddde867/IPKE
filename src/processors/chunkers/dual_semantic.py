@@ -96,54 +96,70 @@ class DualSemanticChunker(BreakpointSemanticChunker):
         return refined
 
     def _parent_boundaries(self, distances, sentences, spans, text):
-        min_len = max(1, getattr(self.cfg, "dsc_parent_min_sentences", 10))
-        max_len = max(min_len, getattr(self.cfg, "dsc_parent_max_sentences", 120))
-        window = max(1, getattr(self.cfg, "dsc_delta_window", 25))
-        threshold_k = max(0.0, getattr(self.cfg, "dsc_threshold_k", 1.0))
+        lam = float(getattr(self.cfg, "dsc_lambda", 0.1))
+        beta = float(getattr(self.cfg, "dsc_beta", 0.2))
         use_headings = bool(getattr(self.cfg, "dsc_use_headings", True))
+        # Constrain parent block length to configured min/max sentences.
+        min_sent = max(1, int(getattr(self.cfg, "dsc_parent_min_sentences", 10)))
+        max_sent = max(min_sent, int(getattr(self.cfg, "dsc_parent_max_sentences", 120)))
 
         n = len(sentences)
-        boundaries: List[Tuple[int, int]] = []
-        start = 0
+        if n == 0:
+            return []
+        if n == 1:
+            return [(0, 1)]
 
-        def local_stats(center: int):
-            left = max(0, center - window)
-            right = min(len(distances), center + window)
-            segment = distances[left:right]
-            if segment.size == 0:
-                return 0.0, 0.0
-            mean = float(np.mean(segment))
-            std = float(np.std(segment))
-            return mean, std
+        # Recover sims from distances; build prefix array for O(1) cohesion queries.
+        sims = 1.0 - np.asarray(distances, dtype=float)
+        prefix = np.zeros(n)
+        prefix[1:] = np.cumsum(sims)  # prefix[k] = sum(sims[0:k])
 
-        heading_pattern = None
-        if use_headings:
+        # Detect heading positions (sentence j starts a heading → bonus β at split j).
+        is_heading = np.zeros(n, dtype=bool)
+        if use_headings and beta > 0.0:
             import re
-            heading_pattern = re.compile(r"^\s*((\d+(\.\d+)*)|([IVXLC]+\.?)|([A-Z][\w\s]{0,60}:))")
+            # Require a dot after Roman numerals to avoid matching ordinary words
+            # starting with V/I/X/L/C (e.g. "Verify", "Inspect", "Check").
+            heading_re = re.compile(r"^\s*((\d+(\.\d+)*\.?)|([IVXLC]+\.)|([A-Z][\w\s]{0,60}:))")
+            for idx, sent in enumerate(sentences):
+                is_heading[idx] = bool(heading_re.match(sent))
 
-        while start < n:
-            end = min(n, start + max_len)
-            boundary = end
+        # Global DP: dp[j] = best objective for sentences [0, j).
+        # DP[j] = max_{i<j} { DP[i] + H(b_{i:j}) − λ + β·𝟙[j is heading] }
+        # H(b_{i:j}) = mean within-block cosine similarity = (prefix[j-1] - prefix[i]) / (j-1-i)
+        # min_sent/max_sent are hard guardrails (not part of the thesis objective).
+        # λ is the primary splitting control; the guardrails prevent degenerate blocks.
+        dp = np.full(n + 1, -np.inf)
+        back = np.full(n + 1, -1, dtype=int)
+        dp[0] = 0.0
 
-            for idx in range(start + min_len, end):
-                if idx - start < min_len:
-                    continue
-                mean, std = local_stats(idx - 1)
-                threshold = mean + threshold_k * std
-                distance_value = distances[idx - 1] if idx - 1 < len(distances) else 0.0
-                heading_break = False
-                if heading_pattern and idx < n:
-                    heading_break = bool(heading_pattern.match(sentences[idx]))
-                if distance_value > threshold or heading_break:
-                    boundary = idx
-                    break
+        for j in range(1, n + 1):
+            heading_bonus = beta if (j < n and is_heading[j]) else 0.0
+            # Only consider i such that block length (j-i) is within [min_sent, max_sent]
+            i_start = max(0, j - max_sent)
+            i_end = j - min_sent
+            if i_end < i_start:
+                continue
+            for i in range(i_start, i_end + 1):
+                cohesion = self._mean_similarity(prefix, i, j)
+                score = dp[i] + cohesion - lam + heading_bonus
+                if score > dp[j]:
+                    dp[j] = score
+                    back[j] = i
 
-            boundaries.append((start, boundary))
-            start = boundary
-
-        if boundaries and boundaries[-1][1] != n:
-            boundaries[-1] = (boundaries[-1][0], n)
-
+        # Backtrack to recover partition.
+        boundaries: List[Tuple[int, int]] = []
+        idx = n
+        while idx > 0:
+            i = back[idx]
+            if i == -1:
+                # Fallback: no valid partition found (e.g., n < min_sent).
+                # Return single block with all remaining sentences.
+                boundaries.append((0, idx))
+                break
+            boundaries.append((i, idx))
+            idx = i
+        boundaries.reverse()
         return boundaries
 
     def _log_parent_summary(self, parents: List[Tuple[int, int]], spans: List[Tuple[int, int]], doc_chars: int) -> None:
