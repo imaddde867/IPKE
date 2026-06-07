@@ -4,9 +4,7 @@ Thesis Demonstration Interface | Turku University of Applied Sciences, 2025
 """
 
 import os
-os.environ["TOKENIZERS_PARALLELISM"] = "false"
-
-from src.ai.llm_env_setup import *  # noqa: F401,F403
+import src.ai.llm_env_setup  # noqa: F401  # side-effect: sets TOKENIZERS_PARALLELISM, OMP/MKL thread limits
 
 import asyncio
 import tempfile

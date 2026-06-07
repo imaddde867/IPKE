@@ -99,3 +99,9 @@ PRE_DEPLOYMENT_CHECKLIST.md
 AGENTS.md
 datasets/paper/gold_drafts/
 datasets/Unusable/
+
+# pyvis runtime assets (generated at runtime, not source)
+lib/
+
+# agent tool outputs
+.agents/
