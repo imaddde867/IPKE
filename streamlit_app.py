@@ -28,6 +28,7 @@ from src.validation.constraint_validator import (
 )
 import networkx as nx
 from src.ai.types import ExtractionResult, ExtractedEntity
+from src.evaluation.metrics import compute_phi
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -141,7 +142,7 @@ def calculate_metrics(result: ExtractionResult) -> Dict[str, Any]:
     tau = _order_tau()
     
     # Procedural Fidelity (thesis weights: 0.5, 0.3, 0.2)
-    phi = 0.5 * c_cov + 0.3 * s_f1 + 0.2 * tau
+    phi = compute_phi(c_cov, s_f1, tau)
     
     return {
         "phi": phi, "c_cov": c_cov, "s_f1": s_f1, "tau": tau,
