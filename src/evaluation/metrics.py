@@ -500,12 +500,13 @@ def compute_phi(
     w_cov: float = 0.5,
     w_step: float = 0.3,
     w_tau: float = 0.2,
+    round_result: bool = False,
 ) -> float:
     c = 0.0 if constraint_coverage is None else constraint_coverage
     s = 0.0 if step_f1 is None else step_f1
     k = 0.0 if kendall is None else kendall
     raw = w_cov * c + w_step * s + w_tau * k
-    return round3(raw)
+    return round3(raw) if round_result else raw
 
 
 def sort_steps_for_graph(steps: Sequence[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -630,11 +631,15 @@ def evaluate_tier_a_document(
     metrics.update(constraints_metrics)
 
     # Procedural Fidelity Score (Phi): 0.5*Coverage + 0.3*StepF1 + 0.2*Kendall
-    metrics["Phi"] = compute_phi(
-        constraint_coverage=metrics.get("ConstraintCoverage"),
-        step_f1=metrics.get("StepF1"),
-        kendall=metrics.get("Kendall"),
-    )
+    if all(k in metrics for k in ["ConstraintCoverage", "StepF1", "Kendall"]):
+        metrics["Phi"] = compute_phi(
+            constraint_coverage=metrics["ConstraintCoverage"],
+            step_f1=metrics["StepF1"],
+            kendall=metrics["Kendall"],
+            round_result=True,
+        )
+    else:
+        metrics["Phi"] = None
     if return_alignment_map:
         return metrics, alignment_to_id_map(step_alignment)
     return metrics
