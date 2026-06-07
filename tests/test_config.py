@@ -183,6 +183,7 @@ def test_factory_methods_roundtrip(monkeypatch):
     assert dev.llm_n_gpu_layers == 12
     assert dev.llm_max_chunks == 5
     assert dev.prompting_strategy == "P0"
+    assert dev.cors_origins == ["http://localhost:8501", "http://127.0.0.1:8501"]
 
     prod = UnifiedConfig._production_config()
     assert prod.debug is False
@@ -190,6 +191,7 @@ def test_factory_methods_roundtrip(monkeypatch):
     assert prod.llm_random_seed == 99
     assert prod.confidence_threshold == 0.75
     assert prod.quality_threshold == 0.85
+    assert prod.cors_origins == []
 
     testing = UnifiedConfig._testing_config()
     assert testing.debug is False
@@ -205,6 +207,7 @@ def test_factory_methods_roundtrip(monkeypatch):
     assert testing.llm_random_seed == 42
     assert testing.strict_schema_validation is True
     assert testing.validation_error_log == "logs/test_errors.jsonl"
+    assert testing.cors_origins == ["http://localhost:8501", "http://127.0.0.1:8501"]
 
 
 if __name__ == "__main__":

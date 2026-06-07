@@ -269,9 +269,12 @@ class UnifiedConfig:
     def _production_config(cls) -> 'UnifiedConfig':
         """Production environment configuration"""
         kwargs = cls._parse_env_vars()
+        cors_origins_raw = _get_env_value('CORS_ORIGINS', default='')
+        cors_origins = cors_origins_raw.split(',') if cors_origins_raw else []
         kwargs.update({
             'environment': Environment.PRODUCTION,
             'debug': False,
+            'cors_origins': cors_origins,
             'quality_threshold': _env_float('QUALITY_THRESHOLD', default=0.85, min_value=0.0, max_value=1.0),
             'processing_timeout': _env_int('PROCESSING_TIMEOUT', default=3600, min_value=60),
             'max_file_size_mb': _env_int('MAX_FILE_SIZE_MB', default=200, min_value=1),
@@ -384,15 +387,12 @@ class UnifiedConfig:
         overrides. This eliminates ~150 lines of duplicated env-var parsing.
         """
         llm_workers = max(0, _env_int('LLM_NUM_WORKERS', default=cls.llm_num_workers))
-        cors_origins_raw = _get_env_value('CORS_ORIGINS', default='')
-        cors_origins = [o.strip() for o in cors_origins_raw.split(',') if o.strip()] if cors_origins_raw else []
         return {
             'debug': False,
             'log_level': _get_env_value('LOG_LEVEL', default='INFO'),
             'max_file_size_mb': _env_int('MAX_FILE_SIZE_MB', default=50, min_value=1),
             'processing_timeout': _env_int('PROCESSING_TIMEOUT', default=3600, min_value=1),
             'api_host': _get_env_value('API_HOST', default='0.0.0.0'),
-            'cors_origins': cors_origins,
             'gpu_backend': _get_env_value('GPU_BACKEND', default='auto'),
             'enable_gpu': _env_bool('ENABLE_GPU', default=True),
             'llm_n_gpu_layers': _env_int('LLM_GPU_LAYERS', default=-1),
