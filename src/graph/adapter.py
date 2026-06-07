@@ -25,34 +25,13 @@ from typing import Any, Dict, List, Sequence, Set, Tuple
 
 logger = logging.getLogger(__name__)
 
-LOWER_REL_MAP = {
-    "NEXT": "next",
-    "CONDITION_ON": "condition_on",
-    "USES": "uses",
-    "HAS_PARAMETER": "has_parameter",
-    "REQUIRES": "requires",
-    "PRODUCES": "produces",
-    "REFERENCES": "references",
-    "ALTERNATIVE_TO": "alternative_to",
-}
-
-
-STEP_REF_KEYS = (
-    "step",
-    "steps",
-    "step_id",
-    "attached_to",
-    "attached_step",
-    "attached_steps",
-    "targets",
-    "scope",
-    "applies_to",
+from src.graph.constants import (
+    LOWER_REL_MAP,
+    STEP_REF_KEYS,
+    collect_step_refs,
+    flatten_refs,
+    normalize_id,
 )
-
-
-def _norm_id(value: Any) -> str:
-    return str(value).strip() if value is not None else ""
-
 
 def _unique_id(prefix: str, existing: Set[str]) -> str:
     candidate = prefix
@@ -62,35 +41,6 @@ def _unique_id(prefix: str, existing: Set[str]) -> str:
         counter += 1
     existing.add(candidate)
     return candidate
-
-
-def _collect_step_refs(record: Dict[str, Any]) -> List[str]:
-    refs: List[str] = []
-    for key in STEP_REF_KEYS:
-        raw = record.get(key)
-        refs.extend(_flatten_refs(raw))
-    return refs
-
-
-def _flatten_refs(value: Any) -> List[str]:
-    if not value:
-        return []
-    if isinstance(value, str):
-        return [value]
-    if isinstance(value, dict):
-        potential = value.get("id") or value.get("step_id") or value.get("step")
-        if potential:
-            return [str(potential)]
-        nested: List[str] = []
-        for nested_value in value.values():
-            nested.extend(_flatten_refs(nested_value))
-        return nested
-    if isinstance(value, (list, tuple, set)):
-        refs: List[str] = []
-        for item in value:
-            refs.extend(_flatten_refs(item))
-        return refs
-    return [str(value)]
 
 
 def _stringify(value: Any) -> str:
@@ -159,7 +109,7 @@ def convert_to_tierb(doc: Dict[str, Any]) -> Dict[str, Any]:
     # Step nodes (preserve text for label extraction in evaluator)
     step_alias_map: Dict[str, str] = {}
     for s in steps:
-        raw_sid = _norm_id(s.get("id"))
+        raw_sid = normalize_id(s.get("id"))
         sid = raw_sid or f"S{len(nodes)+1}"
         sid = _unique_id(sid, existing_ids)
         if raw_sid and raw_sid not in step_alias_map:
@@ -174,7 +124,7 @@ def convert_to_tierb(doc: Dict[str, Any]) -> Dict[str, Any]:
     # Condition nodes
     constraint_node_ids: Dict[int, str] = {}
     for idx, c in enumerate(constraints):
-        cid = _norm_id(c.get("id")) or f"C{len(nodes)+1}"
+        cid = normalize_id(c.get("id")) or f"C{len(nodes)+1}"
         cid = _unique_id(cid, existing_ids)
         constraint_node_ids[idx] = cid
         nodes.append({
@@ -211,13 +161,13 @@ def convert_to_tierb(doc: Dict[str, Any]) -> Dict[str, Any]:
         if not attached_field_present:
             constraints_missing_attachment_field.append(cid)
         attached_field = c.get("attached_to")
-        attached_refs = _flatten_refs(attached_field)
+        attached_refs = flatten_refs(attached_field)
         # Fall back to other reference keys if attached_to is missing or empty.
-        refs = attached_refs or _collect_step_refs(c)
+        refs = attached_refs or collect_step_refs(c)
         valid_targets: List[str] = []
 
         for sid in refs:
-            sid_norm = _norm_id(sid)
+            sid_norm = normalize_id(sid)
             if not sid_norm:
                 continue
             resolved = step_alias_map.get(sid_norm, sid_norm)
@@ -288,7 +238,7 @@ def _convert_equipment_entries(
             entry = {"name": entry}
         if not isinstance(entry, dict):
             continue
-        eq_id = _norm_id(entry.get("id")) or f"EQUIP_{idx + 1}"
+        eq_id = normalize_id(entry.get("id")) or f"EQUIP_{idx + 1}"
         eq_id = _unique_id(eq_id, existing_ids)
         label = entry.get("name") or entry.get("text") or entry.get("content") or eq_id
         nodes.append({
@@ -299,8 +249,8 @@ def _convert_equipment_entries(
             "metadata": entry.get("metadata"),
         })
         relation = _infer_equipment_relation(entry, default="uses")
-        for ref in _collect_step_refs(entry):
-            sid = _norm_id(ref)
+        for ref in collect_step_refs(entry):
+            sid = normalize_id(ref)
             if sid in valid_steps:
                 edges.append({
                     "source": sid,
@@ -322,7 +272,7 @@ def _convert_parameter_entries(
             entry = {"name": entry}
         if not isinstance(entry, dict):
             continue
-        param_id = _norm_id(entry.get("id")) or f"PARAM_{idx + 1}"
+        param_id = normalize_id(entry.get("id")) or f"PARAM_{idx + 1}"
         param_id = _unique_id(param_id, existing_ids)
         text = entry.get("text") or entry.get("name") or entry.get("label") or _stringify(entry.get("value")) or param_id
         nodes.append({
@@ -333,8 +283,8 @@ def _convert_parameter_entries(
             "value": entry.get("value"),
         })
         relation = _infer_equipment_relation(entry, default="has_parameter")
-        for ref in _collect_step_refs(entry):
-            sid = _norm_id(ref)
+        for ref in collect_step_refs(entry):
+            sid = normalize_id(ref)
             if sid in valid_steps:
                 edges.append({
                     "source": sid,
@@ -352,7 +302,7 @@ def _convert_step_level_entities(
     equipment_nodes: List[Dict[str, Any]] = []
     parameter_nodes: List[Dict[str, Any]] = []
     for step in steps:
-        step_id = _norm_id(step.get("id"))
+        step_id = normalize_id(step.get("id"))
         if not step_id:
             continue
         equipment_values = _gather_items(step, ["tools", "equipment", "materials"])
