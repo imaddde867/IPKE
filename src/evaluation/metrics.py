@@ -630,14 +630,11 @@ def evaluate_tier_a_document(
     metrics.update(constraints_metrics)
 
     # Procedural Fidelity Score (Phi): 0.5*Coverage + 0.3*StepF1 + 0.2*Kendall
-    if all(k in metrics for k in ["ConstraintCoverage", "StepF1", "Kendall"]):
-        constraint_coverage = 0.0 if metrics.get("ConstraintCoverage") is None else metrics["ConstraintCoverage"]
-        step_f1 = 0.0 if metrics.get("StepF1") is None else metrics["StepF1"]
-        kendall = 0.0 if metrics.get("Kendall") is None else metrics["Kendall"]
-        phi = 0.5 * constraint_coverage + 0.3 * step_f1 + 0.2 * kendall
-        metrics["Phi"] = round3(phi)
-    else:
-        metrics["Phi"] = None
+    metrics["Phi"] = compute_phi(
+        constraint_coverage=metrics.get("ConstraintCoverage"),
+        step_f1=metrics.get("StepF1"),
+        kendall=metrics.get("Kendall"),
+    )
     if return_alignment_map:
         return metrics, alignment_to_id_map(step_alignment)
     return metrics
