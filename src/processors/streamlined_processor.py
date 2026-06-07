@@ -5,7 +5,7 @@ Industrial Procedural Knowledge Extraction - Document Processor
 import time
 import hashlib
 import asyncio
-from typing import Dict, List, Any, Optional, Callable, TypeVar
+from typing import Dict, Any, Optional, Callable, TypeVar
 from dataclasses import dataclass
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor

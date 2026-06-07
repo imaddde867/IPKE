@@ -33,7 +33,8 @@ The run directory contains:
 make eval
 ```
 
-This evaluates predictions against `datasets/archive/gold_human`.
+This runs a dry-run multi-seed sweep against `datasets/paper/gold` (paper Tier-A documents).
+No model is required. For the full sweep see `make eval-full` and `REPRODUCIBILITY.md`.
 
 ## Required Metadata
 

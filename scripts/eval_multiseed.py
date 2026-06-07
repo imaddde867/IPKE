@@ -296,6 +296,15 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
                         help="Phi weight scheme (repeatable). Default: 0.5:0.3:0.2.")
     parser.add_argument("--bootstrap-n", type=int, default=10_000)
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument(
+        "--allow-unreviewed",
+        action="store_true",
+        help=(
+            "Allow gold files with quality.review_status != 'reviewed'. "
+            "Use only for development; unreviewed files are AI drafts and "
+            "results cannot be used as paper evidence."
+        ),
+    )
     return parser.parse_args(argv)
 
 
@@ -326,6 +335,38 @@ def main(argv: list[str] | None = None) -> int:
         print("ERROR: no (gold, text) pairs found.", file=sys.stderr)
         return 1
 
+    # Always parse gold JSON — malformed files must fail closed regardless of flags.
+    loaded_gold: dict[str, dict] = {}
+    for gf, _ in pairs:
+        try:
+            loaded_gold[gf.stem] = json.loads(gf.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError) as exc:
+            print(f"ERROR: cannot read or parse gold file {gf}: {exc}", file=sys.stderr)
+            return 1
+
+    # Reject unreviewed gold unless explicitly overridden.
+    # Unreviewed files are AI-assisted drafts; results cannot be used as paper evidence.
+    if not args.dry_run and not args.allow_unreviewed:
+        unreviewed = [
+            gf.stem
+            for gf, _ in pairs
+            if loaded_gold[gf.stem].get("quality", {}).get("review_status", "") != "reviewed"
+        ]
+        if unreviewed:
+            print(
+                "ERROR: the following gold files are not reviewed "
+                "(quality.review_status != 'reviewed'):",
+                file=sys.stderr,
+            )
+            for name in unreviewed:
+                print(f"  {name}", file=sys.stderr)
+            print(
+                "Complete a human correction pass and set quality.review_status='reviewed', "
+                "or pass --allow-unreviewed for development use only.",
+                file=sys.stderr,
+            )
+            return 1
+
     seeds = list(range(args.seed_start, args.seed_start + args.seeds))
     phi_schemes: list[tuple[float, float, float]] = args.phi_weights or DEFAULT_PHI_WEIGHTS
 
@@ -350,16 +391,6 @@ def main(argv: list[str] | None = None) -> int:
     print(f"Phi schemes: {phi_schemes}")
     for gf, _ in pairs:
         print(f"  {gf.stem}")
-
-    # Validate all gold files before dry-run check so that --dry-run never
-    # exits 0 on a broken dataset (malformed JSON must be caught immediately).
-    loaded_gold: dict[str, dict] = {}
-    for gf, _ in pairs:
-        try:
-            loaded_gold[gf.stem] = json.loads(gf.read_text(encoding="utf-8"))
-        except (json.JSONDecodeError, OSError) as exc:
-            print(f"ERROR: cannot read or parse gold file {gf}: {exc}", file=sys.stderr)
-            return 1
 
     if args.dry_run:
         print("\n[dry-run] No extraction performed.")

@@ -149,6 +149,6 @@
   "relations": [],
   "quality": {
     "annotation_scope": "bounded_excerpt",
-    "review_status": "reviewed"
+    "review_status": "unreviewed"
   }
 }

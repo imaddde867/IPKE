@@ -12,10 +12,10 @@ _CHUNKING_ALIASES = {
 def _canonical_method(method: str) -> str:
     return _CHUNKING_ALIASES.get(method, method)
 
-from .base import BaseChunker, Chunk
-from .breakpoint import BreakpointSemanticChunker
-from .dual_semantic import DualSemanticChunker
-from .fixed import FixedChunker
+from .base import BaseChunker, Chunk  # noqa: E402
+from .breakpoint import BreakpointSemanticChunker  # noqa: E402
+from .dual_semantic import DualSemanticChunker  # noqa: E402
+from .fixed import FixedChunker  # noqa: E402
 
 
 def get_chunker(cfg: Any) -> BaseChunker:
