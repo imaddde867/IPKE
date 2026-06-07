@@ -231,49 +231,21 @@ class UnifiedConfig:
     @classmethod
     def _development_config(cls) -> 'UnifiedConfig':
         """Development environment configuration"""
-        chunk_kwargs = cls._chunking_overrides()
-        llm_workers = max(0, _env_int('LLM_NUM_WORKERS', default=cls.llm_num_workers))
-        base_kwargs: Dict[str, Any] = {
+        kwargs = cls._parse_env_vars()
+        kwargs.update({
             'environment': Environment.DEVELOPMENT,
             'debug': True,
             'log_level': "INFO",
-            'max_file_size_mb': _env_int('MAX_FILE_SIZE_MB', default=50, min_value=1),
-            'processing_timeout': _env_int('PROCESSING_TIMEOUT', default=3600, min_value=1),
             'api_host': _get_env_value('API_HOST', default='127.0.0.1'),
-            'gpu_backend': _get_env_value('GPU_BACKEND', default='auto'),
-            'enable_gpu': _env_bool('ENABLE_GPU', default=True),
-            'llm_n_gpu_layers': _env_int('LLM_GPU_LAYERS', default=-1),
-            'gpu_memory_fraction': _env_float('GPU_MEMORY_FRACTION', default=0.8, min_value=0.0, max_value=1.0),
-            'confidence_threshold': _env_float('CONFIDENCE_THRESHOLD', default=0.8, min_value=0.0, max_value=1.0),
-            'quality_threshold': _env_float('QUALITY_THRESHOLD', default=0.7, min_value=0.0, max_value=1.0),
-            'llm_n_ctx': _env_int('LLM_N_CTX', default=cls.llm_n_ctx),
-            'llm_temperature': _env_float('LLM_TEMPERATURE', default=cls.llm_temperature),
-            'llm_top_p': _env_float('LLM_TOP_P', default=cls.llm_top_p),
-            'llm_repeat_penalty': _env_float('LLM_REPEAT_PENALTY', default=cls.llm_repeat_penalty),
-            'llm_n_threads': _env_int('LLM_N_THREADS', default=cls.llm_n_threads, min_value=1),
-            'llm_max_tokens': _env_int('LLM_MAX_TOKENS', default=cls.llm_max_tokens, min_value=64),
-            'llm_max_chunks': _env_int('LLM_MAX_CHUNKS', default=cls.llm_max_chunks, min_value=0),
-            'max_workers': _env_int('MAX_WORKERS', default=cls.max_workers, min_value=1),
-            'llm_model_path': _get_env_value('LLM_MODEL_PATH', default=cls.llm_model_path),
-            'llm_model_id': _get_env_value('LLM_MODEL_ID', default=cls.llm_model_id),
-            'llm_quantization': _get_env_value('LLM_QUANTIZATION', default=cls.llm_quantization),
-            'llm_backend': _get_env_value('LLM_BACKEND', default=cls.llm_backend),
-            'llm_device_strategy': _get_env_value('LLM_DEVICE_STRATEGY', default=cls.llm_device_strategy),
-            'llm_num_workers': llm_workers,
-            'prompting_strategy': _get_env_value('PROMPTING_STRATEGY', default=cls.prompting_strategy).upper(),
-            'llm_random_seed': _env_int('LLM_RANDOM_SEED', default=cls.llm_random_seed),
-            'strict_schema_validation': _env_bool('STRICT_SCHEMA_VALIDATION', default=cls.strict_schema_validation),
-            'schema_autofix_enabled': _env_bool('SCHEMA_AUTOFIX_ENABLED', default=cls.schema_autofix_enabled),
-            'validation_error_log': _get_env_value('VALIDATION_ERROR_LOG', default=cls.validation_error_log),
-        }
-        base_kwargs.update(chunk_kwargs)
-        return cls(**base_kwargs)
+        })
+        kwargs.update(cls._chunking_overrides())
+        return cls(**kwargs)
 
     @classmethod
     def _testing_config(cls) -> 'UnifiedConfig':
         """Testing environment configuration"""
-        chunk_kwargs = cls._chunking_overrides()
-        base_kwargs: Dict[str, Any] = {
+        kwargs = cls._parse_env_vars()
+        kwargs.update({
             'environment': Environment.TESTING,
             'debug': False,
             'log_level': "WARNING",
@@ -289,53 +261,23 @@ class UnifiedConfig:
             'llm_num_workers': 1,
             'prompting_strategy': cls.prompting_strategy,
             'llm_random_seed': cls.llm_random_seed,
-            'strict_schema_validation': _env_bool('STRICT_SCHEMA_VALIDATION', default=cls.strict_schema_validation),
-            'schema_autofix_enabled': _env_bool('SCHEMA_AUTOFIX_ENABLED', default=cls.schema_autofix_enabled),
-            'validation_error_log': _get_env_value('VALIDATION_ERROR_LOG', default=cls.validation_error_log),
-        }
-        base_kwargs.update(chunk_kwargs)
-        return cls(**base_kwargs)
+        })
+        kwargs.update(cls._chunking_overrides())
+        return cls(**kwargs)
 
     @classmethod
     def _production_config(cls) -> 'UnifiedConfig':
         """Production environment configuration"""
-        cors_origins_raw = _get_env_value('CORS_ORIGINS', default='')
-        cors_origins = cors_origins_raw.split(',') if cors_origins_raw else []
-
-        chunk_kwargs = cls._chunking_overrides()
-        llm_workers = max(0, _env_int('LLM_NUM_WORKERS', default=cls.llm_num_workers))
-        base_kwargs: Dict[str, Any] = {
+        kwargs = cls._parse_env_vars()
+        kwargs.update({
             'environment': Environment.PRODUCTION,
             'debug': False,
-            'log_level': _get_env_value('LOG_LEVEL', default='INFO'),
-            'max_file_size_mb': _env_int('MAX_FILE_SIZE_MB', default=200, min_value=1),
-            'confidence_threshold': _env_float('CONFIDENCE_THRESHOLD', default=0.8, min_value=0.0, max_value=1.0),
             'quality_threshold': _env_float('QUALITY_THRESHOLD', default=0.85, min_value=0.0, max_value=1.0),
             'processing_timeout': _env_int('PROCESSING_TIMEOUT', default=3600, min_value=60),
-            'api_host': _get_env_value('API_HOST', default='0.0.0.0'),
-            'cors_origins': cors_origins,
-            'gpu_backend': _get_env_value('GPU_BACKEND', default='auto'),
-            'enable_gpu': _env_bool('ENABLE_GPU', default=True),
-            'llm_n_gpu_layers': _env_int('LLM_GPU_LAYERS', default=-1),
-            'gpu_memory_fraction': _env_float('GPU_MEMORY_FRACTION', default=0.8, min_value=0.0, max_value=1.0),
-            'llm_temperature': _env_float('LLM_TEMPERATURE', default=cls.llm_temperature),
-            'llm_top_p': _env_float('LLM_TOP_P', default=cls.llm_top_p),
-            'llm_repeat_penalty': _env_float('LLM_REPEAT_PENALTY', default=cls.llm_repeat_penalty),
-            'llm_n_threads': _env_int('LLM_N_THREADS', default=cls.llm_n_threads, min_value=1),
-            'llm_max_chunks': _env_int('LLM_MAX_CHUNKS', default=cls.llm_max_chunks, min_value=0),
-            'llm_model_id': _get_env_value('LLM_MODEL_ID', default=cls.llm_model_id),
-            'llm_quantization': _get_env_value('LLM_QUANTIZATION', default=cls.llm_quantization),
-            'llm_backend': _get_env_value('LLM_BACKEND', default=cls.llm_backend),
-            'llm_device_strategy': _get_env_value('LLM_DEVICE_STRATEGY', default=cls.llm_device_strategy),
-            'llm_num_workers': llm_workers,
-            'prompting_strategy': _get_env_value('PROMPTING_STRATEGY', default=cls.prompting_strategy).upper(),
-            'llm_random_seed': _env_int('LLM_RANDOM_SEED', default=cls.llm_random_seed),
-            'strict_schema_validation': _env_bool('STRICT_SCHEMA_VALIDATION', default=cls.strict_schema_validation),
-            'schema_autofix_enabled': _env_bool('SCHEMA_AUTOFIX_ENABLED', default=cls.schema_autofix_enabled),
-            'validation_error_log': _get_env_value('VALIDATION_ERROR_LOG', default=cls.validation_error_log),
-        }
-        base_kwargs.update(chunk_kwargs)
-        return cls(**base_kwargs)
+            'max_file_size_mb': _env_int('MAX_FILE_SIZE_MB', default=200, min_value=1),
+        })
+        kwargs.update(cls._chunking_overrides())
+        return cls(**kwargs)
 
     @classmethod
     def _cloud_config(cls) -> 'UnifiedConfig':
@@ -433,6 +375,51 @@ class UnifiedConfig:
                     'dsc_beta': _env_float('DSC_BETA', default=cls.dsc_beta, min_value=0.0),
                 })
         return overrides
+
+    @classmethod
+    def _parse_env_vars(cls) -> Dict[str, Any]:
+        """Parse all environment variables shared across environments.
+
+        Each factory method calls this once, then applies its per-environment
+        overrides. This eliminates ~150 lines of duplicated env-var parsing.
+        """
+        llm_workers = max(0, _env_int('LLM_NUM_WORKERS', default=cls.llm_num_workers))
+        cors_origins_raw = _get_env_value('CORS_ORIGINS', default='')
+        cors_origins = [o.strip() for o in cors_origins_raw.split(',') if o.strip()] if cors_origins_raw else []
+        return {
+            'debug': False,
+            'log_level': _get_env_value('LOG_LEVEL', default='INFO'),
+            'max_file_size_mb': _env_int('MAX_FILE_SIZE_MB', default=50, min_value=1),
+            'processing_timeout': _env_int('PROCESSING_TIMEOUT', default=3600, min_value=1),
+            'api_host': _get_env_value('API_HOST', default='0.0.0.0'),
+            'cors_origins': cors_origins,
+            'gpu_backend': _get_env_value('GPU_BACKEND', default='auto'),
+            'enable_gpu': _env_bool('ENABLE_GPU', default=True),
+            'llm_n_gpu_layers': _env_int('LLM_GPU_LAYERS', default=-1),
+            'gpu_memory_fraction': _env_float('GPU_MEMORY_FRACTION', default=0.8, min_value=0.0, max_value=1.0),
+            'confidence_threshold': _env_float('CONFIDENCE_THRESHOLD', default=0.8, min_value=0.0, max_value=1.0),
+            'quality_threshold': _env_float('QUALITY_THRESHOLD', default=0.7, min_value=0.0, max_value=1.0),
+            'cache_size': 1000,
+            'llm_n_ctx': _env_int('LLM_N_CTX', default=cls.llm_n_ctx),
+            'llm_temperature': _env_float('LLM_TEMPERATURE', default=cls.llm_temperature),
+            'llm_top_p': _env_float('LLM_TOP_P', default=cls.llm_top_p),
+            'llm_repeat_penalty': _env_float('LLM_REPEAT_PENALTY', default=cls.llm_repeat_penalty),
+            'llm_n_threads': _env_int('LLM_N_THREADS', default=cls.llm_n_threads, min_value=1),
+            'llm_max_tokens': _env_int('LLM_MAX_TOKENS', default=cls.llm_max_tokens, min_value=64),
+            'llm_max_chunks': _env_int('LLM_MAX_CHUNKS', default=cls.llm_max_chunks, min_value=0),
+            'max_workers': _env_int('MAX_WORKERS', default=cls.max_workers, min_value=1),
+            'llm_model_path': _get_env_value('LLM_MODEL_PATH', default=cls.llm_model_path),
+            'llm_model_id': _get_env_value('LLM_MODEL_ID', default=cls.llm_model_id),
+            'llm_quantization': _get_env_value('LLM_QUANTIZATION', default=cls.llm_quantization),
+            'llm_backend': _get_env_value('LLM_BACKEND', default=cls.llm_backend),
+            'llm_device_strategy': _get_env_value('LLM_DEVICE_STRATEGY', default=cls.llm_device_strategy),
+            'llm_num_workers': llm_workers,
+            'prompting_strategy': _get_env_value('PROMPTING_STRATEGY', default=cls.prompting_strategy).upper(),
+            'llm_random_seed': _env_int('LLM_RANDOM_SEED', default=cls.llm_random_seed),
+            'strict_schema_validation': _env_bool('STRICT_SCHEMA_VALIDATION', default=cls.strict_schema_validation),
+            'schema_autofix_enabled': _env_bool('SCHEMA_AUTOFIX_ENABLED', default=cls.schema_autofix_enabled),
+            'validation_error_log': _get_env_value('VALIDATION_ERROR_LOG', default=cls.validation_error_log),
+        }
 
     # Utility methods
     def get_upload_directory(self) -> str:

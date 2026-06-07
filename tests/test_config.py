@@ -135,5 +135,77 @@ class TestUnifiedConfig:
             reload_config()
 
 
+def test_factory_methods_roundtrip(monkeypatch):
+    """Regression guard: after collapsing to _parse_env_vars(), the three factory
+    methods must produce the same values they did before for the same env-var state.
+    """
+    baseline = {
+        "LLM_NUM_WORKERS": "2",
+        "LLM_GPU_LAYERS": "12",
+        "GPU_MEMORY_FRACTION": "0.6",
+        "CONFIDENCE_THRESHOLD": "0.75",
+        "LLM_N_CTX": "4096",
+        "LLM_TEMPERATURE": "0.2",
+        "LLM_TOP_P": "0.85",
+        "LLM_REPEAT_PENALTY": "1.2",
+        "LLM_N_THREADS": "6",
+        "LLM_MAX_TOKENS": "1024",
+        "LLM_MAX_CHUNKS": "5",
+        "MAX_WORKERS": "4",
+        "LLM_MODEL_PATH": "models/llm/test.gguf",
+        "LLM_MODEL_ID": "test/model",
+        "LLM_QUANTIZATION": "8bit",
+        "LLM_BACKEND": "transformers",
+        "LLM_DEVICE_STRATEGY": "single",
+        "LLM_RANDOM_SEED": "99",
+        "STRICT_SCHEMA_VALIDATION": "1",
+        "SCHEMA_AUTOFIX_ENABLED": "0",
+        "VALIDATION_ERROR_LOG": "logs/test_errors.jsonl",
+        "GPU_BACKEND": "cpu",
+        "ENABLE_GPU": "0",
+        "PROMPTING_STRATEGY": "P0",
+    }
+    for key, val in baseline.items():
+        monkeypatch.setenv(key, val)
+    monkeypatch.delenv("EXPLAINIUM_ENV", raising=False)
+    monkeypatch.delenv("IPKE_ENV", raising=False)
+    monkeypatch.delenv("ENVIRONMENT", raising=False)
+    monkeypatch.delenv("GOOGLE_CLOUD_PROJECT", raising=False)
+
+    dev = UnifiedConfig._development_config()
+    assert dev.debug is True
+    assert dev.llm_backend == "transformers"
+    assert dev.llm_model_path == "models/llm/test.gguf"
+    assert dev.llm_random_seed == 99
+    assert dev.confidence_threshold == 0.75
+    assert dev.strict_schema_validation is True
+    assert dev.schema_autofix_enabled is False
+    assert dev.llm_n_gpu_layers == 12
+    assert dev.llm_max_chunks == 5
+    assert dev.prompting_strategy == "P0"
+
+    prod = UnifiedConfig._production_config()
+    assert prod.debug is False
+    assert prod.llm_backend == "transformers"
+    assert prod.llm_random_seed == 99
+    assert prod.confidence_threshold == 0.75
+    assert prod.quality_threshold == 0.85
+
+    testing = UnifiedConfig._testing_config()
+    assert testing.debug is False
+    assert testing.enable_gpu is False
+    assert testing.llm_n_gpu_layers == 0
+    assert testing.gpu_backend == "cpu"
+    assert testing.llm_backend == "transformers"
+    assert testing.llm_device_strategy == "single"
+    assert testing.llm_num_workers == 1
+    assert testing.llm_model_id == "sshleifer/tiny-gpt2"
+    assert testing.cache_size == 100
+    assert testing.confidence_threshold == 0.5
+    assert testing.llm_random_seed == 42
+    assert testing.strict_schema_validation is True
+    assert testing.validation_error_log == "logs/test_errors.jsonl"
+
+
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
