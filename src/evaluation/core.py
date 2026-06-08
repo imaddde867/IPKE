@@ -4,15 +4,13 @@ import random
 import sys
 from collections import defaultdict
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional, Sequence, Set, Tuple, Union
+from typing import Any, Dict, List, Optional, Set, Tuple
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 import numpy as np
-
-
 
 HEADLINE_METRICS_ORDER = [
     "StepF1",
@@ -81,18 +79,6 @@ def extract_constraint_text(constraint: Dict[str, Any]) -> str:
     return normalize_field(constraint.get("id", ""))
 
 
-NESTED_CONSTRAINT_KINDS = (
-    "precondition",
-    "postcondition",
-    "guard",
-    "acceptance_criteria",
-    "warning",
-    "exception",
-    "safety",
-    "environment",
-    "quality",
-)
-
 CONSTRAINT_LINK_KEYS = (
     "step_id",
     "step",
@@ -104,71 +90,6 @@ CONSTRAINT_LINK_KEYS = (
     "scope",
     "targets",
 )
-
-
-def normalize_doc_constraints(doc: Dict[str, Any]) -> List[Dict[str, Any]]:
-    """Return a flat list of constraints with at least one step link.
-
-    Accepts three gold/pred shapes:
-      * flat: ``doc["constraints"] = [{id, text, applies_to|steps|...}, ...]``
-      * nested-list: each ``doc["steps"][i]["constraints"]`` is a list of
-        constraint dicts (typically with ``attached_to: [step_id]``).
-      * nested-dict: each ``doc["steps"][i]["constraints"]`` is a dict keyed by
-        ``precondition|postcondition|guard|acceptance_criteria|warning|...``
-        with a list of constraint dicts (thesis gold shape, no ``attached_to``).
-
-    Nested constraints are flattened. In the nested-dict case, ``applies_to`` is
-    synthesised from the parent step id when no explicit link key is present. In
-    the nested-list case, existing link keys (``attached_to``, ``applies_to``,
-    etc.) are preserved as-is; ``applies_to`` is synthesised only when none
-    exist. Flat constraints are returned untouched. Idempotent.
-    """
-    top = doc.get("constraints")
-    if isinstance(top, list) and top:
-        return list(top)
-
-    flat: List[Dict[str, Any]] = []
-    for step in doc.get("steps", []) or []:
-        if not isinstance(step, dict):
-            continue
-        sid = step.get("id")
-        nested = step.get("constraints")
-        if isinstance(nested, list):
-            for item in nested:
-                if not isinstance(item, dict):
-                    continue
-                new_item = dict(item)
-                has_link = any(new_item.get(k) for k in CONSTRAINT_LINK_KEYS)
-                if sid and not has_link:
-                    new_item["applies_to"] = sid
-                flat.append(new_item)
-            continue
-        if not isinstance(nested, dict):
-            continue
-        for kind in NESTED_CONSTRAINT_KINDS:
-            items = nested.get(kind)
-            if not isinstance(items, list):
-                continue
-            for item in items:
-                if not isinstance(item, dict):
-                    continue
-                new_item = dict(item)
-                new_item.setdefault("type", kind)
-                has_link = any(new_item.get(k) for k in CONSTRAINT_LINK_KEYS)
-                if sid and not has_link:
-                    new_item["applies_to"] = sid
-                flat.append(new_item)
-        for kind, items in nested.items():
-            if kind in NESTED_CONSTRAINT_KINDS or not isinstance(items, list):
-                continue
-            for item in items:
-                if not isinstance(item, dict):
-                    continue
-                if any(item.get(k) for k in CONSTRAINT_LINK_KEYS):
-                    new_item = dict(item)
-                    new_item.setdefault("type", kind)
-                    flat.append(new_item)
-    return flat
 
 
 def extract_node_label(node: Dict[str, Any]) -> str:
@@ -216,15 +137,6 @@ def collect_constraint_links(constraint: Dict[str, Any]) -> Set[str]:
             if candidate:
                 links.add(candidate)
     return links
-
-
-
-def derive_sequence_adjacency(length: int) -> Set[Tuple[int, int]]:
-    return {(idx, idx + 1) for idx in range(length - 1)}
-
-
-def derive_sequence_order(ids: List[str]) -> Dict[str, int]:
-    return {identifier: idx for idx, identifier in enumerate(ids)}
 
 
 def load_json(path: Path) -> Dict[str, Any]:

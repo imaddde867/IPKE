@@ -28,7 +28,7 @@ from src.validation.constraint_validator import (
 )
 import networkx as nx
 from src.ai.types import ExtractionResult, ExtractedEntity
-from src.evaluation.tier_a import compute_phi
+from src.evaluation.metrics import compute_phi
 
 
 # ═══════════════════════════════════════════════════════════════════════════════

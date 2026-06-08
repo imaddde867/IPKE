@@ -10,13 +10,11 @@ import numpy as np
 from scipy.stats import kendalltau
 
 from src.evaluation.core import (
+    CONSTRAINT_LINK_KEYS,
     collect_constraint_links,
     compute_prf,
-    derive_sequence_adjacency,
-    derive_sequence_order,
     extract_constraint_text,
     extract_step_text,
-    normalize_doc_constraints,
     round3,
     safe_ratio,
 )
@@ -27,6 +25,92 @@ from src.evaluation.alignment import (
     align_by_text,
     alignment_to_id_map,
 )
+
+
+NESTED_CONSTRAINT_KINDS = (
+    "precondition",
+    "postcondition",
+    "guard",
+    "acceptance_criteria",
+    "warning",
+    "exception",
+    "safety",
+    "environment",
+    "quality",
+)
+
+
+def normalize_doc_constraints(doc: Dict[str, Any]) -> List[Dict[str, Any]]:
+    """Return a flat list of constraints with at least one step link.
+
+    Accepts three gold/pred shapes:
+      * flat: ``doc["constraints"] = [{id, text, applies_to|steps|...}, ...]``
+      * nested-list: each ``doc["steps"][i]["constraints"]`` is a list of
+        constraint dicts (typically with ``attached_to: [step_id]``).
+      * nested-dict: each ``doc["steps"][i]["constraints"]`` is a dict keyed by
+        ``precondition|postcondition|guard|acceptance_criteria|warning|...``
+        with a list of constraint dicts (thesis gold shape, no ``attached_to``).
+
+    Nested constraints are flattened. In the nested-dict case, ``applies_to`` is
+    synthesised from the parent step id when no explicit link key is present. In
+    the nested-list case, existing link keys (``attached_to``, ``applies_to``,
+    etc.) are preserved as-is; ``applies_to`` is synthesised only when none
+    exist. Flat constraints are returned untouched. Idempotent.
+    """
+    top = doc.get("constraints")
+    if isinstance(top, list) and top:
+        return list(top)
+
+    flat: List[Dict[str, Any]] = []
+    for step in doc.get("steps", []) or []:
+        if not isinstance(step, dict):
+            continue
+        sid = step.get("id")
+        nested = step.get("constraints")
+        if isinstance(nested, list):
+            for item in nested:
+                if not isinstance(item, dict):
+                    continue
+                new_item = dict(item)
+                has_link = any(new_item.get(k) for k in CONSTRAINT_LINK_KEYS)
+                if sid and not has_link:
+                    new_item["applies_to"] = sid
+                flat.append(new_item)
+            continue
+        if not isinstance(nested, dict):
+            continue
+        for kind in NESTED_CONSTRAINT_KINDS:
+            items = nested.get(kind)
+            if not isinstance(items, list):
+                continue
+            for item in items:
+                if not isinstance(item, dict):
+                    continue
+                new_item = dict(item)
+                new_item.setdefault("type", kind)
+                has_link = any(new_item.get(k) for k in CONSTRAINT_LINK_KEYS)
+                if sid and not has_link:
+                    new_item["applies_to"] = sid
+                flat.append(new_item)
+        for kind, items in nested.items():
+            if kind in NESTED_CONSTRAINT_KINDS or not isinstance(items, list):
+                continue
+            for item in items:
+                if not isinstance(item, dict):
+                    continue
+                if any(item.get(k) for k in CONSTRAINT_LINK_KEYS):
+                    new_item = dict(item)
+                    new_item.setdefault("type", kind)
+                    flat.append(new_item)
+    return flat
+
+
+def derive_sequence_adjacency(length: int) -> Set[Tuple[int, int]]:
+    return {(idx, idx + 1) for idx in range(length - 1)}
+
+
+def derive_sequence_order(ids: List[str]) -> Dict[str, int]:
+    return {identifier: idx for idx, identifier in enumerate(ids)}
 
 
 def compute_step_metrics(
@@ -149,9 +233,9 @@ def tier_a_constraints_metrics(
 
 
 def compute_phi(
-    constraint_coverage: float | None,
-    step_f1: float | None,
-    kendall: float | None,
+    constraint_coverage: Optional[float],
+    step_f1: Optional[float],
+    kendall: Optional[float],
     w_cov: float = 0.5,
     w_step: float = 0.3,
     w_tau: float = 0.2,

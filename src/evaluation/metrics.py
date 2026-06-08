@@ -21,8 +21,8 @@ from src.evaluation.alignment import (
     TextPreprocessor,
     prepare_evaluator,
 )
-from src.evaluation.tier_a import evaluate_tier_a_document
-from src.evaluation.tier_b import evaluate_tier_b_document
+from src.evaluation.metrics_tier_a import evaluate_tier_a_document
+from src.evaluation.metrics_tier_b import evaluate_tier_b_document
 
 # Backward-compatible re-exports
 from src.evaluation.core import (  # noqa: F401
@@ -31,15 +31,11 @@ from src.evaluation.core import (  # noqa: F401
     collect_constraint_links,
     compute_macro_average,
     compute_prf,
-    derive_sequence_adjacency,
-    derive_sequence_order,
     extract_constraint_text,
     extract_node_label,
     extract_step_text,
     load_json,
     load_pairs,
-    NESTED_CONSTRAINT_KINDS,
-    normalize_doc_constraints,
     normalize_field,
     round3,
     safe_ratio,
@@ -53,13 +49,17 @@ from src.evaluation.alignment import (  # noqa: F401
     cosine_similarity_matrix,
     prepare_evaluator,
 )
-from src.evaluation.tier_a import (  # noqa: F401
+from src.evaluation.metrics_tier_a import (  # noqa: F401
     compute_phi,
     compute_step_metrics,
+    derive_sequence_adjacency,
+    derive_sequence_order,
     evaluate_tier_a_document,
+    NESTED_CONSTRAINT_KINDS,
+    normalize_doc_constraints,
     tier_a_constraints_metrics,
 )
-from src.evaluation.tier_b import (  # noqa: F401
+from src.evaluation.metrics_tier_b import (  # noqa: F401
     adjacency_from_edges,
     align_constraint_nodes,
     build_step_lookup,

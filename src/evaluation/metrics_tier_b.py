@@ -8,7 +8,6 @@ if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 import networkx as nx
-import numpy as np
 
 from src.evaluation.smatch import compute_smatch
 from src.evaluation.core import (
