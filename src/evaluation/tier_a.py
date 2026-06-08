@@ -10,11 +10,6 @@ import numpy as np
 from scipy.stats import kendalltau
 
 from src.evaluation.core import (
-    AlignmentResult,
-    EmbeddingCache,
-    TextPreprocessor,
-    align_by_text,
-    alignment_to_id_map,
     collect_constraint_links,
     compute_prf,
     derive_sequence_adjacency,
@@ -24,6 +19,13 @@ from src.evaluation.core import (
     normalize_doc_constraints,
     round3,
     safe_ratio,
+)
+from src.evaluation.alignment import (
+    AlignmentResult,
+    EmbeddingCache,
+    TextPreprocessor,
+    align_by_text,
+    alignment_to_id_map,
 )
 
 
