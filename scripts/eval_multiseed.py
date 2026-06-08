@@ -61,7 +61,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from src.evaluation.metrics import compute_phi as phi
+from src.evaluation.tier_a import compute_phi as phi
 
 METRIC_COLUMNS = [
     "StepF1",
@@ -254,7 +254,7 @@ def _score(
     preprocessor: Any,
     embedder: Any,
 ) -> dict[str, Any]:
-    from src.evaluation.metrics import evaluate_tier_a_document
+    from src.evaluation.tier_a import evaluate_tier_a_document
     return evaluate_tier_a_document(gold, pred, preprocessor, embedder, threshold)
 
 
@@ -389,7 +389,7 @@ def main(argv: list[str] | None = None) -> int:
         print("\n[dry-run] No extraction performed.")
         return 0
 
-    from src.evaluation.metrics import prepare_evaluator
+    from src.evaluation.core import prepare_evaluator
     preprocessor, embedder = prepare_evaluator()
 
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S")
