@@ -1,3 +1,12 @@
+"""Shared utilities for PKG evaluation.
+
+This is an intentional support module (not specified in the original split
+plan, issue #76) that isolates pure-python helpers used across multiple
+metric modules. Keeping text-normalisation and I/O helpers here rather than
+in ``alignment.py`` avoids pulling ML-heavy dependencies (spaCy, scipy,
+sentence-transformers) into the import graph of ``metrics_tier_a`` and
+``metrics_tier_b``.
+"""
 import json
 import logging
 import random
@@ -106,19 +115,8 @@ def extract_node_label(node: Dict[str, Any]) -> str:
 
 
 def collect_constraint_links(constraint: Dict[str, Any]) -> Set[str]:
-    keys = [
-        "step_id",
-        "step",
-        "steps",
-        "attached_step",
-        "attached_steps",
-        "attached_to",
-        "applies_to",
-        "scope",
-        "targets",
-    ]
     links: Set[str] = set()
-    for key in keys:
+    for key in CONSTRAINT_LINK_KEYS:
         value = constraint.get(key)
         if not value:
             continue

@@ -78,8 +78,6 @@ from src.evaluation.metrics_tier_b import (  # noqa: F401
 
 
 def pretty_print(results: Dict[str, Dict[str, Optional[float]]]) -> None:
-    from src.evaluation.core import HEADLINE_METRICS_ORDER
-
     metrics_present: List[str] = []
     for metric in HEADLINE_METRICS_ORDER:
         if any(metric in doc_metrics for doc_metrics in results.values()):
