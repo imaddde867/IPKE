@@ -389,7 +389,7 @@ def main(argv: list[str] | None = None) -> int:
         print("\n[dry-run] No extraction performed.")
         return 0
 
-    from src.evaluation.core import prepare_evaluator
+    from src.evaluation.alignment import prepare_evaluator
     preprocessor, embedder = prepare_evaluator()
 
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S")
