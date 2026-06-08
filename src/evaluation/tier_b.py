@@ -12,10 +12,6 @@ import numpy as np
 
 from src.evaluation.smatch import compute_smatch
 from src.evaluation.core import (
-    AlignmentResult,
-    EmbeddingCache,
-    TextPreprocessor,
-    align_by_text,
     collect_constraint_links,
     compute_prf,
     extract_constraint_text,
@@ -23,6 +19,12 @@ from src.evaluation.core import (
     extract_step_text,
     normalize_field,
     round3,
+)
+from src.evaluation.alignment import (
+    AlignmentResult,
+    EmbeddingCache,
+    TextPreprocessor,
+    align_by_text,
 )
 
 
