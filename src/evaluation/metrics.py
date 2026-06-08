@@ -12,11 +12,13 @@ if str(REPO_ROOT) not in sys.path:
 from tqdm import tqdm
 
 from src.evaluation.core import (
-    EmbeddingCache,
-    TextPreprocessor,
     compute_macro_average,
     load_json,
     load_pairs,
+)
+from src.evaluation.alignment import (
+    EmbeddingCache,
+    TextPreprocessor,
     prepare_evaluator,
 )
 from src.evaluation.tier_a import evaluate_tier_a_document
@@ -25,15 +27,10 @@ from src.evaluation.tier_b import evaluate_tier_b_document
 # Backward-compatible re-exports
 from src.evaluation.core import (  # noqa: F401
     HEADLINE_METRICS_ORDER,
-    AlignmentResult,
-    TextPreprocessor,
-    EmbeddingCache,
-    align_by_text,
-    alignment_to_id_map,
+    CONSTRAINT_LINK_KEYS,
     collect_constraint_links,
     compute_macro_average,
     compute_prf,
-    cosine_similarity_matrix,
     derive_sequence_adjacency,
     derive_sequence_order,
     extract_constraint_text,
@@ -41,11 +38,20 @@ from src.evaluation.core import (  # noqa: F401
     extract_step_text,
     load_json,
     load_pairs,
+    NESTED_CONSTRAINT_KINDS,
     normalize_doc_constraints,
     normalize_field,
-    prepare_evaluator,
     round3,
     safe_ratio,
+)
+from src.evaluation.alignment import (  # noqa: F401
+    AlignmentResult,
+    EmbeddingCache,
+    TextPreprocessor,
+    align_by_text,
+    alignment_to_id_map,
+    cosine_similarity_matrix,
+    prepare_evaluator,
 )
 from src.evaluation.tier_a import (  # noqa: F401
     compute_phi,
