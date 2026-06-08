@@ -3,7 +3,6 @@ import logging
 import random
 import sys
 from collections import defaultdict
-from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Sequence, Set, Tuple, Union
 
