@@ -6,7 +6,7 @@
     "domain": "industrial_hygiene_sampling",
     "source": {
       "doc_id": "niosh_nmam_5th_edition_ebook",
-      "page": "Method 5022",
+      "page": "Method 5022 (Issue 3, 3 March 2016)",
       "section": "SAMPLING and SAMPLE PREPARATION"
     }
   },
@@ -17,31 +17,9 @@
       "action_verb": "calibrate",
       "action_object": "personal sampling pump",
       "arguments": [],
-      "parameters": [],
-      "constraints": [],
-      "flags": {
-        "safety_critical": true
-      },
-      "provenance": {
-        "doc_id": "niosh_nmam_5th_edition_ebook",
-        "section": "Method 5022 Sampling 1"
-      }
-    },
-    {
-      "id": "S2",
-      "label": "Sample at a known flow rate between 1 and 3 liters per minute for a total volume of 50 to 1000 liters",
-      "action_verb": "sample",
-      "action_object": "air sample",
-      "arguments": [],
       "parameters": [
-        {
-          "name": "flow_rate",
-          "value": "1-3 L/min"
-        },
-        {
-          "name": "sample_volume",
-          "value": "50-1000 L"
-        }
+        {"name": "flow_rate", "value": "1-3 L/min"},
+        {"name": "sampler", "value": "1-µm PTFE filter in cassette holder"}
       ],
       "constraints": [],
       "flags": {
@@ -49,7 +27,36 @@
       },
       "provenance": {
         "doc_id": "niosh_nmam_5th_edition_ebook",
-        "section": "Method 5022 Sampling 2"
+        "section": "Method 5022 SAMPLING step 1"
+      }
+    },
+    {
+      "id": "S2",
+      "label": "Sample at an accurately known flow rate between 1 and 3 L/min for a total sample volume of 50 to 1000 L",
+      "action_verb": "sample",
+      "action_object": "air sample",
+      "arguments": [],
+      "parameters": [
+        {"name": "flow_rate", "value": "1-3 L/min"},
+        {"name": "sample_volume_min", "value": "50 L @ 0.1 mg/m3"},
+        {"name": "sample_volume_max", "value": "1000 L"}
+      ],
+      "constraints": [
+        {
+          "id": "C1",
+          "type": "requirement",
+          "text": "Sample at an accurately known flow rate.",
+          "attached_to": [
+            "S2"
+          ]
+        }
+      ],
+      "flags": {
+        "safety_critical": true
+      },
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 5022 SAMPLING step 2"
       }
     },
     {
@@ -59,26 +66,34 @@
       "action_object": "sample cassettes",
       "arguments": [],
       "parameters": [],
-      "constraints": [],
+      "constraints": [
+        {
+          "id": "C2",
+          "type": "requirement",
+          "text": "Cap the cassettes and pack securely for shipment.",
+          "attached_to": [
+            "S3"
+          ]
+        }
+      ],
       "flags": {
         "safety_critical": true
       },
       "provenance": {
         "doc_id": "niosh_nmam_5th_edition_ebook",
-        "section": "Method 5022 Sampling 3"
+        "section": "Method 5022 SAMPLING step 3"
       }
     },
     {
       "id": "S4",
-      "label": "Pipet 25 milliliters of eluent into a clean 50 milliliter beaker for each sample",
+      "label": "Pipet 25 mL of Eluent A into a clean 50-mL beaker for each sample",
       "action_verb": "pipet",
-      "action_object": "eluent into beaker",
+      "action_object": "Eluent A into beaker",
       "arguments": [],
       "parameters": [
-        {
-          "name": "eluent_volume",
-          "value": "25 mL"
-        }
+        {"name": "eluent_type", "value": "Eluent A (2.4 mM HCO3-/1.9 mM CO32-/1.0 mM B4O72-)"},
+        {"name": "eluent_volume", "value": "25 mL"},
+        {"name": "beaker_capacity", "value": "50 mL"}
       ],
       "constraints": [],
       "flags": {
@@ -86,21 +101,37 @@
       },
       "provenance": {
         "doc_id": "niosh_nmam_5th_edition_ebook",
-        "section": "Method 5022 Sample Preparation 4"
+        "section": "Method 5022 SAMPLE PREPARATION step 4"
       }
     },
     {
       "id": "S5",
-      "label": "Transfer the PTFE filter to the beaker with the exposed side in contact with the solution",
+      "label": "Transfer the PTFE filter to the beaker with the exposed side in contact with the solution and cover the beaker",
       "action_verb": "transfer",
       "action_object": "PTFE filter",
       "arguments": [],
       "parameters": [],
       "constraints": [
         {
-          "id": "C1",
-          "type": "warning",
-          "text": "Wear gloves, lab coat, and safety glasses while handling the chemicals.",
+          "id": "C3",
+          "type": "requirement",
+          "text": "Open the cassette and remove the PTFE filter with clean forceps.",
+          "attached_to": [
+            "S5"
+          ]
+        },
+        {
+          "id": "C4",
+          "type": "requirement",
+          "text": "Place the exposed side of the filter in contact with the solution.",
+          "attached_to": [
+            "S5"
+          ]
+        },
+        {
+          "id": "C5",
+          "type": "postcondition",
+          "text": "Cover beaker after transferring the filter.",
           "attached_to": [
             "S5"
           ]
@@ -111,26 +142,24 @@
       },
       "provenance": {
         "doc_id": "niosh_nmam_5th_edition_ebook",
-        "section": "Method 5022 Sample Preparation 5"
+        "section": "Method 5022 SAMPLE PREPARATION step 5"
       }
     },
     {
       "id": "S6",
-      "label": "Agitate the beaker in an ultrasonic water bath for 30 minutes",
+      "label": "Agitate the contents of the beaker for 30 min in an ultrasonic water bath",
       "action_verb": "agitate",
       "action_object": "sample beaker",
       "arguments": [],
       "parameters": [
-        {
-          "name": "agitation_time",
-          "value": "30 min"
-        }
+        {"name": "agitation_time", "value": "30 min"},
+        {"name": "storage_temperature", "value": "ca. 4 °C"}
       ],
       "constraints": [
         {
-          "id": "C2",
+          "id": "C6",
           "type": "storage",
-          "text": "Store the extracts at about 4 degrees Celsius if they are not analyzed immediately.",
+          "text": "If the extracts will not be analyzed immediately, store at ca. 4 °C until measurement.",
           "attached_to": [
             "S6"
           ]
@@ -141,14 +170,48 @@
       },
       "provenance": {
         "doc_id": "niosh_nmam_5th_edition_ebook",
-        "section": "Method 5022 Sample Preparation 6"
+        "section": "Method 5022 SAMPLE PREPARATION step 6"
       }
     }
   ],
-  "constraints": [],
+  "constraints": [
+    {
+      "id": "C7",
+      "type": "warning",
+      "text": "Wear gloves, lab coat, and safety glasses while handling chemicals.",
+      "applies_to": ["S1", "S2", "S3", "S4", "S5", "S6"]
+    },
+    {
+      "id": "C8",
+      "type": "warning",
+      "text": "All work should be performed in a fume hood.",
+      "applies_to": ["S4", "S5", "S6"]
+    },
+    {
+      "id": "C9",
+      "type": "warning",
+      "text": "Potassium persulfate is a powerful oxidizing agent.",
+      "applies_to": ["S4", "S5", "S6"]
+    },
+    {
+      "id": "C10",
+      "type": "warning",
+      "text": "Arsine gas is extremely toxic and can be fatal.",
+      "applies_to": ["S4", "S5", "S6"]
+    },
+    {
+      "id": "C11",
+      "type": "warning",
+      "text": "The arsenic compounds used in the stock standards are poisonous.",
+      "applies_to": ["S4", "S5", "S6"]
+    }
+  ],
   "relations": [],
   "quality": {
     "annotation_scope": "bounded_excerpt",
-    "review_status": "unreviewed"
+    "review_status": "reviewed",
+    "annotator": "imad",
+    "review_date": "2026-06-13",
+    "review_notes": "Second-pass review. SPECIAL PRECAUTIONS section (gloves/lab coat/safety glasses, fume hood, K2S2O8 oxidizer, AsH3 toxicity, poisonous stock standards) moved to procedure-level constraints with applies_to spanning multiple steps — these are not single-step-attachable. S2 added 'accurately known' flow constraint. S4 updated with Eluent A type and 50-mL beaker capacity. S5 added clean-forceps requirement and cover-beaker postcondition (both missed in draft). Parameters expanded across all steps with source-exact values. Total: 6 steps, 6 step-attached constraints + 5 procedure-level constraints = 11. Original safety_critical=true flag preserved on all steps (arsenic compounds are toxic)."
   }
 }
