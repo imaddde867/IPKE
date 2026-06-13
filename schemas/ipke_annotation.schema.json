@@ -198,26 +198,6 @@
         }
       }
     },
-    "constraint_paper_grade": {
-      "allOf": [
-        {"$ref": "#/$defs/constraint"},
-        {
-          "required": ["id", "type", "enforcement", "text"],
-          "properties": {
-            "type": {
-              "enum": [
-                "precondition",
-                "postcondition",
-                "guard",
-                "parameter",
-                "role_assignment",
-                "reference"
-              ]
-            }
-          }
-        }
-      ]
-    },
     "provenance": {
       "type": [
         "object",

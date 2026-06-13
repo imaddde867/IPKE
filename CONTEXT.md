@@ -68,6 +68,17 @@ _Avoid_: graph evaluation, advanced evaluation
 A human-reviewed ground-truth JSON file for a document. Must have `quality.review_status = "reviewed"` before use in paper experiments. LLM-assisted drafts that have not been corrected are not gold annotations — they are drafts.
 _Avoid_: ground truth, reference annotation, gold standard (unless qualifying)
 
+**review_status values** (locked vocabulary):
+- `unreviewed` — schema-valid scaffold, no human pass. Default for fresh LLM drafts.
+- `reviewed` — human pass complete; `annotator` + `review_date` + `review_notes` set. Eligible for paper IAA and metric computation.
+- `llm_draft` — produced by LLM pipeline only; EXCLUDED from paper IAA per `docs/annotation/guidelines.md`. Used to mark legacy `datasets/paper/second_pass/*.json` files that are NOT independent human annotations.
+
+**Constraint Type** (locked, 6 values):
+`precondition`, `postcondition`, `guard`, `parameter`, `role_assignment`, `reference`. Defined in `docs/annotation/constraint-types.md`. No other type values are valid for paper-grade gold.
+
+**Constraint Enforcement** (locked, 3 values):
+`must`, `should`, `may`. Maps to source-text modal verbs ("shall"/"will" → must, "should"/"recommended" → should, "may"/"can" → may).
+
 **Inter-Annotator Agreement (IAA)**:
-Agreement between two independent annotators on the same document, measured as Cohen's κ. Minimum acceptable for a paper IAA claim: κ ≥ 0.61 (substantial, Landis & Koch 1977).
+Agreement between two independent annotators on the same document, measured as Cohen's κ. Minimum acceptable for a paper IAA claim: κ ≥ 0.61 (substantial, Landis & Koch 1977). **Independence rule**: second annotators MUST NOT view gold or any other annotator's pass before committing their own. Drift-correcting a second pass against gold invalidates κ.
 _Avoid_: annotation agreement, kappa score

@@ -31,11 +31,11 @@ Without that edge:
 - A retrieval system over an extracted PKG cannot answer "what must hold before step X" without an explicit attached_to / applies_to edge.
 - An LLM-drafted gold (or extractor output) can score well on step F1 while completely missing the safety scaffolding around the procedural backbone.
 
-The seed corpus already exhibits the phenomenon. The headline finding is matcher-independent: **LLM-drafted gold across 8 documents produced 3.69× fewer constraints than the reviewed gold (32 vs 118)**. Even when every produced constraint maps to one in gold (best case), the LLM under-produces by 73% of the reviewed total.
+The seed corpus already exhibits the phenomenon. The headline finding is matcher-independent: **LLM-drafted gold across 8 documents produced 3.66× fewer constraints than the reviewed gold (32 vs 117)**. Even when every produced constraint maps to one in gold (best case), the LLM under-produces by 73% of the reviewed total.
 
-Recall numbers depend on the chosen matcher and threshold; the paper reports both extremes for transparency. At the Tier-A protocol matcher (SBERT cos ≥ 0.75 over the constraint text) the draft recovers 20.3%; at a loose cos ≥ 0.50 it recovers 61.0% — see `datasets/paper/reports/constraint_blindness_v2_sbert075.json` and `_sbert050.json`. The per-type breakdown is presented with the threshold attached inline (not as standalone headline numbers), because small per-type sample sizes (n=2 for `reference`, n=9 for `role_assignment`) make extreme recall values brittle.
+Recall numbers depend on the chosen matcher and threshold; the paper reports both extremes for transparency. At the Tier-A protocol matcher (SBERT cos ≥ 0.75 over the constraint text) the draft recovers 20.5%; at a loose cos ≥ 0.50 it recovers 61.0% — see `datasets/paper/reports/constraint_blindness_v2_sbert075.json` and `_sbert050.json`. The per-type breakdown is presented with the threshold attached inline (not as standalone headline numbers), because small per-type sample sizes (n=2 for `reference`, n=9 for `role_assignment`) make extreme recall values brittle.
 
-The durable claim for §1 is the 3.69× under-production, not the per-type recall percentages.
+The durable claim for §1 is the 3.66× under-production, not the per-type recall percentages.
 
 ## Intended users
 
@@ -79,13 +79,13 @@ The artifact is the contribution. Order of cuts under time pressure: D3 → D2 �
 
 ### P0 — must hold before submission
 
-- All 12 paper-claimed gold files have `review_status = "reviewed"` and pass `scripts/validate_paper_gold.py` with no errors.
-- All constraints use the locked taxonomy (6 types) and have `enforcement ∈ {must, should, may}`.
-- **4 documents (≥ 30% of corpus) have independent second-pass annotation** by a human annotator who was blind to gold during their pass. LLM-drafted second_pass files do NOT count.
-- Every IAA pair has κ ≥ 0.61 (substantial, Landis & Koch). Target κ ≥ 0.70.
-- Multi-seed (N=5) baseline sweep complete; CIs and bootstrap p-values reported.
-- Datasheet and guidelines committed.
-- `make eval` regenerates every paper table on a fresh clone.
+- **Corpus**: target 12 documents reviewed and released. Current: **8 reviewed / 12 target** (4 short). All 8 currently-included gold files have `review_status = "reviewed"` and pass `scripts/validate_paper_gold.py` with no errors.
+- All constraints use the locked taxonomy (6 types) and have `enforcement ∈ {must, should, may}`. ✅ done across the 8 reviewed files.
+- **≥ 4 documents (≥ 30% of the 12-doc target) have independent second-pass annotation** by a human annotator blind to gold during their pass. LLM-drafted `second_pass/*.json` files (marked `review_status="llm_draft"`) do NOT count. **Open** — recruitment pending.
+- Every IAA pair has κ ≥ 0.61 (substantial, Landis & Koch). Target κ ≥ 0.70. **Open**.
+- Multi-seed (N=5) baseline sweep complete; CIs and bootstrap p-values reported. **Open** (D2 in §Demonstration experiments).
+- **Datasheet** (`docs/dataset/datasheet.md`, Gebru format) and annotation guidelines committed. ✅ done as of 2026-06-13 sprint.
+- `make eval` regenerates every paper table on a fresh clone. ✅ wired for D1; D2/D3 wire-up follows their implementation.
 
 ### P1 — strongly recommended
 

@@ -98,7 +98,7 @@
           "attached_to": [
             "S2"
           ],
-          "enforcement": "must"
+          "enforcement": "should"
         },
         {
           "id": "C8",
@@ -108,15 +108,6 @@
             "S2"
           ],
           "enforcement": "must"
-        },
-        {
-          "id": "C9",
-          "type": "guard",
-          "text": "Per the Government Paperwork Elimination Act of 1998, use of electronic signatures, as well as electronic maintenance and submission, is an acceptable substitution for paper, when practical.",
-          "attached_to": [
-            "S2"
-          ],
-          "enforcement": "may"
         }
       ],
       "flags": {
@@ -152,7 +143,7 @@
           "attached_to": [
             "S3"
           ],
-          "enforcement": "must"
+          "enforcement": "should"
         },
         {
           "id": "C12",
@@ -188,7 +179,7 @@
           "attached_to": [
             "S3"
           ],
-          "enforcement": "must"
+          "enforcement": "should"
         }
       ],
       "flags": {
@@ -215,7 +206,7 @@
           "attached_to": [
             "S4"
           ],
-          "enforcement": "must"
+          "enforcement": "should"
         },
         {
           "id": "C17",
@@ -253,6 +244,6 @@
     "review_status": "reviewed",
     "annotator": "imad",
     "review_date": "2026-06-13",
-    "review_notes": "Second-pass review. Added S1.C3-C4 (checklist content rules from 2.4). Added S2.C8 (immediate supervisor + QA officer roles), C9 (electronic signatures per GPEA 1998). Added S3.C13 (review not overly cumbersome), C14 (QMP indicates frequency), C15 (QMP indicates responsible role). Added S4.C18 (electronic Review SOP notices). 2.5 Document Control (numbering system / page layout) intentionally not added — relates to SOP format rather than the SOP lifecycle process this annotation captures."
+    "review_notes": "Second-pass review. Added S1.C3-C4 (checklist content rules from 2.4). Added S2.C8 (immediate supervisor + QA officer roles), C9 (electronic signatures per GPEA 1998). Added S3.C13 (review not overly cumbersome), C14 (QMP indicates frequency), C15 (QMP indicates responsible role). Added S4.C18 (electronic Review SOP notices). 2.5 Document Control (numbering system / page layout) intentionally not added — relates to SOP format rather than the SOP lifecycle process this annotation captures. STANDARDS REVIEW FIXES: enforcement on C7 (signature approval), C11 (periodic review), C15 (QMP responsible role), C16 (master list contents) changed must -> should to match source modal verb. C9 (GPEA 1998 e-signature permission) dropped — historical-note example per guidelines.md line 111."
   }
 }

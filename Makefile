@@ -1,18 +1,45 @@
-.PHONY: test eval eval-full eval-thesis smoke-extract paper-table clean-artifacts
+.PHONY: test eval eval-full eval-thesis eval-blindness eval-validate eval-iaa smoke-extract paper-table clean-artifacts
 
 PYTHON := uv run python
 
 # Paper gold dirs
-PAPER_GOLD  := datasets/paper/gold
-PAPER_TEXT  := datasets/paper/text
-THESIS_GOLD := datasets/archive/gold_human
-THESIS_TEXT := datasets/archive/test_data/text
+PAPER_GOLD     := datasets/paper/gold
+PAPER_TEXT     := datasets/paper/text
+PAPER_SECOND   := datasets/paper/second_pass
+PAPER_REPORTS  := datasets/paper/reports
+THESIS_GOLD    := datasets/archive/gold_human
+THESIS_TEXT    := datasets/archive/test_data/text
 
 test:
 	uv run pytest
 
+# Paper-grade validator: enforces locked taxonomy + IAA-ready metadata.
+eval-validate:
+	$(PYTHON) scripts/validate_paper_gold.py --gold-dir $(PAPER_GOLD)
+
+# Constraint-blindness baseline (D1 in PRD): regenerates the §1 motivating table.
+# Uses the Tier-A protocol matcher (SBERT cos >= 0.75) plus a loose-threshold
+# sensitivity run at 0.50.
+eval-blindness:
+	mkdir -p $(PAPER_REPORTS)
+	$(PYTHON) scripts/constraint_blindness_report.py \
+		--matcher semantic --threshold 0.75 \
+		--out $(PAPER_REPORTS)/constraint_blindness_v2_sbert075.json
+	$(PYTHON) scripts/constraint_blindness_report.py \
+		--matcher semantic --threshold 0.50 \
+		--out $(PAPER_REPORTS)/constraint_blindness_v2_sbert050.json
+
+# IAA: meaningful only once independent (non-llm_draft) second_pass files exist.
+eval-iaa:
+	$(PYTHON) scripts/compute_iaa.py \
+		--gold-dir $(PAPER_GOLD) \
+		--second-dir $(PAPER_SECOND) \
+		--out $(PAPER_REPORTS)/iaa_latest.json
+
 # Dry-run: plan only, no model needed. Safe on a fresh clone.
-eval:
+# Runs validator + D1 blindness report so the artifact's §1 numbers regenerate
+# one-command per PRD acceptance gate.
+eval: eval-validate eval-blindness
 	$(PYTHON) scripts/eval_multiseed.py \
 		--gold-dir $(PAPER_GOLD) \
 		--text-dir $(PAPER_TEXT) \
@@ -22,10 +49,8 @@ eval:
 		--phi-weights 0.6:0.2:0.2 \
 		--dry-run
 
-# Full sweep: requires all paper gold files to have quality.review_status='reviewed'
-# AND LLM_MODEL_PATH set with a configured backend. Currently blocked: all 8 gold
-# files are unreviewed AI drafts. See REPRODUCIBILITY.md checklist.
-eval-full:
+# Full sweep (D2 in PRD): requires reviewed gold AND LLM_MODEL_PATH.
+eval-full: eval-validate
 	$(PYTHON) scripts/eval_multiseed.py \
 		--gold-dir $(PAPER_GOLD) \
 		--text-dir $(PAPER_TEXT) \

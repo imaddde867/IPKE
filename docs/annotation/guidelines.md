@@ -143,6 +143,10 @@ Set the following fields in `quality` before considering the file done:
 
 The `datasets/paper/gold/nasa_npr_8715_3d_general_safety.json` and `datasets/paper/gold/epa_guidance_preparing_sops_qag6.json` files are the canonical worked examples for these guidelines. Read them end-to-end before annotating your first file.
 
+## Migration provenance
+
+When the seed corpus was migrated from the original 20 ad-hoc constraint types to the locked 6-type vocabulary (2026-06-13 sprint), each ambiguous `requirement` entry was manually classified. The classification map is preserved in `docs/annotation/requirement-classifications.json` and the template script that generated it is `docs/annotation/requirement-classifications.template.json`. These two files document the per-constraint decisions; future annotators should consult them when an existing seed-corpus constraint's type is questioned. The migration script that applied them is `scripts/migrate_constraint_types.py`.
+
 ## Change log
 
 - 2026-06-13 — initial guidelines drafted from the seed corpus annotation pass (PR #85).

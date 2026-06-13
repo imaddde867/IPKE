@@ -211,7 +211,7 @@
           "attached_to": [
             "S4"
           ],
-          "enforcement": "must"
+          "enforcement": "should"
         }
       ],
       "flags": {
@@ -230,6 +230,6 @@
     "review_status": "reviewed",
     "annotator": "imad",
     "review_date": "2026-06-13",
-    "review_notes": "Second-pass review. S2.C3 split into C3 (panel orientation warning) + C4 (red dot marking requirement) — original draft conflated two distinct workbook notes. All constraint wording updated to exact source text. Parameters populated from parts-list table. C1 type changed warning -> tolerance (more accurate semantic). IAA NOTE: second_pass annotation missed C1 (precision tolerance) and the red-dot/orientation pair (now C3/C4) — likely because annotator B treated workbook table cells as parts-list captions rather than constraints. This is the κ=0.531 cause. Re-annotate second_pass to match this review for IAA recomputation."
+    "review_notes": "Second-pass review. S2.C3 split into C3 (panel orientation warning) + C4 (red dot marking requirement) — original draft conflated two distinct workbook notes. All constraint wording updated to exact source text. Parameters populated from parts-list table. C1 type changed warning -> parameter (per the tolerance row of the constraint-types.md mapping table). IAA NOTE: existing second_pass file is LLM-drafted (review_status='llm_draft') and EXCLUDED from paper IAA per guidelines.md independence rule. Recruit an independent human second annotator before computing kappa."
   }
 }
