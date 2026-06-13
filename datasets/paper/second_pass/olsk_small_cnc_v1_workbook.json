@@ -71,5 +71,10 @@
     }
   ],
   "constraints": [],
-  "relations": []
+  "relations": [],
+  "quality": {
+    "review_status": "llm_draft",
+    "annotator": "llm_draft_pipeline",
+    "review_notes": "LLM-DRAFTED. This file was produced by the original LLM annotation draft pipeline and is NOT an independent human second-pass annotation. It does NOT satisfy the paper's IAA requirement (independent annotator, blind to gold). Kept in-tree for provenance and for the constraint-blindness report (scripts/constraint_blindness_report.py). EXCLUDED from any paper kappa or IAA computation per docs/annotation/guidelines.md."
+  }
 }

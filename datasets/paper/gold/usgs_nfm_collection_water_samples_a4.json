@@ -1,13 +1,13 @@
 {
   "procedure": {
     "doc_id": "usgs_nfm_collection_water_samples_a4",
-    "title": "USGS equal-width-increment sampling excerpt",
-    "version": "Version 2.0",
+    "title": "USGS equal-width-increment (EWI) sampling excerpt",
+    "version": "Version 2.0 (9/2006)",
     "domain": "field_sampling_sop",
     "source": {
       "doc_id": "usgs_nfm_collection_water_samples_a4",
       "page": "43-44",
-      "section": "Steps for the EWI sampling method"
+      "section": "Steps for the EWI sampling method (Step 1-2)"
     }
   },
   "steps": [
@@ -21,11 +21,21 @@
       "constraints": [
         {
           "id": "C1",
-          "type": "warning",
-          "text": "Park the vehicle so that emissions do not contaminate the sample area.",
+          "type": "parameter",
+          "text": "Upon arrival at the field site, set out safety equipment such as traffic cones and signs.",
           "attached_to": [
             "S1"
-          ]
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C2",
+          "type": "guard",
+          "text": "Park vehicle in a location and direction so as to prevent sample contamination from vehicle emissions.",
+          "attached_to": [
+            "S1"
+          ],
+          "enforcement": "should"
         }
       ],
       "flags": {
@@ -46,20 +56,49 @@
       "parameters": [],
       "constraints": [
         {
-          "id": "C2",
-          "type": "selection_rule",
-          "text": "Use fluorocarbon polymer, glass, or metal components for organic-compound sampling and avoid non-fluorocarbon plastics.",
+          "id": "C3",
+          "type": "parameter",
+          "text": "Organic compounds: Select equipment with fluorocarbon polymer, glass, or metal components if components will directly contact samples to be analyzed for organic compounds.",
           "attached_to": [
             "S2"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
-          "id": "C3",
-          "type": "selection_rule",
-          "text": "Use inert plastic or glass for inorganic constituents and avoid metal or rubber for trace-element sampling.",
+          "id": "C4",
+          "type": "guard",
+          "text": "Do not use plastics other than fluorocarbon polymers for organic-compound sampling.",
           "attached_to": [
             "S2"
-          ]
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C5",
+          "type": "parameter",
+          "text": "Inorganic constituents: Select equipment with components made of fluorocarbon polymer or other relatively inert and uncolored plastics or glass if components will directly contact samples to be analyzed for inorganic constituents.",
+          "attached_to": [
+            "S2"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C6",
+          "type": "guard",
+          "text": "Do not use metal or rubber components for trace-element sampling.",
+          "attached_to": [
+            "S2"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C7",
+          "type": "reference",
+          "text": "Microbiological analyses: Collect samples for microbiological analyses using equipment and techniques described in NFM 7.",
+          "attached_to": [
+            "S2"
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -73,19 +112,29 @@
     },
     {
       "id": "S3",
-      "label": "Inspect the stream cross section and document flow and contamination features",
+      "label": "Visually inspect the stream cross section and document flow and contamination features",
       "action_verb": "inspect",
       "action_object": "stream cross section",
       "arguments": [],
       "parameters": [],
       "constraints": [
         {
-          "id": "C4",
-          "type": "documentation",
-          "text": "Document stagnant water, eddies, backwater, reverse flow, and other cross-section features.",
+          "id": "C8",
+          "type": "parameter",
+          "text": "Visually inspect the stream from bank to bank and longitudinally, observing velocity, width, and depth distribution, and apparent distribution of sediment and aquatic biota along the cross section.",
           "attached_to": [
             "S3"
-          ]
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C9",
+          "type": "postcondition",
+          "text": "Note and document the location of stagnant water, eddies, backwater, reverse flows, areas of faster than normal flow, and piers or other features along the cross section.",
+          "attached_to": [
+            "S3"
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -99,27 +148,38 @@
     },
     {
       "id": "S4",
-      "label": "Determine the equal-width increment count and locate the first sampling vertical",
-      "action_verb": "determine",
-      "action_object": "increment width and first vertical",
+      "label": "Determine stream width and record cross-sectional field measurements",
+      "action_verb": "measure",
+      "action_object": "stream width and field measurements",
       "arguments": [],
       "parameters": [],
       "constraints": [
         {
-          "id": "C5",
-          "type": "requirement",
-          "text": "The number of increments must be a whole number.",
+          "id": "C10",
+          "type": "parameter",
+          "text": "Determine stream width from a tagline or from distance markings on a bridge railing or cableway.",
           "attached_to": [
             "S4"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
-          "id": "C6",
-          "type": "location_rule",
-          "text": "Locate the first vertical one-half increment width from the edge of the water.",
+          "id": "C11",
+          "type": "guard",
+          "text": "At sites with little sampling history, measure and record the cross-sectional variation of field measurements (such as specific electrical conductance, pH, temperature, and dissolved oxygen).",
           "attached_to": [
             "S4"
-          ]
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C12",
+          "type": "postcondition",
+          "text": "Review the magnitude of the variations along the cross section.",
+          "attached_to": [
+            "S4"
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -128,14 +188,156 @@
       "provenance": {
         "doc_id": "usgs_nfm_collection_water_samples_a4",
         "page": "44",
-        "section": "Step 2d-2e"
+        "section": "Step 2b-2c"
+      }
+    },
+    {
+      "id": "S5",
+      "label": "Determine the equal-width increment count and locate the first sampling vertical",
+      "action_verb": "determine",
+      "action_object": "increment width and first vertical",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C13",
+          "type": "parameter",
+          "text": "To obtain the number of increments, divide the stream width by the increment width.",
+          "attached_to": [
+            "S5"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C14",
+          "type": "parameter",
+          "text": "The number of increments must be a whole number.",
+          "attached_to": [
+            "S5"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C15",
+          "type": "guard",
+          "text": "Increment width is based on study objectives, variation in field measurements and flow, and stream-channel characteristics along the cross section.",
+          "attached_to": [
+            "S5"
+          ],
+          "enforcement": "should"
+        },
+        {
+          "id": "C16",
+          "type": "parameter",
+          "text": "Collect the subsample at the center of each equal-width increment (the vertical).",
+          "attached_to": [
+            "S5"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C17",
+          "type": "guard",
+          "text": "If the subsample does not represent the mean value for that increment, decrease the increment width until the mean value for the increment is represented.",
+          "attached_to": [
+            "S5"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C18",
+          "type": "parameter",
+          "text": "Locate the first sampling vertical at a distance of one-half of the selected increment width from the edge of the water.",
+          "attached_to": [
+            "S5"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C19",
+          "type": "parameter",
+          "text": "Locate all the other verticals at the center of each remaining equal-width increment along the cross section.",
+          "attached_to": [
+            "S5"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C20",
+          "type": "parameter",
+          "text": "Even if streamflow is divided, as in a braided channel, equal-width increments must be identical from channel to channel, and the same constant transit rate must be used at each vertical.",
+          "attached_to": [
+            "S5"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C21",
+          "type": "guard",
+          "text": "Make slight adjustments to sampling locations, if necessary, to avoid sampling where the flow is affected by a pier or other obstruction.",
+          "attached_to": [
+            "S5"
+          ],
+          "enforcement": "should"
+        }
+      ],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "page": "44",
+        "section": "Step 2d-2f"
       }
     }
   ],
-  "constraints": [],
+  "constraints": [
+    {
+      "id": "C22",
+      "type": "precondition",
+      "text": "Isokinetic sampling is required for the EWI method. Use isokinetic, depth-integrating sampling equipment (NFM 2.1.1.A).",
+      "applies_to": [
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "enforcement": "must"
+    },
+    {
+      "id": "C23",
+      "type": "guard",
+      "text": "Do not use EWI when stream velocities are less than the minimum velocity required for the isokinetic sampler selected (1.5 ft/s for the bottle sampler; 3 ft/s for the bag sampler).",
+      "applies_to": [
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "enforcement": "must"
+    },
+    {
+      "id": "C24",
+      "type": "precondition",
+      "text": "Be sure that the field effort is adequately staffed and equipped. Check QC requirements before departing—QC samples require additional equipment and supplies.",
+      "applies_to": [
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "enforcement": "must"
+    }
+  ],
   "relations": [],
   "quality": {
     "annotation_scope": "bounded_excerpt",
-    "review_status": "unreviewed"
+    "review_status": "reviewed",
+    "annotator": "imad",
+    "review_date": "2026-06-13",
+    "review_notes": "Second-pass review. Added S4 (stream width measurement and cross-sectional field measurements, Step 2b-2c) missing from draft. Heavily expanded S2 constraints (C3-C7) splitting selection rules by analyte type with explicit prohibitions. Expanded S5 from 2 to 9 constraints capturing whole-number requirement, mean-value backoff rule, location rules for first and subsequent verticals, braided-channel rule, obstruction adjustment. Procedure-level constraints added (C22-C24) for isokinetic-sampling precondition, minimum-velocity prohibition, and QC pre-departure requirement. Total: 5 steps, 21 step-attached + 3 procedure-level = 24 constraints (was 4 steps, 6 constraints). Scope kept at Step 1-2 of the EWI method (steps 3-6 cover transit rate, sample collection, processing, and equipment cleaning — out of bounded excerpt). STANDARDS REVIEW FIX: C24 (QC pre-departure staffing/equipment) applies_to extended from [S1] to all 5 steps — pre-departure constraint binds the whole procedure, not just S1."
   }
 }

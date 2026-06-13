@@ -1,0 +1,552 @@
+{
+  "epa_field_operations_manual_filter_sampling_sop/step:S1/C2": {
+    "key": "epa_field_operations_manual_filter_sampling_sop/step:S1/C2",
+    "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+    "location": "step:S1",
+    "constraint_id": "C2",
+    "current_type": "requirement",
+    "text": "The programmed zero, span, and precision control sequence for the gas analyzers, and other instruments are exercised and recorded.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "epa_field_operations_manual_filter_sampling_sop/step:S2/C3": {
+    "key": "epa_field_operations_manual_filter_sampling_sop/step:S2/C3",
+    "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+    "location": "step:S2",
+    "constraint_id": "C3",
+    "current_type": "requirement",
+    "text": "The programmed actuation of the various flow sampling systems are tested, and the resultant flows are measured on the respective sample lines.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "epa_field_operations_manual_filter_sampling_sop/step:S2/C4": {
+    "key": "epa_field_operations_manual_filter_sampling_sop/step:S2/C4",
+    "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+    "location": "step:S2",
+    "constraint_id": "C4",
+    "current_type": "requirement",
+    "text": "All channels on the data logger are properly sequenced and initialized.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "epa_field_operations_manual_filter_sampling_sop/step:S2/C5": {
+    "key": "epa_field_operations_manual_filter_sampling_sop/step:S2/C5",
+    "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+    "location": "step:S2",
+    "constraint_id": "C5",
+    "current_type": "requirement",
+    "text": "The communications equipment is tested to ensure proper functioning.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "epa_field_operations_manual_filter_sampling_sop/step:S4/C9": {
+    "key": "epa_field_operations_manual_filter_sampling_sop/step:S4/C9",
+    "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+    "location": "step:S4",
+    "constraint_id": "C9",
+    "current_type": "requirement",
+    "text": "The quantity of materials onsite should be sufficient to ensure uninterrupted operation for at least one calendar quarter.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "epa_field_operations_manual_filter_sampling_sop/step:S4/C10": {
+    "key": "epa_field_operations_manual_filter_sampling_sop/step:S4/C10",
+    "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+    "location": "step:S4",
+    "constraint_id": "C10",
+    "current_type": "requirement",
+    "text": "The site operator is familiarized with the mailing and shipping protocols, FedEx account and procedures, U.S. Postal Service Return Merchandise account, and contact points (work and home telephone numbers) for key personnel on the CASTNET project.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "epa_field_operations_manual_filter_sampling_sop/step:S4/C11": {
+    "key": "epa_field_operations_manual_filter_sampling_sop/step:S4/C11",
+    "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+    "location": "step:S4",
+    "constraint_id": "C11",
+    "current_type": "requirement",
+    "text": "A large calendar showing sample dates, maintenance schedules, data shipment dates, and site visit dates is installed in the shelter.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "epa_field_operations_manual_filter_sampling_sop/step:S5/C14": {
+    "key": "epa_field_operations_manual_filter_sampling_sop/step:S5/C14",
+    "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+    "location": "step:S5",
+    "constraint_id": "C14",
+    "current_type": "requirement",
+    "text": "Copies of all calibration forms and property inventories are maintained both onsite and at the WSP Gainesville office.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "epa_field_operations_manual_filter_sampling_sop/step:S5/C15": {
+    "key": "epa_field_operations_manual_filter_sampling_sop/step:S5/C15",
+    "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+    "location": "step:S5",
+    "constraint_id": "C15",
+    "current_type": "requirement",
+    "text": "Equipment shortages or discrepancies, if any, are noted and corrective actions initiated.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "epa_field_operations_manual_filter_sampling_sop/step:S5/C16": {
+    "key": "epa_field_operations_manual_filter_sampling_sop/step:S5/C16",
+    "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+    "location": "step:S5",
+    "constraint_id": "C16",
+    "current_type": "requirement",
+    "text": "Site-specific inventory forms (documenting model numbers and EPA barcodes) are verified prior to departure of the Station Initiation Team; upon return to the WSP office, the Team Leader submits the verified inventory document for cross checking with the database inventory file.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "epa_field_operations_manual_filter_sampling_sop/step:S6/C17": {
+    "key": "epa_field_operations_manual_filter_sampling_sop/step:S6/C17",
+    "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+    "location": "step:S6",
+    "constraint_id": "C17",
+    "current_type": "requirement",
+    "text": "Potential site operators are required to attend and successfully complete a training seminar provided onsite.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "epa_field_operations_manual_filter_sampling_sop/step:S6/C18": {
+    "key": "epa_field_operations_manual_filter_sampling_sop/step:S6/C18",
+    "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+    "location": "step:S6",
+    "constraint_id": "C18",
+    "current_type": "requirement",
+    "text": "Training topics include a CASTNET overview, the operations of sampling equipment and procedures, and the importance of documentation.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "epa_field_operations_manual_filter_sampling_sop/step:S6/C19": {
+    "key": "epa_field_operations_manual_filter_sampling_sop/step:S6/C19",
+    "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+    "location": "step:S6",
+    "constraint_id": "C19",
+    "current_type": "requirement",
+    "text": "The training plan consists of an overview of general project operations and goals, and provides intensive instruction in specific site operator responsibilities.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "epa_field_sampling_measurement_procedure_validation/step:S1/C2": {
+    "key": "epa_field_sampling_measurement_procedure_validation/step:S1/C2",
+    "doc_id": "epa_field_sampling_measurement_procedure_validation",
+    "location": "step:S1",
+    "constraint_id": "C2",
+    "current_type": "requirement",
+    "text": "Notification must be in writing (email or memo).",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "epa_field_sampling_measurement_procedure_validation/step:S3/C5": {
+    "key": "epa_field_sampling_measurement_procedure_validation/step:S3/C5",
+    "doc_id": "epa_field_sampling_measurement_procedure_validation",
+    "location": "step:S3",
+    "constraint_id": "C5",
+    "current_type": "requirement",
+    "text": "Non-standard procedures will be fully validated according to Section 4 of this procedure.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "epa_field_sampling_measurement_procedure_validation/step:S3/C6": {
+    "key": "epa_field_sampling_measurement_procedure_validation/step:S3/C6",
+    "doc_id": "epa_field_sampling_measurement_procedure_validation",
+    "location": "step:S3",
+    "constraint_id": "C6",
+    "current_type": "requirement",
+    "text": "If the non-standard procedure is not adopted into the scope of the FSB quality system prior to use, any results generated must be clearly identified as being outside the scope of the quality system in the field investigation report.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "epa_field_sampling_measurement_procedure_validation/step:S3/C7": {
+    "key": "epa_field_sampling_measurement_procedure_validation/step:S3/C7",
+    "doc_id": "epa_field_sampling_measurement_procedure_validation",
+    "location": "step:S3",
+    "constraint_id": "C7",
+    "current_type": "requirement",
+    "text": "If FSB choose to include the non-standard procedure in the scope of their quality system, this will be done in accordance with the LSASD Operating Procedure for Document Control (LSASDPROC-1000, most recent version).",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "epa_field_sampling_measurement_procedure_validation/step:S4/C10": {
+    "key": "epa_field_sampling_measurement_procedure_validation/step:S4/C10",
+    "doc_id": "epa_field_sampling_measurement_procedure_validation",
+    "location": "step:S4",
+    "constraint_id": "C10",
+    "current_type": "requirement",
+    "text": "The validation team will develop an appropriate field test or evaluation for the operating procedure.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "epa_field_sampling_measurement_procedure_validation/step:S4/C11": {
+    "key": "epa_field_sampling_measurement_procedure_validation/step:S4/C11",
+    "doc_id": "epa_field_sampling_measurement_procedure_validation",
+    "location": "step:S4",
+    "constraint_id": "C11",
+    "current_type": "requirement",
+    "text": "After completion of the field test or evaluation, the validation team will assess the results against the acceptance criteria.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "epa_field_sampling_measurement_procedure_validation/step:S4/C12": {
+    "key": "epa_field_sampling_measurement_procedure_validation/step:S4/C12",
+    "doc_id": "epa_field_sampling_measurement_procedure_validation",
+    "location": "step:S4",
+    "constraint_id": "C12",
+    "current_type": "requirement",
+    "text": "If the assessment indicates that the operating procedure meets the acceptance criteria, the procedure is accepted for use.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "epa_guidance_preparing_sops_qag6/step:S1/C1": {
+    "key": "epa_guidance_preparing_sops_qag6/step:S1/C1",
+    "doc_id": "epa_guidance_preparing_sops_qag6",
+    "location": "step:S1",
+    "constraint_id": "C1",
+    "current_type": "requirement",
+    "text": "SOPs should be written with sufficient detail so that someone with limited experience with or knowledge of the procedure, but with a basic understanding, can successfully reproduce the procedure when unsupervised.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "epa_guidance_preparing_sops_qag6/step:S1/C2": {
+    "key": "epa_guidance_preparing_sops_qag6/step:S1/C2",
+    "doc_id": "epa_guidance_preparing_sops_qag6",
+    "location": "step:S1",
+    "constraint_id": "C2",
+    "current_type": "requirement",
+    "text": "The experience requirement for performing an activity should be noted in the section on personnel qualifications.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "epa_guidance_preparing_sops_qag6/step:S1/C3": {
+    "key": "epa_guidance_preparing_sops_qag6/step:S1/C3",
+    "doc_id": "epa_guidance_preparing_sops_qag6",
+    "location": "step:S1",
+    "constraint_id": "C3",
+    "current_type": "requirement",
+    "text": "Any checklists or forms included as part of an activity should be referenced at the points in the procedure where they are to be used and then attached to the SOP.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "epa_guidance_preparing_sops_qag6/step:S1/C4": {
+    "key": "epa_guidance_preparing_sops_qag6/step:S1/C4",
+    "doc_id": "epa_guidance_preparing_sops_qag6",
+    "location": "step:S1",
+    "constraint_id": "C4",
+    "current_type": "requirement",
+    "text": "When detailed checklists are prepared specifically for a given activity, the SOP should describe, at least generally, how the checklist is to be prepared, or on what it is to be based.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "epa_guidance_preparing_sops_qag6/step:S2/C5": {
+    "key": "epa_guidance_preparing_sops_qag6/step:S2/C5",
+    "doc_id": "epa_guidance_preparing_sops_qag6",
+    "location": "step:S2",
+    "constraint_id": "C5",
+    "current_type": "requirement",
+    "text": "SOPs should be reviewed (that is, validated) by one or more individuals with appropriate training and experience with the process.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "epa_guidance_preparing_sops_qag6/step:S3/C10": {
+    "key": "epa_guidance_preparing_sops_qag6/step:S3/C10",
+    "doc_id": "epa_guidance_preparing_sops_qag6",
+    "location": "step:S3",
+    "constraint_id": "C10",
+    "current_type": "requirement",
+    "text": "Whenever procedures are changed, SOPs should be updated and re-approved.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "epa_guidance_preparing_sops_qag6/step:S3/C12": {
+    "key": "epa_guidance_preparing_sops_qag6/step:S3/C12",
+    "doc_id": "epa_guidance_preparing_sops_qag6",
+    "location": "step:S3",
+    "constraint_id": "C12",
+    "current_type": "requirement",
+    "text": "If an SOP describes a process that is no longer followed, it should be withdrawn from the current file and archived.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "epa_guidance_preparing_sops_qag6/step:S3/C14": {
+    "key": "epa_guidance_preparing_sops_qag6/step:S3/C14",
+    "doc_id": "epa_guidance_preparing_sops_qag6",
+    "location": "step:S3",
+    "constraint_id": "C14",
+    "current_type": "requirement",
+    "text": "The frequency of review should be indicated by management in the organization's Quality Management Plan.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "nasa_npr_8715_3d_general_safety/step:S1/C1": {
+    "key": "nasa_npr_8715_3d_general_safety/step:S1/C1",
+    "doc_id": "nasa_npr_8715_3d_general_safety",
+    "location": "step:S1",
+    "constraint_id": "C1",
+    "current_type": "requirement",
+    "text": "Reflects a life cycle SMA process perspective, addressing areas including: procurement, management, design and engineering, design verification and test, software design, software verification and test, manufacturing, manufacturing verification and test, operations, and preflight verification and test.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "nasa_npr_8715_3d_general_safety/step:S2/C3": {
+    "key": "nasa_npr_8715_3d_general_safety/step:S2/C3",
+    "doc_id": "nasa_npr_8715_3d_general_safety",
+    "location": "step:S2",
+    "constraint_id": "C3",
+    "current_type": "requirement",
+    "text": "Contains data and information to support each section of the SMA Plan for each major milestone review to include the Safety and Mission Success Review.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "nasa_npr_8715_3d_general_safety/step:S2/C4": {
+    "key": "nasa_npr_8715_3d_general_safety/step:S2/C4",
+    "doc_id": "nasa_npr_8715_3d_general_safety",
+    "location": "step:S2",
+    "constraint_id": "C4",
+    "current_type": "requirement",
+    "text": "Contains trending and metrics utilized to display progress and to predict growth towards SMA goals and requirements.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "nasa_npr_8715_3d_general_safety/step:S2/C5": {
+    "key": "nasa_npr_8715_3d_general_safety/step:S2/C5",
+    "doc_id": "nasa_npr_8715_3d_general_safety",
+    "location": "step:S2",
+    "constraint_id": "C5",
+    "current_type": "requirement",
+    "text": "As a minimum, addresses the following topics: safety and mission success (per this NPR), risk classification of NASA payloads (NPR 8705.4), reliability and maintainability (NPD 8720.1), risk assessment (NPR 8705.5), quality assurance (NPR 8735.2), software safety and assurance (NASA-STD-8739.8), public and workforce safety and health (NPR 8715.1), range safety (NPR 8715.5), payload safety (NPR 8715.7), orbital debris mitigation (NPR 8715.6), planetary protection (NPR 8020.12, NID 8715.128, NID 8715.129), nuclear flight safety (Chapter 6), human-rating (NPR 8705.2), mishap reporting (NPR 8621.1), and compliance verification and SMA audits (NPR 8705.6).",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "nasa_npr_8715_3d_general_safety/step:S4/C9": {
+    "key": "nasa_npr_8715_3d_general_safety/step:S4/C9",
+    "doc_id": "nasa_npr_8715_3d_general_safety",
+    "location": "step:S4",
+    "constraint_id": "C9",
+    "current_type": "requirement",
+    "text": "The level of hazard control should be based on the level of risk associated with that hazard.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "niosh_nmam_5th_edition_ebook/step:S2/C1": {
+    "key": "niosh_nmam_5th_edition_ebook/step:S2/C1",
+    "doc_id": "niosh_nmam_5th_edition_ebook",
+    "location": "step:S2",
+    "constraint_id": "C1",
+    "current_type": "requirement",
+    "text": "Sample at an accurately known flow rate.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "niosh_nmam_5th_edition_ebook/step:S3/C2": {
+    "key": "niosh_nmam_5th_edition_ebook/step:S3/C2",
+    "doc_id": "niosh_nmam_5th_edition_ebook",
+    "location": "step:S3",
+    "constraint_id": "C2",
+    "current_type": "requirement",
+    "text": "Cap the cassettes and pack securely for shipment.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "niosh_nmam_5th_edition_ebook/step:S5/C3": {
+    "key": "niosh_nmam_5th_edition_ebook/step:S5/C3",
+    "doc_id": "niosh_nmam_5th_edition_ebook",
+    "location": "step:S5",
+    "constraint_id": "C3",
+    "current_type": "requirement",
+    "text": "Open the cassette and remove the PTFE filter with clean forceps.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "niosh_nmam_5th_edition_ebook/step:S5/C4": {
+    "key": "niosh_nmam_5th_edition_ebook/step:S5/C4",
+    "doc_id": "niosh_nmam_5th_edition_ebook",
+    "location": "step:S5",
+    "constraint_id": "C4",
+    "current_type": "requirement",
+    "text": "Place the exposed side of the filter in contact with the solution.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "olsk_small_cnc_v1_workbook/step:S2/C4": {
+    "key": "olsk_small_cnc_v1_workbook/step:S2/C4",
+    "doc_id": "olsk_small_cnc_v1_workbook",
+    "location": "step:S2",
+    "constraint_id": "C4",
+    "current_type": "requirement",
+    "text": "Mark the front with the Red Dot Sticker.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "usgs_groundwater_technical_procedures_tm1_a1/step:S2/C1": {
+    "key": "usgs_groundwater_technical_procedures_tm1_a1/step:S2/C1",
+    "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+    "location": "step:S2",
+    "constraint_id": "C1",
+    "current_type": "requirement",
+    "text": "Pull the tape across a piece of blue carpenter's chalk.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "usgs_groundwater_technical_procedures_tm1_a1/step:S4/C4": {
+    "key": "usgs_groundwater_technical_procedures_tm1_a1/step:S4/C4",
+    "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+    "location": "step:S4",
+    "constraint_id": "C4",
+    "current_type": "requirement",
+    "text": "Place the thumb and index finger on the tape graduation that is 0.01 less than the next whole foot mark; continue to lower the end of the tape into the well until the thumb and index finger meet the MP.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "usgs_groundwater_technical_procedures_tm1_a1/step:S7/C10": {
+    "key": "usgs_groundwater_technical_procedures_tm1_a1/step:S7/C10",
+    "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+    "location": "step:S7",
+    "constraint_id": "C10",
+    "current_type": "requirement",
+    "text": "If the tape-calibration procedure indicates that a correction is needed at a given water-level depth or for a given water-level range, apply that correction to the \"WL below MP\" value by adding or subtracting the appropriate correction.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "usgs_groundwater_technical_procedures_tm1_a1/step:S8/C11": {
+    "key": "usgs_groundwater_technical_procedures_tm1_a1/step:S8/C11",
+    "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+    "location": "step:S8",
+    "constraint_id": "C11",
+    "current_type": "requirement",
+    "text": "The MP correction is positive if the MP is above land surface and is negative if the MP is below land surface (see GWPD 3).",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "usgs_groundwater_technical_procedures_tm1_a1/step:S8/C14": {
+    "key": "usgs_groundwater_technical_procedures_tm1_a1/step:S8/C14",
+    "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+    "location": "step:S8",
+    "constraint_id": "C14",
+    "current_type": "requirement",
+    "text": "If the water level is above LSD, record the depth to water in feet below land surface as a negative number.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "usgs_groundwater_technical_procedures_tm1_a1/step:S9/C15": {
+    "key": "usgs_groundwater_technical_procedures_tm1_a1/step:S9/C15",
+    "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+    "location": "step:S9",
+    "constraint_id": "C15",
+    "current_type": "requirement",
+    "text": "The check measurement should be made using a different HOLD value than that used for the original measurement.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "usgs_nfm_collection_water_samples_a4/step:S1/C1": {
+    "key": "usgs_nfm_collection_water_samples_a4/step:S1/C1",
+    "doc_id": "usgs_nfm_collection_water_samples_a4",
+    "location": "step:S1",
+    "constraint_id": "C1",
+    "current_type": "requirement",
+    "text": "Upon arrival at the field site, set out safety equipment such as traffic cones and signs.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "usgs_nfm_collection_water_samples_a4/step:S3/C8": {
+    "key": "usgs_nfm_collection_water_samples_a4/step:S3/C8",
+    "doc_id": "usgs_nfm_collection_water_samples_a4",
+    "location": "step:S3",
+    "constraint_id": "C8",
+    "current_type": "requirement",
+    "text": "Visually inspect the stream from bank to bank and longitudinally, observing velocity, width, and depth distribution, and apparent distribution of sediment and aquatic biota along the cross section.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "usgs_nfm_collection_water_samples_a4/step:S4/C10": {
+    "key": "usgs_nfm_collection_water_samples_a4/step:S4/C10",
+    "doc_id": "usgs_nfm_collection_water_samples_a4",
+    "location": "step:S4",
+    "constraint_id": "C10",
+    "current_type": "requirement",
+    "text": "Determine stream width from a tagline or from distance markings on a bridge railing or cableway.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "usgs_nfm_collection_water_samples_a4/step:S4/C11": {
+    "key": "usgs_nfm_collection_water_samples_a4/step:S4/C11",
+    "doc_id": "usgs_nfm_collection_water_samples_a4",
+    "location": "step:S4",
+    "constraint_id": "C11",
+    "current_type": "requirement",
+    "text": "At sites with little sampling history, measure and record the cross-sectional variation of field measurements (such as specific electrical conductance, pH, temperature, and dissolved oxygen).",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "usgs_nfm_collection_water_samples_a4/step:S4/C12": {
+    "key": "usgs_nfm_collection_water_samples_a4/step:S4/C12",
+    "doc_id": "usgs_nfm_collection_water_samples_a4",
+    "location": "step:S4",
+    "constraint_id": "C12",
+    "current_type": "requirement",
+    "text": "Review the magnitude of the variations along the cross section.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "usgs_nfm_collection_water_samples_a4/step:S5/C13": {
+    "key": "usgs_nfm_collection_water_samples_a4/step:S5/C13",
+    "doc_id": "usgs_nfm_collection_water_samples_a4",
+    "location": "step:S5",
+    "constraint_id": "C13",
+    "current_type": "requirement",
+    "text": "To obtain the number of increments, divide the stream width by the increment width.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "usgs_nfm_collection_water_samples_a4/step:S5/C14": {
+    "key": "usgs_nfm_collection_water_samples_a4/step:S5/C14",
+    "doc_id": "usgs_nfm_collection_water_samples_a4",
+    "location": "step:S5",
+    "constraint_id": "C14",
+    "current_type": "requirement",
+    "text": "The number of increments must be a whole number.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "usgs_nfm_collection_water_samples_a4/step:S5/C16": {
+    "key": "usgs_nfm_collection_water_samples_a4/step:S5/C16",
+    "doc_id": "usgs_nfm_collection_water_samples_a4",
+    "location": "step:S5",
+    "constraint_id": "C16",
+    "current_type": "requirement",
+    "text": "Collect the subsample at the center of each equal-width increment (the vertical).",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "usgs_nfm_collection_water_samples_a4/step:S5/C17": {
+    "key": "usgs_nfm_collection_water_samples_a4/step:S5/C17",
+    "doc_id": "usgs_nfm_collection_water_samples_a4",
+    "location": "step:S5",
+    "constraint_id": "C17",
+    "current_type": "requirement",
+    "text": "If the subsample does not represent the mean value for that increment, decrease the increment width until the mean value for the increment is represented.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "usgs_nfm_collection_water_samples_a4/step:S5/C20": {
+    "key": "usgs_nfm_collection_water_samples_a4/step:S5/C20",
+    "doc_id": "usgs_nfm_collection_water_samples_a4",
+    "location": "step:S5",
+    "constraint_id": "C20",
+    "current_type": "requirement",
+    "text": "Even if streamflow is divided, as in a braided channel, equal-width increments must be identical from channel to channel, and the same constant transit rate must be used at each vertical.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  },
+  "usgs_nfm_collection_water_samples_a4/top/C24": {
+    "key": "usgs_nfm_collection_water_samples_a4/top/C24",
+    "doc_id": "usgs_nfm_collection_water_samples_a4",
+    "location": "top",
+    "constraint_id": "C24",
+    "current_type": "requirement",
+    "text": "Be sure that the field effort is adequately staffed and equipped. Check QC requirements before departing—QC samples require additional equipment and supplies.",
+    "TODO_locked_type": "",
+    "TODO_enforcement": "must"
+  }
+}

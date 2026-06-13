@@ -1,0 +1,146 @@
+"""Tests for the paper-grade validator. The validator is the artifact's
+quality contract — it MUST reject malformed annotations."""
+from __future__ import annotations
+
+import json
+from pathlib import Path
+
+from scripts.validate_paper_gold import validate_file
+
+VALID_ANNOTATION: dict = {
+    "procedure": {"doc_id": "test_doc", "title": "Test"},
+    "steps": [
+        {
+            "id": "S1",
+            "label": "Do the thing",
+            "constraints": [
+                {
+                    "id": "C1",
+                    "type": "guard",
+                    "enforcement": "must",
+                    "text": "Be careful",
+                    "attached_to": ["S1"],
+                }
+            ],
+        }
+    ],
+    "constraints": [],
+    "relations": [],
+    "quality": {
+        "review_status": "reviewed",
+        "annotator": "test",
+        "review_date": "2026-01-01",
+    },
+}
+
+
+def _write(tmp_path: Path, annotation: dict) -> Path:
+    p = tmp_path / "annot.json"
+    p.write_text(json.dumps(annotation))
+    return p
+
+
+def _errors(messages: list[str]) -> list[str]:
+    return [m for m in messages if m.startswith("ERROR")]
+
+
+def test_valid_annotation_passes(tmp_path: Path) -> None:
+    msgs = validate_file(_write(tmp_path, VALID_ANNOTATION))
+    assert _errors(msgs) == []
+
+
+def test_rejects_unreviewed_status(tmp_path: Path) -> None:
+    a = json.loads(json.dumps(VALID_ANNOTATION))
+    a["quality"]["review_status"] = "unreviewed"
+    msgs = validate_file(_write(tmp_path, a))
+    assert any("review_status" in e for e in _errors(msgs))
+
+
+def test_rejects_missing_annotator(tmp_path: Path) -> None:
+    a = json.loads(json.dumps(VALID_ANNOTATION))
+    del a["quality"]["annotator"]
+    msgs = validate_file(_write(tmp_path, a))
+    assert any("annotator" in e for e in _errors(msgs))
+
+
+def test_rejects_invalid_type(tmp_path: Path) -> None:
+    a = json.loads(json.dumps(VALID_ANNOTATION))
+    a["steps"][0]["constraints"][0]["type"] = "requirement"
+    msgs = validate_file(_write(tmp_path, a))
+    assert any("locked vocabulary" in e for e in _errors(msgs))
+
+
+def test_rejects_invalid_enforcement(tmp_path: Path) -> None:
+    a = json.loads(json.dumps(VALID_ANNOTATION))
+    a["steps"][0]["constraints"][0]["enforcement"] = "required"
+    msgs = validate_file(_write(tmp_path, a))
+    assert any("enforcement" in e for e in _errors(msgs))
+
+
+def test_rejects_missing_enforcement(tmp_path: Path) -> None:
+    a = json.loads(json.dumps(VALID_ANNOTATION))
+    del a["steps"][0]["constraints"][0]["enforcement"]
+    msgs = validate_file(_write(tmp_path, a))
+    assert any("enforcement" in e for e in _errors(msgs))
+
+
+def test_rejects_unattached_constraint(tmp_path: Path) -> None:
+    a = json.loads(json.dumps(VALID_ANNOTATION))
+    del a["steps"][0]["constraints"][0]["attached_to"]
+    msgs = validate_file(_write(tmp_path, a))
+    assert any("attached_to" in e or "applies_to" in e for e in _errors(msgs))
+
+
+def test_rejects_dangling_step_ref(tmp_path: Path) -> None:
+    a = json.loads(json.dumps(VALID_ANNOTATION))
+    a["steps"][0]["constraints"][0]["attached_to"] = ["S99"]
+    msgs = validate_file(_write(tmp_path, a))
+    assert any("not in step ids" in e for e in _errors(msgs))
+
+
+def test_rejects_empty_constraint_text(tmp_path: Path) -> None:
+    a = json.loads(json.dumps(VALID_ANNOTATION))
+    a["steps"][0]["constraints"][0]["text"] = ""
+    msgs = validate_file(_write(tmp_path, a))
+    assert any("empty text" in e for e in _errors(msgs))
+
+
+def test_procedure_level_constraint_covers_step(tmp_path: Path) -> None:
+    """Step with 0 embedded constraints but covered by procedure-level applies_to
+    should NOT trigger the 'suspicious 0 constraints' warning."""
+    a = json.loads(json.dumps(VALID_ANNOTATION))
+    a["steps"][0]["constraints"] = []
+    a["constraints"] = [
+        {
+            "id": "PC1",
+            "type": "guard",
+            "enforcement": "must",
+            "text": "Procedure-level safety constraint",
+            "applies_to": ["S1"],
+        }
+    ]
+    msgs = validate_file(_write(tmp_path, a))
+    # Should pass with no warnings about S1 having 0 constraints
+    assert not any("0 attached constraints" in m for m in msgs)
+
+
+def test_step_with_no_constraints_warns(tmp_path: Path) -> None:
+    """Step with no embedded AND no procedure-level coverage should warn."""
+    a = json.loads(json.dumps(VALID_ANNOTATION))
+    a["steps"][0]["constraints"] = []
+    msgs = validate_file(_write(tmp_path, a))
+    assert any("0 attached constraints" in m for m in msgs)
+
+
+def test_seed_corpus_passes(tmp_path: Path) -> None:
+    """All 8 reviewed seed-corpus files in datasets/paper/gold must pass."""
+    gold_dir = Path("datasets/paper/gold")
+    if not gold_dir.exists():
+        return  # tests can run outside the repo root
+    failures = []
+    for f in sorted(gold_dir.glob("*.json")):
+        msgs = validate_file(f)
+        errs = _errors(msgs)
+        if errs:
+            failures.append((f.name, errs))
+    assert not failures, f"Seed corpus failures: {failures}"
