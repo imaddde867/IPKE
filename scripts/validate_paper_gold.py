@@ -85,13 +85,32 @@ def validate_file(path: Path) -> list[str]:
                 if r not in step_ids:
                     errors.append(f"{prefix}: ref {r!r} not in step ids")
 
+    # Count procedure-level constraints whose applies_to includes each step.
+    step_procedure_counts: dict[str, int] = {sid: 0 for sid in step_ids}
+    for c in d.get("constraints", []) or []:
+        applies = c.get("applies_to")
+        if isinstance(applies, str):
+            applies = [applies]
+        if isinstance(applies, list):
+            for sid in applies:
+                if sid in step_procedure_counts:
+                    step_procedure_counts[sid] += 1
+
     for s in d.get("steps", []):
         sid = s.get("id", "?")
-        n_constraints = len(s.get("constraints", []) or [])
-        if n_constraints == 0:
-            warnings.append(f"step:{sid}: 0 attached constraints (suspicious; re-read source)")
-        elif n_constraints > 10:
-            warnings.append(f"step:{sid}: {n_constraints} constraints (suspicious; consider splitting)")
+        embedded = len(s.get("constraints", []) or [])
+        procedure = step_procedure_counts.get(sid, 0)
+        total = embedded + procedure
+        if total == 0:
+            warnings.append(
+                f"step:{sid}: 0 attached constraints (embedded={embedded}, procedure-level={procedure}); "
+                "re-read source"
+            )
+        elif total > 10:
+            warnings.append(
+                f"step:{sid}: {total} constraints (embedded={embedded}, procedure-level={procedure}); "
+                "consider splitting step"
+            )
 
     return [f"ERROR: {e}" for e in errors] + [f"WARN: {w}" for w in warnings]
 

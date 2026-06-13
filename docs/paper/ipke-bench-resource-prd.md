@@ -31,7 +31,7 @@ Without that edge:
 - A retrieval system over an extracted PKG cannot answer "what must hold before step X" without an explicit attached_to / applies_to edge.
 - An LLM-drafted gold (or extractor output) can score well on step F1 while completely missing the safety scaffolding around the procedural backbone.
 
-The seed corpus already exhibits the phenomenon. LLM-drafted gold across 8 documents recovered 9.3% of the constraints a human reviewer identified on the same source text, with 0% recall on preconditions, role assignments, and references. See `datasets/paper/reports/constraint_blindness_v1.json`. This is the §1 motivating result of the paper.
+The seed corpus already exhibits the phenomenon. LLM-drafted gold across 8 documents produced **3.69×** fewer constraints than the reviewed gold (32 vs 118). Even under the Tier-A protocol matcher (SBERT cos ≥ 0.75 against the reviewed text), the draft recovered only **20.3% of constraints**; at a looser 0.50 threshold the recall is 61%. The expansion ratio is the unambiguous claim independent of matcher choice. See `datasets/paper/reports/constraint_blindness_v2_sbert075.json` and `datasets/paper/reports/constraint_blindness_v2_sbert050.json`. This is the §1 motivating result of the paper.
 
 ## Intended users
 
@@ -61,13 +61,15 @@ The IPKE-Bench dataset, taxonomy, evaluation protocol, and reproducibility packa
 
 ## Demonstration experiments (inside the contribution)
 
-The paper includes three demonstration experiments to show the benchmark is informative, not as parallel contributions:
+Three demonstration experiments support the benchmark, ranked by paper priority:
 
-- **D1. Constraint-blindness baseline** (free; from seed corpus): per-type recall of LLM-drafted gold against reviewed gold. Shows the benchmark is non-trivial even before any extractor is run.
-- **D2. Local baseline sweep**: 4 configs (Fixed/DSC × P0/P3) × 5 seeds × 12 documents. Φ + 95% CI + paired bootstrap. Demonstrates the benchmark discriminates configurations.
-- **D3. Constraint-aware retrieval**: 80 queries (20 × 4 constraint types) over text-RAG vs PKG-backed retrieval. Shows the dataset enables a second downstream task beyond extraction.
+- **D1. Constraint-blindness baseline** — **REQUIRED, DONE.** Per-type recall of LLM-drafted gold against reviewed gold using the Tier-A protocol matcher (SBERT cos ≥ 0.75). Headline numbers in `datasets/paper/reports/constraint_blindness_v2_sbert075.json`. Shows the benchmark is non-trivial before any extractor is run, with a clean reproducible script.
 
-If any demonstration runs late, drop it and keep the artifact. The artifact is the contribution.
+- **D2. Local baseline sweep** — **EXPECTED BEFORE SUBMISSION.** 4 configs (Fixed/DSC × P0/P3) × 5 seeds × 12 documents. Φ + 95% CI + paired bootstrap. Demonstrates the benchmark discriminates configurations. Drop only if reviewed-gold + IAA gates slip past mid-September.
+
+- **D3. Constraint-aware retrieval** — **NICE TO HAVE.** 80 queries (20 × 4 constraint types) over text-RAG vs PKG-backed retrieval. Shows the dataset enables a second downstream task beyond extraction. Drop if D2 takes longer than 2 weeks; the artifact stands without it.
+
+The artifact is the contribution. Order of cuts under time pressure: D3 → D2 → never D1.
 
 ## Required evaluation (acceptance gates)
 
@@ -101,7 +103,7 @@ If any demonstration runs late, drop it and keep the artifact. The artifact is t
 - **IAA independence**: second annotators MUST NOT see gold or any other annotator's pass until their own is committed. This is the non-negotiable rule that gives κ statistical meaning.
 - **Annotation scope**: bounded_excerpt of 1-3 pages with ≥ 4 steps and ≥ 6 constraints is the default. Full-procedure scope allowed when the document is small enough. Justify in `quality.review_notes`.
 
-The `bounded_excerpt` choice is justified by (a) controlling annotation cost for the seed corpus, (b) keeping each document's procedural complexity in a single comparable band (multi-step + multi-constraint), and (c) matching the chunk-window scope of the extractors under evaluation. Reviewers will see this justification in §3 of the paper.
+The `bounded_excerpt` choice is justified by (a) controlling annotation cost for the seed corpus and (b) keeping each document's procedural complexity in a single comparable band (multi-step + multi-constraint, 1-3 pages). Reviewers will see this justification in §3 of the paper.
 
 ## Non-goals
 
@@ -115,7 +117,11 @@ The `bounded_excerpt` choice is justified by (a) controlling annotation cost for
 ## Current blockers (in critical-path order)
 
 1. **Independent annotators** not recruited. Existing `second_pass` files appear LLM-drafted; they do not satisfy P0's IAA requirement. Lead time: weeks. Recruitment outreach pending.
-2. **Corpus at 8 docs** vs 12-doc P0 target. Genre concentration is US-gov environmental/safety; the 4 new documents must diversify.
+2. **Corpus at 8 docs** vs 12-doc P0 target. Genre concentration is US-gov environmental/safety; the 4 new documents must diversify. Candidate targets:
+   - **FAA AC 43.13-1B** (aviation maintenance, public domain, US FAA)
+   - **FDA Food Code** (food safety procedures, public domain, US FDA)
+   - **NIST SP 800-61 Rev. 2** (computer security incident handling, US gov, public domain)
+   - **Open-license OEM service manual** — candidate sources: John Deere Operator Manuals (some are open), iFixit guides (CC BY-NC-SA), or further OLSK kits (CC BY-SA).
 3. **Demonstration experiments (D2, D3) not started.** Gated on reviewed gold + recruited annotators; lower priority than the artifact itself.
 4. **Datasheet not drafted.**
 
@@ -131,6 +137,6 @@ See `2ndBrain/Projects/IPKE Paper - Thesis to Congress/05-timeline.md` for the 6
 - ECIR 2027 dates: https://www.ecir2027.co.uk/
 - Constraint taxonomy: `docs/annotation/constraint-types.md`
 - Annotation guidelines: `docs/annotation/guidelines.md`
-- Constraint-blindness report: `datasets/paper/reports/constraint_blindness_v1.json`
+- Constraint-blindness reports: `datasets/paper/reports/constraint_blindness_v2_sbert075.json` (Tier-A protocol matcher) and `datasets/paper/reports/constraint_blindness_v2_sbert050.json` (loose threshold sensitivity)
 - Domain glossary: `CONTEXT.md`
 - Reproducibility: `REPRODUCIBILITY.md`
