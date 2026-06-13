@@ -17,15 +17,33 @@
       "action_verb": "assemble",
       "action_object": "electronic box frame",
       "arguments": [],
-      "parameters": [],
+      "parameters": [
+        {
+          "name": "Profile 20-400",
+          "quantity": 8
+        },
+        {
+          "name": "Bracket 20",
+          "quantity": 8
+        },
+        {
+          "name": "Hammer Nut M5",
+          "quantity": 16
+        },
+        {
+          "name": "C-screw M5-8",
+          "quantity": 16
+        }
+      ],
       "constraints": [
         {
           "id": "C1",
-          "type": "warning",
-          "text": "The frame does not need to be absolutely precise at this stage.",
+          "type": "parameter",
+          "text": "Not necessary to be absolutely precise.",
           "attached_to": [
             "S1"
-          ]
+          ],
+          "enforcement": "should"
         }
       ],
       "flags": {
@@ -42,23 +60,55 @@
       "action_verb": "install",
       "action_object": "bottom panel",
       "arguments": [],
-      "parameters": [],
+      "parameters": [
+        {
+          "name": "Box Bottom Panel",
+          "quantity": 1
+        },
+        {
+          "name": "Hammer Nut M5",
+          "quantity": 6
+        },
+        {
+          "name": "C-screw M5-8",
+          "quantity": 6
+        },
+        {
+          "name": "Red Dot Sticker",
+          "quantity": 1
+        },
+        {
+          "name": "Prepared Bottom Frame (Step 01.1)",
+          "quantity": 1
+        }
+      ],
       "constraints": [
         {
           "id": "C2",
           "type": "precondition",
-          "text": "Remove the protective foils before attaching the panel.",
+          "text": "Remove protective foils.",
           "attached_to": [
             "S2"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C3",
-          "type": "warning",
-          "text": "Pay attention to the top and bottom of the panel and mark the front with the red dot sticker.",
+          "type": "guard",
+          "text": "Pay attention to top and bottom of the panel.",
           "attached_to": [
             "S2"
-          ]
+          ],
+          "enforcement": "should"
+        },
+        {
+          "id": "C4",
+          "type": "postcondition",
+          "text": "Mark the front with the Red Dot Sticker.",
+          "attached_to": [
+            "S2"
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -75,15 +125,37 @@
       "action_verb": "mount",
       "action_object": "drivers and power supply",
       "arguments": [],
-      "parameters": [],
+      "parameters": [
+        {
+          "name": "Motor Driver",
+          "quantity": 3
+        },
+        {
+          "name": "Motor Power Supply",
+          "quantity": 1
+        },
+        {
+          "name": "C-screw M4-12",
+          "quantity": 6
+        },
+        {
+          "name": "C-screw M4-8",
+          "quantity": 4
+        },
+        {
+          "name": "Lock Nut M4",
+          "quantity": 6
+        }
+      ],
       "constraints": [
         {
-          "id": "C4",
-          "type": "warning",
-          "text": "Pay attention to the position of the motor drivers and motor power supply.",
+          "id": "C5",
+          "type": "guard",
+          "text": "Pay attention to position of motor drivers and motor power supply.",
           "attached_to": [
             "S3"
-          ]
+          ],
+          "enforcement": "should"
         }
       ],
       "flags": {
@@ -100,23 +172,46 @@
       "action_verb": "attach",
       "action_object": "vertical profiles",
       "arguments": [],
-      "parameters": [],
-      "constraints": [
+      "parameters": [
         {
-          "id": "C5",
-          "type": "order",
-          "text": "Attach the brackets to the vertical profiles before attaching them to the frame.",
-          "attached_to": [
-            "S4"
-          ]
+          "name": "Profile 20-150",
+          "quantity": 4
         },
         {
+          "name": "Bracket 20",
+          "quantity": 8
+        },
+        {
+          "name": "Hammer Nut M5",
+          "quantity": 16
+        },
+        {
+          "name": "C-screw M5-8",
+          "quantity": 16
+        },
+        {
+          "name": "Prepared Top Frame (Step 01.1)",
+          "quantity": 1
+        }
+      ],
+      "constraints": [
+        {
           "id": "C6",
-          "type": "postcondition",
-          "text": "Tighten the screws together at the end.",
+          "type": "precondition",
+          "text": "Attach brackets first to the vertical profiles, then to the top and bottom.",
           "attached_to": [
             "S4"
-          ]
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C7",
+          "type": "postcondition",
+          "text": "The final tightening of the screws should be all together at the end.",
+          "attached_to": [
+            "S4"
+          ],
+          "enforcement": "should"
         }
       ],
       "flags": {
@@ -132,6 +227,9 @@
   "relations": [],
   "quality": {
     "annotation_scope": "bounded_excerpt",
-    "review_status": "unreviewed"
+    "review_status": "reviewed",
+    "annotator": "imad",
+    "review_date": "2026-06-13",
+    "review_notes": "Second-pass review. S2.C3 split into C3 (panel orientation warning) + C4 (red dot marking requirement) — original draft conflated two distinct workbook notes. All constraint wording updated to exact source text. Parameters populated from parts-list table. C1 type changed warning -> parameter (per the tolerance row of the constraint-types.md mapping table). IAA NOTE: existing second_pass file is LLM-drafted (review_status='llm_draft') and EXCLUDED from paper IAA per guidelines.md independence rule. Recruit an independent human second annotator before computing kappa."
   }
 }

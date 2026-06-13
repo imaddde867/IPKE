@@ -22,10 +22,20 @@
         {
           "id": "C1",
           "type": "precondition",
-          "text": "Use this branch only when a non-standard sampling or measurement procedure is necessary.",
+          "text": "When it is necessary to use a non-standard sampling or measurement procedure, the project leader will take this action.",
           "attached_to": [
             "S1"
-          ]
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C2",
+          "type": "parameter",
+          "text": "Notification must be in writing (email or memo).",
+          "attached_to": [
+            "S1"
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -44,7 +54,17 @@
       "action_object": "customer agreement",
       "arguments": [],
       "parameters": [],
-      "constraints": [],
+      "constraints": [
+        {
+          "id": "C3",
+          "type": "postcondition",
+          "text": "Document that the customer agrees with the use of a non-standard procedure.",
+          "attached_to": [
+            "S2"
+          ],
+          "enforcement": "must"
+        }
+      ],
       "flags": {
         "safety_critical": false
       },
@@ -63,12 +83,40 @@
       "parameters": [],
       "constraints": [
         {
-          "id": "C2",
-          "type": "documentation",
-          "text": "Record both the request description and why the project required the non-standard procedure.",
+          "id": "C4",
+          "type": "postcondition",
+          "text": "Document in the project file the customer's request and the need for using a non-standard procedure (description of the project request and why it required the use of a non-standard procedure).",
           "attached_to": [
             "S3"
-          ]
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C5",
+          "type": "postcondition",
+          "text": "Non-standard procedures will be fully validated according to Section 4 of this procedure.",
+          "attached_to": [
+            "S3"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C6",
+          "type": "guard",
+          "text": "If the non-standard procedure is not adopted into the scope of the FSB quality system prior to use, any results generated must be clearly identified as being outside the scope of the quality system in the field investigation report.",
+          "attached_to": [
+            "S3"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C7",
+          "type": "reference",
+          "text": "If FSB choose to include the non-standard procedure in the scope of their quality system, this will be done in accordance with the LSASD Operating Procedure for Document Control (LSASDPROC-1000, most recent version).",
+          "attached_to": [
+            "S3"
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -77,7 +125,7 @@
       "provenance": {
         "doc_id": "epa_field_sampling_measurement_procedure_validation",
         "page": "4",
-        "section": "3.2.1"
+        "section": "3.2.1-3.2.3"
       }
     },
     {
@@ -89,12 +137,58 @@
       "parameters": [],
       "constraints": [
         {
-          "id": "C3",
-          "type": "requirement",
-          "text": "The validation plan should address the objective, acceptance criteria, testing level, and peer review.",
+          "id": "C9",
+          "type": "role_assignment",
+          "text": "LSASD FSB management will designate members of the validation team and ensure the team has the necessary resources to complete the validation.",
           "attached_to": [
             "S4"
-          ]
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C10",
+          "type": "postcondition",
+          "text": "The validation team will develop an appropriate field test or evaluation for the operating procedure.",
+          "attached_to": [
+            "S4"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C11",
+          "type": "postcondition",
+          "text": "After completion of the field test or evaluation, the validation team will assess the results against the acceptance criteria.",
+          "attached_to": [
+            "S4"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C12",
+          "type": "postcondition",
+          "text": "If the assessment indicates that the operating procedure meets the acceptance criteria, the procedure is accepted for use.",
+          "attached_to": [
+            "S4"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C13",
+          "type": "postcondition",
+          "text": "The validation team will document all decisions and actions and maintain records of validation.",
+          "attached_to": [
+            "S4"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C14",
+          "type": "role_assignment",
+          "text": "The validation team leader will be responsible for maintaining the records during the validation effort.",
+          "attached_to": [
+            "S4"
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -103,7 +197,7 @@
       "provenance": {
         "doc_id": "epa_field_sampling_measurement_procedure_validation",
         "page": "5",
-        "section": "4.2.1"
+        "section": "4.1.1-4.6.2"
       }
     },
     {
@@ -115,12 +209,22 @@
       "parameters": [],
       "constraints": [
         {
-          "id": "C4",
+          "id": "C15",
+          "type": "precondition",
+          "text": "After a standard or nonstandard procedure has been assessed and accepted for use, staff training must occur before implementation.",
+          "attached_to": [
+            "S5"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C16",
           "type": "postcondition",
           "text": "Document competency for each staff member assigned to implement the procedure.",
           "attached_to": [
             "S5"
-          ]
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -137,6 +241,9 @@
   "relations": [],
   "quality": {
     "annotation_scope": "bounded_excerpt",
-    "review_status": "unreviewed"
+    "review_status": "reviewed",
+    "annotator": "imad",
+    "review_date": "2026-06-13",
+    "review_notes": "Second-pass review. Expanded constraints to capture 3.2.1-3.2.3 (notification format, validation per Section 4, FSB scope inclusion via LSASDPROC-1000) and 4.1.1-4.6.2 (validation definition, team designation, field test development, assessment, acceptance, documentation, leader responsibility). Total: 5 steps, 16 constraints (was 5 steps, 4 constraints). All constraint text source-derived. Step structure kept at 5 (informing/agreement/documentation/validation/training) — defensible alternative would have been to split S4 into 5 sub-steps for sections 4.1-4.5 but that fragments the validation lifecycle. MIGRATION DROP: original C8 'definition' type ('Validation is the confirmation by examination and the provision of objective evidence...') was meta-commentary per the locked taxonomy (constraint-types.md). Considered re-tagging as 'reference' but decided to drop — the EPA SOP does not require the executor to consult the definition to execute the step."
   }
 }

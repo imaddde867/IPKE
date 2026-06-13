@@ -13,12 +13,31 @@
   "steps": [
     {
       "id": "S1",
-      "label": "Verify the data logger, exercise the programmed control sequence, and record the results",
+      "label": "Verify the data logger and exercise the programmed control sequence prior to Station Initiation Team departure",
       "action_verb": "verify",
       "action_object": "data logger operations",
       "arguments": [],
       "parameters": [],
-      "constraints": [],
+      "constraints": [
+        {
+          "id": "C1",
+          "type": "precondition",
+          "text": "The data logger is checked and all operations verified prior to departure of the Station Initiation Team.",
+          "attached_to": [
+            "S1"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C2",
+          "type": "postcondition",
+          "text": "The programmed zero, span, and precision control sequence for the gas analyzers, and other instruments are exercised and recorded.",
+          "attached_to": [
+            "S1"
+          ],
+          "enforcement": "must"
+        }
+      ],
       "flags": {
         "safety_critical": false
       },
@@ -37,12 +56,31 @@
       "parameters": [],
       "constraints": [
         {
-          "id": "C1",
-          "type": "requirement",
-          "text": "Confirm that all data-logger channels are properly sequenced and initialized.",
+          "id": "C3",
+          "type": "postcondition",
+          "text": "The programmed actuation of the various flow sampling systems are tested, and the resultant flows are measured on the respective sample lines.",
           "attached_to": [
             "S2"
-          ]
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C4",
+          "type": "guard",
+          "text": "All channels on the data logger are properly sequenced and initialized.",
+          "attached_to": [
+            "S2"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C5",
+          "type": "postcondition",
+          "text": "The communications equipment is tested to ensure proper functioning.",
+          "attached_to": [
+            "S2"
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -56,19 +94,29 @@
     },
     {
       "id": "S3",
-      "label": "Test the telephone, modem, and router connections after calibration is complete",
+      "label": "Test the telephone and modem connections after calibration is complete",
       "action_verb": "test",
       "action_object": "communications connections",
       "arguments": [],
       "parameters": [],
       "constraints": [
         {
-          "id": "C2",
+          "id": "C6",
           "type": "precondition",
-          "text": "Complete system calibration and confirm the equipment is operating before testing communications.",
+          "text": "After all systems are calibrated and all equipment is operating, the telephone and modems connections are tested.",
           "attached_to": [
             "S3"
-          ]
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C7",
+          "type": "postcondition",
+          "text": "The data logger is equipped with a cellular modem and a network router (the \"communications backplane\") mounted near the data logger backplane; the modem allows WSP remote access to the data logger, stored data, ozone analyzer, and site laptop.",
+          "attached_to": [
+            "S3"
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -82,19 +130,47 @@
     },
     {
       "id": "S4",
-      "label": "Inventory onsite support materials before the station initiation team departs",
+      "label": "Inventory onsite support materials and familiarize the site operator with shipping and contact protocols",
       "action_verb": "inventory",
       "action_object": "support materials",
       "arguments": [],
       "parameters": [],
       "constraints": [
         {
-          "id": "C3",
-          "type": "requirement",
-          "text": "Keep enough materials onsite for at least one calendar quarter of uninterrupted operation.",
+          "id": "C8",
+          "type": "precondition",
+          "text": "Prior to departure of the Station Initiation Team, all onsite support materials are inventoried.",
           "attached_to": [
             "S4"
-          ]
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C9",
+          "type": "parameter",
+          "text": "The quantity of materials onsite should be sufficient to ensure uninterrupted operation for at least one calendar quarter.",
+          "attached_to": [
+            "S4"
+          ],
+          "enforcement": "should"
+        },
+        {
+          "id": "C10",
+          "type": "postcondition",
+          "text": "The site operator is familiarized with the mailing and shipping protocols, FedEx account and procedures, U.S. Postal Service Return Merchandise account, and contact points (work and home telephone numbers) for key personnel on the CASTNET project.",
+          "attached_to": [
+            "S4"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C11",
+          "type": "postcondition",
+          "text": "A large calendar showing sample dates, maintenance schedules, data shipment dates, and site visit dates is installed in the shelter.",
+          "attached_to": [
+            "S4"
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -115,12 +191,49 @@
       "parameters": [],
       "constraints": [
         {
-          "id": "C4",
-          "type": "documentation",
-          "text": "Check calibration forms for completeness and add narrative log entries for significant installation tasks.",
+          "id": "C12",
+          "type": "precondition",
+          "text": "Prior to departure of the Station Initiation Team, all site operations are reviewed with the site operator providing a hands-on demonstration of performance of all tasks.",
           "attached_to": [
             "S5"
-          ]
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C13",
+          "type": "postcondition",
+          "text": "The Station Initiation Team checks all electronic calibration forms for completeness and makes entries in the site narrative log to document the calibrations and other significant installation-related tasks performed.",
+          "attached_to": [
+            "S5"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C14",
+          "type": "postcondition",
+          "text": "Copies of all calibration forms and property inventories are maintained both onsite and at the WSP Gainesville office.",
+          "attached_to": [
+            "S5"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C15",
+          "type": "postcondition",
+          "text": "Equipment shortages or discrepancies, if any, are noted and corrective actions initiated.",
+          "attached_to": [
+            "S5"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C16",
+          "type": "precondition",
+          "text": "Site-specific inventory forms (documenting model numbers and EPA barcodes) are verified prior to departure of the Station Initiation Team; upon return to the WSP office, the Team Leader submits the verified inventory document for cross checking with the database inventory file.",
+          "attached_to": [
+            "S5"
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -131,12 +244,60 @@
         "page": "7-8",
         "section": "6.3.5"
       }
+    },
+    {
+      "id": "S6",
+      "label": "Provide the initial site operator training seminar onsite",
+      "action_verb": "train",
+      "action_object": "site operator",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C17",
+          "type": "precondition",
+          "text": "Potential site operators are required to attend and successfully complete a training seminar provided onsite.",
+          "attached_to": [
+            "S6"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C18",
+          "type": "parameter",
+          "text": "Training topics include a CASTNET overview, the operations of sampling equipment and procedures, and the importance of documentation.",
+          "attached_to": [
+            "S6"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C19",
+          "type": "parameter",
+          "text": "The training plan consists of an overview of general project operations and goals, and provides intensive instruction in specific site operator responsibilities.",
+          "attached_to": [
+            "S6"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+        "page": "8",
+        "section": "6.4.1"
+      }
     }
   ],
   "constraints": [],
   "relations": [],
   "quality": {
     "annotation_scope": "bounded_excerpt",
-    "review_status": "unreviewed"
+    "review_status": "reviewed",
+    "annotator": "imad",
+    "review_date": "2026-06-13",
+    "review_notes": "Second-pass review. Added S6 (6.4.1 initial operator training) which was in scope but missing from draft. Heavily expanded constraints: S1 +2, S2 +2, S3 +1, S4 +3 (operator-familiarization, calendar install), S5 +4 (hands-on demo, copy maintenance, corrective actions, inventory verification), S6 +3. Total: 6 steps, 19 constraints (was 5 steps, 4 constraints). All constraint text drawn from source verbatim or near-verbatim. 6.3.6 (Site Collocation) intentionally omitted — applies to designated collocated sites, not the standard initiation flow."
   }
 }

@@ -162,10 +162,26 @@
           "type": "string"
         },
         "type": {
-          "type": "string"
+          "type": "string",
+          "description": "Constraint type per docs/annotation/constraint-types.md. Locked vocabulary for paper-grade (reviewed) annotations enforced by the paper validator; permissive for unreviewed drafts."
+        },
+        "enforcement": {
+          "type": "string",
+          "enum": ["must", "should", "may"],
+          "description": "Source-text modal verb classification per docs/annotation/guidelines.md."
         },
         "text": {
           "type": "string"
+        },
+        "attached_to": {
+          "type": [
+            "string",
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string"
+          }
         },
         "applies_to": {
           "type": [
