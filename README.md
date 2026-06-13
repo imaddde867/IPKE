@@ -1,19 +1,21 @@
 # IPKE — Industrial Procedural Knowledge Extraction
 
-Thesis-grade, privacy-preserving pipeline that reconstructs Procedural Knowledge Graphs (PKG) from safety-critical industrial manuals for human-in-the-loop validation and decision-support integration (Thesis Abstract).
+**Target:** ECIR 2027 Resource Paper — *IPKE-Bench: A Constraint-Aware Benchmark for Procedural Knowledge Extraction from Safety-Critical Industrial Documents*
 
-## Validated Impact
+A local, privacy-preserving pipeline and benchmark for extracting structured Procedural Knowledge Graphs (PKGs) from industrial safety procedures. IPKE makes constraint attachment a first-class evaluation task — prior benchmarks measure step coverage and graph structure but leave constraint-to-step linking unmeasured. The accompanying dataset (IPKE-Bench) is the primary contribution; IPKE provides the reproducible local baseline.
 
-- **Local privacy preservation** — IPKE processes sensitive SOPs entirely on-prem via quantised 7B models, avoiding external APIs while maintaining schema fidelity (Thesis Abstract, §6.6).
-- **Two-Stage Decomposition (P3)** — P3 delivers Step F1 = 0.377 and Φ = 0.611 across Tier-A documents (Table 10) and Φ = 0.699 with 75% constraint coverage on the 3M SOP, outperforming Llama-3.1-70B zero-shot (Φ = 0.187, 0% coverage) and even its own P3 setup (Φ = 0.439, 50% coverage) (Table 12).
-- **Constraint-focused PKGs** — Constraint coverage rises from ≈0% under baseline prompting to 0.708 with P3 (Table 10), yielding queryable PKGs where GUARD edges bind safety rules to each procedural step (Fig. 11).
+## Primary Contributions (ECIR Resource Track)
 
-![Efficiency Frontier](assets/efficiency_frontier_phi.png)
+1. **IPKE-Bench dataset** — 12–15 publicly licensed industrial/safety-procedure documents with human-reviewed step, constraint, and attachment annotations (κ ≥ 0.61 for all IAA pairs).
+2. **Constraint Attachment Evaluation** — fuzzy semantic alignment metric (cosine ≥ 0.75) and strict exact-match for constraint-to-step edges. Not measured in PAGED, CAMB, or KEO.
+3. **Local Baselines** — P0 (zero-shot fixed), DSC+P3 (two-stage structured), reproducible across 5 seeds with 95% CIs and paired bootstrap.
+4. **Constraint-Aware Retrieval Task** — queries targeting specific constraint types (guard, parameter, precondition). Text-chunk RAG vs PKG-backed retrieval comparison.
+5. **Reproducibility Package** — dataset datasheet, annotation guidelines, one-command evaluator, loader, and re-run harness.
 
 ## Method Kernel
 
-- **Dual Semantic Chunking (DSC)** aligns document headings with embedding-based cohesion to limit context fragmentation for mid-sized models (Thesis §4.1).
-- **P3 — Two-Stage Decomposition** decouples ordered step extraction from constraint attachment, eliminating schema drift seen in zero-shot and chain-of-thought baselines (Thesis §4.2–5.4).
+- **Dual Semantic Chunker (DSC)** — global DP objective over heading-aligned embeddings: `J(B) = Σ H(b) − λ|B|` with heading bonus β·𝟙[j is heading].
+- **P3 Two-Stage Decomposition** — decouples step extraction (Stage 1) from constraint attachment (Stage 2, with mandatory step-ID back-reference). Reduces schema drift in mid-size models.
 
 ## Reproducible Commands
 
