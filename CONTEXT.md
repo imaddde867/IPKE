@@ -1,6 +1,10 @@
 # IPKE
 
-A local, privacy-preserving pipeline for extracting structured procedural knowledge from safety-critical industrial documents, producing validated Procedural Knowledge Graphs (PKGs) suitable for decision support and human-in-the-loop workflows.
+**Primary target**: ECIR 2027 Resource Paper — *IPKE-Bench: A Constraint-Aware Benchmark for Procedural Knowledge Extraction from Safety-Critical Industrial Documents* (12 pages, single-blind). Abstract due **12 Oct 2026**, paper due **2 Nov 2026**.
+
+The paper's primary contribution is the **benchmark**, not the method. IPKE is the reproducible local baseline that demonstrates the benchmark's utility.
+
+A local, privacy-preserving pipeline and benchmark for extracting structured Procedural Knowledge Graphs (PKGs) from safety-critical industrial documents. IPKE-Bench makes **constraint attachment** a first-class evaluation task — prior work (PAGED, KEO, CAMB) measures steps and graph structure but does not measure whether constraints are correctly bound to the steps they govern.
 
 ## Language
 
