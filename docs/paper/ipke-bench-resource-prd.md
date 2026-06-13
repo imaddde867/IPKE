@@ -31,7 +31,11 @@ Without that edge:
 - A retrieval system over an extracted PKG cannot answer "what must hold before step X" without an explicit attached_to / applies_to edge.
 - An LLM-drafted gold (or extractor output) can score well on step F1 while completely missing the safety scaffolding around the procedural backbone.
 
-The seed corpus already exhibits the phenomenon. LLM-drafted gold across 8 documents produced **3.69×** fewer constraints than the reviewed gold (32 vs 118). Even under the Tier-A protocol matcher (SBERT cos ≥ 0.75 against the reviewed text), the draft recovered only **20.3% of constraints**; at a looser 0.50 threshold the recall is 61%. The expansion ratio is the unambiguous claim independent of matcher choice. See `datasets/paper/reports/constraint_blindness_v2_sbert075.json` and `datasets/paper/reports/constraint_blindness_v2_sbert050.json`. This is the §1 motivating result of the paper.
+The seed corpus already exhibits the phenomenon. The headline finding is matcher-independent: **LLM-drafted gold across 8 documents produced 3.69× fewer constraints than the reviewed gold (32 vs 118)**. Even when every produced constraint maps to one in gold (best case), the LLM under-produces by 73% of the reviewed total.
+
+Recall numbers depend on the chosen matcher and threshold; the paper reports both extremes for transparency. At the Tier-A protocol matcher (SBERT cos ≥ 0.75 over the constraint text) the draft recovers 20.3%; at a loose cos ≥ 0.50 it recovers 61.0% — see `datasets/paper/reports/constraint_blindness_v2_sbert075.json` and `_sbert050.json`. The per-type breakdown is presented with the threshold attached inline (not as standalone headline numbers), because small per-type sample sizes (n=2 for `reference`, n=9 for `role_assignment`) make extreme recall values brittle.
+
+The durable claim for §1 is the 3.69× under-production, not the per-type recall percentages.
 
 ## Intended users
 
