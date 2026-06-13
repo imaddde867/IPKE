@@ -17,12 +17,17 @@
       "action_verb": "assemble",
       "action_object": "electronic box frame",
       "arguments": [],
-      "parameters": [],
+      "parameters": [
+        {"name": "Profile 20-400", "quantity": 8},
+        {"name": "Bracket 20", "quantity": 8},
+        {"name": "Hammer Nut M5", "quantity": 16},
+        {"name": "C-screw M5-8", "quantity": 16}
+      ],
       "constraints": [
         {
           "id": "C1",
-          "type": "warning",
-          "text": "The frame does not need to be absolutely precise at this stage.",
+          "type": "tolerance",
+          "text": "Not necessary to be absolutely precise.",
           "attached_to": [
             "S1"
           ]
@@ -42,12 +47,18 @@
       "action_verb": "install",
       "action_object": "bottom panel",
       "arguments": [],
-      "parameters": [],
+      "parameters": [
+        {"name": "Box Bottom Panel", "quantity": 1},
+        {"name": "Hammer Nut M5", "quantity": 6},
+        {"name": "C-screw M5-8", "quantity": 6},
+        {"name": "Red Dot Sticker", "quantity": 1},
+        {"name": "Prepared Bottom Frame (Step 01.1)", "quantity": 1}
+      ],
       "constraints": [
         {
           "id": "C2",
           "type": "precondition",
-          "text": "Remove the protective foils before attaching the panel.",
+          "text": "Remove protective foils.",
           "attached_to": [
             "S2"
           ]
@@ -55,7 +66,15 @@
         {
           "id": "C3",
           "type": "warning",
-          "text": "Pay attention to the top and bottom of the panel and mark the front with the red dot sticker.",
+          "text": "Pay attention to top and bottom of the panel.",
+          "attached_to": [
+            "S2"
+          ]
+        },
+        {
+          "id": "C4",
+          "type": "requirement",
+          "text": "Mark the front with the Red Dot Sticker.",
           "attached_to": [
             "S2"
           ]
@@ -75,12 +94,18 @@
       "action_verb": "mount",
       "action_object": "drivers and power supply",
       "arguments": [],
-      "parameters": [],
+      "parameters": [
+        {"name": "Motor Driver", "quantity": 3},
+        {"name": "Motor Power Supply", "quantity": 1},
+        {"name": "C-screw M4-12", "quantity": 6},
+        {"name": "C-screw M4-8", "quantity": 4},
+        {"name": "Lock Nut M4", "quantity": 6}
+      ],
       "constraints": [
         {
-          "id": "C4",
+          "id": "C5",
           "type": "warning",
-          "text": "Pay attention to the position of the motor drivers and motor power supply.",
+          "text": "Pay attention to position of motor drivers and motor power supply.",
           "attached_to": [
             "S3"
           ]
@@ -100,20 +125,26 @@
       "action_verb": "attach",
       "action_object": "vertical profiles",
       "arguments": [],
-      "parameters": [],
+      "parameters": [
+        {"name": "Profile 20-150", "quantity": 4},
+        {"name": "Bracket 20", "quantity": 8},
+        {"name": "Hammer Nut M5", "quantity": 16},
+        {"name": "C-screw M5-8", "quantity": 16},
+        {"name": "Prepared Top Frame (Step 01.1)", "quantity": 1}
+      ],
       "constraints": [
         {
-          "id": "C5",
+          "id": "C6",
           "type": "order",
-          "text": "Attach the brackets to the vertical profiles before attaching them to the frame.",
+          "text": "Attach brackets first to the vertical profiles, then to the top and bottom.",
           "attached_to": [
             "S4"
           ]
         },
         {
-          "id": "C6",
+          "id": "C7",
           "type": "postcondition",
-          "text": "Tighten the screws together at the end.",
+          "text": "The final tightening of the screws should be all together at the end.",
           "attached_to": [
             "S4"
           ]
@@ -132,6 +163,9 @@
   "relations": [],
   "quality": {
     "annotation_scope": "bounded_excerpt",
-    "review_status": "unreviewed"
+    "review_status": "reviewed",
+    "annotator": "imad",
+    "review_date": "2026-06-13",
+    "review_notes": "Second-pass review. S2.C3 split into C3 (panel orientation warning) + C4 (red dot marking requirement) — original draft conflated two distinct workbook notes. All constraint wording updated to exact source text. Parameters populated from parts-list table. C1 type changed warning -> tolerance (more accurate semantic). IAA NOTE: second_pass annotation missed C1 (precision tolerance) and the red-dot/orientation pair (now C3/C4) — likely because annotator B treated workbook table cells as parts-list captions rather than constraints. This is the κ=0.531 cause. Re-annotate second_pass to match this review for IAA recomputation."
   }
 }
