@@ -1,25 +1,42 @@
-# Paper Dataset Workspace
+# IPKE-Bench Dataset Workspace
 
-This directory is for ECIR 2027 paper documents added after the thesis archive.
+ECIR 2027 Resource Paper benchmark dataset. Primary contribution of the paper.
+
+## Target
+
+12–15 publicly licensed industrial / safety-procedure documents with human-reviewed step, constraint, and **constraint attachment** annotations. All gold files must reach `quality.review_status = "reviewed"` before inclusion in any reported result.
 
 ## Layout
 
-- `text/` - plain-text public SOP/manual documents used for experiments.
-- `gold/` - Tier A gold annotations using the same schema as `datasets/archive/test_data/gold/`.
+- `text/` — plain-text extracted source documents.
+- `gold/` — Tier-A gold annotations (step, constraint, attachment). Schema: `schemas/ipke_annotation.schema.json`.
+- `second_pass/` — independent second annotations for IAA computation.
+- `reports/` — IAA reports and annotation statistics.
+
+## Document Selection Criteria
+
+Priority: publicly licensable, stable URL, citable, varied procedure types and domains.
+
+1. Safety/regulatory: NASA NPR, EPA guidance, OSHA PSM examples, HSE UK
+2. Equipment / maintenance: OLSK CNC, USGS field sampling, public maintenance SOPs
+3. Quality / process: ISO-aligned public process guides
+
+Avoid: partner-private SOPs (index separately under `datasets/private/` with access gating).
 
 ## Rules
 
 - Do not mutate `datasets/archive/` gold annotations.
-- Do not commit partner-private SOPs.
-- Prefer public documents with stable URLs and licenses.
-- Record source URL, access date, license, conversion command, and any extraction caveat in the experiment run metadata.
-- Keep document IDs stable once gold annotation starts.
+- Do not commit partner-private SOPs to this directory.
+- Keep document IDs stable once annotation starts.
+- Record source URL, access date, license, and conversion command in the gold file's `metadata.source` field.
 
 ## Validation
 
-Before running paper experiments, each new gold file must parse as JSON and include:
+Every gold file must:
 
-- `steps`
-- `constraints`
-- stable step IDs
-- stable constraint IDs
+1. Parse as valid JSON against `schemas/ipke_annotation.schema.json`.
+2. Contain `steps`, `constraints`, stable step IDs, stable constraint IDs.
+3. Have `quality.review_status = "reviewed"` for paper inclusion.
+4. Have `quality.token_label_kappa ≥ 0.61` if a second-pass pair exists.
+
+Run: `uv run python scripts/validate_gold.py datasets/paper/gold/`
