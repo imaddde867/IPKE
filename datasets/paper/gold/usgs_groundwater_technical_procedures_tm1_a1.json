@@ -38,19 +38,12 @@
       "constraints": [
         {
           "id": "C1",
-          "type": "requirement",
+          "type": "parameter",
           "text": "Pull the tape across a piece of blue carpenter's chalk.",
           "attached_to": [
             "S2"
-          ]
-        },
-        {
-          "id": "C2",
-          "type": "purpose",
-          "text": "A wetted chalk mark will identify that part of the tape that was submerged.",
-          "attached_to": [
-            "S2"
-          ]
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -89,27 +82,30 @@
       "constraints": [
         {
           "id": "C3",
-          "type": "warning",
+          "type": "guard",
           "text": "The weight and tape should be lowered into the water slowly to prevent splashing.",
           "attached_to": [
             "S4"
-          ]
+          ],
+          "enforcement": "should"
         },
         {
           "id": "C4",
-          "type": "requirement",
+          "type": "parameter",
           "text": "Place the thumb and index finger on the tape graduation that is 0.01 less than the next whole foot mark; continue to lower the end of the tape into the well until the thumb and index finger meet the MP.",
           "attached_to": [
             "S4"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C5",
-          "type": "documentation",
+          "type": "postcondition",
           "text": "Record the graduation value (the HOLD) in the Hold column of the water-level measurement field form.",
           "attached_to": [
             "S4"
-          ]
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -131,27 +127,30 @@
       "constraints": [
         {
           "id": "C6",
-          "type": "warning",
+          "type": "guard",
           "text": "Bring the tape to the surface rapidly before the wetted chalk mark dries and becomes difficult to read.",
           "attached_to": [
             "S5"
-          ]
+          ],
+          "enforcement": "should"
         },
         {
           "id": "C7",
-          "type": "documentation",
+          "type": "postcondition",
           "text": "Record the length of the wetted chalk (the CUT) in the Cut row of the water-level measurement field form.",
           "attached_to": [
             "S5"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C8",
-          "type": "documentation",
+          "type": "postcondition",
           "text": "Record the time of the measurement in the \"Time\" row of the form.",
           "attached_to": [
             "S5"
-          ]
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -173,11 +172,12 @@
       "constraints": [
         {
           "id": "C9",
-          "type": "documentation",
+          "type": "postcondition",
           "text": "Record this number in the \"WL below MP\" column of the water-level measurement field form. The difference between the HOLD and the CUT is the depth to water below the MP.",
           "attached_to": [
             "S6"
-          ]
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -199,11 +199,12 @@
       "constraints": [
         {
           "id": "C10",
-          "type": "requirement",
+          "type": "guard",
           "text": "If the tape-calibration procedure indicates that a correction is needed at a given water-level depth or for a given water-level range, apply that correction to the \"WL below MP\" value by adding or subtracting the appropriate correction.",
           "attached_to": [
             "S7"
-          ]
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -225,35 +226,39 @@
       "constraints": [
         {
           "id": "C11",
-          "type": "requirement",
+          "type": "parameter",
           "text": "The MP correction is positive if the MP is above land surface and is negative if the MP is below land surface (see GWPD 3).",
           "attached_to": [
             "S8"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C12",
-          "type": "documentation",
+          "type": "postcondition",
           "text": "Subtract the MP correction from the \"WL below MP\" value to get the depth to water below or above land-surface datum.",
           "attached_to": [
             "S8"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C13",
-          "type": "documentation",
+          "type": "postcondition",
           "text": "Record the water level in the \"WL below LSD\" column of the water-level measurement field form.",
           "attached_to": [
             "S8"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C14",
-          "type": "requirement",
+          "type": "parameter",
           "text": "If the water level is above LSD, record the depth to water in feet below land surface as a negative number.",
           "attached_to": [
             "S8"
-          ]
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -275,11 +280,12 @@
       "constraints": [
         {
           "id": "C15",
-          "type": "requirement",
+          "type": "parameter",
           "text": "The check measurement should be made using a different HOLD value than that used for the original measurement.",
           "attached_to": [
             "S9"
-          ]
+          ],
+          "enforcement": "should"
         }
       ],
       "flags": {

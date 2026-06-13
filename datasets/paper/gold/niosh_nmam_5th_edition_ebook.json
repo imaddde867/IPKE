@@ -18,8 +18,14 @@
       "action_object": "personal sampling pump",
       "arguments": [],
       "parameters": [
-        {"name": "flow_rate", "value": "1-3 L/min"},
-        {"name": "sampler", "value": "1-µm PTFE filter in cassette holder"}
+        {
+          "name": "flow_rate",
+          "value": "1-3 L/min"
+        },
+        {
+          "name": "sampler",
+          "value": "1-µm PTFE filter in cassette holder"
+        }
       ],
       "constraints": [],
       "flags": {
@@ -37,18 +43,28 @@
       "action_object": "air sample",
       "arguments": [],
       "parameters": [
-        {"name": "flow_rate", "value": "1-3 L/min"},
-        {"name": "sample_volume_min", "value": "50 L @ 0.1 mg/m3"},
-        {"name": "sample_volume_max", "value": "1000 L"}
+        {
+          "name": "flow_rate",
+          "value": "1-3 L/min"
+        },
+        {
+          "name": "sample_volume_min",
+          "value": "50 L @ 0.1 mg/m3"
+        },
+        {
+          "name": "sample_volume_max",
+          "value": "1000 L"
+        }
       ],
       "constraints": [
         {
           "id": "C1",
-          "type": "requirement",
+          "type": "parameter",
           "text": "Sample at an accurately known flow rate.",
           "attached_to": [
             "S2"
-          ]
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -69,11 +85,12 @@
       "constraints": [
         {
           "id": "C2",
-          "type": "requirement",
+          "type": "guard",
           "text": "Cap the cassettes and pack securely for shipment.",
           "attached_to": [
             "S3"
-          ]
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -91,11 +108,30 @@
       "action_object": "Eluent A into beaker",
       "arguments": [],
       "parameters": [
-        {"name": "eluent_type", "value": "Eluent A (2.4 mM HCO3-/1.9 mM CO32-/1.0 mM B4O72-)"},
-        {"name": "eluent_volume", "value": "25 mL"},
-        {"name": "beaker_capacity", "value": "50 mL"}
+        {
+          "name": "eluent_type",
+          "value": "Eluent A (2.4 mM HCO3-/1.9 mM CO32-/1.0 mM B4O72-)"
+        },
+        {
+          "name": "eluent_volume",
+          "value": "25 mL"
+        },
+        {
+          "name": "beaker_capacity",
+          "value": "50 mL"
+        }
       ],
-      "constraints": [],
+      "constraints": [
+        {
+          "id": "C12",
+          "type": "parameter",
+          "enforcement": "must",
+          "text": "Use a clean 50-mL beaker.",
+          "attached_to": [
+            "S4"
+          ]
+        }
+      ],
       "flags": {
         "safety_critical": true
       },
@@ -114,19 +150,21 @@
       "constraints": [
         {
           "id": "C3",
-          "type": "requirement",
+          "type": "parameter",
           "text": "Open the cassette and remove the PTFE filter with clean forceps.",
           "attached_to": [
             "S5"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C4",
-          "type": "requirement",
+          "type": "parameter",
           "text": "Place the exposed side of the filter in contact with the solution.",
           "attached_to": [
             "S5"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C5",
@@ -134,7 +172,8 @@
           "text": "Cover beaker after transferring the filter.",
           "attached_to": [
             "S5"
-          ]
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -152,17 +191,24 @@
       "action_object": "sample beaker",
       "arguments": [],
       "parameters": [
-        {"name": "agitation_time", "value": "30 min"},
-        {"name": "storage_temperature", "value": "ca. 4 °C"}
+        {
+          "name": "agitation_time",
+          "value": "30 min"
+        },
+        {
+          "name": "storage_temperature",
+          "value": "ca. 4 °C"
+        }
       ],
       "constraints": [
         {
           "id": "C6",
-          "type": "storage",
+          "type": "parameter",
           "text": "If the extracts will not be analyzed immediately, store at ca. 4 °C until measurement.",
           "attached_to": [
             "S6"
-          ]
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -177,33 +223,61 @@
   "constraints": [
     {
       "id": "C7",
-      "type": "warning",
+      "type": "guard",
       "text": "Wear gloves, lab coat, and safety glasses while handling chemicals.",
-      "applies_to": ["S1", "S2", "S3", "S4", "S5", "S6"]
+      "applies_to": [
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5",
+        "S6"
+      ],
+      "enforcement": "should"
     },
     {
       "id": "C8",
-      "type": "warning",
+      "type": "guard",
       "text": "All work should be performed in a fume hood.",
-      "applies_to": ["S4", "S5", "S6"]
+      "applies_to": [
+        "S4",
+        "S5",
+        "S6"
+      ],
+      "enforcement": "should"
     },
     {
       "id": "C9",
-      "type": "warning",
+      "type": "guard",
       "text": "Potassium persulfate is a powerful oxidizing agent.",
-      "applies_to": ["S4", "S5", "S6"]
+      "applies_to": [
+        "S4",
+        "S5",
+        "S6"
+      ],
+      "enforcement": "should"
     },
     {
       "id": "C10",
-      "type": "warning",
+      "type": "guard",
       "text": "Arsine gas is extremely toxic and can be fatal.",
-      "applies_to": ["S4", "S5", "S6"]
+      "applies_to": [
+        "S4",
+        "S5",
+        "S6"
+      ],
+      "enforcement": "should"
     },
     {
       "id": "C11",
-      "type": "warning",
+      "type": "guard",
       "text": "The arsenic compounds used in the stock standards are poisonous.",
-      "applies_to": ["S4", "S5", "S6"]
+      "applies_to": [
+        "S4",
+        "S5",
+        "S6"
+      ],
+      "enforcement": "should"
     }
   ],
   "relations": [],

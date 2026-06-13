@@ -21,35 +21,39 @@
       "constraints": [
         {
           "id": "C1",
-          "type": "requirement",
+          "type": "parameter",
           "text": "SOPs should be written with sufficient detail so that someone with limited experience with or knowledge of the procedure, but with a basic understanding, can successfully reproduce the procedure when unsupervised.",
           "attached_to": [
             "S1"
-          ]
+          ],
+          "enforcement": "should"
         },
         {
           "id": "C2",
-          "type": "requirement",
+          "type": "postcondition",
           "text": "The experience requirement for performing an activity should be noted in the section on personnel qualifications.",
           "attached_to": [
             "S1"
-          ]
+          ],
+          "enforcement": "should"
         },
         {
           "id": "C3",
-          "type": "requirement",
+          "type": "postcondition",
           "text": "Any checklists or forms included as part of an activity should be referenced at the points in the procedure where they are to be used and then attached to the SOP.",
           "attached_to": [
             "S1"
-          ]
+          ],
+          "enforcement": "should"
         },
         {
           "id": "C4",
-          "type": "requirement",
+          "type": "postcondition",
           "text": "When detailed checklists are prepared specifically for a given activity, the SOP should describe, at least generally, how the checklist is to be prepared, or on what it is to be based.",
           "attached_to": [
             "S1"
-          ]
+          ],
+          "enforcement": "should"
         }
       ],
       "flags": {
@@ -71,27 +75,30 @@
       "constraints": [
         {
           "id": "C5",
-          "type": "requirement",
+          "type": "role_assignment",
           "text": "SOPs should be reviewed (that is, validated) by one or more individuals with appropriate training and experience with the process.",
           "attached_to": [
             "S2"
-          ]
+          ],
+          "enforcement": "should"
         },
         {
           "id": "C6",
-          "type": "recommendation",
+          "type": "guard",
           "text": "Draft SOPs should be tested by individuals other than the original writer before the SOPs are finalized.",
           "attached_to": [
             "S2"
-          ]
+          ],
+          "enforcement": "should"
         },
         {
           "id": "C7",
-          "type": "approval",
+          "type": "precondition",
           "text": "Finalized SOPs should be approved as described in the organization's Quality Management Plan or its own SOP for preparation of SOPs.",
           "attached_to": [
             "S2"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C8",
@@ -99,15 +106,17 @@
           "text": "Generally the immediate supervisor, such as a section or branch chief, and the organization's quality assurance officer review and approve each SOP.",
           "attached_to": [
             "S2"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C9",
-          "type": "permission",
+          "type": "guard",
           "text": "Per the Government Paperwork Elimination Act of 1998, use of electronic signatures, as well as electronic maintenance and submission, is an acceptable substitution for paper, when practical.",
           "attached_to": [
             "S2"
-          ]
+          ],
+          "enforcement": "may"
         }
       ],
       "flags": {
@@ -129,43 +138,48 @@
       "constraints": [
         {
           "id": "C10",
-          "type": "requirement",
+          "type": "postcondition",
           "text": "Whenever procedures are changed, SOPs should be updated and re-approved.",
           "attached_to": [
             "S3"
-          ]
+          ],
+          "enforcement": "should"
         },
         {
           "id": "C11",
-          "type": "review_cycle",
+          "type": "parameter",
           "text": "SOPs should be systematically reviewed on a periodic basis, e.g. every 1-2 years, to ensure that the policies and procedures remain current and appropriate, or to determine whether the SOPs are even needed.",
           "attached_to": [
             "S3"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C12",
-          "type": "requirement",
+          "type": "guard",
           "text": "If an SOP describes a process that is no longer followed, it should be withdrawn from the current file and archived.",
           "attached_to": [
             "S3"
-          ]
+          ],
+          "enforcement": "should"
         },
         {
           "id": "C13",
-          "type": "guideline",
+          "type": "guard",
           "text": "The review process should not be overly cumbersome to encourage timely review.",
           "attached_to": [
             "S3"
-          ]
+          ],
+          "enforcement": "should"
         },
         {
           "id": "C14",
-          "type": "requirement",
+          "type": "postcondition",
           "text": "The frequency of review should be indicated by management in the organization's Quality Management Plan.",
           "attached_to": [
             "S3"
-          ]
+          ],
+          "enforcement": "should"
         },
         {
           "id": "C15",
@@ -173,7 +187,8 @@
           "text": "The Quality Management Plan should indicate the individual(s) responsible for ensuring that SOPs are current.",
           "attached_to": [
             "S3"
-          ]
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -195,11 +210,12 @@
       "constraints": [
         {
           "id": "C16",
-          "type": "documentation",
+          "type": "postcondition",
           "text": "The master list file or database should indicate the SOP number, version number, date of issuance, title, author, status, organizational division, branch, section, and any historical information regarding past versions.",
           "attached_to": [
             "S4"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C17",
@@ -207,15 +223,17 @@
           "text": "The QA Manager (or designee) is generally the individual responsible for maintaining a file listing all current quality-related SOPs used within the organization.",
           "attached_to": [
             "S4"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C18",
-          "type": "recommendation",
+          "type": "guard",
           "text": "If an electronic database is used, automatic \"Review SOP\" notices can be sent.",
           "attached_to": [
             "S4"
-          ]
+          ],
+          "enforcement": "should"
         }
       ],
       "flags": {

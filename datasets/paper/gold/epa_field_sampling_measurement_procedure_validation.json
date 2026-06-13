@@ -25,15 +25,17 @@
           "text": "When it is necessary to use a non-standard sampling or measurement procedure, the project leader will take this action.",
           "attached_to": [
             "S1"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C2",
-          "type": "requirement",
+          "type": "parameter",
           "text": "Notification must be in writing (email or memo).",
           "attached_to": [
             "S1"
-          ]
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -55,11 +57,12 @@
       "constraints": [
         {
           "id": "C3",
-          "type": "documentation",
+          "type": "postcondition",
           "text": "Document that the customer agrees with the use of a non-standard procedure.",
           "attached_to": [
             "S2"
-          ]
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -81,35 +84,39 @@
       "constraints": [
         {
           "id": "C4",
-          "type": "documentation",
+          "type": "postcondition",
           "text": "Document in the project file the customer's request and the need for using a non-standard procedure (description of the project request and why it required the use of a non-standard procedure).",
           "attached_to": [
             "S3"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C5",
-          "type": "requirement",
+          "type": "postcondition",
           "text": "Non-standard procedures will be fully validated according to Section 4 of this procedure.",
           "attached_to": [
             "S3"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C6",
-          "type": "requirement",
+          "type": "guard",
           "text": "If the non-standard procedure is not adopted into the scope of the FSB quality system prior to use, any results generated must be clearly identified as being outside the scope of the quality system in the field investigation report.",
           "attached_to": [
             "S3"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C7",
-          "type": "requirement",
+          "type": "reference",
           "text": "If FSB choose to include the non-standard procedure in the scope of their quality system, this will be done in accordance with the LSASD Operating Procedure for Document Control (LSASDPROC-1000, most recent version).",
           "attached_to": [
             "S3"
-          ]
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -130,52 +137,49 @@
       "parameters": [],
       "constraints": [
         {
-          "id": "C8",
-          "type": "definition",
-          "text": "Validation is the confirmation by examination and the provision of objective evidence that particular requirements for a specific intended use are fulfilled.",
-          "attached_to": [
-            "S4"
-          ]
-        },
-        {
           "id": "C9",
           "type": "role_assignment",
           "text": "LSASD FSB management will designate members of the validation team and ensure the team has the necessary resources to complete the validation.",
           "attached_to": [
             "S4"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C10",
-          "type": "requirement",
+          "type": "postcondition",
           "text": "The validation team will develop an appropriate field test or evaluation for the operating procedure.",
           "attached_to": [
             "S4"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C11",
-          "type": "requirement",
+          "type": "postcondition",
           "text": "After completion of the field test or evaluation, the validation team will assess the results against the acceptance criteria.",
           "attached_to": [
             "S4"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C12",
-          "type": "requirement",
+          "type": "postcondition",
           "text": "If the assessment indicates that the operating procedure meets the acceptance criteria, the procedure is accepted for use.",
           "attached_to": [
             "S4"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C13",
-          "type": "documentation",
+          "type": "postcondition",
           "text": "The validation team will document all decisions and actions and maintain records of validation.",
           "attached_to": [
             "S4"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C14",
@@ -183,7 +187,8 @@
           "text": "The validation team leader will be responsible for maintaining the records during the validation effort.",
           "attached_to": [
             "S4"
-          ]
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -209,7 +214,8 @@
           "text": "After a standard or nonstandard procedure has been assessed and accepted for use, staff training must occur before implementation.",
           "attached_to": [
             "S5"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C16",
@@ -217,7 +223,8 @@
           "text": "Document competency for each staff member assigned to implement the procedure.",
           "attached_to": [
             "S5"
-          ]
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {

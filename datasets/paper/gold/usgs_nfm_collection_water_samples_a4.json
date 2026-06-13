@@ -21,19 +21,21 @@
       "constraints": [
         {
           "id": "C1",
-          "type": "requirement",
+          "type": "parameter",
           "text": "Upon arrival at the field site, set out safety equipment such as traffic cones and signs.",
           "attached_to": [
             "S1"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C2",
-          "type": "warning",
+          "type": "guard",
           "text": "Park vehicle in a location and direction so as to prevent sample contamination from vehicle emissions.",
           "attached_to": [
             "S1"
-          ]
+          ],
+          "enforcement": "should"
         }
       ],
       "flags": {
@@ -55,35 +57,39 @@
       "constraints": [
         {
           "id": "C3",
-          "type": "selection_rule",
+          "type": "parameter",
           "text": "Organic compounds: Select equipment with fluorocarbon polymer, glass, or metal components if components will directly contact samples to be analyzed for organic compounds.",
           "attached_to": [
             "S2"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C4",
-          "type": "prohibition",
+          "type": "guard",
           "text": "Do not use plastics other than fluorocarbon polymers for organic-compound sampling.",
           "attached_to": [
             "S2"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C5",
-          "type": "selection_rule",
+          "type": "parameter",
           "text": "Inorganic constituents: Select equipment with components made of fluorocarbon polymer or other relatively inert and uncolored plastics or glass if components will directly contact samples to be analyzed for inorganic constituents.",
           "attached_to": [
             "S2"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C6",
-          "type": "prohibition",
+          "type": "guard",
           "text": "Do not use metal or rubber components for trace-element sampling.",
           "attached_to": [
             "S2"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C7",
@@ -91,7 +97,8 @@
           "text": "Microbiological analyses: Collect samples for microbiological analyses using equipment and techniques described in NFM 7.",
           "attached_to": [
             "S2"
-          ]
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -113,19 +120,21 @@
       "constraints": [
         {
           "id": "C8",
-          "type": "requirement",
+          "type": "parameter",
           "text": "Visually inspect the stream from bank to bank and longitudinally, observing velocity, width, and depth distribution, and apparent distribution of sediment and aquatic biota along the cross section.",
           "attached_to": [
             "S3"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C9",
-          "type": "documentation",
+          "type": "postcondition",
           "text": "Note and document the location of stagnant water, eddies, backwater, reverse flows, areas of faster than normal flow, and piers or other features along the cross section.",
           "attached_to": [
             "S3"
-          ]
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -147,27 +156,30 @@
       "constraints": [
         {
           "id": "C10",
-          "type": "requirement",
+          "type": "parameter",
           "text": "Determine stream width from a tagline or from distance markings on a bridge railing or cableway.",
           "attached_to": [
             "S4"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C11",
-          "type": "requirement",
+          "type": "guard",
           "text": "At sites with little sampling history, measure and record the cross-sectional variation of field measurements (such as specific electrical conductance, pH, temperature, and dissolved oxygen).",
           "attached_to": [
             "S4"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C12",
-          "type": "requirement",
+          "type": "postcondition",
           "text": "Review the magnitude of the variations along the cross section.",
           "attached_to": [
             "S4"
-          ]
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -189,75 +201,84 @@
       "constraints": [
         {
           "id": "C13",
-          "type": "requirement",
+          "type": "parameter",
           "text": "To obtain the number of increments, divide the stream width by the increment width.",
           "attached_to": [
             "S5"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C14",
-          "type": "requirement",
+          "type": "parameter",
           "text": "The number of increments must be a whole number.",
           "attached_to": [
             "S5"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C15",
-          "type": "guideline",
+          "type": "guard",
           "text": "Increment width is based on study objectives, variation in field measurements and flow, and stream-channel characteristics along the cross section.",
           "attached_to": [
             "S5"
-          ]
+          ],
+          "enforcement": "should"
         },
         {
           "id": "C16",
-          "type": "requirement",
+          "type": "parameter",
           "text": "Collect the subsample at the center of each equal-width increment (the vertical).",
           "attached_to": [
             "S5"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C17",
-          "type": "requirement",
+          "type": "guard",
           "text": "If the subsample does not represent the mean value for that increment, decrease the increment width until the mean value for the increment is represented.",
           "attached_to": [
             "S5"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C18",
-          "type": "location_rule",
+          "type": "parameter",
           "text": "Locate the first sampling vertical at a distance of one-half of the selected increment width from the edge of the water.",
           "attached_to": [
             "S5"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C19",
-          "type": "location_rule",
+          "type": "parameter",
           "text": "Locate all the other verticals at the center of each remaining equal-width increment along the cross section.",
           "attached_to": [
             "S5"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C20",
-          "type": "requirement",
+          "type": "parameter",
           "text": "Even if streamflow is divided, as in a braided channel, equal-width increments must be identical from channel to channel, and the same constant transit rate must be used at each vertical.",
           "attached_to": [
             "S5"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C21",
-          "type": "guideline",
+          "type": "guard",
           "text": "Make slight adjustments to sampling locations, if necessary, to avoid sampling where the flow is affected by a pier or other obstruction.",
           "attached_to": [
             "S5"
-          ]
+          ],
+          "enforcement": "should"
         }
       ],
       "flags": {
@@ -275,19 +296,36 @@
       "id": "C22",
       "type": "precondition",
       "text": "Isokinetic sampling is required for the EWI method. Use isokinetic, depth-integrating sampling equipment (NFM 2.1.1.A).",
-      "applies_to": ["S1", "S2", "S3", "S4", "S5"]
+      "applies_to": [
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "enforcement": "must"
     },
     {
       "id": "C23",
-      "type": "prohibition",
+      "type": "guard",
       "text": "Do not use EWI when stream velocities are less than the minimum velocity required for the isokinetic sampler selected (1.5 ft/s for the bottle sampler; 3 ft/s for the bag sampler).",
-      "applies_to": ["S1", "S2", "S3", "S4", "S5"]
+      "applies_to": [
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "S5"
+      ],
+      "enforcement": "must"
     },
     {
       "id": "C24",
-      "type": "requirement",
+      "type": "precondition",
       "text": "Be sure that the field effort is adequately staffed and equipped. Check QC requirements before departing—QC samples require additional equipment and supplies.",
-      "applies_to": ["S1"]
+      "applies_to": [
+        "S1"
+      ],
+      "enforcement": "must"
     }
   ],
   "relations": [],

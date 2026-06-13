@@ -18,19 +18,32 @@
       "action_object": "electronic box frame",
       "arguments": [],
       "parameters": [
-        {"name": "Profile 20-400", "quantity": 8},
-        {"name": "Bracket 20", "quantity": 8},
-        {"name": "Hammer Nut M5", "quantity": 16},
-        {"name": "C-screw M5-8", "quantity": 16}
+        {
+          "name": "Profile 20-400",
+          "quantity": 8
+        },
+        {
+          "name": "Bracket 20",
+          "quantity": 8
+        },
+        {
+          "name": "Hammer Nut M5",
+          "quantity": 16
+        },
+        {
+          "name": "C-screw M5-8",
+          "quantity": 16
+        }
       ],
       "constraints": [
         {
           "id": "C1",
-          "type": "tolerance",
+          "type": "parameter",
           "text": "Not necessary to be absolutely precise.",
           "attached_to": [
             "S1"
-          ]
+          ],
+          "enforcement": "should"
         }
       ],
       "flags": {
@@ -48,11 +61,26 @@
       "action_object": "bottom panel",
       "arguments": [],
       "parameters": [
-        {"name": "Box Bottom Panel", "quantity": 1},
-        {"name": "Hammer Nut M5", "quantity": 6},
-        {"name": "C-screw M5-8", "quantity": 6},
-        {"name": "Red Dot Sticker", "quantity": 1},
-        {"name": "Prepared Bottom Frame (Step 01.1)", "quantity": 1}
+        {
+          "name": "Box Bottom Panel",
+          "quantity": 1
+        },
+        {
+          "name": "Hammer Nut M5",
+          "quantity": 6
+        },
+        {
+          "name": "C-screw M5-8",
+          "quantity": 6
+        },
+        {
+          "name": "Red Dot Sticker",
+          "quantity": 1
+        },
+        {
+          "name": "Prepared Bottom Frame (Step 01.1)",
+          "quantity": 1
+        }
       ],
       "constraints": [
         {
@@ -61,23 +89,26 @@
           "text": "Remove protective foils.",
           "attached_to": [
             "S2"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C3",
-          "type": "warning",
+          "type": "guard",
           "text": "Pay attention to top and bottom of the panel.",
           "attached_to": [
             "S2"
-          ]
+          ],
+          "enforcement": "should"
         },
         {
           "id": "C4",
-          "type": "requirement",
+          "type": "postcondition",
           "text": "Mark the front with the Red Dot Sticker.",
           "attached_to": [
             "S2"
-          ]
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
@@ -95,20 +126,36 @@
       "action_object": "drivers and power supply",
       "arguments": [],
       "parameters": [
-        {"name": "Motor Driver", "quantity": 3},
-        {"name": "Motor Power Supply", "quantity": 1},
-        {"name": "C-screw M4-12", "quantity": 6},
-        {"name": "C-screw M4-8", "quantity": 4},
-        {"name": "Lock Nut M4", "quantity": 6}
+        {
+          "name": "Motor Driver",
+          "quantity": 3
+        },
+        {
+          "name": "Motor Power Supply",
+          "quantity": 1
+        },
+        {
+          "name": "C-screw M4-12",
+          "quantity": 6
+        },
+        {
+          "name": "C-screw M4-8",
+          "quantity": 4
+        },
+        {
+          "name": "Lock Nut M4",
+          "quantity": 6
+        }
       ],
       "constraints": [
         {
           "id": "C5",
-          "type": "warning",
+          "type": "guard",
           "text": "Pay attention to position of motor drivers and motor power supply.",
           "attached_to": [
             "S3"
-          ]
+          ],
+          "enforcement": "should"
         }
       ],
       "flags": {
@@ -126,20 +173,36 @@
       "action_object": "vertical profiles",
       "arguments": [],
       "parameters": [
-        {"name": "Profile 20-150", "quantity": 4},
-        {"name": "Bracket 20", "quantity": 8},
-        {"name": "Hammer Nut M5", "quantity": 16},
-        {"name": "C-screw M5-8", "quantity": 16},
-        {"name": "Prepared Top Frame (Step 01.1)", "quantity": 1}
+        {
+          "name": "Profile 20-150",
+          "quantity": 4
+        },
+        {
+          "name": "Bracket 20",
+          "quantity": 8
+        },
+        {
+          "name": "Hammer Nut M5",
+          "quantity": 16
+        },
+        {
+          "name": "C-screw M5-8",
+          "quantity": 16
+        },
+        {
+          "name": "Prepared Top Frame (Step 01.1)",
+          "quantity": 1
+        }
       ],
       "constraints": [
         {
           "id": "C6",
-          "type": "order",
+          "type": "precondition",
           "text": "Attach brackets first to the vertical profiles, then to the top and bottom.",
           "attached_to": [
             "S4"
-          ]
+          ],
+          "enforcement": "must"
         },
         {
           "id": "C7",
@@ -147,7 +210,8 @@
           "text": "The final tightening of the screws should be all together at the end.",
           "attached_to": [
             "S4"
-          ]
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {
