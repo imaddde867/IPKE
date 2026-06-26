@@ -26,7 +26,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from scripts.compute_iaa import compare_annotations
+from scripts.compute_iaa import compare_annotations, validate_iaa_pair
 
 
 def _fmt(v: float | None) -> str:
@@ -57,6 +57,13 @@ def main(argv: list[str] | None = None) -> int:
 
     ann_a = json.loads(path_a.read_text(encoding="utf-8"))
     ann_b = json.loads(path_b.read_text(encoding="utf-8"))
+
+    issues = validate_iaa_pair(ann_a, ann_b, path_a.name)
+    if issues:
+        print("ERROR: IAA eligibility failed:", file=sys.stderr)
+        for issue in issues:
+            print(f"  - {issue}", file=sys.stderr)
+        return 1
 
     metrics = compare_annotations(ann_a, ann_b)
 
