@@ -132,6 +132,37 @@ def test_step_with_no_constraints_warns(tmp_path: Path) -> None:
     assert any("0 attached constraints" in m for m in msgs)
 
 
+def test_adjudicated_zero_constraint_step_does_not_warn(tmp_path: Path) -> None:
+    a = json.loads(json.dumps(VALID_ANNOTATION))
+    a["steps"][0]["constraints"] = []
+    a["quality"]["review_notes"] = (
+        "Strict validator warning adjudicated 2026-06-26: S1 is a deliberate "
+        "single-action step with no source-level constraints in the bounded excerpt."
+    )
+    msgs = validate_file(_write(tmp_path, a))
+    assert not any("0 attached constraints" in m for m in msgs)
+
+
+def test_adjudicated_dense_step_does_not_warn(tmp_path: Path) -> None:
+    a = json.loads(json.dumps(VALID_ANNOTATION))
+    a["steps"][0]["constraints"] = [
+        {
+            "id": f"C{i}",
+            "type": "parameter",
+            "enforcement": "must",
+            "text": f"Parameter {i}",
+            "attached_to": ["S1"],
+        }
+        for i in range(11)
+    ]
+    a["quality"]["review_notes"] = (
+        "Strict validator warning adjudicated 2026-06-26: S1 retains 11 "
+        "constraints because the source presents the rules as one procedural step."
+    )
+    msgs = validate_file(_write(tmp_path, a))
+    assert not any("consider splitting step" in m for m in msgs)
+
+
 def test_seed_corpus_passes(tmp_path: Path) -> None:
     """All 8 reviewed seed-corpus files in datasets/paper/gold must pass."""
     gold_dir = Path("datasets/paper/gold")
