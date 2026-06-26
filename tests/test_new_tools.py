@@ -384,3 +384,9 @@ def test_makefile_eval_validate_uses_strict_mode():
 def test_makefile_eval_iaa_depends_on_validation():
     text = Path("Makefile").read_text(encoding="utf-8")
     assert "eval-iaa: eval-validate" in text
+
+
+def test_dataset_readme_uses_existing_validator_command():
+    text = Path("datasets/paper/README.md").read_text(encoding="utf-8")
+    assert "scripts/validate_gold.py" not in text
+    assert "scripts/validate_paper_gold.py --gold-dir datasets/paper/gold" in text
