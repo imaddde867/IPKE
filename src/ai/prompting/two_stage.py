@@ -12,6 +12,12 @@ from typing import List, Dict, Any
 
 from src.ai.prompting.base import PromptStrategy
 from src.ai.types import ChunkExtraction
+from src.benchmark.taxonomy import (
+    CONSTRAINT_TYPE_INSTRUCTIONS,
+    ENFORCEMENT_INSTRUCTIONS,
+    LOCKED_CONSTRAINT_TYPES,
+    LOCKED_ENFORCEMENT_LEVELS,
+)
 from src.logging_config import get_logger
 
 logger = get_logger(__name__)
@@ -60,26 +66,30 @@ Text:
     @property
     def stage2_template(self) -> str:
         return textwrap.dedent(
-            """[INST]You are an expert at extracting procedural knowledge from technical documents.
+            f"""[INST]You are an expert at extracting procedural knowledge from technical documents.
 
 You have already extracted these steps:
-{steps_json}
+{{steps_json}}
 
 TASK: Now extract constraints and entities from the same text, with a CRITICAL RULE:
   >> EVERY extracted constraint MUST explicitly reference one of the step IDs above <<
   >> Do NOT create constraints that don't reference any step ID <<
 
 From the text, extract:
-- Constraints (C*): Guard conditions, preconditions, timing, frequency, parameters, environmental conditions
+- Constraints (C*): constraints that govern one or more extracted steps
+  * "type" MUST be one of: {CONSTRAINT_TYPE_INSTRUCTIONS}
+  * "enforcement" MUST be one of: {ENFORCEMENT_INSTRUCTIONS}
+  * Use "must" for shall/must/will/required/prohibitions, "should" for recommended/should, "may" for optional/permitted/can
   * MUST have "attached_to" array with at least one valid step ID from above
+  * Constraint text MUST be verbatim or near-verbatim from the source
 - Entities: Materials, tools, components, specifications
   * MUST be relevant to the procedural context
 
 Respond ONLY with a JSON object:
-{{"steps": [], "constraints": [{{"id": "C1", "expression": "Condition", "type": "guard", "attached_to": ["S1"], "confidence": 0.85}}], "entities": [{{"content": "Item", "type": "material", "category": "material", "confidence": 0.9}}]}}
+{{{{"steps": [], "constraints": [{{{{"id": "C1", "text": "Wear gloves", "type": "guard", "enforcement": "must", "attached_to": ["S1"], "confidence": 0.85}}}}], "entities": [{{{{"content": "Item", "type": "material", "category": "material", "confidence": 0.9}}}}]}}}}
 
-Original {document_type} text:
-"{chunk}"
+Original {{document_type}} text:
+"{{chunk}}"
 [/INST]"""
         ).strip()
 
@@ -120,6 +130,27 @@ Original {document_type} text:
         validated: List[Dict[str, Any]] = []
 
         for constraint in constraints:
+            if not constraint.get("text") and constraint.get("expression"):
+                constraint["text"] = constraint["expression"]
+
+            ctype = constraint.get("type")
+            if ctype not in LOCKED_CONSTRAINT_TYPES:
+                logger.debug(
+                    "Filtering constraint with invalid type %r: %s",
+                    ctype,
+                    constraint.get("text") or constraint.get("expression", "unknown")
+                )
+                continue
+
+            enforcement = constraint.get("enforcement")
+            if enforcement not in LOCKED_ENFORCEMENT_LEVELS:
+                logger.debug(
+                    "Filtering constraint with invalid enforcement %r: %s",
+                    enforcement,
+                    constraint.get("text") or constraint.get("expression", "unknown")
+                )
+                continue
+
             attached_to = constraint.get("attached_to", [])
             if not attached_to:
                 logger.debug(
