@@ -20,15 +20,10 @@ import sys
 from collections.abc import Iterable
 from pathlib import Path
 
-LOCKED_TYPES = {
-    "precondition",
-    "postcondition",
-    "guard",
-    "parameter",
-    "role_assignment",
-    "reference",
-}
-LOCKED_ENFORCEMENT = {"must", "should", "may"}
+from src.benchmark.taxonomy import LOCKED_CONSTRAINT_TYPES, LOCKED_ENFORCEMENT_LEVELS
+
+LOCKED_TYPES = LOCKED_CONSTRAINT_TYPES
+LOCKED_ENFORCEMENT = LOCKED_ENFORCEMENT_LEVELS
 
 
 def iter_constraints(annotation: dict) -> Iterable[tuple[str, str, dict]]:
