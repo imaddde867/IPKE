@@ -35,9 +35,9 @@ def iter_constraints(annotation: dict) -> Iterable[tuple[str, str, dict]]:
         yield "top", c.get("id", "?"), c
 
 
-def _adjudicates_warning(review_notes: str, step_id: str) -> bool:
-    marker = "Strict validator warning adjudicated"
-    return marker in review_notes and step_id in review_notes
+def _adjudicates_warning(review_notes: str, step_id: str, warning_kind: str) -> bool:
+    marker = f"step:{step_id} {warning_kind} adjudicated"
+    return marker in review_notes
 
 
 def validate_file(path: Path) -> list[str]:
@@ -103,13 +103,13 @@ def validate_file(path: Path) -> list[str]:
         procedure = step_procedure_counts.get(sid, 0)
         total = embedded + procedure
         if total == 0:
-            if not _adjudicates_warning(review_notes, sid):
+            if not _adjudicates_warning(review_notes, sid, "zero_constraints"):
                 warnings.append(
                     f"step:{sid}: 0 attached constraints (embedded={embedded}, procedure-level={procedure}); "
                     "re-read source"
                 )
         elif total > 10:
-            if not _adjudicates_warning(review_notes, sid):
+            if not _adjudicates_warning(review_notes, sid, "too_many_constraints"):
                 warnings.append(
                     f"step:{sid}: {total} constraints (embedded={embedded}, procedure-level={procedure}); "
                     "consider splitting step"
