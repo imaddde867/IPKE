@@ -193,7 +193,7 @@ def test_adjudication_requires_exact_step_id(tmp_path: Path) -> None:
     ]
     a["quality"]["review_notes"] = "step:S10 zero_constraints adjudicated"
     msgs = validate_file(_write(tmp_path, a))
-    assert any("S1" in m and "0 attached constraints" in m for m in msgs)
+    assert any("step:S1:" in m and "0 attached constraints" in m for m in msgs)
 
 
 def test_seed_corpus_passes(tmp_path: Path) -> None:
