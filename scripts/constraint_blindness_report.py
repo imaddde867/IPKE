@@ -1,6 +1,6 @@
 """Constraint-blindness report: how many constraints did the LLM-drafted gold miss?
 
-Compares the LLM-drafted gold files (at the specified git ref, default origin/main)
+Compares the LLM-drafted gold files (at the specified pinned git ref)
 against the reviewed paper-grade gold (current working tree). Reports:
 
   * per-file constraint count delta
@@ -22,7 +22,7 @@ constraint-blindness phenomenon exists even in the same LLM-drafted material the
 gold was reviewed from.
 
 Usage:
-    uv run python scripts/constraint_blindness_report.py [--draft-ref origin/main] \\
+    uv run python scripts/constraint_blindness_report.py [--draft-ref D1_DRAFT_REF] \\
         [--threshold 0.75] [--matcher semantic|token-jaccard]
 """
 from __future__ import annotations
@@ -34,6 +34,9 @@ import sys
 from collections import Counter, defaultdict
 from collections.abc import Iterable
 from pathlib import Path
+
+
+D1_DRAFT_REF = "2379c8ef8cae044c9e8b9c708c3f25faa7166ca8"
 
 
 def normalize(text: str) -> str:
@@ -58,6 +61,31 @@ def load_draft(path: Path, ref: str) -> dict | None:
     except subprocess.CalledProcessError:
         return None
     return json.loads(raw)
+
+
+def expectation_errors(report: dict, args: argparse.Namespace) -> list[str]:
+    checks = [
+        ("draft_total", args.expect_draft_total),
+        ("reviewed_total", args.expect_reviewed_total),
+        ("recovered", args.expect_recovered),
+    ]
+    errors: list[str] = []
+    macro = report["macro"]
+    for key, expected in checks:
+        if expected is not None and macro[key] != expected:
+            errors.append(f"macro.{key}: expected {expected}, got {macro[key]}")
+
+    float_checks = [
+        ("recall", args.expect_recall),
+        ("expansion", args.expect_expansion),
+    ]
+    for key, expected in float_checks:
+        actual = macro[key]
+        if expected is not None and abs(actual - expected) > args.expect_tolerance:
+            errors.append(
+                f"macro.{key}: expected {expected} ± {args.expect_tolerance}, got {actual}"
+            )
+    return errors
 
 
 def jaccard_match(a: str, b: str, threshold: float) -> bool:
@@ -102,8 +130,8 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--gold-dir", type=Path, default=Path("datasets/paper/gold"))
     ap.add_argument(
-        "--draft-ref", default="origin/main",
-        help="Git ref where the LLM-drafted gold lives (default: origin/main)",
+        "--draft-ref", default=D1_DRAFT_REF,
+        help=f"Git ref where the LLM-drafted gold lives (default: {D1_DRAFT_REF})",
     )
     ap.add_argument(
         "--matcher", choices=["semantic", "token-jaccard"], default="semantic",
@@ -119,6 +147,17 @@ def main() -> int:
         help="Sentence-transformers model name for semantic matcher.",
     )
     ap.add_argument("--out", type=Path, default=None, help="Write JSON report to this path.")
+    ap.add_argument("--expect-draft-total", type=int, default=None)
+    ap.add_argument("--expect-reviewed-total", type=int, default=None)
+    ap.add_argument("--expect-recovered", type=int, default=None)
+    ap.add_argument("--expect-recall", type=float, default=None)
+    ap.add_argument("--expect-expansion", type=float, default=None)
+    ap.add_argument(
+        "--expect-tolerance",
+        type=float,
+        default=0.0001,
+        help="Absolute tolerance for floating-point expectation checks.",
+    )
     args = ap.parse_args()
 
     if args.matcher == "semantic":
@@ -203,30 +242,37 @@ def main() -> int:
     print(f"Macro recall (draft against reviewed): {macro_recall:.3f}")
     print()
 
+    report = {
+        "draft_ref": args.draft_ref,
+        "matcher": args.matcher,
+        "threshold": args.threshold,
+        "model": args.model if args.matcher == "semantic" else None,
+        "per_file": per_file,
+        "macro": {
+            "draft_total": macro_draft_count,
+            "reviewed_total": macro_reviewed_count,
+            "recovered": total_recovered,
+            "recall": round(macro_recall, 4),
+            "expansion": round(expansion, 4),
+        },
+        "per_type_recovery": {
+            t: {
+                "reviewed": type_distribution_reviewed[t],
+                "recovered": type_distribution_recovered[t],
+                "recall": round(type_distribution_recovered[t] / type_distribution_reviewed[t], 4)
+                if type_distribution_reviewed[t] else 0.0,
+            }
+            for t in type_distribution_reviewed
+        },
+    }
+    errors = expectation_errors(report, args)
+    if errors:
+        print("Expectation check failed:", file=sys.stderr)
+        for error in errors:
+            print(f"  {error}", file=sys.stderr)
+        return 2
+
     if args.out:
-        report = {
-            "draft_ref": args.draft_ref,
-            "matcher": args.matcher,
-            "threshold": args.threshold,
-            "model": args.model if args.matcher == "semantic" else None,
-            "per_file": per_file,
-            "macro": {
-                "draft_total": macro_draft_count,
-                "reviewed_total": macro_reviewed_count,
-                "recovered": total_recovered,
-                "recall": round(macro_recall, 4),
-                "expansion": round(expansion, 4),
-            },
-            "per_type_recovery": {
-                t: {
-                    "reviewed": type_distribution_reviewed[t],
-                    "recovered": type_distribution_recovered[t],
-                    "recall": round(type_distribution_recovered[t] / type_distribution_reviewed[t], 4)
-                    if type_distribution_reviewed[t] else 0.0,
-                }
-                for t in type_distribution_reviewed
-            },
-        }
         args.out.write_text(json.dumps(report, indent=2, ensure_ascii=False) + "\n")
         print(f"Report written to {args.out}")
 
