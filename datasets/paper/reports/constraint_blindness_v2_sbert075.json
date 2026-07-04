@@ -1,5 +1,5 @@
 {
-  "draft_ref": "origin/main",
+  "draft_ref": "2379c8ef8cae044c9e8b9c708c3f25faa7166ca8",
   "matcher": "semantic",
   "threshold": 0.75,
   "model": "all-mpnet-base-v2",

@@ -9,6 +9,7 @@ PAPER_SECOND   := datasets/paper/second_pass
 PAPER_REPORTS  := datasets/paper/reports
 THESIS_GOLD    := datasets/archive/gold_human
 THESIS_TEXT    := datasets/archive/test_data/text
+D1_DRAFT_REF   := 2379c8ef8cae044c9e8b9c708c3f25faa7166ca8
 
 test:
 	uv run pytest
@@ -23,10 +24,22 @@ eval-validate:
 eval-blindness:
 	mkdir -p $(PAPER_REPORTS)
 	$(PYTHON) scripts/constraint_blindness_report.py \
+		--draft-ref $(D1_DRAFT_REF) \
 		--matcher semantic --threshold 0.75 \
+		--expect-draft-total 32 \
+		--expect-reviewed-total 117 \
+		--expect-recovered 24 \
+		--expect-recall 0.2051 \
+		--expect-expansion 3.6562 \
 		--out $(PAPER_REPORTS)/constraint_blindness_v2_sbert075.json
 	$(PYTHON) scripts/constraint_blindness_report.py \
+		--draft-ref $(D1_DRAFT_REF) \
 		--matcher semantic --threshold 0.50 \
+		--expect-draft-total 32 \
+		--expect-reviewed-total 117 \
+		--expect-recovered 72 \
+		--expect-recall 0.6154 \
+		--expect-expansion 3.6562 \
 		--out $(PAPER_REPORTS)/constraint_blindness_v2_sbert050.json
 
 # IAA: meaningful only once independent (non-llm_draft) second_pass files exist.
