@@ -8,10 +8,16 @@ ECIR 2027 Resource Paper benchmark dataset. Primary contribution of the paper.
 
 ## Layout
 
-- `text/` — plain-text extracted source documents.
+- `text/` — plain-text extracted source documents. This can include downloaded alternates that are not part of the active reviewed release.
 - `gold/` — Tier-A gold annotations (step, constraint, attachment). Schema: `schemas/ipke_annotation.schema.json`.
 - `second_pass/` — independent second annotations for IAA computation.
 - `reports/` — IAA reports and annotation statistics.
+
+Active corpus counts come from `gold/` plus `selected_for_gold=true` in
+`public_sources_manifest.csv`, not from every file present in `text/`.
+Manifest rows with `review_status=deferred_candidate` are downloaded
+alternates only; they require a reviewed gold file before inclusion in any
+paper result.
 
 ## Document Selection Criteria
 
