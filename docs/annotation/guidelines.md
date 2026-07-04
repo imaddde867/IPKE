@@ -14,11 +14,27 @@ Open the source `.txt` file and the target `.json` file side by side. Do NOT use
 
 For PR reviewers: do NOT rely on the LLM-drafted gold (`unreviewed` status) as a starting point. Either start from a blank schema-valid skeleton or use a different annotator's pass — never anchor to the draft text.
 
-## Annotation scope
+## Annotation scope (LOCKED 2026-07-04 — supersedes the seed-corpus bounded_excerpt rule)
 
-Every gold file currently uses `quality.annotation_scope = "bounded_excerpt"`. This means the annotation covers a clearly delimited section of the source (named in `procedure.source.section`), not the whole document. The bounded scope is intentional for the seed corpus: it keeps annotation cost tractable and lets the benchmark target specific procedural complexity (multi-step + multi-constraint sections) without dragging in unrelated front-matter.
+> **The scope rule.** Annotate **exactly one coherent, complete procedure** — the smallest self-contained unit of work a practitioner would execute in one sitting, from its first actionable step to its terminal step — **end to end, with every constraint in that unit**. Target **15–40 steps**. Do not truncate a procedure to hit a step count, and do not stitch two unrelated procedures together to reach one.
 
-When adding a new gold file to expand the corpus, prefer bounded_excerpt scope of 1-3 pages with at least 4 steps and 6 constraints in the chosen section. If a full procedure is small enough to annotate end-to-end (e.g. a 2-page maintenance checklist), use `annotation_scope = "full_procedure"` and document why.
+`quality.annotation_scope = "full_subprocedure"` for all golds produced under this rule. `procedure.source.section` MUST name the exact sub-procedure boundary (e.g. `"6.3 Filter Sample Collection (6.3.1–6.3.11)"`), so the unit is reproducible from the source text alone.
+
+### Why this replaces the old rule
+
+The seed corpus used `bounded_excerpt` with a floor of "at least 4 steps and 6 constraints." That floor optimised for annotation cost and produced thin 4–9-step fragments (mean 5.4 steps; see `audit_summary.md`). Thin fragments cannot demonstrate the paper's headline contribution — **constraint attachment at procedure scale** — and their arbitrary excerpt boundaries make IAA scope-dependent and hard to defend. A single interactive strong-model pass on the *same* filter-sampling document produced 30 steps / 64 constraints when scoped to one complete SOP sub-procedure, versus the 6-step gold. That 5× depth at the same validator contract is the target.
+
+### How to pick the unit
+
+1. **Find the procedural spine.** Scan the document's table of contents / section headings for the finest-grained heading under which the text is a *continuous ordered sequence of actions* (numbered steps, imperative sentences). In a manual this is typically one third-level SOP section (e.g. `6.3.x`), one NMAM method, or one named field procedure — never the whole manual, never the whole chapter.
+2. **Prefer the unit that is richest in constraints**, not merely longest. The benchmark is about constraints-on-steps; choose the sub-procedure whose steps carry the most guards, parameters, preconditions, and role assignments.
+3. **Take the whole unit.** Once chosen, annotate every step and every constraint in that unit. Do NOT stop at 40 — if the natural unit is 45 steps, annotate all 45 and note it. Do NOT pad to 15 by absorbing the next unrelated section.
+4. **One gold file = one procedure.** If a document contains several equally good candidate procedures, pick the single most representative one for the seed gold; additional procedures from the same document become separate corpus-expansion golds, not additions to this file.
+
+### Edge cases
+
+- **Requirements / policy documents (e.g. NASA NPR 8715.3D).** Some sources are normative requirement lists, not executable step sequences. If no 15–40-step *executable* procedure exists, annotate the largest coherent block of requirement-bearing clauses as steps (each "shall" clause that mandates an action is a step), keep `annotation_scope = "full_subprocedure"`, and record in `review_notes` that the unit is requirement-structured rather than action-sequenced. If even that yields < 10 steps, flag the document for exclusion from the seed set in a PR rather than shipping a thin gold.
+- **Very short standalone procedures (< 15 steps but genuinely complete).** Acceptable only if the procedure is truly self-contained end-to-end (e.g. a complete 12-step calibration checklist). Keep the whole thing, set `annotation_scope = "full_subprocedure"`, and note in `review_notes` that the natural unit is < 15 steps. Never split a longer procedure down to this size.
 
 ## Step identification
 
@@ -99,7 +115,7 @@ The reason: the IPKE-Bench evaluation uses both exact-match and fuzzy semantic a
 
 A real procedural step usually has 1–6 attached constraints. A step with 0 constraints is suspicious — re-read the source to confirm that nothing was missed. A step with > 10 constraints is suspicious — consider whether it should be split into multiple steps.
 
-The seed corpus averages 2.7 constraints per step (119 / 43).
+The pre-reannotation seed corpus averaged 2.7 constraints per step (117 / 43) under the old thin-excerpt scope; this figure is a lower bound and will be recomputed after the full-subprocedure re-annotation. Cardinality is a per-step sanity check, not a corpus-level target — do not drop real constraints to hit an average.
 
 ## What to drop
 
@@ -139,9 +155,22 @@ Set the following fields in `quality` before considering the file done:
 - `review_date: "<YYYY-MM-DD>"`
 - `review_notes: "<1-3 sentence summary of changes from draft, plus any ambiguity flags>"` — to adjudicate a strict-validator warning, embed the exact token `step:{id} {kind} adjudicated` (e.g. `step:S1 zero_constraints adjudicated`) in this field; one token per warning suppressed.
 
-## Worked example
+## Worked examples
 
-The `datasets/paper/gold/nasa_npr_8715_3d_general_safety.json` and `datasets/paper/gold/epa_guidance_preparing_sops_qag6.json` files are the canonical worked examples for these guidelines. Read them end-to-end before annotating your first file.
+### Constraint typing and structure
+
+The `datasets/paper/gold/nasa_npr_8715_3d_general_safety.json` and `datasets/paper/gold/epa_guidance_preparing_sops_qag6.json` files are the canonical worked examples for constraint typing and JSON structure. Read them end-to-end before annotating your first file.
+
+### Scope selection (the locked rule in practice)
+
+**Document:** `epa_field_operations_manual_filter_sampling_sop.txt` (~108k words — a whole field-operations manual containing dozens of SOPs, 6.1.1 → 6.6.8).
+
+- **WRONG (old bounded_excerpt rule):** annotate sections 6.3.3–6.4.1 as a 6-step / 19-constraint excerpt. This straddles the tail of one SOP and the head of the next, hits the "4-step floor," and stops arbitrarily. Result: a thin fragment with boundaries no second annotator would independently reproduce.
+- **RIGHT (locked rule):** identify the finest heading that is one continuous ordered action sequence — SOP **6.3 "Filter Sample Collection"** — and annotate it end-to-end: `procedure.source.section = "6.3 Filter Sample Collection (6.3.1–6.3.11)"`, every collection step (mount holder → load filter → set flow rate → run → record → recover), every guard ("do not touch the filter face"), every parameter ("flow rate 1–3 L/min", "total volume 50–1000 L"), every postcondition ("record the sample ID and volume on the chain-of-custody form"). Target 15–40 steps; take the whole unit even if it lands at 27.
+
+The boundary is **semantic and reproducible from the source alone**: any annotator asked for "SOP 6.3, collection procedure" delimits the same span. That is what makes the IAA defensible.
+
+**Scope selection worksheet** (record in `review_notes` for each new gold): (1) candidate sub-procedure heading + line range; (2) why it is the richest coherent unit; (3) final step count and whether it fell outside 15–40 (with justification).
 
 ## Migration provenance
 
@@ -150,3 +179,4 @@ When the seed corpus was migrated from the original 20 ad-hoc constraint types t
 ## Change log
 
 - 2026-06-13 — initial guidelines drafted from the seed corpus annotation pass (PR #85).
+- 2026-07-04 — **scope rule locked.** Replaced the seed-corpus `bounded_excerpt` floor ("≥ 4 steps / 6 constraints") with the full-subprocedure rule (one coherent complete procedure, 15–40 steps, `annotation_scope = "full_subprocedure"`). Added scope-selection procedure, edge cases (requirements/policy docs, short standalone procedures), and a scope worked example. Rationale and measured "before" state in `audit_summary.md`. All 8 seed golds are re-annotated under this rule via the model-assisted harness (`scripts/annotate_assisted.py`) + human adjudication (`scripts/adjudicate.py`).

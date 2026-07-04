@@ -1,0 +1,74 @@
+[
+  {
+    "doc": "epa_field_operations_manual_filter_sampling_sop",
+    "old_steps": 6,
+    "old_cons": 19,
+    "new_steps": 18,
+    "new_cons": 9,
+    "old_section": "6.3.3-6.4.1",
+    "new_section": "5.14"
+  },
+  {
+    "doc": "epa_field_sampling_measurement_procedure_validation",
+    "old_steps": 5,
+    "old_cons": 15,
+    "new_steps": 35,
+    "new_cons": 41,
+    "old_section": "3.2.1-5.1",
+    "new_section": "3-5 (General Information\u2013Procedure Implementation)"
+  },
+  {
+    "doc": "epa_guidance_preparing_sops_qag6",
+    "old_steps": 4,
+    "old_cons": 17,
+    "new_steps": 36,
+    "new_cons": 34,
+    "old_section": "2.0 SOP Process (2.1-2.4, 2.6)",
+    "new_section": "2.0 SOP Process (2.1-2.6)"
+  },
+  {
+    "doc": "niosh_nmam_5th_edition_ebook",
+    "old_steps": 6,
+    "old_cons": 12,
+    "new_steps": 34,
+    "new_cons": 21,
+    "old_section": "SAMPLING and SAMPLE PREPARATION",
+    "new_section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT"
+  },
+  {
+    "doc": "usgs_groundwater_technical_procedures_tm1_a1",
+    "old_steps": 9,
+    "old_cons": 14,
+    "new_steps": 29,
+    "new_cons": 12,
+    "old_section": "GWPD 1 Instructions 1-9",
+    "new_section": "GWPD 1"
+  },
+  {
+    "doc": "usgs_nfm_collection_water_samples_a4",
+    "old_steps": 5,
+    "old_cons": 24,
+    "new_steps": 36,
+    "new_cons": 45,
+    "old_section": "Steps for the EWI sampling method (Step 1-2)",
+    "new_section": "Steps for the EWI sampling method"
+  },
+  {
+    "doc": "olsk_small_cnc_v1_workbook",
+    "old_steps": 4,
+    "old_cons": 7,
+    "new_steps": 24,
+    "new_cons": 8,
+    "old_section": "01.1-01.4",
+    "new_section": "01.1-01.5 Electronic Box"
+  },
+  {
+    "doc": "nasa_npr_8715_3d_general_safety",
+    "old_steps": 4,
+    "old_cons": 9,
+    "new_steps": 39,
+    "new_cons": 29,
+    "old_section": "1.5.1-1.7.1.1",
+    "new_section": "2.5.2 (SSTP)"
+  }
+]

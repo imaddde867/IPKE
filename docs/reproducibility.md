@@ -40,6 +40,24 @@ D2 sweep plan. Final ECIR table regeneration still requires 12 reviewed document
 eligible independent second-pass annotations, and completed D2 model runs. For the
 full sweep see `make eval-full` and `REPRODUCIBILITY.md`.
 
+## Gold Annotation Pipeline
+
+The gold annotations are produced by a model-assisted-draft + human-adjudication
+pipeline documented in full at `docs/methods/annotation-pipeline.md`. One-command
+targets:
+
+```bash
+make gold-pipeline    # deterministic gate: strict-validate the 8 golds + regenerate D1 numbers (no model)
+make gold-draft DOC=<doc_id> SEG=<segments.json> CAND=<candidate_id>   # draft one procedure (needs model backend)
+make gold-adjudicate DOC=<doc_id>                                     # replay a persisted adjudication log -> reviewed gold
+make iaa-setup        # select >=30% subset + emit blank (anchoring-safe) second-pass scaffolds
+make iaa              # score step/constraint/relation F1 + Cohen's kappa over completed second passes
+```
+
+The committed golds under `datasets/paper/gold/` are the source of truth;
+`make gold-pipeline` is the target a reviewer runs on a fresh clone to confirm
+the release numbers regenerate.
+
 ## Required Metadata
 
 Each final experiment run must record:

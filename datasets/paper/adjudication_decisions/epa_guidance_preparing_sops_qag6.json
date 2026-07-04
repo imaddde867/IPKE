@@ -1,0 +1,43 @@
+{
+  "doc_id": "epa_guidance_preparing_sops_qag6",
+  "annotator": "model-assisted:claude-opus-4-8 + agent-adjudicated",
+  "review_date": "2026-07-05",
+  "decisions": [
+    {
+      "kind": "constraint",
+      "id": "C6",
+      "action": "edit",
+      "edits": {
+        "type": "precondition"
+      },
+      "note": "Text says approval should follow the Quality Management Plan; this is a precondition for S8/S9, not a precondition to them. Type should be 'postcondition' or 'guard' describing what must be true before approval happens, but as written it describes the process itself."
+    },
+    {
+      "kind": "constraint",
+      "id": "C10",
+      "action": "edit",
+      "edits": {
+        "enforcement": "must"
+      },
+      "note": "Source text (2.3): 'whenever procedures are changed, SOPs should be updated and re-approved.' The prescriptive force here is stronger than a suggestion\u2014this is a standing requirement, not optional."
+    },
+    {
+      "kind": "constraint",
+      "id": "C13",
+      "action": "edit",
+      "edits": {
+        "enforcement": "must"
+      },
+      "note": "Source text (2.3): 'SOPs need to remain current to be useful. Therefore... SOPs should be also systematically reviewed on a periodic basis.' This is mandatory maintenance, not discretionary."
+    },
+    {
+      "kind": "constraint",
+      "id": "C22",
+      "action": "edit",
+      "edits": {
+        "enforcement": "must"
+      },
+      "note": "Source text (2.5): 'Each organization should develop a numbering system...' The word 'should' here is prescriptive for organizational policy; it is not optional."
+    }
+  ]
+}

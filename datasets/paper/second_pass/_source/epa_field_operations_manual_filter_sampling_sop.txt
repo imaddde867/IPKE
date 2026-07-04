@@ -1,0 +1,375 @@
+5.14 Repair
+See Chapter 7 in the Thermo Manufacturer’s Manual for repair procedures for all models.
+6.0
+CALIBRATION PROCEDURE
+6.1
+Calibrating the Detector, Model 49i
+Allow the instrument to warm up for approximately 1 hour. Check to see if desiccant or charcoal
+canisters in the zero air system are due to be changed.
+6.1.1 Connect the output of the Thermo 49PS primary to the sample inlet of the site analyzer.
+6.1.2 Connect an Ethernet cable to the back of 49i model analyzers.
+6.1.3 Using the laptop connected to the CR3000 datalogger, determine which primary
+standard is being used, 1, 2 or 3, and ensure that page is selected. Only three (3)
+analyzers can be attached to single primary standard at any time. The datalogger has a
+program built into it that runs a full audit or calibration on an analyzer. However, the
+instrument must be set up in the program for it to run and record the data properly.
+Under each Primary Standard page, three analyzers can be set up. PS1is associated with
+Analyzer 1, Analyzer 2, and Analyzer 3. PS2 is associated with Analyzer 4, Analyzer 5,
+and Analyzer 6. PS3 is associated with Analyzer 7, Analyzer 8, and Analyzer 9. All
+parameters are the same on each page, but their values change depending on the
+analyzers being used.
+6.1.4 For a 49i analyzer, certain parameters need to entered and enabled. For instance, if
+using PS1, its page should already have the PS slope and intercept entered into the
+program. Check to make sure these agree with the sticker on the PS, as well as all other
+parameters match the PS being used. Under Analyzer 1, the parameters of iSeries,
+SerialNum, Comport and IP_Addr need to be adjusted to match the machine being
+hooked up. For a 49i, the iSeries parameter should read “true”. If it does not say “true”,
+double click on the box and double click again to change the logic statement. The serial
+number of the machine should be input into the parameter labeled SerialNum. Double
+click inside the box, type in the serial number and then hit enter to save it. The Comport
+parameter should read “TCP”. If it does not say “TCP”, double click inside the box, type
+in TCP and then hit enter to save it. The IP address of the machine should be entered
+into the IP_Addr parameter. This can be found in the machine by going into the Menu,
+down to Instrument Controls, down to Communications and then to TCP/IP Settings.
+Record this IP address into the table, inputting similar to the serial number. Repeat for all
+analyzers being calibrated.
+
+SITE INSTRUMENTATION - O3 MONITORS
+
+
+
+Revision No. 8
+
+
+
+February 2025
+Page 9 of 10
+
+SITE INSTRUMENTATION - O3 MONITORS
+WSP USA Inc.
+It is important to make sure that unique IP addresses are entered for each analyzer
+connected to the logger.
+6.1.5 To begin an audit of a transfer machine, select the CalStart under the PS parameters
+and change the logic to “true”. This will begin a sequence that cycles through all six
+target levels automatically. The sequence takes approximately 2 hours to run. A report
+can be generated through an Access script loaded on to the Loggernet computer which
+can be accessed from any of the other computers in the shop.
+6.2
+Adjusting the levels
+6.2.1 If the was analyzer is found to be out of criteria, it is necessary to perform a full
+calibration. To do so, connect the transfer as in steps 1 through 5, if not already
+connected. Once the parameters are adjusted for the particular analyzer, first, turn the
+CalAdjust parameter to “true” under the appropriate analyzer’s setting. Next, turn on the
+CalStart parameter to “true”. This performs an automatic sequence that adjusts the
+Background and Coefficient variables. A report can be generated through an Access
+script loaded on to the Loggernet computer which can be accessed from any of the other
+computers in the shop.
+
+Below are equations to check the accuracy of the analyzers.
+Correct the PS averages to actual (observed average minus the y-intercept and divided by the
+slope generated when the PS was certified).
+
+
+
+
+
+
+
+−
+=
+slope
+intercept
+reading
+average
+actual
+
+
+Calculate percent differences (%∆) and perform a regression analysis of the transfer averages
+versus the 49PS values.
+
+100
+%
+×
+
+
+
+
+
+
+−
+=
+∆
+known
+known
+unknown
+
+
+Note: After completing the calibration, place the calibration form, and O3 analyzer on the
+“ready to ship” shelf.
+
+
+
+SITE INSTRUMENTATION - O3 MONITORS
+
+
+
+Revision No. 8
+
+
+
+February 2025
+Page 10 of 10
+
+SITE INSTRUMENTATION - O3 MONITORS
+WSP USA Inc.
+7.0
+REFERENCES
+Thermo Fisher Scientific. 2006. Model 49i Instruction Manual, UV Photometric O
+
+3 Analyzer
+
+U.S. Environmental Protection Agency (EPA). 1994. Quality Assurance Handbook for Air
+Pollution Measurement Systems, Vol. I. A Field Guide to Environmental Quality
+Assurance. EPA/600/R-94/038a.
+
+U.S. Environmental Protection Agency (EPA). 2008. Quality Assurance Handbook for Air
+Pollution Measurement Systems, Vol. IV, Meteorological Measurements Version 2.0
+(Final). EPA-454/B-08-002.
+
+U.S. Environmental Protection Agency (EPA). 2017. Quality Assurance Handbook for Air
+Pollution Measurement Systems, Vol. II, Ambient Air Quality Monitoring Program. EPA-
+454/B-17-001.
+
+U.S. Environmental Protection Agency (EPA). 2000. Meteorological Monitoring Guidance for
+Regulatory Modeling Applications. EPA-454/R-99-005.
+
+U.S. Environmental Protection Agency (EPA). 2023. Transfer Standards for the Calibration of
+Ambient Air Monitoring Analyzers for Ozone. Technical Assistance Document. EPA-
+454/B-22-003.
+
+U.S. Environmental Protection Agency (EPA). 2024. Appendix A to Part 58 – Quality
+Assurance Requirements for Monitors used in Evaluations of National Ambient Air
+Quality Standards. 40 CFR Part 58.
+
+SITE INSTRUMENTATION - MASS FLOW CONTROLLER
+Revision No. 10
+February 2025
+Page 1 of 6
+SITE INSTRUMENTATION - MASS FLOW CONTROLLER
+WSP USA Inc.
+IV.
+CALIBRATION LABORATORY
+C.
+SITE INSTRUMENTATION
+3.
+MASS FLOW CONTROLLER
+Effective
+Date:
+Reviewed by:
+Kevin P. Mishoe
+Field Operations
+Manager
+Reviewed by:
+Marcus O. Stewart
+QA Manager
+TABLE OF CONTENTS
+1.0
+Purpose
+2.0
+Scope
+3.0
+Summary
+4.0
+Materials and Supplies
+5.0
+Procedure
+6.0
+Calibration / Post-Calibration
+7.0
+References
+8.0
+Attachments
+Annual Review
+Reviewed by:
+Title:
+Date:
+Signature:
+
+Digitally signed by
+Stewart, Marcus
+(USMS719399)
+Date: 2025.02.24
+15:05:13 -05'00'
+Mishoe, Kevin
+(USKM717639)
+2025.03.04 15:38:30 -05'00'
+
+SITE INSTRUMENTATION - MASS FLOW CONTROLLER
+Revision No. 10
+February 2025
+Page 2 of 6
+
+SITE INSTRUMENTATION - MASS FLOW CONTROLLER
+WSP USA Inc.
+IV.C.3. MASS FLOW CONTROLLER
+1.0
+PURPOSE
+The purpose of this Standard Operating Procedure (SOP) is to provide consistent guidance for
+maintenance and handling of all mass flow control (MFC) units to Clean Air Status and Trends
+Network (CASTNET) Field Calibration Laboratory personnel.
+2.0
+SCOPE
+This SOP applies to the maintenance and handling of MFC units administered by the CASTNET
+Field Calibration Laboratory.
+3.0
+SUMMARY
+All mass flow control systems are inspected and calibrated prior to site installation according to
+the procedure listed in Section 5.0. Upon receipt of MFC system from the field post calibration
+should always be attempted and the results documented and delivered to data validation.
+Figure 1. Summary of Procedure
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+MFC Received
+from Field
+Is post calibration possible?
+Audit the MFC and deliver results to
+data validation.
+Calibrate MFC
+Return to manufacturer for repair or
+replacement.
+Place MFC on RTS
+shelf with one copy
+of calibration form.
+Place an electronic
+copy on the local
+network drive.
+No
+Yes
+
+SITE INSTRUMENTATION - MASS FLOW CONTROLLER
+Revision No. 10
+February 2025
+Page 3 of 6
+
+SITE INSTRUMENTATION - MASS FLOW CONTROLLER
+WSP USA Inc.
+4.0
+MATERIALS AND SUPPLIES
+Apex MFC
+BIOS Definer MFM
+Balston filter
+Latex or Teflon flow tubing
+
+Figure 2. Apex MFC
+
+
+Figure 3. Definer Flow Calibration Standard
+
+
+SITE INSTRUMENTATION - MASS FLOW CONTROLLER
+Revision No. 10
+February 2025
+Page 4 of 6
+
+SITE INSTRUMENTATION - MASS FLOW CONTROLLER
+WSP USA Inc.
+5.0
+REPAIR AND MAINTENANCE
+5.1
+Repair
+MFC’s are returned to the manufacturer for repair.
+5.2
+Maintenance
+MFC’s are returned to the manufacturer for maintenance.
+6.0
+CALIBRATION / POST-CALIBRATION
+6.1.1 Allow the MFM and the MFC to warm up for at least 30 minutes without the charger
+attached to the MFM.
+6.1.2 Install a Balston filter on the pressure port of the Definer.
+6.1.3 Connect the Suction port of the Definer to the MFC inlet port using latex or Teflon tubing.
+6.1.4 Connect a vacuum source such as standard diaphragm pump to the outlet port of the
+MFC.
+6.1.5 With the vacuum pump off record the MFC display.
+6.1.6 Turn on the flow pump.
+6.1.7 Using the “Flow_SetPt” variable in the data logger, generate a range of flows around the
+expected flow setting for that instrument. For MFCs to be used at 1.5 Lpm, for example,
+do respective flows at 1.00, 1.25, 1.50, 1.75, 2.00, and 2.25 Lpm. At each level of flow,
+record the MFC display, the “Flow_Mass” (entered into the voltage column), and the
+MFM measurement (average of ten good runs, entered into the STP column) on the
+Mass Flow Data Form in the As Left section (Figure 4).
+
+
+
+SITE INSTRUMENTATION - MASS FLOW CONTROLLER
+Revision No. 10
+February 2025
+Page 5 of 6
+
+SITE INSTRUMENTATION - MASS FLOW CONTROLLER
+WSP USA Inc.
+Figure 4. Example - Flow Calibration Form
+
+
+SITE INSTRUMENTATION - MASS FLOW CONTROLLER
+Revision No. 10
+February 2025
+Page 6 of 6
+
+SITE INSTRUMENTATION - MASS FLOW CONTROLLER
+WSP USA Inc.
+6.1.8 Following a six point audit in the As Left section of the flow calibration form, the form will
+compute a Full Scale and Zero value for the MFC. Enter the computed values to the
+data logger.
+6.1.9 Using the average of ten good runs for the Definer, adjust the MFC set point to achieve
+a flow rate of 1.50 or 3.00 for the particular site. Record the result on the flow calibration
+form in the Post Calibration row of the As Left section.
+6.1.10 After completing the calibration, tag the MFC, place it in a plastic bag and put it on the
+“ready to ship” shelf.
+7.0
+REFERENCES
+U.S. Environmental Protection Agency (EPA). 1994. Quality Assurance Handbook for Air
+Pollution Measurement Systems, Vol. I. A Field Guide to Environmental Quality
+Assurance. EPA/600/R-94/038a.
+
+U.S. Environmental Protection Agency (EPA). 2008. Quality Assurance Handbook for Air
+Pollution Measurement Systems, Vol. IV, Meteorological Measurements Version 2.0
+(Final). EPA-454/B-08-002.
+
+U.S. Environmental Protection Agency (EPA). 2017. Quality Assurance Handbook for Air
+Pollution Measurement Systems, Vol. II, Ambient Air Quality Monitoring Program. EPA-
+454/B-17-001.
+
+U.S. Environmental Protection Agency (EPA). 2000. Meteorological Monitoring Guidance for
+Regulatory Modeling Applications. EPA-454/R-99-005.
+8.0
+ATTACHMENTS
+This SOP does not contain attachments.
+
+SITE INSTRUMENTATION - WETNESS SENSOR
+Revision No. 9
+February 2025
+Page 1 of 9
+SITE INSTRUMENTATION - WETNESS SENSOR
+WSP USA Inc.
+IV.
+CALIBRATION LAB

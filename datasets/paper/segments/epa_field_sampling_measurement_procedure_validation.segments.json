@@ -1,0 +1,108 @@
+{
+  "doc_id": "epa_field_sampling_measurement_procedure_validation",
+  "scheme": "flat_numbered",
+  "n_chars": 12576,
+  "n_sections_detected": 5,
+  "candidates": [
+    {
+      "section": "3",
+      "title": "3 Field Sampling and Measurement Procedures",
+      "char_start": 4034,
+      "char_end": 7252,
+      "line_start": 92,
+      "line_end": 156,
+      "depth": 1,
+      "n_words": 480,
+      "richness": {
+        "score": 0.58,
+        "est_steps": 4,
+        "n_step_lines": 1,
+        "n_imperatives": 9,
+        "n_modals": 17,
+        "n_parameters": 0,
+        "n_words": 480
+      },
+      "recommended": false
+    },
+    {
+      "section": "4",
+      "title": "4 Validation",
+      "char_start": 7252,
+      "char_end": 10267,
+      "line_start": 157,
+      "line_end": 229,
+      "depth": 1,
+      "n_words": 449,
+      "richness": {
+        "score": 0.4,
+        "est_steps": 2,
+        "n_step_lines": 1,
+        "n_imperatives": 4,
+        "n_modals": 18,
+        "n_parameters": 0,
+        "n_words": 449
+      },
+      "recommended": false
+    },
+    {
+      "section": "5",
+      "title": "5 Procedure Implementation",
+      "char_start": 10267,
+      "char_end": 12576,
+      "line_start": 230,
+      "line_end": 319,
+      "depth": 1,
+      "n_words": 306,
+      "richness": {
+        "score": 0.3,
+        "est_steps": 2,
+        "n_step_lines": 1,
+        "n_imperatives": 3,
+        "n_modals": 3,
+        "n_parameters": 0,
+        "n_words": 306
+      },
+      "recommended": false
+    },
+    {
+      "section": "1",
+      "title": "1 Documentation/Verification",
+      "char_start": 3094,
+      "char_end": 3543,
+      "line_start": 73,
+      "line_end": 80,
+      "depth": 1,
+      "n_words": 67,
+      "richness": {
+        "score": 0.0,
+        "est_steps": 0,
+        "n_step_lines": 1,
+        "n_imperatives": 1,
+        "n_modals": 0,
+        "n_parameters": 0,
+        "n_words": 67
+      },
+      "recommended": false
+    },
+    {
+      "section": "2",
+      "title": "2 Definitions",
+      "char_start": 3543,
+      "char_end": 4034,
+      "line_start": 81,
+      "line_end": 91,
+      "depth": 1,
+      "n_words": 68,
+      "richness": {
+        "score": 0.0,
+        "est_steps": 0,
+        "n_step_lines": 1,
+        "n_imperatives": 0,
+        "n_modals": 0,
+        "n_parameters": 0,
+        "n_words": 68
+      },
+      "recommended": false
+    }
+  ]
+}

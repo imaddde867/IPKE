@@ -28,9 +28,16 @@ make eval
 
 Experiment artifacts are written under `runs/` and are intentionally ignored by git.
 
+## Direction
+
+- **[Research Vision — the North Star](docs/research-vision.md)** — the one-sentence thesis, what "elite" means concretely, the venue ladder toward a top-tier publication, and the principles to carry. Read this first.
+- [Execution direction](docs/paper/2026-07-04-execution-direction.md) — current issue board and work order.
+- [Resource-track PRD](docs/paper/ipke-bench-resource-prd.md) — requirements.
+
 ## Research Reproducibility
 
 - [Reproducibility guide](docs/reproducibility.md)
+- [Annotation methodology](docs/methods/annotation-pipeline.md)
 - [Implemented DSC method note](docs/methods/dsc-implementation.md)
 - [Paper dataset workspace](datasets/paper/README.md)
 

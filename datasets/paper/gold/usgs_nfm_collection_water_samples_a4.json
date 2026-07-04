@@ -1,343 +1,1007 @@
 {
   "procedure": {
     "doc_id": "usgs_nfm_collection_water_samples_a4",
-    "title": "USGS equal-width-increment (EWI) sampling excerpt",
-    "version": "Version 2.0 (9/2006)",
-    "domain": "field_sampling_sop",
+    "title": "Steps for the EWI (Equal-Width-Increment) sampling method",
+    "version": "USGS NFM Chapter A4",
+    "domain": "hydrology",
     "source": {
       "doc_id": "usgs_nfm_collection_water_samples_a4",
-      "page": "43-44",
-      "section": "Steps for the EWI sampling method (Step 1-2)"
+      "section": "Steps for the EWI sampling method",
+      "page": null,
+      "char_start": 82092,
+      "char_end": 91092
     }
   },
   "steps": [
     {
       "id": "S1",
-      "label": "Set out safety equipment and park the vehicle to avoid sample contamination",
-      "action_verb": "set out",
-      "action_object": "safety equipment and vehicle position",
+      "label": "Ensure adequate field staffing and equipment",
+      "action_verb": "ensure",
+      "action_object": "field effort staffing and equipment",
       "arguments": [],
       "parameters": [],
       "constraints": [
         {
           "id": "C1",
-          "type": "parameter",
-          "text": "Upon arrival at the field site, set out safety equipment such as traffic cones and signs.",
+          "type": "precondition",
+          "text": "field effort is adequately staffed and equipped",
           "attached_to": [
             "S1"
           ],
           "enforcement": "must"
         },
         {
-          "id": "C2",
-          "type": "guard",
-          "text": "Park vehicle in a location and direction so as to prevent sample contamination from vehicle emissions.",
+          "id": "C39",
+          "type": "reference",
+          "text": "Preparations for water sampling are described in NFM 2 and 3",
           "attached_to": [
             "S1"
           ],
           "enforcement": "should"
         }
       ],
-      "flags": {
-        "safety_critical": true
-      },
+      "flags": {},
       "provenance": {
         "doc_id": "usgs_nfm_collection_water_samples_a4",
-        "page": "43",
-        "section": "Step 1a"
+        "section": "Steps for the EWI sampling method",
+        "page": null
       }
     },
     {
       "id": "S2",
-      "label": "Assemble the sampling equipment and set up a clean work space",
-      "action_verb": "assemble",
-      "action_object": "sampling equipment",
+      "label": "Check QC requirements before departure",
+      "action_verb": "check",
+      "action_object": "QC requirements",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C2",
+          "type": "precondition",
+          "text": "Check QC requirements before departing",
+          "attached_to": [
+            "S2"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S3",
+      "label": "Set out safety equipment at field site",
+      "action_verb": "set out",
+      "action_object": "safety equipment (traffic cones and signs)",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C44",
+          "type": "reference",
+          "text": "Consult NFM 9 for field safety",
+          "attached_to": [
+            "S3"
+          ],
+          "enforcement": "should"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S4",
+      "label": "Park vehicle to prevent sample contamination",
+      "action_verb": "park",
+      "action_object": "vehicle",
       "arguments": [],
       "parameters": [],
       "constraints": [
         {
           "id": "C3",
-          "type": "parameter",
-          "text": "Organic compounds: Select equipment with fluorocarbon polymer, glass, or metal components if components will directly contact samples to be analyzed for organic compounds.",
+          "type": "guard",
+          "text": "Park vehicle in a location and direction so as to prevent sample contamination from vehicle emissions",
           "attached_to": [
-            "S2"
+            "S4"
           ],
           "enforcement": "must"
-        },
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S5",
+      "label": "Assemble sampling equipment",
+      "action_verb": "assemble",
+      "action_object": "sampling equipment",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S6",
+      "label": "Set up clean work space",
+      "action_verb": "set up",
+      "action_object": "clean work space",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S7",
+      "label": "Select equipment appropriate for analyte type",
+      "action_verb": "select",
+      "action_object": "equipment with appropriate material components",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
         {
           "id": "C4",
-          "type": "guard",
-          "text": "Do not use plastics other than fluorocarbon polymers for organic-compound sampling.",
+          "type": "parameter",
+          "text": "Select equipment with fluorocarbon polymer, glass, or metal components if components will directly contact samples to be analyzed for organic compounds. Do not use plastics other than fluorocarbon polymers",
           "attached_to": [
-            "S2"
+            "S7"
           ],
           "enforcement": "must"
         },
         {
           "id": "C5",
           "type": "parameter",
-          "text": "Inorganic constituents: Select equipment with components made of fluorocarbon polymer or other relatively inert and uncolored plastics or glass if components will directly contact samples to be analyzed for inorganic constituents.",
+          "text": "Select equipment with components made of fluorocarbon polymer or other relatively inert and uncolored plastics or glass if components will directly contact samples to be analyzed for inorganic constituents. Do not use metal or rubber components for trace-element sampling",
           "attached_to": [
-            "S2"
+            "S7"
           ],
           "enforcement": "must"
         },
         {
           "id": "C6",
-          "type": "guard",
-          "text": "Do not use metal or rubber components for trace-element sampling.",
+          "type": "reference",
+          "text": "Collect samples for microbiological analyses using equipment and techniques described in NFM 7",
           "attached_to": [
-            "S2"
+            "S7"
           ],
-          "enforcement": "must"
-        },
+          "enforcement": "should"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S8",
+      "label": "Visually inspect stream cross-section",
+      "action_verb": "inspect",
+      "action_object": "stream from bank to bank and longitudinally",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C43",
+          "type": "reference",
+          "text": "Consult NFM 8 for bottom-material sampling",
+          "attached_to": [
+            "S8"
+          ],
+          "enforcement": "should"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S9",
+      "label": "Observe and document velocity, width, and depth distribution",
+      "action_verb": "observe",
+      "action_object": "velocity, width, and depth distribution",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C41",
+          "type": "reference",
+          "text": "Consult NFM 6 for field measurements",
+          "attached_to": [
+            "S9",
+            "S12"
+          ],
+          "enforcement": "should"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S10",
+      "label": "Note and document stagnant water and flow anomalies",
+      "action_verb": "note",
+      "action_object": "stagnant water, eddies, backwater, reverse flows, and obstructions",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
         {
           "id": "C7",
-          "type": "reference",
-          "text": "Microbiological analyses: Collect samples for microbiological analyses using equipment and techniques described in NFM 7.",
+          "type": "postcondition",
+          "text": "Note and document the location of stagnant water, eddies, backwater, reverse flows, areas of faster than normal flow, and piers or other features along the cross section",
           "attached_to": [
-            "S2"
+            "S10"
           ],
           "enforcement": "must"
         }
       ],
-      "flags": {
-        "safety_critical": true
-      },
+      "flags": {},
       "provenance": {
         "doc_id": "usgs_nfm_collection_water_samples_a4",
-        "page": "43",
-        "section": "Step 1b"
+        "section": "Steps for the EWI sampling method",
+        "page": null
       }
     },
     {
-      "id": "S3",
-      "label": "Visually inspect the stream cross section and document flow and contamination features",
-      "action_verb": "inspect",
-      "action_object": "stream cross section",
+      "id": "S11",
+      "label": "Determine stream width",
+      "action_verb": "determine",
+      "action_object": "stream width",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S12",
+      "label": "Measure cross-sectional field measurements",
+      "action_verb": "measure",
+      "action_object": "field measurements (specific electrical conductance, pH, temperature, dissolved oxygen)",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S13",
+      "label": "Review magnitude of field measurement variations",
+      "action_verb": "review",
+      "action_object": "magnitude of variations along the cross section",
       "arguments": [],
       "parameters": [],
       "constraints": [
         {
           "id": "C8",
-          "type": "parameter",
-          "text": "Visually inspect the stream from bank to bank and longitudinally, observing velocity, width, and depth distribution, and apparent distribution of sediment and aquatic biota along the cross section.",
-          "attached_to": [
-            "S3"
-          ],
-          "enforcement": "must"
-        },
-        {
-          "id": "C9",
           "type": "postcondition",
-          "text": "Note and document the location of stagnant water, eddies, backwater, reverse flows, areas of faster than normal flow, and piers or other features along the cross section.",
+          "text": "Review the magnitude of the variations along the cross section",
           "attached_to": [
-            "S3"
+            "S13"
           ],
           "enforcement": "must"
         }
       ],
-      "flags": {
-        "safety_critical": false
-      },
+      "flags": {},
       "provenance": {
         "doc_id": "usgs_nfm_collection_water_samples_a4",
-        "page": "44",
-        "section": "Step 2a"
+        "section": "Steps for the EWI sampling method",
+        "page": null
       }
     },
     {
-      "id": "S4",
-      "label": "Determine stream width and record cross-sectional field measurements",
-      "action_verb": "measure",
-      "action_object": "stream width and field measurements",
-      "arguments": [],
-      "parameters": [],
-      "constraints": [
-        {
-          "id": "C10",
-          "type": "parameter",
-          "text": "Determine stream width from a tagline or from distance markings on a bridge railing or cableway.",
-          "attached_to": [
-            "S4"
-          ],
-          "enforcement": "must"
-        },
-        {
-          "id": "C11",
-          "type": "guard",
-          "text": "At sites with little sampling history, measure and record the cross-sectional variation of field measurements (such as specific electrical conductance, pH, temperature, and dissolved oxygen).",
-          "attached_to": [
-            "S4"
-          ],
-          "enforcement": "must"
-        },
-        {
-          "id": "C12",
-          "type": "postcondition",
-          "text": "Review the magnitude of the variations along the cross section.",
-          "attached_to": [
-            "S4"
-          ],
-          "enforcement": "must"
-        }
-      ],
-      "flags": {
-        "safety_critical": false
-      },
-      "provenance": {
-        "doc_id": "usgs_nfm_collection_water_samples_a4",
-        "page": "44",
-        "section": "Step 2b-2c"
-      }
-    },
-    {
-      "id": "S5",
-      "label": "Determine the equal-width increment count and locate the first sampling vertical",
+      "id": "S14",
+      "label": "Determine width of increment",
       "action_verb": "determine",
-      "action_object": "increment width and first vertical",
+      "action_object": "increment width",
       "arguments": [],
       "parameters": [],
       "constraints": [
         {
-          "id": "C13",
+          "id": "C45",
           "type": "parameter",
-          "text": "To obtain the number of increments, divide the stream width by the increment width.",
+          "text": "Even if streamflow is divided, as in a braided channel, equal-width increments must be identical from channel to channel, and the same constant transit rate must be used at each vertical",
           "attached_to": [
-            "S5"
+            "S14",
+            "S15",
+            "S24"
           ],
           "enforcement": "must"
         },
+        {
+          "id": "C47",
+          "type": "guard",
+          "text": "If it is necessary to include an eddy in the cross section to be sampled, consider treating the eddy as a solid obstruction: subtract the eddy width from that of the total cross section, and determine the width of the increments based on the remaining stream width",
+          "attached_to": [
+            "S14"
+          ],
+          "enforcement": "should"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S15",
+      "label": "Calculate number of increments",
+      "action_verb": "divide",
+      "action_object": "stream width by increment width",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
         {
           "id": "C14",
           "type": "parameter",
-          "text": "The number of increments must be a whole number.",
+          "text": "Cross-sectional width ≥ 5 ft—use a minimum of 10 equal-width increments",
           "attached_to": [
-            "S5"
+            "S15"
           ],
           "enforcement": "must"
         },
         {
           "id": "C15",
-          "type": "guard",
-          "text": "Increment width is based on study objectives, variation in field measurements and flow, and stream-channel characteristics along the cross section.",
+          "type": "parameter",
+          "text": "Cross-sectional width < 5 ft—use as many increments as practical, but equally spaced at a minimum of 3 inches apart",
           "attached_to": [
-            "S5"
+            "S15"
           ],
-          "enforcement": "should"
+          "enforcement": "must"
         },
         {
           "id": "C16",
           "type": "parameter",
-          "text": "Collect the subsample at the center of each equal-width increment (the vertical).",
+          "text": "When using a 1-L bottle sampler at maximum depth with a 14-L churn splitter, EWI samples can be collected at no more than 14 to 17 verticals",
           "attached_to": [
-            "S5"
+            "S15"
           ],
           "enforcement": "must"
         },
         {
           "id": "C17",
-          "type": "guard",
-          "text": "If the subsample does not represent the mean value for that increment, decrease the increment width until the mean value for the increment is represented.",
+          "type": "parameter",
+          "text": "If an 8-L churn splitter is used, samples can be collected at no more than 10 verticals",
           "attached_to": [
-            "S5"
+            "S15"
           ],
           "enforcement": "must"
         },
         {
           "id": "C18",
-          "type": "parameter",
-          "text": "Locate the first sampling vertical at a distance of one-half of the selected increment width from the edge of the water.",
-          "attached_to": [
-            "S5"
-          ],
-          "enforcement": "must"
-        },
-        {
-          "id": "C19",
-          "type": "parameter",
-          "text": "Locate all the other verticals at the center of each remaining equal-width increment along the cross section.",
-          "attached_to": [
-            "S5"
-          ],
-          "enforcement": "must"
-        },
-        {
-          "id": "C20",
-          "type": "parameter",
-          "text": "Even if streamflow is divided, as in a braided channel, equal-width increments must be identical from channel to channel, and the same constant transit rate must be used at each vertical.",
-          "attached_to": [
-            "S5"
-          ],
-          "enforcement": "must"
-        },
-        {
-          "id": "C21",
           "type": "guard",
-          "text": "Make slight adjustments to sampling locations, if necessary, to avoid sampling where the flow is affected by a pier or other obstruction.",
+          "text": "A cone splitter must be used if the total volume collected will exceed the recommended volume for the churn splitter",
           "attached_to": [
-            "S5"
+            "S15"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S16",
+      "label": "Verify increment number is whole number",
+      "action_verb": "verify",
+      "action_object": "number of increments",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C9",
+          "type": "parameter",
+          "text": "The number of increments must be a whole number",
+          "attached_to": [
+            "S16"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S17",
+      "label": "Adjust increment width if subsample does not represent mean value",
+      "action_verb": "adjust",
+      "action_object": "increment width",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C10",
+          "type": "guard",
+          "text": "If the subsample does not represent the mean value for that increment, decrease the increment width until the mean value for the increment is represented",
+          "attached_to": [
+            "S17"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S18",
+      "label": "Locate first sampling vertical",
+      "action_verb": "locate",
+      "action_object": "first sampling vertical",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C11",
+          "type": "parameter",
+          "text": "Locate the first sampling vertical at a distance of one-half of the selected increment width from the edge of the water",
+          "attached_to": [
+            "S18"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S19",
+      "label": "Locate remaining sampling verticals",
+      "action_verb": "locate",
+      "action_object": "remaining sampling verticals at center of each increment",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C12",
+          "type": "parameter",
+          "text": "Locate all the other verticals at the center of each remaining equal-width increment along the cross section",
+          "attached_to": [
+            "S19"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S20",
+      "label": "Make adjustments to avoid obstructions",
+      "action_verb": "adjust",
+      "action_object": "sampling locations",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C13",
+          "type": "guard",
+          "text": "Make slight adjustments to sampling locations, if necessary, to avoid sampling where the flow is affected by a pier or other obstruction",
+          "attached_to": [
+            "S20"
+          ],
+          "enforcement": "should"
+        },
+        {
+          "id": "C46",
+          "type": "guard",
+          "text": "Sampling near or downstream from large instream obstructions such as bridges and piers could result in artificially elevated concentrations of suspended sediments if the sampler is immersed in an eddy caused by the obstruction",
+          "attached_to": [
+            "S20"
           ],
           "enforcement": "should"
         }
       ],
-      "flags": {
-        "safety_critical": false
-      },
+      "flags": {},
       "provenance": {
         "doc_id": "usgs_nfm_collection_water_samples_a4",
-        "page": "44",
-        "section": "Step 2d-2f"
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S21",
+      "label": "Locate increment with largest discharge",
+      "action_verb": "locate",
+      "action_object": "equal-width increment containing largest discharge",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S22",
+      "label": "Sound for depth at maximum-discharge increment",
+      "action_verb": "sound",
+      "action_object": "depth",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S23",
+      "label": "Measure or estimate velocity",
+      "action_verb": "measure",
+      "action_object": "velocity",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S24",
+      "label": "Determine minimum transit rate",
+      "action_verb": "determine",
+      "action_object": "minimum transit rate",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C19",
+          "type": "reference",
+          "text": "Refer to Appendix A4-A for guidelines for determining the transit rates for collecting isokinetic, depth-integrated samples",
+          "attached_to": [
+            "S24"
+          ],
+          "enforcement": "should"
+        },
+        {
+          "id": "C26",
+          "type": "parameter",
+          "text": "The transit rate selected must be sufficiently rapid to keep from overfilling the sampler",
+          "attached_to": [
+            "S24"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S25",
+      "label": "Approximate mean velocity using floating marker",
+      "action_verb": "approximate",
+      "action_object": "mean velocity",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C20",
+          "type": "parameter",
+          "text": "Approximate the mean velocity of the vertical in feet per second by timing a floating marker as it travels a known distance. Divide the distance (in feet) by the time (in seconds) and multiply by 0.86",
+          "attached_to": [
+            "S25"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S26",
+      "label": "Verify transit rate does not exceed maximum allowable rate",
+      "action_verb": "verify",
+      "action_object": "transit rate against maximum allowable rate",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C21",
+          "type": "guard",
+          "text": "Make sure that the transit rate does not exceed the maximum allowable transit rate to be used at any of the remaining verticals along the cross section",
+          "attached_to": [
+            "S26"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S27",
+      "label": "Sample slowest increment to confirm minimum volume",
+      "action_verb": "sample",
+      "action_object": "slowest increment",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C22",
+          "type": "postcondition",
+          "text": "If the minimum volume of sample (relative to depth of the vertical) is not collected at the slowest increment, then the EWI method cannot be used at this cross section to collect a discharge-weighted sample",
+          "attached_to": [
+            "S27"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S28",
+      "label": "Move to first sampling vertical",
+      "action_verb": "move",
+      "action_object": "first vertical (midpoint of first EWI near edge of water)",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C30",
+          "type": "guard",
+          "text": "When sampling from a bridge, deploy the sampler from the upstream of the bridge, if possible, to avoid bridge-related contamination of the sample",
+          "attached_to": [
+            "S28"
+          ],
+          "enforcement": "should"
+        },
+        {
+          "id": "C31",
+          "type": "reference",
+          "text": "Use CH/DH techniques, as required (section 4.0.2)",
+          "attached_to": [
+            "S28"
+          ],
+          "enforcement": "should"
+        },
+        {
+          "id": "C32",
+          "type": "reference",
+          "text": "Always follow safety procedures (NFM 9)",
+          "attached_to": [
+            "S28"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S29",
+      "label": "Field rinse equipment",
+      "action_verb": "rinse",
+      "action_object": "equipment",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S30",
+      "label": "Collect rinse water at stream edge",
+      "action_verb": "collect",
+      "action_object": "rinse water",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C33",
+          "type": "parameter",
+          "text": "Collect the rinse water at the edge of the stream in a section of low stream velocity to minimize including suspended sediment",
+          "attached_to": [
+            "S30"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S31",
+      "label": "Record start time and gage height",
+      "action_verb": "record",
+      "action_object": "start time and gage height",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C34",
+          "type": "postcondition",
+          "text": "Record start time and gage height",
+          "attached_to": [
+            "S31"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S32",
+      "label": "Lower sampler at constant transit rate to streambed",
+      "action_verb": "lower",
+      "action_object": "sampler",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C23",
+          "type": "guard",
+          "text": "keep the transit rate unidirectional, constant, and within the isokinetic transit range of the sampler when collecting isokinetic samples",
+          "attached_to": [
+            "S32",
+            "S33"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C24",
+          "type": "guard",
+          "text": "The descending and ascending transit rate must be constant in each direction and must be the same for each vertical along the cross section",
+          "attached_to": [
+            "S32",
+            "S33"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C25",
+          "type": "guard",
+          "text": "Do not exceed the maximum allowable transit rate if using EWI. If the transit rate must exceed the maximum allowable rate, use EDI instead of EWI",
+          "attached_to": [
+            "S32",
+            "S33"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C27",
+          "type": "guard",
+          "text": "The sampler is overfilled when the water surface in the sampler container is above the bottom edge of the nozzle when the sampler is held in the sampling position",
+          "attached_to": [
+            "S32",
+            "S33"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C28",
+          "type": "parameter",
+          "text": "The same size sampler nozzle and container must be used at all verticals along the cross section",
+          "attached_to": [
+            "S32",
+            "S33"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C35",
+          "type": "parameter",
+          "text": "Lower field-rinsed sampler at the predetermined constant transit rate until slight contact is made with the streambed. Do not pause upon contacting the streambed",
+          "attached_to": [
+            "S32"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S33",
+      "label": "Raise sampler at constant transit rate to complete vertical traverse",
+      "action_verb": "raise",
+      "action_object": "sampler",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C36",
+          "type": "parameter",
+          "text": "Raise the sampler immediately at the same constant transit rate until sampler completes the vertical traverse",
+          "attached_to": [
+            "S33"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S34",
+      "label": "Collect sample water at each vertical increment",
+      "action_verb": "collect",
+      "action_object": "sample water",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C29",
+          "type": "guard",
+          "text": "If the total volume collected will exceed the recommended volume for the churn splitter, then a cone splitter must be used",
+          "attached_to": [
+            "S34"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S35",
+      "label": "Process samples per NFM 5",
+      "action_verb": "process",
+      "action_object": "samples",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C37",
+          "type": "reference",
+          "text": "Process samples per NFM 5",
+          "attached_to": [
+            "S35"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S36",
+      "label": "Clean equipment per NFM 3",
+      "action_verb": "clean",
+      "action_object": "equipment",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C38",
+          "type": "reference",
+          "text": "Clean equipment per NFM 3",
+          "attached_to": [
+            "S36"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
       }
     }
   ],
-  "constraints": [
-    {
-      "id": "C22",
-      "type": "precondition",
-      "text": "Isokinetic sampling is required for the EWI method. Use isokinetic, depth-integrating sampling equipment (NFM 2.1.1.A).",
-      "applies_to": [
-        "S1",
-        "S2",
-        "S3",
-        "S4",
-        "S5"
-      ],
-      "enforcement": "must"
-    },
-    {
-      "id": "C23",
-      "type": "guard",
-      "text": "Do not use EWI when stream velocities are less than the minimum velocity required for the isokinetic sampler selected (1.5 ft/s for the bottle sampler; 3 ft/s for the bag sampler).",
-      "applies_to": [
-        "S1",
-        "S2",
-        "S3",
-        "S4",
-        "S5"
-      ],
-      "enforcement": "must"
-    },
-    {
-      "id": "C24",
-      "type": "precondition",
-      "text": "Be sure that the field effort is adequately staffed and equipped. Check QC requirements before departing—QC samples require additional equipment and supplies.",
-      "applies_to": [
-        "S1",
-        "S2",
-        "S3",
-        "S4",
-        "S5"
-      ],
-      "enforcement": "must"
-    }
-  ],
+  "constraints": [],
   "relations": [],
   "quality": {
-    "annotation_scope": "bounded_excerpt",
+    "annotation_scope": "full_subprocedure",
     "review_status": "reviewed",
-    "annotator": "imad",
-    "review_date": "2026-06-13",
-    "review_notes": "Second-pass review. Added S4 (stream width measurement and cross-sectional field measurements, Step 2b-2c) missing from draft. Heavily expanded S2 constraints (C3-C7) splitting selection rules by analyte type with explicit prohibitions. Expanded S5 from 2 to 9 constraints capturing whole-number requirement, mean-value backoff rule, location rules for first and subsequent verticals, braided-channel rule, obstruction adjustment. Procedure-level constraints added (C22-C24) for isokinetic-sampling precondition, minimum-velocity prohibition, and QC pre-departure requirement. Total: 5 steps, 21 step-attached + 3 procedure-level = 24 constraints (was 4 steps, 6 constraints). step:S5 too_many_constraints adjudicated. S5 retains 12 constraints because the source presents EWI vertical-location rules as one procedural step with multiple parameter constraints. Scope kept at Step 1-2 of the EWI method (steps 3-6 cover transit rate, sample collection, processing, and equipment cleaning — out of bounded excerpt). STANDARDS REVIEW FIX: C24 (QC pre-departure staffing/equipment) applies_to extended from [S1] to all 5 steps — pre-departure constraint binds the whole procedure, not just S1."
+    "annotator": "model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off)",
+    "review_date": "2026-07-05",
+    "review_notes": "Adjudicated 2026-07-05 by model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off) via scripts/adjudicate.py from model-assisted draft. Decisions: 79 accept, 2 edit, 2 reject, 0 add.\nstep:S1 ACCEPT\nstep:S2 ACCEPT\nstep:S3 ACCEPT\nstep:S4 ACCEPT\nstep:S5 ACCEPT\nstep:S6 ACCEPT\nstep:S7 ACCEPT\nstep:S8 ACCEPT\nstep:S9 ACCEPT\nstep:S10 ACCEPT\nstep:S11 ACCEPT\nstep:S12 ACCEPT\nstep:S13 ACCEPT\nstep:S14 ACCEPT\nstep:S15 ACCEPT\nstep:S16 ACCEPT\nstep:S17 ACCEPT\nstep:S18 ACCEPT\nstep:S19 ACCEPT\nstep:S20 ACCEPT\nstep:S21 ACCEPT\nstep:S22 ACCEPT\nstep:S23 ACCEPT\nstep:S24 ACCEPT\nstep:S25 ACCEPT\nstep:S26 ACCEPT\nstep:S27 ACCEPT\nstep:S28 ACCEPT\nstep:S29 ACCEPT\nstep:S30 ACCEPT\nstep:S31 ACCEPT\nstep:S32 ACCEPT\nstep:S33 ACCEPT\nstep:S34 ACCEPT\nstep:S35 ACCEPT\nstep:S36 ACCEPT\nconstraint:C1 ACCEPT\nconstraint:C39 ACCEPT\nconstraint:C2 ACCEPT\nconstraint:C44 ACCEPT\nconstraint:C3 ACCEPT\nconstraint:C4 ACCEPT\nconstraint:C5 ACCEPT\nconstraint:C6 EDIT ['enforcement'] -- Source says 'Collect samples for microbiological analyses using equipment and techniques described in NFM 7' as guidance; text does not mandate microbiological sampling in the EWI procedure itself.\nconstraint:C42 REJECT -- References NFM 7 for biological indicators; source text does not attach biological indicators to Step 7 (equipment selection). Step 1 preparation mentions NFM 7 only for microbiological sampling technique, not as a general reference for Step 7.\nconstraint:C43 ACCEPT\nconstraint:C41 ACCEPT\nconstraint:C7 ACCEPT\nconstraint:C8 ACCEPT\nconstraint:C45 ACCEPT\nconstraint:C47 ACCEPT\nconstraint:C14 ACCEPT\nconstraint:C15 ACCEPT\nconstraint:C16 ACCEPT\nconstraint:C17 ACCEPT\nconstraint:C18 ACCEPT\nconstraint:C9 ACCEPT\nconstraint:C10 ACCEPT\nconstraint:C11 ACCEPT\nconstraint:C12 ACCEPT\nconstraint:C13 ACCEPT\nconstraint:C46 ACCEPT\nconstraint:C19 ACCEPT\nconstraint:C26 ACCEPT\nconstraint:C20 ACCEPT\nconstraint:C21 ACCEPT\nconstraint:C22 ACCEPT\nconstraint:C30 ACCEPT\nconstraint:C31 EDIT ['enforcement'] -- Source says 'Use CH/DH techniques, as required' — conditional on whether they are required, not unconditional mandate.\nconstraint:C32 ACCEPT\nconstraint:C33 ACCEPT\nconstraint:C34 ACCEPT\nconstraint:C23 ACCEPT\nconstraint:C24 ACCEPT\nconstraint:C25 ACCEPT\nconstraint:C27 ACCEPT\nconstraint:C28 ACCEPT\nconstraint:C35 ACCEPT\nconstraint:C36 ACCEPT\nconstraint:C29 ACCEPT\nconstraint:C37 ACCEPT\nconstraint:C40 REJECT -- Duplicate of C37 with identical intent; C40 is a redundant reference constraint.\nconstraint:C38 ACCEPT\n[strict-warning adjudication] step:S5 zero_constraints adjudicated; step:S6 zero_constraints adjudicated; step:S11 zero_constraints adjudicated; step:S12 zero_constraints adjudicated; step:S21 zero_constraints adjudicated; step:S22 zero_constraints adjudicated; step:S23 zero_constraints adjudicated; step:S29 zero_constraints adjudicated"
   }
 }

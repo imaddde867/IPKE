@@ -1,0 +1,194 @@
+{
+  "procedure": {
+    "doc_id": "nasa_npr_8715_3d_general_safety",
+    "title": "NASA safety planning and risk reduction excerpt",
+    "version": "NPR 8715.3D",
+    "domain": "safety_requirements",
+    "source": {
+      "doc_id": "nasa_npr_8715_3d_general_safety",
+      "page": "8-10",
+      "section": "1.5.1-1.7.1.1"
+    }
+  },
+  "steps": [
+    {
+      "id": "S1",
+      "label": "Ensure that the Safety and Mission Assurance plan addresses life-cycle safety functions and activities",
+      "action_verb": "ensure",
+      "action_object": "SMA plan coverage",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C1",
+          "type": "parameter",
+          "text": "Reflects a life cycle SMA process perspective, addressing areas including: procurement, management, design and engineering, design verification and test, software design, software verification and test, manufacturing, manufacturing verification and test, operations, and preflight verification and test.",
+          "attached_to": [
+            "S1"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C2",
+          "type": "role_assignment",
+          "text": "Mission Directorate Associate Administrators shall ensure that program and project Safety and Mission Assurance (SMA) Plans satisfy the requirements in 1.5.1.a-e.",
+          "attached_to": [
+            "S1"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {
+        "safety_critical": true
+      },
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "page": "8",
+        "section": "1.5.1.a-b"
+      }
+    },
+    {
+      "id": "S2",
+      "label": "Include the required safety, risk, quality, and compliance topics for each major milestone review",
+      "action_verb": "include",
+      "action_object": "required SMA topics",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C3",
+          "type": "parameter",
+          "text": "Contains data and information to support each section of the SMA Plan for each major milestone review to include the Safety and Mission Success Review.",
+          "attached_to": [
+            "S2"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C4",
+          "type": "parameter",
+          "text": "Contains trending and metrics utilized to display progress and to predict growth towards SMA goals and requirements.",
+          "attached_to": [
+            "S2"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C5",
+          "type": "parameter",
+          "text": "As a minimum, addresses the following topics: safety and mission success (per this NPR), risk classification of NASA payloads (NPR 8705.4), reliability and maintainability (NPD 8720.1), risk assessment (NPR 8705.5), quality assurance (NPR 8735.2), software safety and assurance (NASA-STD-8739.8), public and workforce safety and health (NPR 8715.1), range safety (NPR 8715.5), payload safety (NPR 8715.7), orbital debris mitigation (NPR 8715.6), planetary protection (NPR 8020.12, NID 8715.128, NID 8715.129), nuclear flight safety (Chapter 6), human-rating (NPR 8705.2), mishap reporting (NPR 8621.1), and compliance verification and SMA audits (NPR 8705.6).",
+          "attached_to": [
+            "S2"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {
+        "safety_critical": true
+      },
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "page": "8-9",
+        "section": "1.5.1.c-e"
+      }
+    },
+    {
+      "id": "S3",
+      "label": "Evaluate contractor operations and designs for compliance with contractual safety provisions",
+      "action_verb": "evaluate",
+      "action_object": "contractor operations and designs",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C6",
+          "type": "role_assignment",
+          "text": "Project managers shall ensure that contractor operations and designs are evaluated for consistency and compliance with the safety and health provisions provided in their contractual agreements.",
+          "attached_to": [
+            "S3"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {
+        "safety_critical": true
+      },
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "page": "9",
+        "section": "1.5.2"
+      }
+    },
+    {
+      "id": "S4",
+      "label": "Control hazards by elimination, likelihood reduction, consequence mitigation, and uncertainty reduction",
+      "action_verb": "control",
+      "action_object": "hazards and dominant contributors to risk",
+      "arguments": [
+        {
+          "step": "S4a",
+          "label": "Eliminate accident scenarios by design"
+        },
+        {
+          "step": "S4b",
+          "label": "Reduce likelihood of accident scenarios through design and operational changes"
+        },
+        {
+          "step": "S4c",
+          "label": "Reduce severity of accident consequences"
+        },
+        {
+          "step": "S4d",
+          "label": "Improve state-of-knowledge regarding key uncertainties that drive risk"
+        }
+      ],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C7",
+          "type": "role_assignment",
+          "text": "Project managers shall ensure that hazards and dominant contributors to risk are controlled.",
+          "attached_to": [
+            "S4"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C8",
+          "type": "guard",
+          "text": "Designs for hazard control and accident prevention and mitigation should include considerations for the possibility of human errors.",
+          "attached_to": [
+            "S4"
+          ],
+          "enforcement": "should"
+        },
+        {
+          "id": "C9",
+          "type": "parameter",
+          "text": "The level of hazard control should be based on the level of risk associated with that hazard.",
+          "attached_to": [
+            "S4"
+          ],
+          "enforcement": "should"
+        }
+      ],
+      "flags": {
+        "safety_critical": true
+      },
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "page": "9-10",
+        "section": "1.7.1.1"
+      }
+    }
+  ],
+  "constraints": [],
+  "relations": [],
+  "quality": {
+    "annotation_scope": "bounded_excerpt",
+    "review_status": "reviewed",
+    "annotator": "imad",
+    "review_date": "2026-06-13",
+    "review_notes": "Second-pass review. Added C1 (life-cycle SMA process perspective with 10 areas, 1.5.1.b). Added C4 (trending and metrics for SMA Plan, 1.5.1.d). Reframed C2/C6/C7 as role_assignment type (Mission Directorate AA, Project managers) to distinguish role-holder requirements from content requirements. C5 (15 topics) uses exact source ordering. S4 arguments populated from 1.7.1.1.a-d. C8/C9 are the two Note constraints verbatim."
+  }
+}

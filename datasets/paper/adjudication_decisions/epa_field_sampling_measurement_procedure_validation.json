@@ -1,0 +1,34 @@
+{
+  "doc_id": "epa_field_sampling_measurement_procedure_validation",
+  "annotator": "model-assisted:claude-opus-4-8 + agent-adjudicated",
+  "review_date": "2026-07-05",
+  "decisions": [
+    {
+      "kind": "constraint",
+      "id": "C8",
+      "action": "edit",
+      "edits": {
+        "type": "precondition"
+      },
+      "note": "Guard describes a condition that prevents validation, not a condition that must exist before steps S5/S6 occur. It applies to S11 (validation step), not to periodic review steps."
+    },
+    {
+      "kind": "constraint",
+      "id": "C14",
+      "action": "edit",
+      "edits": {
+        "type": "postcondition"
+      },
+      "note": "Section 3.2.2 states 'Non-standard procedures will be fully validated' as a requirement for S11, not a precondition to it. The validation process itself produces this state."
+    },
+    {
+      "kind": "constraint",
+      "id": "C27",
+      "action": "edit",
+      "edits": {
+        "enforcement": "must"
+      },
+      "note": "Text states 'The team will update the validation plan, as necessary' \u2014 this is a directive, not optional guidance. Should enforce as must."
+    }
+  ]
+}

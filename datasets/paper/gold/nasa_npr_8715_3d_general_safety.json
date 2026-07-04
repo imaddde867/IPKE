@@ -1,194 +1,913 @@
 {
   "procedure": {
     "doc_id": "nasa_npr_8715_3d_general_safety",
-    "title": "NASA safety planning and risk reduction excerpt",
-    "version": "NPR 8715.3D",
+    "title": "2.5.2 System Safety Technical Plan (SSTP)",
+    "version": "NASA NPR 8715.3D",
     "domain": "safety_requirements",
     "source": {
       "doc_id": "nasa_npr_8715_3d_general_safety",
-      "page": "8-10",
-      "section": "1.5.1-1.7.1.1"
+      "section": "2.5.2 (SSTP)",
+      "page": null,
+      "char_start": 50391,
+      "char_end": 54798
     }
   },
   "steps": [
     {
       "id": "S1",
-      "label": "Ensure that the Safety and Mission Assurance plan addresses life-cycle safety functions and activities",
-      "action_verb": "ensure",
-      "action_object": "SMA plan coverage",
+      "label": "Approve SSTP by Program Management Council",
+      "action_verb": "approve",
+      "action_object": "SSTP",
       "arguments": [],
       "parameters": [],
       "constraints": [
         {
-          "id": "C1",
-          "type": "parameter",
-          "text": "Reflects a life cycle SMA process perspective, addressing areas including: procurement, management, design and engineering, design verification and test, software design, software verification and test, manufacturing, manufacturing verification and test, operations, and preflight verification and test.",
-          "attached_to": [
-            "S1"
-          ],
-          "enforcement": "must"
-        },
-        {
-          "id": "C2",
-          "type": "role_assignment",
-          "text": "Mission Directorate Associate Administrators shall ensure that program and project Safety and Mission Assurance (SMA) Plans satisfy the requirements in 1.5.1.a-e.",
+          "id": "C5",
+          "type": "precondition",
+          "text": "For Category I project/programs, SSTP must be approved by the governing Program Management Council",
           "attached_to": [
             "S1"
           ],
           "enforcement": "must"
         }
       ],
-      "flags": {
-        "safety_critical": true
-      },
+      "flags": {},
       "provenance": {
         "doc_id": "nasa_npr_8715_3d_general_safety",
-        "page": "8",
-        "section": "1.5.1.a-b"
+        "section": "2.5.2 (SSTP)",
+        "page": null
       }
     },
     {
       "id": "S2",
-      "label": "Include the required safety, risk, quality, and compliance topics for each major milestone review",
-      "action_verb": "include",
-      "action_object": "required SMA topics",
+      "label": "Obtain concurrence from cognizant SMA managers",
+      "action_verb": "obtain",
+      "action_object": "concurrence from cognizant SMA managers",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C6",
+          "type": "precondition",
+          "text": "For Category I project/programs, SSTP must have concurrence by the cognizant SMA managers and the project's senior engineer",
+          "attached_to": [
+            "S2",
+            "S3"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S3",
+      "label": "Obtain concurrence from project senior engineer",
+      "action_verb": "obtain",
+      "action_object": "concurrence from project senior engineer",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S4",
+      "label": "Allocate resources to System Safety Manager",
+      "action_verb": "allocate",
+      "action_object": "resources to System Safety Manager",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C7",
+          "type": "postcondition",
+          "text": "System Safety Manager and the prime contractor (for out-of-house projects) must have the resources to implement the SSTP",
+          "attached_to": [
+            "S4",
+            "S5"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S5",
+      "label": "Allocate resources to prime contractor",
+      "action_verb": "allocate",
+      "action_object": "resources to prime contractor",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S6",
+      "label": "Approve SSTP changes by Program Management Council",
+      "action_verb": "approve",
+      "action_object": "SSTP changes",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C8",
+          "type": "precondition",
+          "text": "For Category I project/programs, changes to the SSTP must be approved by the governing PMC",
+          "attached_to": [
+            "S6"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C9",
+          "type": "precondition",
+          "text": "For Category I project/programs, changes to the SSTP must have concurrence by the Chief, Safety and Mission Assurance",
+          "attached_to": [
+            "S6",
+            "S7"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S7",
+      "label": "Obtain concurrence from Chief of Safety and Mission Assurance",
+      "action_verb": "obtain",
+      "action_object": "concurrence from Chief, Safety and Mission Assurance",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S8",
+      "label": "Coordinate SSTP with SEMP",
+      "action_verb": "coordinate",
+      "action_object": "SSTP with SEMP",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C10",
+          "type": "guard",
+          "text": "When the SSTP is not an integral part of the SEMP, ensure the SSTP is coordinated with the SEMP for the integration of system safety activities with other system engineering technical processes",
+          "attached_to": [
+            "S8"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S9",
+      "label": "Assign System Safety Manager",
+      "action_verb": "assign",
+      "action_object": "System Safety Manager",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C11",
+          "type": "role_assignment",
+          "text": "The Center SMA Director shall assign a System Safety Manager to have specific responsibility for the development and implementation of the SSTP",
+          "attached_to": [
+            "S9"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S10",
+      "label": "Verify System Safety Manager expertise in safety analysis",
+      "action_verb": "verify",
+      "action_object": "System Safety Manager expertise in safety analysis",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C12",
+          "type": "postcondition",
+          "text": "Assigned System Safety Manager must have demonstrated expertise in safety analysis",
+          "attached_to": [
+            "S10"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S11",
+      "label": "Verify System Safety Manager expertise in probabilistic risk assessment",
+      "action_verb": "verify",
+      "action_object": "System Safety Manager expertise in probabilistic risk assessment techniques",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C13",
+          "type": "postcondition",
+          "text": "For Category I and II projects, System Safety Manager must have expertise in the application of probabilistic risk assessment techniques",
+          "attached_to": [
+            "S11"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S12",
+      "label": "Fund personnel with project safety oversight responsibilities",
+      "action_verb": "fund",
+      "action_object": "personnel with project safety oversight responsibilities",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C14",
+          "type": "postcondition",
+          "text": "All personnel with project safety oversight responsibilities must be funded by other than direct project funding sources",
+          "attached_to": [
+            "S12"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S13",
+      "label": "Develop SSTP during project formulation phase",
+      "action_verb": "develop",
+      "action_object": "SSTP",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C1",
+          "type": "reference",
+          "text": "SSTP is designed to be a technical planning guide for the technical performance and management of the system safety activities",
+          "attached_to": [
+            "S13",
+            "S14"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C2",
+          "type": "reference",
+          "text": "SSTP can be a stand-alone document, or part of the SMA plan or the Systems Engineering Management Plan (SEMP)",
+          "attached_to": [
+            "S13"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C4",
+          "type": "reference",
+          "text": "SSTP describes how the technical team(s) responsible for generating and maintaining system safety models will interact with the system engineering organizations, the reporting protocol, and the cost and schedule associated with accomplishing system safety modeling activities in relation to the critical or key events during all phases of the life cycle",
+          "attached_to": [
+            "S13",
+            "S14"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C15",
+          "type": "precondition",
+          "text": "SSTP must be developed during the project formulation phase",
+          "attached_to": [
+            "S13"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S14",
+      "label": "Update SSTP throughout system life cycle",
+      "action_verb": "update",
+      "action_object": "SSTP",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C16",
+          "type": "postcondition",
+          "text": "SSTP must be updated throughout the system life cycle",
+          "attached_to": [
+            "S14"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S15",
+      "label": "Apply graded approach to scope of system safety technical processes",
+      "action_verb": "apply",
+      "action_object": "graded approach to scope of system safety technical processes",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C17",
+          "type": "parameter",
+          "text": "The scope of system safety technical processes in the SSTP follows the graded approach specified in Tables 2.1 and 2.2",
+          "attached_to": [
+            "S15"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S16",
+      "label": "Specify system safety modeling activities in SSTP",
+      "action_verb": "specify",
+      "action_object": "system safety modeling activities",
       "arguments": [],
       "parameters": [],
       "constraints": [
         {
           "id": "C3",
           "type": "parameter",
-          "text": "Contains data and information to support each section of the SMA Plan for each major milestone review to include the Safety and Mission Success Review.",
+          "text": "SSTP provides the specifics of the system safety modeling activities and describes what and how safety adverse consequences will be modeled, how system safety models (qualitative and probabilistic risk assessments) will be integrated and applied for risk-informed decision making and safety monitoring",
           "attached_to": [
-            "S2"
-          ],
-          "enforcement": "must"
-        },
-        {
-          "id": "C4",
-          "type": "parameter",
-          "text": "Contains trending and metrics utilized to display progress and to predict growth towards SMA goals and requirements.",
-          "attached_to": [
-            "S2"
-          ],
-          "enforcement": "must"
-        },
-        {
-          "id": "C5",
-          "type": "parameter",
-          "text": "As a minimum, addresses the following topics: safety and mission success (per this NPR), risk classification of NASA payloads (NPR 8705.4), reliability and maintainability (NPD 8720.1), risk assessment (NPR 8705.5), quality assurance (NPR 8735.2), software safety and assurance (NASA-STD-8739.8), public and workforce safety and health (NPR 8715.1), range safety (NPR 8715.5), payload safety (NPR 8715.7), orbital debris mitigation (NPR 8715.6), planetary protection (NPR 8020.12, NID 8715.128, NID 8715.129), nuclear flight safety (Chapter 6), human-rating (NPR 8705.2), mishap reporting (NPR 8621.1), and compliance verification and SMA audits (NPR 8705.6).",
-          "attached_to": [
-            "S2"
+            "S16",
+            "S17",
+            "S18"
           ],
           "enforcement": "must"
         }
       ],
-      "flags": {
-        "safety_critical": true
-      },
+      "flags": {},
       "provenance": {
         "doc_id": "nasa_npr_8715_3d_general_safety",
-        "page": "8-9",
-        "section": "1.5.1.c-e"
+        "section": "2.5.2 (SSTP)",
+        "page": null
       }
     },
     {
-      "id": "S3",
-      "label": "Evaluate contractor operations and designs for compliance with contractual safety provisions",
-      "action_verb": "evaluate",
-      "action_object": "contractor operations and designs",
+      "id": "S17",
+      "label": "Document application of system safety modeling to risk-informed decision making",
+      "action_verb": "document",
+      "action_object": "application of system safety modeling to risk-informed decision making",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S18",
+      "label": "Document application of system safety modeling to safety monitoring",
+      "action_verb": "document",
+      "action_object": "application of system safety modeling to safety monitoring",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S19",
+      "label": "Establish objectives and scope of system safety tasks",
+      "action_verb": "establish",
+      "action_object": "objectives and scope of system safety tasks",
       "arguments": [],
       "parameters": [],
       "constraints": [
         {
-          "id": "C6",
-          "type": "role_assignment",
-          "text": "Project managers shall ensure that contractor operations and designs are evaluated for consistency and compliance with the safety and health provisions provided in their contractual agreements.",
+          "id": "C19",
+          "type": "postcondition",
+          "text": "Objectives and scope of the system safety tasks must be established and documented in the SSTP",
           "attached_to": [
-            "S3"
+            "S19"
           ],
           "enforcement": "must"
         }
       ],
-      "flags": {
-        "safety_critical": true
-      },
+      "flags": {},
       "provenance": {
         "doc_id": "nasa_npr_8715_3d_general_safety",
-        "page": "9",
-        "section": "1.5.2"
+        "section": "2.5.2 (SSTP)",
+        "page": null
       }
     },
     {
-      "id": "S4",
-      "label": "Control hazards by elimination, likelihood reduction, consequence mitigation, and uncertainty reduction",
-      "action_verb": "control",
-      "action_object": "hazards and dominant contributors to risk",
-      "arguments": [
-        {
-          "step": "S4a",
-          "label": "Eliminate accident scenarios by design"
-        },
-        {
-          "step": "S4b",
-          "label": "Reduce likelihood of accident scenarios through design and operational changes"
-        },
-        {
-          "step": "S4c",
-          "label": "Reduce severity of accident consequences"
-        },
-        {
-          "step": "S4d",
-          "label": "Improve state-of-knowledge regarding key uncertainties that drive risk"
-        }
-      ],
+      "id": "S20",
+      "label": "Define applicable safety deliverables",
+      "action_verb": "define",
+      "action_object": "applicable safety deliverables",
+      "arguments": [],
       "parameters": [],
       "constraints": [
         {
-          "id": "C7",
-          "type": "role_assignment",
-          "text": "Project managers shall ensure that hazards and dominant contributors to risk are controlled.",
+          "id": "C20",
+          "type": "postcondition",
+          "text": "Applicable safety deliverables and performance measures must be defined and documented in the SSTP",
           "attached_to": [
-            "S4"
+            "S20",
+            "S21"
           ],
           "enforcement": "must"
-        },
-        {
-          "id": "C8",
-          "type": "guard",
-          "text": "Designs for hazard control and accident prevention and mitigation should include considerations for the possibility of human errors.",
-          "attached_to": [
-            "S4"
-          ],
-          "enforcement": "should"
-        },
-        {
-          "id": "C9",
-          "type": "parameter",
-          "text": "The level of hazard control should be based on the level of risk associated with that hazard.",
-          "attached_to": [
-            "S4"
-          ],
-          "enforcement": "should"
         }
       ],
-      "flags": {
-        "safety_critical": true
-      },
+      "flags": {},
       "provenance": {
         "doc_id": "nasa_npr_8715_3d_general_safety",
-        "page": "9-10",
-        "section": "1.7.1.1"
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S21",
+      "label": "Define performance measures",
+      "action_verb": "define",
+      "action_object": "performance measures",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S22",
+      "label": "Document safety tasks and deliverables in SSTP",
+      "action_verb": "document",
+      "action_object": "safety tasks and deliverables",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C21",
+          "type": "postcondition",
+          "text": "Safety tasks and deliverables must be documented in the SSTP",
+          "attached_to": [
+            "S22"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S23",
+      "label": "Provide technical direction for system safety activities",
+      "action_verb": "provide",
+      "action_object": "technical direction for system safety activities",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C22",
+          "type": "role_assignment",
+          "text": "The assigned System Safety Manager shall provide technical direction for system safety activities",
+          "attached_to": [
+            "S23"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S24",
+      "label": "Manage implementation of system safety activities",
+      "action_verb": "manage",
+      "action_object": "implementation of system safety activities",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C23",
+          "type": "role_assignment",
+          "text": "The assigned System Safety Manager shall manage implementation of system safety activities as specified in the SSTP",
+          "attached_to": [
+            "S24"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S25",
+      "label": "Integrate system safety engineering activities into system engineering processes",
+      "action_verb": "integrate",
+      "action_object": "system safety engineering activities into system engineering technical processes",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C24",
+          "type": "postcondition",
+          "text": "System safety engineering activities must be integrated into system engineering technical processes",
+          "attached_to": [
+            "S25"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S26",
+      "label": "Determine acceptability of residual risk",
+      "action_verb": "determine",
+      "action_object": "acceptability of residual risk",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C25",
+          "type": "postcondition",
+          "text": "Acceptability of residual risk stemming from safety assessments must be determined",
+          "attached_to": [
+            "S26"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S27",
+      "label": "Integrate specific safety requirements into programmatic requirements",
+      "action_verb": "integrate",
+      "action_object": "specific safety requirements into overall programmatic requirements",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C26",
+          "type": "postcondition",
+          "text": "Specific safety requirements must be integrated into overall programmatic requirements",
+          "attached_to": [
+            "S27"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S28",
+      "label": "Reflect safety requirements in program and planning documents",
+      "action_verb": "reflect",
+      "action_object": "safety requirements in applicable program and planning documents",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C27",
+          "type": "postcondition",
+          "text": "Safety requirements must be reflected in applicable program and planning documents including the statement of work for contractor designs",
+          "attached_to": [
+            "S28",
+            "S29"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S29",
+      "label": "Include safety requirements in contractor statement of work",
+      "action_verb": "include",
+      "action_object": "safety requirements in statement of work for contractor designs",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S30",
+      "label": "Maintain safety participation in program design",
+      "action_verb": "maintain",
+      "action_object": "safety participation in program design",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C28",
+          "type": "postcondition",
+          "text": "Appropriate safety participation must be maintained in the program design, tests, operations, failures and mishaps, and contractor system safety activities at a level consistent with mishap potential for the life of the program",
+          "attached_to": [
+            "S30",
+            "S31",
+            "S32",
+            "S33"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S31",
+      "label": "Maintain safety participation in tests and operations",
+      "action_verb": "maintain",
+      "action_object": "safety participation in tests and operations",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S32",
+      "label": "Maintain safety participation in failures and mishaps",
+      "action_verb": "maintain",
+      "action_object": "safety participation in failures and mishaps",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S33",
+      "label": "Maintain safety participation in contractor system safety activities",
+      "action_verb": "maintain",
+      "action_object": "safety participation in contractor system safety activities",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S34",
+      "label": "Establish independent safety reporting channel",
+      "action_verb": "establish",
+      "action_object": "independent safety reporting channel",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C29",
+          "type": "postcondition",
+          "text": "An independent safety reporting channel must be established to keep the Center SMA Director apprised of the system safety status (including tests and operations), particularly regarding problem areas that may require assistance from the Center, the NASA Engineering and Safety Center, or Headquarters",
+          "attached_to": [
+            "S34",
+            "S35",
+            "S36"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S35",
+      "label": "Report system safety status to Center SMA Director",
+      "action_verb": "report",
+      "action_object": "system safety status to Center SMA Director",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S36",
+      "label": "Report problem areas requiring assistance",
+      "action_verb": "report",
+      "action_object": "problem areas requiring assistance from Center, NESC, or Headquarters",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S37",
+      "label": "Support OSMA requirements for audits",
+      "action_verb": "support",
+      "action_object": "OSMA requirements for audits",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C30",
+          "type": "postcondition",
+          "text": "OSMA requirements for audits, assessments, and reviews must be supported",
+          "attached_to": [
+            "S37",
+            "S38",
+            "S39"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S38",
+      "label": "Support OSMA requirements for assessments",
+      "action_verb": "support",
+      "action_object": "OSMA requirements for assessments",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
+      }
+    },
+    {
+      "id": "S39",
+      "label": "Support OSMA requirements for reviews",
+      "action_verb": "support",
+      "action_object": "OSMA requirements for reviews",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)",
+        "page": null
       }
     }
   ],
   "constraints": [],
   "relations": [],
   "quality": {
-    "annotation_scope": "bounded_excerpt",
+    "annotation_scope": "full_subprocedure",
     "review_status": "reviewed",
-    "annotator": "imad",
-    "review_date": "2026-06-13",
-    "review_notes": "Second-pass review. Added C1 (life-cycle SMA process perspective with 10 areas, 1.5.1.b). Added C4 (trending and metrics for SMA Plan, 1.5.1.d). Reframed C2/C6/C7 as role_assignment type (Mission Directorate AA, Project managers) to distinguish role-holder requirements from content requirements. C5 (15 topics) uses exact source ordering. S4 arguments populated from 1.7.1.1.a-d. C8/C9 are the two Note constraints verbatim."
+    "annotator": "model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off)",
+    "review_date": "2026-07-05",
+    "review_notes": "Adjudicated 2026-07-05 by model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off) via scripts/adjudicate.py from model-assisted draft. Decisions: 65 accept, 3 edit, 1 reject, 0 add.\nstep:S1 ACCEPT\nstep:S2 ACCEPT\nstep:S3 ACCEPT\nstep:S4 ACCEPT\nstep:S5 ACCEPT\nstep:S6 ACCEPT\nstep:S7 ACCEPT\nstep:S8 ACCEPT\nstep:S9 ACCEPT\nstep:S10 ACCEPT\nstep:S11 ACCEPT\nstep:S12 ACCEPT\nstep:S13 ACCEPT\nstep:S14 ACCEPT\nstep:S15 ACCEPT\nstep:S16 ACCEPT\nstep:S17 ACCEPT\nstep:S18 ACCEPT\nstep:S19 ACCEPT\nstep:S20 ACCEPT\nstep:S21 ACCEPT\nstep:S22 ACCEPT\nstep:S23 ACCEPT\nstep:S24 ACCEPT\nstep:S25 ACCEPT\nstep:S26 ACCEPT\nstep:S27 ACCEPT\nstep:S28 ACCEPT\nstep:S29 ACCEPT\nstep:S30 ACCEPT\nstep:S31 ACCEPT\nstep:S32 ACCEPT\nstep:S33 ACCEPT\nstep:S34 ACCEPT\nstep:S35 ACCEPT\nstep:S36 ACCEPT\nstep:S37 ACCEPT\nstep:S38 ACCEPT\nstep:S39 ACCEPT\nconstraint:C5 ACCEPT\nconstraint:C6 ACCEPT\nconstraint:C7 ACCEPT\nconstraint:C8 ACCEPT\nconstraint:C9 ACCEPT\nconstraint:C10 ACCEPT\nconstraint:C11 ACCEPT\nconstraint:C12 ACCEPT\nconstraint:C13 ACCEPT\nconstraint:C14 ACCEPT\nconstraint:C1 ACCEPT\nconstraint:C2 EDIT ['type'] -- C2 describes what the SSTP can be (a parameter of its nature), not a constraint on S13's execution. This is background/definitional, not prescriptive.\nconstraint:C4 EDIT ['type'] -- C4 is a reference/definition of what the SSTP describes, not a precondition or parameter constraining execution of S13/S14.\nconstraint:C15 ACCEPT\nconstraint:C16 ACCEPT\nconstraint:C17 ACCEPT\nconstraint:C3 ACCEPT\nconstraint:C18 REJECT -- C18 duplicates C3 (same text about SSTP specifics and their application to risk-informed decision making and safety monitoring). Redundant constraint.\nconstraint:C19 ACCEPT\nconstraint:C20 ACCEPT\nconstraint:C21 ACCEPT\nconstraint:C22 ACCEPT\nconstraint:C23 ACCEPT\nconstraint:C24 ACCEPT\nconstraint:C25 ACCEPT\nconstraint:C26 ACCEPT\nconstraint:C27 ACCEPT\nconstraint:C28 EDIT ['type'] -- C28 describes a postcondition—safety participation must be maintained at the required level—not a parameter defining what participation looks like.\nconstraint:C29 ACCEPT\nconstraint:C30 ACCEPT\nEDGE CASE (requirements/policy doc): NPR 8715.3D is requirement-structured; each 'shall/should' clause treated as a procedural step per docs/annotation/guidelines.md. Steps are normative requirements, not temporally-ordered actions.\n[strict-warning adjudication] step:S3 zero_constraints adjudicated; step:S5 zero_constraints adjudicated; step:S7 zero_constraints adjudicated; step:S17 zero_constraints adjudicated; step:S18 zero_constraints adjudicated; step:S21 zero_constraints adjudicated; step:S29 zero_constraints adjudicated; step:S31 zero_constraints adjudicated; step:S32 zero_constraints adjudicated; step:S33 zero_constraints adjudicated; step:S35 zero_constraints adjudicated; step:S36 zero_constraints adjudicated; step:S38 zero_constraints adjudicated; step:S39 zero_constraints adjudicated"
   }
 }

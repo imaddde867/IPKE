@@ -1,249 +1,906 @@
 {
   "procedure": {
     "doc_id": "epa_guidance_preparing_sops_qag6",
-    "title": "EPA SOP preparation and review excerpt",
+    "title": "2.0 SOP Process",
     "version": "EPA QA/G-6",
-    "domain": "sop_governance",
+    "domain": "quality_assurance",
     "source": {
       "doc_id": "epa_guidance_preparing_sops_qag6",
-      "page": "3-4",
-      "section": "2.0 SOP Process (2.1-2.4, 2.6)"
+      "section": "2.0 SOP Process (2.1-2.6)",
+      "page": null,
+      "char_start": 10437,
+      "char_end": 17026
     }
   },
   "steps": [
     {
       "id": "S1",
-      "label": "Assign knowledgeable subject-matter experts to write the SOP",
+      "label": "Establish procedure to determine what needs documentation",
+      "action_verb": "establish",
+      "action_object": "procedure for determining what procedures or processes need to be documented",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S2",
+      "label": "Assign subject-matter experts to write SOPs",
       "action_verb": "assign",
-      "action_object": "SOP writers",
+      "action_object": "subject-matter experts knowledgeable with the activity and organization's internal structure",
       "arguments": [],
       "parameters": [],
       "constraints": [
         {
           "id": "C1",
-          "type": "parameter",
-          "text": "SOPs should be written with sufficient detail so that someone with limited experience with or knowledge of the procedure, but with a basic understanding, can successfully reproduce the procedure when unsupervised.",
-          "attached_to": [
-            "S1"
-          ],
-          "enforcement": "should"
-        },
-        {
-          "id": "C2",
-          "type": "postcondition",
-          "text": "The experience requirement for performing an activity should be noted in the section on personnel qualifications.",
-          "attached_to": [
-            "S1"
-          ],
-          "enforcement": "should"
-        },
-        {
-          "id": "C3",
-          "type": "postcondition",
-          "text": "Any checklists or forms included as part of an activity should be referenced at the points in the procedure where they are to be used and then attached to the SOP.",
-          "attached_to": [
-            "S1"
-          ],
-          "enforcement": "should"
-        },
-        {
-          "id": "C4",
-          "type": "postcondition",
-          "text": "When detailed checklists are prepared specifically for a given activity, the SOP should describe, at least generally, how the checklist is to be prepared, or on what it is to be based.",
-          "attached_to": [
-            "S1"
-          ],
-          "enforcement": "should"
-        }
-      ],
-      "flags": {
-        "safety_critical": false
-      },
-      "provenance": {
-        "doc_id": "epa_guidance_preparing_sops_qag6",
-        "page": "3-4",
-        "section": "2.1, 2.4"
-      }
-    },
-    {
-      "id": "S2",
-      "label": "Review and test the draft SOP with trained reviewers before finalizing it",
-      "action_verb": "review",
-      "action_object": "draft SOP",
-      "arguments": [],
-      "parameters": [],
-      "constraints": [
-        {
-          "id": "C5",
-          "type": "role_assignment",
-          "text": "SOPs should be reviewed (that is, validated) by one or more individuals with appropriate training and experience with the process.",
-          "attached_to": [
-            "S2"
-          ],
-          "enforcement": "should"
-        },
-        {
-          "id": "C6",
-          "type": "guard",
-          "text": "Draft SOPs should be tested by individuals other than the original writer before the SOPs are finalized.",
-          "attached_to": [
-            "S2"
-          ],
-          "enforcement": "should"
-        },
-        {
-          "id": "C7",
           "type": "precondition",
-          "text": "Finalized SOPs should be approved as described in the organization's Quality Management Plan or its own SOP for preparation of SOPs.",
-          "attached_to": [
-            "S2"
-          ],
-          "enforcement": "should"
-        },
-        {
-          "id": "C8",
-          "type": "role_assignment",
-          "text": "Generally the immediate supervisor, such as a section or branch chief, and the organization's quality assurance officer review and approve each SOP.",
+          "text": "individuals knowledgeable with the activity and the organization's internal structure",
           "attached_to": [
             "S2"
           ],
           "enforcement": "must"
         }
       ],
-      "flags": {
-        "safety_critical": false
-      },
+      "flags": {},
       "provenance": {
         "doc_id": "epa_guidance_preparing_sops_qag6",
-        "page": "3",
-        "section": "2.2"
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
       }
     },
     {
       "id": "S3",
-      "label": "Update and re-approve the SOP whenever the underlying procedure changes",
+      "label": "Write SOP with sufficient detail for reproduction",
+      "action_verb": "write",
+      "action_object": "SOP with sufficient detail for unsupervised reproduction by individuals with limited experience",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C2",
+          "type": "parameter",
+          "text": "written with sufficient detail so that someone with limited experience with or knowledge of the procedure, but with a basic understanding, can successfully reproduce the procedure when unsupervised",
+          "attached_to": [
+            "S3"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S4",
+      "label": "Note experience requirements in personnel qualifications section",
+      "action_verb": "note",
+      "action_object": "experience requirement for performing the activity in personnel qualifications section",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C3",
+          "type": "postcondition",
+          "text": "experience requirement for performing an activity should be noted in the section on personnel qualifications",
+          "attached_to": [
+            "S4"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S5",
+      "label": "Review draft SOP by individuals with appropriate training",
+      "action_verb": "review",
+      "action_object": "draft SOP by one or more individuals with appropriate training and experience",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C4",
+          "type": "precondition",
+          "text": "reviewed by one or more individuals with appropriate training and experience with the process",
+          "attached_to": [
+            "S5"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S6",
+      "label": "Test draft SOP by individuals other than original writer",
+      "action_verb": "test",
+      "action_object": "draft SOP by individuals other than the original writer",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C5",
+          "type": "guard",
+          "text": "draft SOPs are actually tested by individuals other than the original writer before the SOPs are finalized",
+          "attached_to": [
+            "S6"
+          ],
+          "enforcement": "should"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S7",
+      "label": "Finalize SOP based on review and testing",
+      "action_verb": "finalize",
+      "action_object": "SOP based on review and testing results",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S8",
+      "label": "Submit SOP for approval to immediate supervisor",
+      "action_verb": "submit",
+      "action_object": "finalized SOP to immediate supervisor for review and approval",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C6",
+          "type": "precondition",
+          "text": "approved as described in the organization's Quality Management Plan or its own SOP for preparation of SOPs",
+          "attached_to": [
+            "S8",
+            "S9"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C7",
+          "type": "role_assignment",
+          "text": "immediate supervisor, such as a section or branch chief, and the organization's quality assurance officer review and approve each SOP",
+          "attached_to": [
+            "S8",
+            "S9"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S9",
+      "label": "Submit SOP for approval to quality assurance officer",
+      "action_verb": "submit",
+      "action_object": "finalized SOP to quality assurance officer for review and approval",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S10",
+      "label": "Obtain signature approval on SOP",
+      "action_verb": "obtain",
+      "action_object": "signature approval on SOP from authorized personnel",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C8",
+          "type": "postcondition",
+          "text": "Signature approval indicates that an SOP has been both reviewed and approved by management",
+          "attached_to": [
+            "S10"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S11",
+      "label": "Use electronic signatures as substitute for paper when practical",
+      "action_verb": "use",
+      "action_object": "electronic signatures for approval and maintenance of SOP",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C9",
+          "type": "guard",
+          "text": "use of electronic signatures, as well as electronic maintenance and submission, is an acceptable substitution for paper, when practical",
+          "attached_to": [
+            "S11"
+          ],
+          "enforcement": "may"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S12",
+      "label": "Update SOP when procedures are changed",
       "action_verb": "update",
-      "action_object": "SOP revision",
+      "action_object": "SOP whenever procedures are changed",
       "arguments": [],
       "parameters": [],
       "constraints": [
         {
           "id": "C10",
-          "type": "postcondition",
-          "text": "Whenever procedures are changed, SOPs should be updated and re-approved.",
+          "type": "precondition",
+          "text": "whenever procedures are changed, SOPs should be updated and re-approved",
           "attached_to": [
-            "S3"
+            "S12"
           ],
-          "enforcement": "should"
-        },
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S13",
+      "label": "Modify pertinent section and indicate change date",
+      "action_verb": "modify",
+      "action_object": "pertinent section of SOP and indicate change date/revision number",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
         {
           "id": "C11",
           "type": "parameter",
-          "text": "SOPs should be systematically reviewed on a periodic basis, e.g. every 1-2 years, to ensure that the policies and procedures remain current and appropriate, or to determine whether the SOPs are even needed.",
+          "text": "modify only the pertinent section of an SOP and indicate the change date/revision number for that section",
           "attached_to": [
-            "S3"
-          ],
-          "enforcement": "should"
-        },
-        {
-          "id": "C12",
-          "type": "guard",
-          "text": "If an SOP describes a process that is no longer followed, it should be withdrawn from the current file and archived.",
-          "attached_to": [
-            "S3"
-          ],
-          "enforcement": "should"
-        },
-        {
-          "id": "C13",
-          "type": "guard",
-          "text": "The review process should not be overly cumbersome to encourage timely review.",
-          "attached_to": [
-            "S3"
-          ],
-          "enforcement": "should"
-        },
-        {
-          "id": "C14",
-          "type": "postcondition",
-          "text": "The frequency of review should be indicated by management in the organization's Quality Management Plan.",
-          "attached_to": [
-            "S3"
-          ],
-          "enforcement": "should"
-        },
-        {
-          "id": "C15",
-          "type": "role_assignment",
-          "text": "The Quality Management Plan should indicate the individual(s) responsible for ensuring that SOPs are current.",
-          "attached_to": [
-            "S3"
+            "S13"
           ],
           "enforcement": "should"
         }
       ],
-      "flags": {
-        "safety_critical": false
-      },
+      "flags": {},
       "provenance": {
         "doc_id": "epa_guidance_preparing_sops_qag6",
-        "page": "3",
-        "section": "2.3"
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
       }
     },
     {
-      "id": "S4",
-      "label": "Maintain a master list and archive obsolete SOP versions",
-      "action_verb": "maintain",
-      "action_object": "SOP master list and archive",
+      "id": "S14",
+      "label": "Update Table of Contents with revision information",
+      "action_verb": "update",
+      "action_object": "Table of Contents with change date and revision number for modified section",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C12",
+          "type": "postcondition",
+          "text": "Table of Contents and the document control notation updated with revision information",
+          "attached_to": [
+            "S14"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S15",
+      "label": "Re-approve updated SOP",
+      "action_verb": "re-approve",
+      "action_object": "updated SOP",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S16",
+      "label": "Systematically review SOP on periodic basis",
+      "action_verb": "review",
+      "action_object": "SOP on a periodic basis (e.g., every 1-2 years) to ensure current and appropriate",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C13",
+          "type": "precondition",
+          "text": "SOPs should be systematically reviewed on a periodic basis, e.g. every 1-2 years",
+          "attached_to": [
+            "S16"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S17",
+      "label": "Add review date to reviewed SOP",
+      "action_verb": "add",
+      "action_object": "review date to each SOP that has been reviewed",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C14",
+          "type": "postcondition",
+          "text": "review date should be added to each SOP that has been reviewed",
+          "attached_to": [
+            "S17"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S18",
+      "label": "Withdraw obsolete SOP from current file",
+      "action_verb": "withdraw",
+      "action_object": "SOP that describes process no longer followed from current file",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C15",
+          "type": "precondition",
+          "text": "if an SOP describes a process that is no longer followed, it should be withdrawn from the current file",
+          "attached_to": [
+            "S18"
+          ],
+          "enforcement": "should"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S19",
+      "label": "Archive withdrawn SOP",
+      "action_verb": "archive",
+      "action_object": "withdrawn SOP for historical reference",
       "arguments": [],
       "parameters": [],
       "constraints": [
         {
           "id": "C16",
           "type": "postcondition",
-          "text": "The master list file or database should indicate the SOP number, version number, date of issuance, title, author, status, organizational division, branch, section, and any historical information regarding past versions.",
+          "text": "withdrawn SOP archived",
           "attached_to": [
-            "S4"
-          ],
-          "enforcement": "should"
-        },
-        {
-          "id": "C17",
-          "type": "role_assignment",
-          "text": "The QA Manager (or designee) is generally the individual responsible for maintaining a file listing all current quality-related SOPs used within the organization.",
-          "attached_to": [
-            "S4"
+            "S19"
           ],
           "enforcement": "must"
-        },
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S20",
+      "label": "Reference checklists at points where they are used",
+      "action_verb": "reference",
+      "action_object": "checklists or forms at the points in the procedure where they are to be used",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C17",
+          "type": "guard",
+          "text": "checklists or forms included as part of an activity should be referenced at the points in the procedure where they are to be used",
+          "attached_to": [
+            "S20"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S21",
+      "label": "Attach checklists to SOP",
+      "action_verb": "attach",
+      "action_object": "checklists or forms to the SOP",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
         {
           "id": "C18",
-          "type": "guard",
-          "text": "If an electronic database is used, automatic \"Review SOP\" notices can be sent.",
+          "type": "postcondition",
+          "text": "checklists attached to the SOP",
           "attached_to": [
-            "S4"
+            "S21"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S22",
+      "label": "Prepare detailed checklists for given activities",
+      "action_verb": "prepare",
+      "action_object": "detailed checklists specifically for a given activity",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C19",
+          "type": "parameter",
+          "text": "detailed checklists prepared specifically for a given activity",
+          "attached_to": [
+            "S22"
+          ],
+          "enforcement": "may"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S23",
+      "label": "Describe checklist preparation in SOP",
+      "action_verb": "describe",
+      "action_object": "in the SOP how the checklist is to be prepared or what it is to be based on",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C20",
+          "type": "postcondition",
+          "text": "SOP should describe, at least generally, how the checklist is to be prepared, or on what it is to be based",
+          "attached_to": [
+            "S23"
           ],
           "enforcement": "should"
         }
       ],
-      "flags": {
-        "safety_critical": false
-      },
+      "flags": {},
       "provenance": {
         "doc_id": "epa_guidance_preparing_sops_qag6",
-        "page": "4",
-        "section": "2.6"
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S24",
+      "label": "Maintain copies of specific checklists in file",
+      "action_verb": "maintain",
+      "action_object": "copies of specific checklists in the file with activity results and/or with the SOP",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C21",
+          "type": "postcondition",
+          "text": "copies of specific checklists maintained in the file with the activity results and/or with the SOP",
+          "attached_to": [
+            "S24"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S25",
+      "label": "Develop numbering system for SOPs",
+      "action_verb": "develop",
+      "action_object": "numbering system to systematically identify and label SOPs",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C22",
+          "type": "precondition",
+          "text": "organization should develop a numbering system to systematically identify and label their SOPs",
+          "attached_to": [
+            "S25"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C23",
+          "type": "postcondition",
+          "text": "document control should be described in its Quality Management Plan",
+          "attached_to": [
+            "S25"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S26",
+      "label": "Add control documentation notation to each SOP page",
+      "action_verb": "add",
+      "action_object": "control documentation notation (short title, ID number, revision number, date, page count) to each SOP page",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C24",
+          "type": "postcondition",
+          "text": "each page of an SOP should have control documentation notation",
+          "attached_to": [
+            "S26"
+          ],
+          "enforcement": "should"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S27",
+      "label": "Place document control notation in upper right corner",
+      "action_verb": "place",
+      "action_object": "document control notation in upper right-hand corner of each document page following title page",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C25",
+          "type": "parameter",
+          "text": "document control notation located in the upper right-hand corner of each document page following the title page",
+          "attached_to": [
+            "S27"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S28",
+      "label": "Maintain master list of all SOPs",
+      "action_verb": "maintain",
+      "action_object": "master list of all SOPs in file or database",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C26",
+          "type": "postcondition",
+          "text": "organization maintain a master list of all SOPs",
+          "attached_to": [
+            "S28"
+          ],
+          "enforcement": "should"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S29",
+      "label": "Include SOP details in master list",
+      "action_verb": "include",
+      "action_object": "SOP number, version number, date of issuance, title, author, status, organizational division, branch, section, and historical information in master list",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C27",
+          "type": "parameter",
+          "text": "master list should indicate the SOP number, version number, date of issuance, title, author, status, organizational division, branch, section, and any historical information regarding past versions",
+          "attached_to": [
+            "S29"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S30",
+      "label": "Assign QA Manager responsibility for SOP tracking",
+      "action_verb": "assign",
+      "action_object": "QA Manager (or designee) responsibility for maintaining file listing all current quality-related SOPs",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C28",
+          "type": "role_assignment",
+          "text": "QA Manager (or designee) is generally the individual responsible for maintaining a file listing all current quality-related SOPs used within the organization",
+          "attached_to": [
+            "S30"
+          ],
+          "enforcement": "should"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S31",
+      "label": "Set up automatic review notices in electronic database",
+      "action_verb": "set up",
+      "action_object": "automatic 'Review SOP' notices sent from electronic database",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C29",
+          "type": "postcondition",
+          "text": "if an electronic database is used, automatic \"Review SOP\" notices can be sent",
+          "attached_to": [
+            "S31"
+          ],
+          "enforcement": "may"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S32",
+      "label": "Designate individual responsible for current version assurance",
+      "action_verb": "designate",
+      "action_object": "individual(s) responsible for assuring that only the current version is used",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C30",
+          "type": "role_assignment",
+          "text": "Quality Management Plan should indicate the individual(s) responsible for assuring that only the current version is used",
+          "attached_to": [
+            "S32"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S33",
+      "label": "Specify archival location and method for outdated versions",
+      "action_verb": "specify",
+      "action_object": "where and how outdated versions are to be maintained or archived to prevent use",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C31",
+          "type": "postcondition",
+          "text": "Quality Management Plan should designate where, and how, outdated versions are to be maintained or archived in a manner to prevent their continued use, as well as to be available for historical data review",
+          "attached_to": [
+            "S33"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S34",
+      "label": "Store outdated versions to enable historical data review",
+      "action_verb": "store",
+      "action_object": "outdated versions in manner to be available for historical data review",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C32",
+          "type": "guard",
+          "text": "outdated versions maintained or archived in a manner to prevent their continued use, as well as to be available for historical data review",
+          "attached_to": [
+            "S34"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S35",
+      "label": "Use electronic storage and retrieval mechanisms for SOP access",
+      "action_verb": "use",
+      "action_object": "electronic storage and retrieval mechanisms for easier access to SOPs",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C33",
+          "type": "parameter",
+          "text": "electronic storage and retrieval mechanisms",
+          "attached_to": [
+            "S35"
+          ],
+          "enforcement": "should"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
+      }
+    },
+    {
+      "id": "S36",
+      "label": "Limit user electronic access to read-only format",
+      "action_verb": "limit",
+      "action_object": "user electronic access to read-only format to protect against unauthorized changes",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C34",
+          "type": "guard",
+          "text": "for the user, electronic access can be limited to a read-only format, thereby protecting against unauthorized changes made to the document",
+          "attached_to": [
+            "S36"
+          ],
+          "enforcement": "may"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_guidance_preparing_sops_qag6",
+        "section": "2.0 SOP Process (2.1-2.6)",
+        "page": null
       }
     }
   ],
   "constraints": [],
   "relations": [],
   "quality": {
-    "annotation_scope": "bounded_excerpt",
+    "annotation_scope": "full_subprocedure",
     "review_status": "reviewed",
-    "annotator": "imad",
-    "review_date": "2026-06-13",
-    "review_notes": "Second-pass review. Added S1.C3-C4 (checklist content rules from 2.4). Added S2.C8 (immediate supervisor + QA officer roles), C9 (electronic signatures per GPEA 1998). Added S3.C13 (review not overly cumbersome), C14 (QMP indicates frequency), C15 (QMP indicates responsible role). Added S4.C18 (electronic Review SOP notices). 2.5 Document Control (numbering system / page layout) intentionally not added — relates to SOP format rather than the SOP lifecycle process this annotation captures. STANDARDS REVIEW FIXES: enforcement on C7 (signature approval), C11 (periodic review), C15 (QMP responsible role), C16 (master list contents) changed must -> should to match source modal verb. C9 (GPEA 1998 e-signature permission) dropped — historical-note example per guidelines.md line 111."
+    "annotator": "model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off)",
+    "review_date": "2026-07-05",
+    "review_notes": "Adjudicated 2026-07-05 by model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off) via scripts/adjudicate.py from model-assisted draft. Decisions: 66 accept, 4 edit, 0 reject, 0 add.\nstep:S1 ACCEPT\nstep:S2 ACCEPT\nstep:S3 ACCEPT\nstep:S4 ACCEPT\nstep:S5 ACCEPT\nstep:S6 ACCEPT\nstep:S7 ACCEPT\nstep:S8 ACCEPT\nstep:S9 ACCEPT\nstep:S10 ACCEPT\nstep:S11 ACCEPT\nstep:S12 ACCEPT\nstep:S13 ACCEPT\nstep:S14 ACCEPT\nstep:S15 ACCEPT\nstep:S16 ACCEPT\nstep:S17 ACCEPT\nstep:S18 ACCEPT\nstep:S19 ACCEPT\nstep:S20 ACCEPT\nstep:S21 ACCEPT\nstep:S22 ACCEPT\nstep:S23 ACCEPT\nstep:S24 ACCEPT\nstep:S25 ACCEPT\nstep:S26 ACCEPT\nstep:S27 ACCEPT\nstep:S28 ACCEPT\nstep:S29 ACCEPT\nstep:S30 ACCEPT\nstep:S31 ACCEPT\nstep:S32 ACCEPT\nstep:S33 ACCEPT\nstep:S34 ACCEPT\nstep:S35 ACCEPT\nstep:S36 ACCEPT\nconstraint:C1 ACCEPT\nconstraint:C2 ACCEPT\nconstraint:C3 ACCEPT\nconstraint:C4 ACCEPT\nconstraint:C5 ACCEPT\nconstraint:C6 EDIT ['type'] -- Text says approval should follow the Quality Management Plan; this is a precondition for S8/S9, not a precondition to them. Type should be 'postcondition' or 'guard' describing what must be true before approval happens, but as written it describes the process itself.\nconstraint:C7 ACCEPT\nconstraint:C8 ACCEPT\nconstraint:C9 ACCEPT\nconstraint:C10 EDIT ['enforcement'] -- Source text (2.3): 'whenever procedures are changed, SOPs should be updated and re-approved.' The prescriptive force here is stronger than a suggestion—this is a standing requirement, not optional.\nconstraint:C11 ACCEPT\nconstraint:C12 ACCEPT\nconstraint:C13 EDIT ['enforcement'] -- Source text (2.3): 'SOPs need to remain current to be useful. Therefore... SOPs should be also systematically reviewed on a periodic basis.' This is mandatory maintenance, not discretionary.\nconstraint:C14 ACCEPT\nconstraint:C15 ACCEPT\nconstraint:C16 ACCEPT\nconstraint:C17 ACCEPT\nconstraint:C18 ACCEPT\nconstraint:C19 ACCEPT\nconstraint:C20 ACCEPT\nconstraint:C21 ACCEPT\nconstraint:C22 EDIT ['enforcement'] -- Source text (2.5): 'Each organization should develop a numbering system...' The word 'should' here is prescriptive for organizational policy; it is not optional.\nconstraint:C23 ACCEPT\nconstraint:C24 ACCEPT\nconstraint:C25 ACCEPT\nconstraint:C26 ACCEPT\nconstraint:C27 ACCEPT\nconstraint:C28 ACCEPT\nconstraint:C29 ACCEPT\nconstraint:C30 ACCEPT\nconstraint:C31 ACCEPT\nconstraint:C32 ACCEPT\nconstraint:C33 ACCEPT\nconstraint:C34 ACCEPT\n[strict-warning adjudication] step:S1 zero_constraints adjudicated; step:S7 zero_constraints adjudicated; step:S9 zero_constraints adjudicated; step:S15 zero_constraints adjudicated"
   }
 }

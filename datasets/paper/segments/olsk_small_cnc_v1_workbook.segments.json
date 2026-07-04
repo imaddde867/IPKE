@@ -1,0 +1,248 @@
+{
+  "doc_id": "olsk_small_cnc_v1_workbook",
+  "scheme": "dotted_numeric",
+  "n_chars": 12258,
+  "n_sections_detected": 43,
+  "candidates": [
+    {
+      "section": "05.2",
+      "title": "05.2 Completing the base - Profiles",
+      "char_start": 3631,
+      "char_end": 4426,
+      "line_start": 282,
+      "line_end": 345,
+      "depth": 1,
+      "n_words": 146,
+      "richness": {
+        "score": 0.58,
+        "est_steps": 4,
+        "n_step_lines": 4,
+        "n_imperatives": 2,
+        "n_modals": 1,
+        "n_parameters": 16,
+        "n_words": 146
+      },
+      "recommended": false
+    },
+    {
+      "section": "06.4",
+      "title": "06.4 Preparing the X-axis - X bearing",
+      "char_start": 4641,
+      "char_end": 5605,
+      "line_start": 359,
+      "line_end": 422,
+      "depth": 1,
+      "n_words": 173,
+      "richness": {
+        "score": 0.58,
+        "est_steps": 3,
+        "n_step_lines": 3,
+        "n_imperatives": 5,
+        "n_modals": 1,
+        "n_parameters": 9,
+        "n_words": 173
+      },
+      "recommended": false
+    },
+    {
+      "section": "15.3",
+      "title": "15.3 Fix the Y-chain",
+      "char_start": 9100,
+      "char_end": 9835,
+      "line_start": 708,
+      "line_end": 769,
+      "depth": 1,
+      "n_words": 143,
+      "richness": {
+        "score": 0.58,
+        "est_steps": 4,
+        "n_step_lines": 1,
+        "n_imperatives": 7,
+        "n_modals": 0,
+        "n_parameters": 8,
+        "n_words": 143
+      },
+      "recommended": false
+    },
+    {
+      "section": "02.2",
+      "title": "02.2 Prepare Back Panel",
+      "char_start": 1754,
+      "char_end": 1950,
+      "line_start": 128,
+      "line_end": 146,
+      "depth": 1,
+      "n_words": 40,
+      "richness": {
+        "score": 0.4,
+        "est_steps": 1,
+        "n_step_lines": 1,
+        "n_imperatives": 2,
+        "n_modals": 0,
+        "n_parameters": 3,
+        "n_words": 40
+      },
+      "recommended": false
+    },
+    {
+      "section": "04.5",
+      "title": "04.5 Attaching Y Back Bearing Holder",
+      "char_start": 3097,
+      "char_end": 3502,
+      "line_start": 244,
+      "line_end": 268,
+      "depth": 1,
+      "n_words": 79,
+      "richness": {
+        "score": 0.4,
+        "est_steps": 1,
+        "n_step_lines": 1,
+        "n_imperatives": 2,
+        "n_modals": 1,
+        "n_parameters": 3,
+        "n_words": 79
+      },
+      "recommended": false
+    },
+    {
+      "section": "09.2",
+      "title": "09.2 Attaching Z-axis",
+      "char_start": 6704,
+      "char_end": 7139,
+      "line_start": 501,
+      "line_end": 527,
+      "depth": 1,
+      "n_words": 76,
+      "richness": {
+        "score": 0.4,
+        "est_steps": 2,
+        "n_step_lines": 1,
+        "n_imperatives": 3,
+        "n_modals": 0,
+        "n_parameters": 4,
+        "n_words": 76
+      },
+      "recommended": false
+    },
+    {
+      "section": "11.3",
+      "title": "11.3 Attach Coolant System (optional)",
+      "char_start": 7277,
+      "char_end": 7582,
+      "line_start": 542,
+      "line_end": 572,
+      "depth": 1,
+      "n_words": 54,
+      "richness": {
+        "score": 0.4,
+        "est_steps": 1,
+        "n_step_lines": 2,
+        "n_imperatives": 2,
+        "n_modals": 0,
+        "n_parameters": 7,
+        "n_words": 54
+      },
+      "recommended": false
+    },
+    {
+      "section": "13.3",
+      "title": "13.3 Fix the Top Chain",
+      "char_start": 8288,
+      "char_end": 8741,
+      "line_start": 633,
+      "line_end": 669,
+      "depth": 1,
+      "n_words": 84,
+      "richness": {
+        "score": 0.4,
+        "est_steps": 2,
+        "n_step_lines": 1,
+        "n_imperatives": 3,
+        "n_modals": 0,
+        "n_parameters": 6,
+        "n_words": 84
+      },
+      "recommended": false
+    },
+    {
+      "section": "24.1",
+      "title": "24.1 Installing vacuum system - Vacuum",
+      "char_start": 11722,
+      "char_end": 12258,
+      "line_start": 906,
+      "line_end": 949,
+      "depth": 1,
+      "n_words": 93,
+      "richness": {
+        "score": 0.313,
+        "est_steps": 3,
+        "n_step_lines": 3,
+        "n_imperatives": 1,
+        "n_modals": 0,
+        "n_parameters": 2,
+        "n_words": 93
+      },
+      "recommended": false
+    },
+    {
+      "section": "08.5",
+      "title": "08.5 Preparing the Z-axis - Middle Plate",
+      "char_start": 6046,
+      "char_end": 6489,
+      "line_start": 458,
+      "line_end": 477,
+      "depth": 1,
+      "n_words": 73,
+      "richness": {
+        "score": 0.3,
+        "est_steps": 2,
+        "n_step_lines": 1,
+        "n_imperatives": 3,
+        "n_modals": 0,
+        "n_parameters": 3,
+        "n_words": 73
+      },
+      "recommended": false
+    },
+    {
+      "section": "20.1",
+      "title": "20.1 Emergency Button",
+      "char_start": 10560,
+      "char_end": 10944,
+      "line_start": 836,
+      "line_end": 862,
+      "depth": 1,
+      "n_words": 64,
+      "richness": {
+        "score": 0.1,
+        "est_steps": 2,
+        "n_step_lines": 2,
+        "n_imperatives": 3,
+        "n_modals": 0,
+        "n_parameters": 1,
+        "n_words": 64
+      },
+      "recommended": false
+    },
+    {
+      "section": "01.2",
+      "title": "01.2 Electronic Box - Bottom Panel",
+      "char_start": 578,
+      "char_end": 838,
+      "line_start": 33,
+      "line_end": 50,
+      "depth": 1,
+      "n_words": 49,
+      "richness": {
+        "score": 0.0,
+        "est_steps": 0,
+        "n_step_lines": 1,
+        "n_imperatives": 1,
+        "n_modals": 0,
+        "n_parameters": 2,
+        "n_words": 49
+      },
+      "recommended": false
+    }
+  ]
+}
