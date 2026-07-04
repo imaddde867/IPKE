@@ -1,4 +1,5 @@
-.PHONY: test eval eval-full eval-thesis eval-blindness eval-validate eval-iaa smoke-extract paper-table clean-artifacts
+.PHONY: test eval eval-full eval-thesis eval-blindness eval-validate eval-iaa smoke-extract paper-table clean-artifacts \
+        gold-draft gold-adjudicate gold-pipeline iaa-setup iaa
 
 PYTHON := uv run python
 
@@ -48,6 +49,52 @@ eval-iaa: eval-validate
 		--gold-dir $(PAPER_GOLD) \
 		--second-dir $(PAPER_SECOND) \
 		--out $(PAPER_REPORTS)/iaa_latest.json
+
+# ---------------------------------------------------------------------------
+# Gold-annotation pipeline (model-assisted draft -> human/critic adjudication).
+# The committed golds under datasets/paper/gold/ are the source of truth;
+# these targets document and re-run the process that produced them.
+# See docs/methods/annotation-pipeline.md.
+# ---------------------------------------------------------------------------
+
+# Draft ONE procedure with the two-stage harness. Requires a model backend
+# (host.llm in-session, or IPKE_LLM_BASE_URL/IPKE_LLM_MODEL/IPKE_LLM_API_KEY).
+# Model outputs are non-deterministic and land as review_status="unreviewed".
+#   make gold-draft DOC=<doc_id> SEG=<segments.json> CAND=<candidate_id>
+gold-draft:
+	@test -n "$(DOC)" && test -n "$(SEG)" && test -n "$(CAND)" || \
+		{ echo "usage: make gold-draft DOC=<doc_id> SEG=<segments.json> CAND=<candidate>"; exit 2; }
+	mkdir -p datasets/paper/draft
+	$(PYTHON) scripts/annotate_assisted.py \
+		--segments $(SEG) --candidate $(CAND) \
+		--text $(PAPER_TEXT)/$(DOC).txt \
+		--out datasets/paper/draft/$(DOC).json
+
+# Deterministically re-apply a persisted adjudication decision log to a draft,
+# producing a reviewed gold. Requires the draft on disk (make gold-draft first).
+#   make gold-adjudicate DOC=<doc_id>
+gold-adjudicate:
+	@test -n "$(DOC)" || { echo "usage: make gold-adjudicate DOC=<doc_id>"; exit 2; }
+	$(PYTHON) scripts/adjudicate.py replay datasets/paper/draft/$(DOC).json \
+		--decisions datasets/paper/adjudication_decisions/$(DOC).json \
+		--annotator "$$($(PYTHON) -c 'import json,sys;print(json.load(open("datasets/paper/adjudication_decisions/$(DOC).json"))["annotator"])')" \
+		--out-dir $(PAPER_GOLD)
+
+# One-command reproducibility gate for the annotation resource: validate the
+# committed golds (strict), then regenerate the D1 constraint-blindness numbers.
+# Deterministic; needs no model. This is the target a reviewer runs on a fresh clone.
+gold-pipeline: eval-validate eval-blindness
+	@echo "OK: 8 golds pass strict validation; D1 blindness numbers regenerated."
+
+# Prepare the >=30% IAA double-annotation subset + blank (anchoring-safe) scaffolds.
+iaa-setup:
+	$(PYTHON) scripts/setup_iaa_subset.py select
+	$(PYTHON) scripts/setup_iaa_subset.py scaffold
+
+# Score inter-annotator agreement over completed subset second-pass files.
+# Stages only completed subset docs (stale/non-subset files can't pollute).
+iaa:
+	$(PYTHON) scripts/setup_iaa_subset.py report --out $(PAPER_REPORTS)/iaa_latest.json
 
 # Dry-run: plan only, no model needed. Safe on a fresh clone.
 # Runs validator + D1 blindness report so the artifact's §1 numbers regenerate

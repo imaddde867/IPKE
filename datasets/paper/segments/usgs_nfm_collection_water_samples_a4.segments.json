@@ -1,0 +1,68 @@
+{
+  "doc_id": "usgs_nfm_collection_water_samples_a4",
+  "scheme": "dotted_numeric",
+  "n_chars": 461188,
+  "n_sections_detected": 11,
+  "candidates": [
+    {
+      "section": "0.08",
+      "title": "0.08 Measurement discontinued",
+      "char_start": 438290,
+      "char_end": 461188,
+      "line_start": 18425,
+      "line_end": 18884,
+      "depth": 1,
+      "n_words": 3389,
+      "richness": {
+        "score": 0.75,
+        "est_steps": 28,
+        "n_step_lines": 28,
+        "n_imperatives": 43,
+        "n_modals": 9,
+        "n_parameters": 12,
+        "n_words": 3389
+      },
+      "recommended": true
+    },
+    {
+      "section": "4.1",
+      "title": "4.1 Surface-water sampling ..........................................................",
+      "char_start": 3500,
+      "char_end": 6555,
+      "line_start": 103,
+      "line_end": 168,
+      "depth": 1,
+      "n_words": 241,
+      "richness": {
+        "score": 0.427,
+        "est_steps": 9,
+        "n_step_lines": 9,
+        "n_imperatives": 0,
+        "n_modals": 0,
+        "n_parameters": 3,
+        "n_words": 241
+      },
+      "recommended": false
+    },
+    {
+      "section": "4.1.1",
+      "title": "4.1.1 Site files........................................................................",
+      "char_start": 3589,
+      "char_end": 6065,
+      "line_start": 105,
+      "line_end": 155,
+      "depth": 2,
+      "n_words": 202,
+      "richness": {
+        "score": 0.28,
+        "est_steps": 6,
+        "n_step_lines": 6,
+        "n_imperatives": 0,
+        "n_modals": 0,
+        "n_parameters": 3,
+        "n_words": 202
+      },
+      "recommended": false
+    }
+  ]
+}

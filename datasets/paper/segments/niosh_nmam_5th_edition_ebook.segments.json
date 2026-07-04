@@ -1,0 +1,248 @@
+{
+  "doc_id": "niosh_nmam_5th_edition_ebook",
+  "scheme": "niosh_method",
+  "n_chars": 2380361,
+  "n_sections_detected": 131,
+  "candidates": [
+    {
+      "section": "M3",
+      "title": "VINYL ACETATE \u2014 SAMPLING",
+      "char_start": 860240,
+      "char_end": 863870,
+      "line_start": 16929,
+      "line_end": 17033,
+      "depth": 1,
+      "n_words": 590,
+      "richness": {
+        "score": 1.0,
+        "est_steps": 18,
+        "n_step_lines": 18,
+        "n_imperatives": 2,
+        "n_modals": 1,
+        "n_parameters": 40,
+        "n_words": 590
+      },
+      "recommended": true
+    },
+    {
+      "section": "M5",
+      "title": "NITROAROMATIC COMPOUNDS \u2014 SAMPLING",
+      "char_start": 871722,
+      "char_end": 874925,
+      "line_start": 17184,
+      "line_end": 17308,
+      "depth": 1,
+      "n_words": 495,
+      "richness": {
+        "score": 1.0,
+        "est_steps": 18,
+        "n_step_lines": 18,
+        "n_imperatives": 2,
+        "n_modals": 2,
+        "n_parameters": 40,
+        "n_words": 495
+      },
+      "recommended": true
+    },
+    {
+      "section": "M6",
+      "title": "CARRIER GAS \u2014 SAMPLING",
+      "char_start": 874925,
+      "char_end": 883392,
+      "line_start": 17309,
+      "line_end": 17578,
+      "depth": 1,
+      "n_words": 1359,
+      "richness": {
+        "score": 1.0,
+        "est_steps": 15,
+        "n_step_lines": 15,
+        "n_imperatives": 18,
+        "n_modals": 4,
+        "n_parameters": 70,
+        "n_words": 1359
+      },
+      "recommended": true
+    },
+    {
+      "section": "M8",
+      "title": "ION CHROMATOGRAPHY, CONDUCTIVITY \u2014 SAMPLING",
+      "char_start": 886578,
+      "char_end": 891909,
+      "line_start": 17687,
+      "line_end": 17789,
+      "depth": 1,
+      "n_words": 860,
+      "richness": {
+        "score": 1.0,
+        "est_steps": 17,
+        "n_step_lines": 17,
+        "n_imperatives": 19,
+        "n_modals": 2,
+        "n_parameters": 35,
+        "n_words": 860
+      },
+      "recommended": true
+    },
+    {
+      "section": "M9",
+      "title": "METHOD REVISED BY \u2014 SAMPLING",
+      "char_start": 891909,
+      "char_end": 894927,
+      "line_start": 17790,
+      "line_end": 17885,
+      "depth": 1,
+      "n_words": 468,
+      "richness": {
+        "score": 1.0,
+        "est_steps": 18,
+        "n_step_lines": 18,
+        "n_imperatives": 2,
+        "n_modals": 1,
+        "n_parameters": 37,
+        "n_words": 468
+      },
+      "recommended": true
+    },
+    {
+      "section": "M10",
+      "title": "OVERALL PRE \u2014 SAMPLING",
+      "char_start": 894927,
+      "char_end": 900968,
+      "line_start": 17886,
+      "line_end": 18006,
+      "depth": 1,
+      "n_words": 986,
+      "richness": {
+        "score": 1.0,
+        "est_steps": 16,
+        "n_step_lines": 16,
+        "n_imperatives": 21,
+        "n_modals": 1,
+        "n_parameters": 41,
+        "n_words": 986
+      },
+      "recommended": true
+    },
+    {
+      "section": "M12",
+      "title": "HPLC, UV DETECTION \u2014 SAMPLING",
+      "char_start": 904896,
+      "char_end": 919739,
+      "line_start": 18133,
+      "line_end": 18386,
+      "depth": 1,
+      "n_words": 2378,
+      "richness": {
+        "score": 1.0,
+        "est_steps": 24,
+        "n_step_lines": 24,
+        "n_imperatives": 40,
+        "n_modals": 18,
+        "n_parameters": 49,
+        "n_words": 2378
+      },
+      "recommended": true
+    },
+    {
+      "section": "M16",
+      "title": "METHYL BROMIDE \u2014 SAMPLING",
+      "char_start": 943624,
+      "char_end": 947835,
+      "line_start": 19159,
+      "line_end": 19277,
+      "depth": 1,
+      "n_words": 680,
+      "richness": {
+        "score": 1.0,
+        "est_steps": 17,
+        "n_step_lines": 17,
+        "n_imperatives": 5,
+        "n_modals": 4,
+        "n_parameters": 49,
+        "n_words": 680
+      },
+      "recommended": true
+    },
+    {
+      "section": "M17",
+      "title": "CARRIER GAS \u2014 SAMPLING",
+      "char_start": 947835,
+      "char_end": 957964,
+      "line_start": 19278,
+      "line_end": 19424,
+      "depth": 1,
+      "n_words": 1615,
+      "richness": {
+        "score": 1.0,
+        "est_steps": 16,
+        "n_step_lines": 16,
+        "n_imperatives": 24,
+        "n_modals": 5,
+        "n_parameters": 60,
+        "n_words": 1615
+      },
+      "recommended": true
+    },
+    {
+      "section": "M19",
+      "title": "CARRIER GAS \u2014 SAMPLING",
+      "char_start": 961967,
+      "char_end": 972370,
+      "line_start": 19551,
+      "line_end": 19714,
+      "depth": 1,
+      "n_words": 1642,
+      "richness": {
+        "score": 1.0,
+        "est_steps": 19,
+        "n_step_lines": 19,
+        "n_imperatives": 38,
+        "n_modals": 6,
+        "n_parameters": 48,
+        "n_words": 1642
+      },
+      "recommended": true
+    },
+    {
+      "section": "M21",
+      "title": "CARRIER GAS \u2014 SAMPLING",
+      "char_start": 976168,
+      "char_end": 985690,
+      "line_start": 19845,
+      "line_end": 20036,
+      "depth": 1,
+      "n_words": 1494,
+      "richness": {
+        "score": 1.0,
+        "est_steps": 16,
+        "n_step_lines": 0,
+        "n_imperatives": 33,
+        "n_modals": 3,
+        "n_parameters": 49,
+        "n_words": 1494
+      },
+      "recommended": true
+    },
+    {
+      "section": "M22",
+      "title": "ORGANIC AND INORGANIC GASES \u2014 SAMPLING",
+      "char_start": 985690,
+      "char_end": 995312,
+      "line_start": 20037,
+      "line_end": 20216,
+      "depth": 1,
+      "n_words": 1471,
+      "richness": {
+        "score": 1.0,
+        "est_steps": 19,
+        "n_step_lines": 19,
+        "n_imperatives": 24,
+        "n_modals": 23,
+        "n_parameters": 21,
+        "n_words": 1471
+      },
+      "recommended": true
+    }
+  ]
+}

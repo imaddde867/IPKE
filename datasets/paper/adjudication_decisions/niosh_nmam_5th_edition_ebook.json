@@ -1,0 +1,29 @@
+{
+  "doc_id": "niosh_nmam_5th_edition_ebook",
+  "annotator": "model-assisted:claude-opus-4-8 + agent-adjudicated",
+  "review_date": "2026-07-05",
+  "decisions": [
+    {
+      "kind": "constraint",
+      "id": "C16",
+      "action": "edit",
+      "edits": {
+        "type": "guard",
+        "attached_to": [
+          "S22",
+          "S23"
+        ]
+      },
+      "note": "Constraint is phrased as a guard condition (if/then check), not a precondition. Attached to individual steps, not as prerequisite to all downstream work."
+    },
+    {
+      "kind": "constraint",
+      "id": "C20",
+      "action": "edit",
+      "edits": {
+        "type": "guard"
+      },
+      "note": "Source text presents this as a NOTE within step 13 (calculations), making it a guard/verification step, not a postcondition of the four measurement steps."
+    }
+  ]
+}

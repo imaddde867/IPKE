@@ -1,0 +1,49 @@
+{
+  "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+  "annotator": "model-assisted:claude-opus-4-8 + agent-adjudicated",
+  "review_date": "2026-07-05",
+  "decisions": [
+    {
+      "kind": "constraint",
+      "id": "C10",
+      "action": "edit",
+      "edits": {
+        "attached_to": [
+          "S11",
+          "S12",
+          "S13",
+          "S14",
+          "S15",
+          "S20"
+        ]
+      },
+      "note": "Source says water-level data recorded on form or handheld program; S12\u2013S15 are intermediate recording steps, not final data recording. C10 should attach to S20 (final measurement section) as the postcondition for all data being recorded."
+    },
+    {
+      "kind": "constraint",
+      "id": "C3",
+      "action": "edit",
+      "edits": {
+        "enforcement": "should"
+      },
+      "note": "Source says disinfection 'will reduce the possibility of contamination'; prescriptive language 'should' matches the stated purpose/benefit, not absolute requirement."
+    },
+    {
+      "kind": "constraint",
+      "id": "C4",
+      "action": "edit",
+      "edits": {
+        "attached_to": [
+          "S24"
+        ]
+      },
+      "note": "Source says 'Maintain the tape in good working condition by periodically checking\u2026'; the postcondition is the state of maintenance, not separate from S24."
+    },
+    {
+      "kind": "step",
+      "id": "S7",
+      "action": "reject",
+      "note": "Source describes lowering tape until weight touches water, not a separate 'lower into well' step. S7 and S8 should be consolidated or S7 removed as a distinct action."
+    }
+  ]
+}

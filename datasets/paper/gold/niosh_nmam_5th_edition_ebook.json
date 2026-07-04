@@ -1,291 +1,749 @@
 {
   "procedure": {
     "doc_id": "niosh_nmam_5th_edition_ebook",
-    "title": "NIOSH organo-arsenic sampling method excerpt",
-    "version": "NMAM 5th Edition Method 5022",
-    "domain": "industrial_hygiene_sampling",
+    "title": "NIOSH NMAM Method 2005 (Nitroaromatic Compounds) — Sampling, Sample Preparation, Measurement",
+    "version": "NMAM 5th ed, Method 2005 Issue 4",
+    "domain": "analytical_chemistry",
     "source": {
       "doc_id": "niosh_nmam_5th_edition_ebook",
-      "page": "Method 5022 (Issue 3, 3 March 2016)",
-      "section": "SAMPLING and SAMPLE PREPARATION"
+      "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+      "page": null,
+      "char_start": 874925,
+      "char_end": 880425
     }
   },
   "steps": [
     {
       "id": "S1",
-      "label": "Calibrate each personal sampling pump with a representative sampler in line",
+      "label": "Calibrate personal sampling pump with representative sampler",
       "action_verb": "calibrate",
       "action_object": "personal sampling pump",
       "arguments": [],
-      "parameters": [
+      "parameters": [],
+      "constraints": [
         {
-          "name": "flow_rate",
-          "value": "1-3 L/min"
-        },
-        {
-          "name": "sampler",
-          "value": "1-µm PTFE filter in cassette holder"
+          "id": "C1",
+          "type": "precondition",
+          "text": "Calibrate each personal sampling pump with a representative sampler in line",
+          "attached_to": [
+            "S1"
+          ],
+          "enforcement": "must"
         }
       ],
-      "constraints": [],
-      "flags": {
-        "safety_critical": true
-      },
+      "flags": {},
       "provenance": {
         "doc_id": "niosh_nmam_5th_edition_ebook",
-        "section": "Method 5022 SAMPLING step 1"
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
       }
     },
     {
       "id": "S2",
-      "label": "Sample at an accurately known flow rate between 1 and 3 L/min for a total sample volume of 50 to 1000 L",
-      "action_verb": "sample",
-      "action_object": "air sample",
+      "label": "Break sampler ends immediately before sampling",
+      "action_verb": "break",
+      "action_object": "sampler ends",
       "arguments": [],
-      "parameters": [
-        {
-          "name": "flow_rate",
-          "value": "1-3 L/min"
-        },
-        {
-          "name": "sample_volume_min",
-          "value": "50 L @ 0.1 mg/m3"
-        },
-        {
-          "name": "sample_volume_max",
-          "value": "1000 L"
-        }
-      ],
+      "parameters": [],
       "constraints": [
         {
-          "id": "C1",
-          "type": "parameter",
-          "text": "Sample at an accurately known flow rate.",
+          "id": "C2",
+          "type": "precondition",
+          "text": "Break the ends of the sampler immediately before sampling",
           "attached_to": [
             "S2"
           ],
           "enforcement": "must"
         }
       ],
-      "flags": {
-        "safety_critical": true
-      },
+      "flags": {},
       "provenance": {
         "doc_id": "niosh_nmam_5th_edition_ebook",
-        "section": "Method 5022 SAMPLING step 2"
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
       }
     },
     {
       "id": "S3",
-      "label": "Cap the cassettes and pack them securely for shipment",
-      "action_verb": "pack",
-      "action_object": "sample cassettes",
+      "label": "Attach sampler to personal sampling pump with flexible tubing",
+      "action_verb": "attach",
+      "action_object": "sampler to pump",
       "arguments": [],
       "parameters": [],
-      "constraints": [
-        {
-          "id": "C2",
-          "type": "guard",
-          "text": "Cap the cassettes and pack securely for shipment.",
-          "attached_to": [
-            "S3"
-          ],
-          "enforcement": "must"
-        }
-      ],
-      "flags": {
-        "safety_critical": true
-      },
+      "constraints": [],
+      "flags": {},
       "provenance": {
         "doc_id": "niosh_nmam_5th_edition_ebook",
-        "section": "Method 5022 SAMPLING step 3"
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
       }
     },
     {
       "id": "S4",
-      "label": "Pipet 25 mL of Eluent A into a clean 50-mL beaker for each sample",
-      "action_verb": "pipet",
-      "action_object": "Eluent A into beaker",
-      "arguments": [],
-      "parameters": [
-        {
-          "name": "eluent_type",
-          "value": "Eluent A (2.4 mM HCO3-/1.9 mM CO32-/1.0 mM B4O72-)"
-        },
-        {
-          "name": "eluent_volume",
-          "value": "25 mL"
-        },
-        {
-          "name": "beaker_capacity",
-          "value": "50 mL"
-        }
-      ],
-      "constraints": [
-        {
-          "id": "C12",
-          "type": "parameter",
-          "enforcement": "must",
-          "text": "Use a clean 50-mL beaker.",
-          "attached_to": [
-            "S4"
-          ]
-        }
-      ],
-      "flags": {
-        "safety_critical": true
-      },
-      "provenance": {
-        "doc_id": "niosh_nmam_5th_edition_ebook",
-        "section": "Method 5022 SAMPLE PREPARATION step 4"
-      }
-    },
-    {
-      "id": "S5",
-      "label": "Transfer the PTFE filter to the beaker with the exposed side in contact with the solution and cover the beaker",
-      "action_verb": "transfer",
-      "action_object": "PTFE filter",
+      "label": "Sample at accurately known flow rate",
+      "action_verb": "sample",
+      "action_object": "air at specified flow rate",
       "arguments": [],
       "parameters": [],
       "constraints": [
         {
           "id": "C3",
           "type": "parameter",
-          "text": "Open the cassette and remove the PTFE filter with clean forceps.",
+          "text": "Sample at an accurately known flow rate between 0.01 and 0.2 L/min for nitrotoluene isomers",
           "attached_to": [
-            "S5"
+            "S4"
           ],
           "enforcement": "must"
         },
         {
           "id": "C4",
           "type": "parameter",
-          "text": "Place the exposed side of the filter in contact with the solution.",
+          "text": "Use a flow rate of 1 L/min or less for nitrobenzene and 4-chloronitrobenzene",
           "attached_to": [
-            "S5"
+            "S4"
           ],
           "enforcement": "must"
-        },
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S5",
+      "label": "Cap both ends of sampler and pack for shipment",
+      "action_verb": "cap",
+      "action_object": "sampler ends",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
         {
           "id": "C5",
-          "type": "postcondition",
-          "text": "Cover beaker after transferring the filter.",
+          "type": "guard",
+          "text": "Cap both ends of the sampler. Pack securely for shipment",
           "attached_to": [
             "S5"
           ],
           "enforcement": "must"
         }
       ],
-      "flags": {
-        "safety_critical": true
-      },
+      "flags": {},
       "provenance": {
         "doc_id": "niosh_nmam_5th_edition_ebook",
-        "section": "Method 5022 SAMPLE PREPARATION step 5"
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
       }
     },
     {
       "id": "S6",
-      "label": "Agitate the contents of the beaker for 30 min in an ultrasonic water bath",
-      "action_verb": "agitate",
-      "action_object": "sample beaker",
+      "label": "Place front and back sorbent sections in separate vials",
+      "action_verb": "place",
+      "action_object": "sorbent sections in vials",
       "arguments": [],
-      "parameters": [
-        {
-          "name": "agitation_time",
-          "value": "30 min"
-        },
-        {
-          "name": "storage_temperature",
-          "value": "ca. 4 °C"
-        }
-      ],
+      "parameters": [],
       "constraints": [
         {
           "id": "C6",
-          "type": "parameter",
-          "text": "If the extracts will not be analyzed immediately, store at ca. 4 °C until measurement.",
+          "type": "precondition",
+          "text": "Include the glass wool plug with the front sorbent section",
           "attached_to": [
             "S6"
           ],
           "enforcement": "must"
         }
       ],
-      "flags": {
-        "safety_critical": true
-      },
+      "flags": {},
       "provenance": {
         "doc_id": "niosh_nmam_5th_edition_ebook",
-        "section": "Method 5022 SAMPLE PREPARATION step 6"
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S7",
+      "label": "Discard foam plugs",
+      "action_verb": "discard",
+      "action_object": "foam plugs",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S8",
+      "label": "Add methanol to each vial",
+      "action_verb": "add",
+      "action_object": "methanol to vials",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C7",
+          "type": "parameter",
+          "text": "Add 1.0 mL of methanol to each vial",
+          "attached_to": [
+            "S8"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S9",
+      "label": "Attach crimp cap securely to each vial",
+      "action_verb": "attach",
+      "action_object": "crimp cap to vial",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C8",
+          "type": "guard",
+          "text": "Attach crimp cap securely to each vial",
+          "attached_to": [
+            "S9"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S10",
+      "label": "Desorb in ultrasonic bath for 30 minutes",
+      "action_verb": "desorb",
+      "action_object": "samples in ultrasonic bath",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C9",
+          "type": "parameter",
+          "text": "Desorb 30 min in an ultrasonic bath",
+          "attached_to": [
+            "S10"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S11",
+      "label": "Calibrate daily with six working standards",
+      "action_verb": "calibrate",
+      "action_object": "gas chromatograph with standards",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C10",
+          "type": "parameter",
+          "text": "Calibrate daily with at least six working standards to cover the analytical range of the method",
+          "attached_to": [
+            "S11"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C11",
+          "type": "postcondition",
+          "text": "Additional standards may be added to extend the calibration curve if necessary",
+          "attached_to": [
+            "S11"
+          ],
+          "enforcement": "may"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S12",
+      "label": "Add calibration stock to methanol in volumetric flask",
+      "action_verb": "add",
+      "action_object": "calibration stock to methanol",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S13",
+      "label": "Dilute to mark in volumetric flask",
+      "action_verb": "dilute",
+      "action_object": "standard solution to mark",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S14",
+      "label": "Analyze standards with samples and blanks",
+      "action_verb": "analyze",
+      "action_object": "standards with samples and blanks",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S15",
+      "label": "Prepare calibration graph of peak area versus µg analyte",
+      "action_verb": "prepare",
+      "action_object": "calibration graph",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S16",
+      "label": "Prepare three tubes at each of five levels plus media blanks for desorption efficiency",
+      "action_verb": "prepare",
+      "action_object": "silica gel tubes for DE study",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C12",
+          "type": "precondition",
+          "text": "Determine desorption efficiency (DE) at least once for each lot of silica gel used for sampling in the calibration ranges",
+          "attached_to": [
+            "S16"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C13",
+          "type": "parameter",
+          "text": "Prepare three tubes at each of five levels plus three media blanks",
+          "attached_to": [
+            "S16"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S17",
+      "label": "Inject known amount of calibration stock onto front sorbent section",
+      "action_verb": "inject",
+      "action_object": "calibration stock onto sorbent",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C14",
+          "type": "guard",
+          "text": "Inject a known amount of calibration stock solution directly onto the front sorbent section of each silica gel tube with a microliter syringe",
+          "attached_to": [
+            "S17"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S18",
+      "label": "Allow tubes to air equilibrate for several minutes",
+      "action_verb": "allow",
+      "action_object": "tubes to equilibrate",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C15",
+          "type": "guard",
+          "text": "Allow the tubes to air equilibrate for several minutes, then cap the ends of each tube and allow to stand overnight",
+          "attached_to": [
+            "S18",
+            "S19"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S19",
+      "label": "Cap tubes and allow to stand overnight",
+      "action_verb": "cap",
+      "action_object": "tubes for overnight standing",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S20",
+      "label": "Desorb tubes and analyze with standards and blanks",
+      "action_verb": "desorb",
+      "action_object": "tubes for DE analysis",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S21",
+      "label": "Prepare graph of desorption efficiency versus µg analyte recovered",
+      "action_verb": "prepare",
+      "action_object": "desorption efficiency graph",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S22",
+      "label": "Analyze three quality control blind spikes",
+      "action_verb": "analyze",
+      "action_object": "blind spike samples",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C16",
+          "type": "guard",
+          "text": "Analyze three quality control blind spikes and three analyst spikes to ensure that the calibration graph and DE graph are in control",
+          "attached_to": [
+            "S22",
+            "S23"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S23",
+      "label": "Analyze three analyst spikes",
+      "action_verb": "analyze",
+      "action_object": "analyst spike samples",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S24",
+      "label": "Set gas chromatograph according to manufacturer recommendations",
+      "action_verb": "set",
+      "action_object": "gas chromatograph conditions",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C17",
+          "type": "parameter",
+          "text": "Set gas chromatograph according to manufacturer's recommendations and to conditions given on page 2005-1",
+          "attached_to": [
+            "S24"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S25",
+      "label": "Inject 1-µL sample aliquot manually or with autosampler",
+      "action_verb": "inject",
+      "action_object": "sample aliquot into GC",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C18",
+          "type": "parameter",
+          "text": "Inject a 1-µL sample aliquot manually using the solvent flush technique or with an autosampler",
+          "attached_to": [
+            "S25"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S26",
+      "label": "Measure peak areas",
+      "action_verb": "measure",
+      "action_object": "peak areas",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S27",
+      "label": "Dilute with methanol if peak area exceeds linear range",
+      "action_verb": "dilute",
+      "action_object": "sample with methanol",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C19",
+          "type": "guard",
+          "text": "If peak area is above the linear range of the working standards, dilute with methanol, reanalyze and apply the appropriate dilution factor in the calculations",
+          "attached_to": [
+            "S27",
+            "S28"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S28",
+      "label": "Reanalyze diluted sample",
+      "action_verb": "reanalyze",
+      "action_object": "diluted sample",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S29",
+      "label": "Determine mass of analyte in sample front sorbent section corrected for DE",
+      "action_verb": "determine",
+      "action_object": "analyte mass in front section",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C20",
+          "type": "guard",
+          "text": "Determine the mass, µg (corrected for DE) of analyte found in the sample front (Wf) and back (Wb) sorbent sections, and in the average media blank front (Bf) and back (Bb) sorbent sections",
+          "attached_to": [
+            "S29",
+            "S30",
+            "S31",
+            "S32"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S30",
+      "label": "Determine mass of analyte in sample back sorbent section corrected for DE",
+      "action_verb": "determine",
+      "action_object": "analyte mass in back section",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S31",
+      "label": "Determine mass of analyte in average media blank front section",
+      "action_verb": "determine",
+      "action_object": "analyte mass in blank front section",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S32",
+      "label": "Determine mass of analyte in average media blank back section",
+      "action_verb": "determine",
+      "action_object": "analyte mass in blank back section",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S33",
+      "label": "Report breakthrough if back section mass exceeds front section mass divided by ten",
+      "action_verb": "report",
+      "action_object": "breakthrough condition",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C21",
+          "type": "guard",
+          "text": "If Wb > Wf /10, report breakthrough and possible sample loss",
+          "attached_to": [
+            "S33"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
+      }
+    },
+    {
+      "id": "S34",
+      "label": "Calculate air concentration from analyte masses and sample volume",
+      "action_verb": "calculate",
+      "action_object": "air concentration",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "niosh_nmam_5th_edition_ebook",
+        "section": "Method 2005: SAMPLING / SAMPLE PREPARATION / MEASUREMENT",
+        "page": null
       }
     }
   ],
-  "constraints": [
-    {
-      "id": "C7",
-      "type": "guard",
-      "text": "Wear gloves, lab coat, and safety glasses while handling chemicals.",
-      "applies_to": [
-        "S1",
-        "S2",
-        "S3",
-        "S4",
-        "S5",
-        "S6"
-      ],
-      "enforcement": "should"
-    },
-    {
-      "id": "C8",
-      "type": "guard",
-      "text": "All work should be performed in a fume hood.",
-      "applies_to": [
-        "S4",
-        "S5",
-        "S6"
-      ],
-      "enforcement": "should"
-    },
-    {
-      "id": "C9",
-      "type": "guard",
-      "text": "Potassium persulfate is a powerful oxidizing agent.",
-      "applies_to": [
-        "S4",
-        "S5",
-        "S6"
-      ],
-      "enforcement": "should"
-    },
-    {
-      "id": "C10",
-      "type": "guard",
-      "text": "Arsine gas is extremely toxic and can be fatal.",
-      "applies_to": [
-        "S4",
-        "S5",
-        "S6"
-      ],
-      "enforcement": "should"
-    },
-    {
-      "id": "C11",
-      "type": "guard",
-      "text": "The arsenic compounds used in the stock standards are poisonous.",
-      "applies_to": [
-        "S4",
-        "S5",
-        "S6"
-      ],
-      "enforcement": "should"
-    }
-  ],
+  "constraints": [],
   "relations": [],
   "quality": {
-    "annotation_scope": "bounded_excerpt",
+    "annotation_scope": "full_subprocedure",
     "review_status": "reviewed",
-    "annotator": "imad",
-    "review_date": "2026-06-13",
-    "review_notes": "Second-pass review. SPECIAL PRECAUTIONS section (gloves/lab coat/safety glasses, fume hood, K2S2O8 oxidizer, AsH3 toxicity, poisonous stock standards) moved to procedure-level constraints with applies_to spanning multiple steps — these are not single-step-attachable. S2 added 'accurately known' flow constraint. S4 updated with Eluent A type and 50-mL beaker capacity. S5 added clean-forceps requirement and cover-beaker postcondition (both missed in draft). Parameters expanded across all steps with source-exact values. Total: 6 steps, 6 step-attached constraints + 5 procedure-level constraints = 11. Original safety_critical=true flag preserved on all steps (arsenic compounds are toxic). S1 (Calibrate sampling pump) has no step-embedded constraints because the procedure-level safety constraints (C7-C11: gloves, fume hood, AsH3 toxicity, etc.) cover it via applies_to."
+    "annotator": "model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off)",
+    "review_date": "2026-07-05",
+    "review_notes": "Adjudicated 2026-07-05 by model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off) via scripts/adjudicate.py from model-assisted draft. Decisions: 53 accept, 2 edit, 0 reject, 0 add.\nstep:S1 ACCEPT\nstep:S2 ACCEPT\nstep:S3 ACCEPT\nstep:S4 ACCEPT\nstep:S5 ACCEPT\nstep:S6 ACCEPT\nstep:S7 ACCEPT\nstep:S8 ACCEPT\nstep:S9 ACCEPT\nstep:S10 ACCEPT\nstep:S11 ACCEPT\nstep:S12 ACCEPT\nstep:S13 ACCEPT\nstep:S14 ACCEPT\nstep:S15 ACCEPT\nstep:S16 ACCEPT\nstep:S17 ACCEPT\nstep:S18 ACCEPT\nstep:S19 ACCEPT\nstep:S20 ACCEPT\nstep:S21 ACCEPT\nstep:S22 ACCEPT\nstep:S23 ACCEPT\nstep:S24 ACCEPT\nstep:S25 ACCEPT\nstep:S26 ACCEPT\nstep:S27 ACCEPT\nstep:S28 ACCEPT\nstep:S29 ACCEPT\nstep:S30 ACCEPT\nstep:S31 ACCEPT\nstep:S32 ACCEPT\nstep:S33 ACCEPT\nstep:S34 ACCEPT\nconstraint:C1 ACCEPT\nconstraint:C2 ACCEPT\nconstraint:C3 ACCEPT\nconstraint:C4 ACCEPT\nconstraint:C5 ACCEPT\nconstraint:C6 ACCEPT\nconstraint:C7 ACCEPT\nconstraint:C8 ACCEPT\nconstraint:C9 ACCEPT\nconstraint:C10 ACCEPT\nconstraint:C11 ACCEPT\nconstraint:C12 ACCEPT\nconstraint:C13 ACCEPT\nconstraint:C14 ACCEPT\nconstraint:C15 ACCEPT\nconstraint:C16 EDIT ['attached_to', 'type'] -- Constraint is phrased as a guard condition (if/then check), not a precondition. Attached to individual steps, not as prerequisite to all downstream work.\nconstraint:C17 ACCEPT\nconstraint:C18 ACCEPT\nconstraint:C19 ACCEPT\nconstraint:C20 EDIT ['type'] -- Source text presents this as a NOTE within step 13 (calculations), making it a guard/verification step, not a postcondition of the four measurement steps.\nconstraint:C21 ACCEPT\n[strict-warning adjudication] step:S3 zero_constraints adjudicated; step:S7 zero_constraints adjudicated; step:S12 zero_constraints adjudicated; step:S13 zero_constraints adjudicated; step:S14 zero_constraints adjudicated; step:S15 zero_constraints adjudicated; step:S19 zero_constraints adjudicated; step:S20 zero_constraints adjudicated; step:S21 zero_constraints adjudicated; step:S23 zero_constraints adjudicated; step:S26 zero_constraints adjudicated; step:S28 zero_constraints adjudicated; step:S30 zero_constraints adjudicated; step:S31 zero_constraints adjudicated; step:S32 zero_constraints adjudicated; step:S34 zero_constraints adjudicated"
   }
 }

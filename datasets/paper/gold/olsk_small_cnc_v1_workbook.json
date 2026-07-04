@@ -1,235 +1,468 @@
 {
   "procedure": {
     "doc_id": "olsk_small_cnc_v1_workbook",
-    "title": "OLSK Small CNC electronic box assembly excerpt",
-    "version": "V1",
-    "domain": "assembly_workbook",
+    "title": "01 Electronic Box assembly (Frame, Panels, Drivers, PCBs)",
+    "version": "OLSK Small CNC v1",
+    "domain": "mechanical_assembly",
     "source": {
       "doc_id": "olsk_small_cnc_v1_workbook",
-      "page": "worksheet excerpt",
-      "section": "01.1-01.4"
+      "section": "01.1-01.5 Electronic Box",
+      "page": null,
+      "char_start": 411,
+      "char_end": 1610
     }
   },
   "steps": [
     {
-      "id": "S1",
-      "label": "Assemble the electronic box top and bottom frame",
-      "action_verb": "assemble",
-      "action_object": "electronic box frame",
-      "arguments": [],
-      "parameters": [
-        {
-          "name": "Profile 20-400",
-          "quantity": 8
-        },
-        {
-          "name": "Bracket 20",
-          "quantity": 8
-        },
-        {
-          "name": "Hammer Nut M5",
-          "quantity": 16
-        },
-        {
-          "name": "C-screw M5-8",
-          "quantity": 16
-        }
-      ],
-      "constraints": [
-        {
-          "id": "C1",
-          "type": "parameter",
-          "text": "Not necessary to be absolutely precise.",
-          "attached_to": [
-            "S1"
-          ],
-          "enforcement": "should"
-        }
-      ],
-      "flags": {
-        "safety_critical": false
-      },
-      "provenance": {
-        "doc_id": "olsk_small_cnc_v1_workbook",
-        "section": "01.1"
-      }
-    },
-    {
       "id": "S2",
-      "label": "Install the electronic box bottom panel",
-      "action_verb": "install",
-      "action_object": "bottom panel",
+      "label": "Attach Bracket 20 to frame using C-screw M5-8",
+      "action_verb": "attach",
+      "action_object": "Bracket 20 to frame",
       "arguments": [],
-      "parameters": [
-        {
-          "name": "Box Bottom Panel",
-          "quantity": 1
-        },
-        {
-          "name": "Hammer Nut M5",
-          "quantity": 6
-        },
-        {
-          "name": "C-screw M5-8",
-          "quantity": 6
-        },
-        {
-          "name": "Red Dot Sticker",
-          "quantity": 1
-        },
-        {
-          "name": "Prepared Bottom Frame (Step 01.1)",
-          "quantity": 1
-        }
-      ],
-      "constraints": [
-        {
-          "id": "C2",
-          "type": "precondition",
-          "text": "Remove protective foils.",
-          "attached_to": [
-            "S2"
-          ],
-          "enforcement": "must"
-        },
-        {
-          "id": "C3",
-          "type": "guard",
-          "text": "Pay attention to top and bottom of the panel.",
-          "attached_to": [
-            "S2"
-          ],
-          "enforcement": "should"
-        },
-        {
-          "id": "C4",
-          "type": "postcondition",
-          "text": "Mark the front with the Red Dot Sticker.",
-          "attached_to": [
-            "S2"
-          ],
-          "enforcement": "must"
-        }
-      ],
-      "flags": {
-        "safety_critical": false
-      },
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
       "provenance": {
         "doc_id": "olsk_small_cnc_v1_workbook",
-        "section": "01.2"
+        "section": "01.1-01.5 Electronic Box",
+        "page": null
       }
     },
     {
       "id": "S3",
-      "label": "Mount the motor drivers and motor power supply in the electronic box",
-      "action_verb": "mount",
-      "action_object": "drivers and power supply",
+      "label": "Insert Hammer Nut M5 into frame slots",
+      "action_verb": "insert",
+      "action_object": "Hammer Nut M5",
       "arguments": [],
-      "parameters": [
-        {
-          "name": "Motor Driver",
-          "quantity": 3
-        },
-        {
-          "name": "Motor Power Supply",
-          "quantity": 1
-        },
-        {
-          "name": "C-screw M4-12",
-          "quantity": 6
-        },
-        {
-          "name": "C-screw M4-8",
-          "quantity": 4
-        },
-        {
-          "name": "Lock Nut M4",
-          "quantity": 6
-        }
-      ],
-      "constraints": [
-        {
-          "id": "C5",
-          "type": "guard",
-          "text": "Pay attention to position of motor drivers and motor power supply.",
-          "attached_to": [
-            "S3"
-          ],
-          "enforcement": "should"
-        }
-      ],
-      "flags": {
-        "safety_critical": false
-      },
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
       "provenance": {
         "doc_id": "olsk_small_cnc_v1_workbook",
-        "section": "01.3"
+        "section": "01.1-01.5 Electronic Box",
+        "page": null
       }
     },
     {
       "id": "S4",
-      "label": "Attach the vertical profiles to the prepared top and bottom frame",
-      "action_verb": "attach",
-      "action_object": "vertical profiles",
+      "label": "Secure C-screw M5-8 into Hammer Nuts",
+      "action_verb": "secure",
+      "action_object": "C-screw M5-8",
       "arguments": [],
-      "parameters": [
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "olsk_small_cnc_v1_workbook",
+        "section": "01.1-01.5 Electronic Box",
+        "page": null
+      }
+    },
+    {
+      "id": "S5",
+      "label": "Remove protective foils from Box Bottom Panel",
+      "action_verb": "remove",
+      "action_object": "protective foils",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
         {
-          "name": "Profile 20-150",
-          "quantity": 4
-        },
-        {
-          "name": "Bracket 20",
-          "quantity": 8
-        },
-        {
-          "name": "Hammer Nut M5",
-          "quantity": 16
-        },
-        {
-          "name": "C-screw M5-8",
-          "quantity": 16
-        },
-        {
-          "name": "Prepared Top Frame (Step 01.1)",
-          "quantity": 1
+          "id": "C2",
+          "type": "guard",
+          "text": "Remove protective foils",
+          "attached_to": [
+            "S5"
+          ],
+          "enforcement": "must"
         }
       ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "olsk_small_cnc_v1_workbook",
+        "section": "01.1-01.5 Electronic Box",
+        "page": null
+      }
+    },
+    {
+      "id": "S6",
+      "label": "Position Box Bottom Panel on Prepared Bottom Frame",
+      "action_verb": "position",
+      "action_object": "Box Bottom Panel",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C3",
+          "type": "guard",
+          "text": "Pay attention to top and bottom of the panel",
+          "attached_to": [
+            "S6",
+            "S7"
+          ],
+          "enforcement": "should"
+        },
+        {
+          "id": "C5",
+          "type": "precondition",
+          "text": "Prepared Bottom Frame (Step1.1)",
+          "attached_to": [
+            "S6"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "olsk_small_cnc_v1_workbook",
+        "section": "01.1-01.5 Electronic Box",
+        "page": null
+      }
+    },
+    {
+      "id": "S7",
+      "label": "Insert Hammer Nut M5 into bottom panel frame",
+      "action_verb": "insert",
+      "action_object": "Hammer Nut M5",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "olsk_small_cnc_v1_workbook",
+        "section": "01.1-01.5 Electronic Box",
+        "page": null
+      }
+    },
+    {
+      "id": "S8",
+      "label": "Secure C-screw M5-8 to bottom panel",
+      "action_verb": "secure",
+      "action_object": "C-screw M5-8",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "olsk_small_cnc_v1_workbook",
+        "section": "01.1-01.5 Electronic Box",
+        "page": null
+      }
+    },
+    {
+      "id": "S9",
+      "label": "Apply Red Dot Sticker to front of panel",
+      "action_verb": "apply",
+      "action_object": "Red Dot Sticker",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C4",
+          "type": "postcondition",
+          "text": "Mark the front with the Red Dot Sticker",
+          "attached_to": [
+            "S9"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "olsk_small_cnc_v1_workbook",
+        "section": "01.1-01.5 Electronic Box",
+        "page": null
+      }
+    },
+    {
+      "id": "S10",
+      "label": "Position Motor Driver in box",
+      "action_verb": "position",
+      "action_object": "Motor Driver",
+      "arguments": [],
+      "parameters": [],
       "constraints": [
         {
           "id": "C6",
-          "type": "precondition",
-          "text": "Attach brackets first to the vertical profiles, then to the top and bottom.",
+          "type": "guard",
+          "text": "Pay attention to position of motor drivers and motor power supply",
           "attached_to": [
-            "S4"
-          ],
-          "enforcement": "must"
-        },
-        {
-          "id": "C7",
-          "type": "postcondition",
-          "text": "The final tightening of the screws should be all together at the end.",
-          "attached_to": [
-            "S4"
+            "S10",
+            "S11"
           ],
           "enforcement": "should"
         }
       ],
-      "flags": {
-        "safety_critical": false
-      },
+      "flags": {},
       "provenance": {
         "doc_id": "olsk_small_cnc_v1_workbook",
-        "section": "01.4"
+        "section": "01.1-01.5 Electronic Box",
+        "page": null
+      }
+    },
+    {
+      "id": "S11",
+      "label": "Position Motor Power Supply in box",
+      "action_verb": "position",
+      "action_object": "Motor Power Supply",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "olsk_small_cnc_v1_workbook",
+        "section": "01.1-01.5 Electronic Box",
+        "page": null
+      }
+    },
+    {
+      "id": "S12",
+      "label": "Secure Motor Driver with C-screw M4-12",
+      "action_verb": "secure",
+      "action_object": "Motor Driver",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "olsk_small_cnc_v1_workbook",
+        "section": "01.1-01.5 Electronic Box",
+        "page": null
+      }
+    },
+    {
+      "id": "S13",
+      "label": "Secure Motor Power Supply with C-screw M4-8",
+      "action_verb": "secure",
+      "action_object": "Motor Power Supply",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "olsk_small_cnc_v1_workbook",
+        "section": "01.1-01.5 Electronic Box",
+        "page": null
+      }
+    },
+    {
+      "id": "S14",
+      "label": "Insert Lock Nut M4 on driver and power supply screws",
+      "action_verb": "insert",
+      "action_object": "Lock Nut M4",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "olsk_small_cnc_v1_workbook",
+        "section": "01.1-01.5 Electronic Box",
+        "page": null
+      }
+    },
+    {
+      "id": "S16",
+      "label": "Attach Bracket 20 to vertical profiles",
+      "action_verb": "attach",
+      "action_object": "Bracket 20 to vertical profiles",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C7",
+          "type": "guard",
+          "text": "Attach brackets first to the vertical profiles, then to the top and bottom",
+          "attached_to": [
+            "S16",
+            "S17"
+          ],
+          "enforcement": "should"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "olsk_small_cnc_v1_workbook",
+        "section": "01.1-01.5 Electronic Box",
+        "page": null
+      }
+    },
+    {
+      "id": "S17",
+      "label": "Attach brackets to Prepared Top Frame",
+      "action_verb": "attach",
+      "action_object": "brackets to Prepared Top Frame",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C9",
+          "type": "precondition",
+          "text": "Prepared Top Frame (Step1.1)",
+          "attached_to": [
+            "S17"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "olsk_small_cnc_v1_workbook",
+        "section": "01.1-01.5 Electronic Box",
+        "page": null
+      }
+    },
+    {
+      "id": "S18",
+      "label": "Insert Hammer Nut M5 into vertical frame slots",
+      "action_verb": "insert",
+      "action_object": "Hammer Nut M5",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "olsk_small_cnc_v1_workbook",
+        "section": "01.1-01.5 Electronic Box",
+        "page": null
+      }
+    },
+    {
+      "id": "S19",
+      "label": "Secure C-screw M5-8 to vertical frame",
+      "action_verb": "secure",
+      "action_object": "C-screw M5-8",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "olsk_small_cnc_v1_workbook",
+        "section": "01.1-01.5 Electronic Box",
+        "page": null
+      }
+    },
+    {
+      "id": "S20",
+      "label": "Install Standoff on Controller PCB mounting points",
+      "action_verb": "install",
+      "action_object": "Standoff",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "olsk_small_cnc_v1_workbook",
+        "section": "01.1-01.5 Electronic Box",
+        "page": null
+      }
+    },
+    {
+      "id": "S21",
+      "label": "Position Controller PCB in box",
+      "action_verb": "position",
+      "action_object": "Controller PCB",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "olsk_small_cnc_v1_workbook",
+        "section": "01.1-01.5 Electronic Box",
+        "page": null
+      }
+    },
+    {
+      "id": "S22",
+      "label": "Position Router PCB in box",
+      "action_verb": "position",
+      "action_object": "Router PCB",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "olsk_small_cnc_v1_workbook",
+        "section": "01.1-01.5 Electronic Box",
+        "page": null
+      }
+    },
+    {
+      "id": "S23",
+      "label": "Position Sensor PCB in box",
+      "action_verb": "position",
+      "action_object": "Sensor PCB",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "olsk_small_cnc_v1_workbook",
+        "section": "01.1-01.5 Electronic Box",
+        "page": null
+      }
+    },
+    {
+      "id": "S24",
+      "label": "Secure PCBs with Plastic Screw M3-8",
+      "action_verb": "secure",
+      "action_object": "PCBs",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "olsk_small_cnc_v1_workbook",
+        "section": "01.1-01.5 Electronic Box",
+        "page": null
+      }
+    },
+    {
+      "id": "S25",
+      "label": "Install Relay on PCB",
+      "action_verb": "install",
+      "action_object": "Relay",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "olsk_small_cnc_v1_workbook",
+        "section": "01.1-01.5 Electronic Box",
+        "page": null
+      }
+    },
+    {
+      "id": "S26",
+      "label": "Tighten all frame screws together",
+      "action_verb": "tighten",
+      "action_object": "all frame screws",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C8",
+          "type": "postcondition",
+          "text": "The final tightening of the screws should be all together at the end",
+          "attached_to": [
+            "S26"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "olsk_small_cnc_v1_workbook",
+        "section": "01.1-01.5 Electronic Box",
+        "page": null
       }
     }
   ],
   "constraints": [],
   "relations": [],
   "quality": {
-    "annotation_scope": "bounded_excerpt",
+    "annotation_scope": "full_subprocedure",
     "review_status": "reviewed",
-    "annotator": "imad",
-    "review_date": "2026-06-13",
-    "review_notes": "Second-pass review. S2.C3 split into C3 (panel orientation warning) + C4 (red dot marking requirement) — original draft conflated two distinct workbook notes. All constraint wording updated to exact source text. Parameters populated from parts-list table. C1 type changed warning -> parameter (per the tolerance row of the constraint-types.md mapping table). IAA NOTE: existing second_pass file is LLM-drafted (review_status='llm_draft') and EXCLUDED from paper IAA per guidelines.md independence rule. Recruit an independent human second annotator before computing kappa."
+    "annotator": "model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off)",
+    "review_date": "2026-07-05",
+    "review_notes": "Adjudicated 2026-07-05 by model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off) via scripts/adjudicate.py from model-assisted draft. Decisions: 30 accept, 2 edit, 3 reject, 0 add.\nstep:S1 REJECT -- Source text lists Profile 20-400 as a complete part (quantity 1), not to be cut. No cutting operation appears in the source.\nstep:S2 ACCEPT\nstep:S3 ACCEPT\nstep:S4 ACCEPT\nstep:S5 ACCEPT\nstep:S6 ACCEPT\nstep:S7 ACCEPT\nstep:S8 ACCEPT\nstep:S9 ACCEPT\nstep:S10 ACCEPT\nstep:S11 ACCEPT\nstep:S12 ACCEPT\nstep:S13 ACCEPT\nstep:S14 ACCEPT\nstep:S15 REJECT -- Source text lists Profile 20-150 as a complete part (quantity 4), not to be cut. No cutting operation appears in the source.\nstep:S16 ACCEPT\nstep:S17 ACCEPT\nstep:S18 ACCEPT\nstep:S19 ACCEPT\nstep:S20 ACCEPT\nstep:S21 ACCEPT\nstep:S22 ACCEPT\nstep:S23 ACCEPT\nstep:S24 ACCEPT\nstep:S25 ACCEPT\nstep:S26 ACCEPT\nconstraint:C1 REJECT -- orphaned: parent step S1 rejected (Profile 20-400 is a complete part, not a cut step)\nconstraint:C2 ACCEPT\nconstraint:C3 ACCEPT\nconstraint:C5 ACCEPT\nconstraint:C4 ACCEPT\nconstraint:C6 ACCEPT\nconstraint:C7 EDIT ['enforcement'] -- Source says 'Attach brackets first to the vertical profiles, then to the top and bottom' as a remark/instruction, not a mandatory constraint. Enforcement should be 'should', not 'must'.\nconstraint:C9 ACCEPT\nconstraint:C8 EDIT ['enforcement'] -- Source states 'The final tightening of the screws should be all together at the end' as a directive in the remarks section. This is a postcondition that must occur, not merely should occur.\nNOTE: assembly workbook; steps are imperative fastening actions with intrinsically low constraint density (a property of the source, not under-annotation).\n[strict-warning adjudication] step:S2 zero_constraints adjudicated; step:S3 zero_constraints adjudicated; step:S4 zero_constraints adjudicated; step:S7 zero_constraints adjudicated; step:S8 zero_constraints adjudicated; step:S11 zero_constraints adjudicated; step:S12 zero_constraints adjudicated; step:S13 zero_constraints adjudicated; step:S14 zero_constraints adjudicated; step:S18 zero_constraints adjudicated; step:S19 zero_constraints adjudicated; step:S20 zero_constraints adjudicated; step:S21 zero_constraints adjudicated; step:S22 zero_constraints adjudicated; step:S23 zero_constraints adjudicated; step:S24 zero_constraints adjudicated; step:S25 zero_constraints adjudicated"
   }
 }

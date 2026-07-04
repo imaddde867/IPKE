@@ -1,0 +1,248 @@
+{
+  "doc_id": "epa_guidance_preparing_sops_qag6",
+  "scheme": "flat_numbered",
+  "n_chars": 101427,
+  "n_sections_detected": 81,
+  "candidates": [
+    {
+      "section": "3",
+      "title": "3 US EPA, Region XXI, Air Compliance Monitoring Inspections, SOP #232.1C.",
+      "char_start": 86618,
+      "char_end": 95918,
+      "line_start": 2624,
+      "line_end": 3161,
+      "depth": 1,
+      "n_words": 1408,
+      "richness": {
+        "score": 0.887,
+        "est_steps": 16,
+        "n_step_lines": 16,
+        "n_imperatives": 19,
+        "n_modals": 16,
+        "n_parameters": 7,
+        "n_words": 1408
+      },
+      "recommended": true
+    },
+    {
+      "section": "2",
+      "title": "2 0",
+      "char_start": 3061,
+      "char_end": 18984,
+      "line_start": 181,
+      "line_end": 531,
+      "depth": 1,
+      "n_words": 2231,
+      "richness": {
+        "score": 0.76,
+        "est_steps": 12,
+        "n_step_lines": 12,
+        "n_imperatives": 38,
+        "n_modals": 53,
+        "n_parameters": 6,
+        "n_words": 2231
+      },
+      "recommended": true
+    },
+    {
+      "section": "9",
+      "title": "9 PROCEDURES",
+      "char_start": 46235,
+      "char_end": 51575,
+      "line_start": 1545,
+      "line_end": 1686,
+      "depth": 1,
+      "n_words": 856,
+      "richness": {
+        "score": 0.742,
+        "est_steps": 11,
+        "n_step_lines": 11,
+        "n_imperatives": 15,
+        "n_modals": 5,
+        "n_parameters": 16,
+        "n_words": 856
+      },
+      "recommended": true
+    },
+    {
+      "section": "10",
+      "title": "10 Preparing samples for shipment to the laboratory.",
+      "char_start": 67170,
+      "char_end": 69258,
+      "line_start": 2118,
+      "line_end": 2159,
+      "depth": 1,
+      "n_words": 363,
+      "richness": {
+        "score": 0.58,
+        "est_steps": 4,
+        "n_step_lines": 1,
+        "n_imperatives": 8,
+        "n_modals": 10,
+        "n_parameters": 1,
+        "n_words": 363
+      },
+      "recommended": false
+    },
+    {
+      "section": "4",
+      "title": "4 SOP 2334.14",
+      "char_start": 70004,
+      "char_end": 74657,
+      "line_start": 2180,
+      "line_end": 2358,
+      "depth": 1,
+      "n_words": 585,
+      "richness": {
+        "score": 0.58,
+        "est_steps": 5,
+        "n_step_lines": 5,
+        "n_imperatives": 3,
+        "n_modals": 6,
+        "n_parameters": 6,
+        "n_words": 585
+      },
+      "recommended": false
+    },
+    {
+      "section": "3",
+      "title": "3 FIELD PROCEDURES",
+      "char_start": 79423,
+      "char_end": 82758,
+      "line_start": 2469,
+      "line_end": 2533,
+      "depth": 1,
+      "n_words": 486,
+      "richness": {
+        "score": 0.58,
+        "est_steps": 4,
+        "n_step_lines": 1,
+        "n_imperatives": 7,
+        "n_modals": 8,
+        "n_parameters": 3,
+        "n_words": 486
+      },
+      "recommended": false
+    },
+    {
+      "section": "7",
+      "title": "7 The signed revised SOP must be sent to the historical file for archiving.",
+      "char_start": 97819,
+      "char_end": 101427,
+      "line_start": 3207,
+      "line_end": 3355,
+      "depth": 1,
+      "n_words": 599,
+      "richness": {
+        "score": 0.58,
+        "est_steps": 6,
+        "n_step_lines": 1,
+        "n_imperatives": 11,
+        "n_modals": 23,
+        "n_parameters": 0,
+        "n_words": 599
+      },
+      "recommended": false
+    },
+    {
+      "section": "7",
+      "title": "7 EQUIPMENT AND SUPPLIES",
+      "char_start": 42833,
+      "char_end": 44177,
+      "line_start": 1437,
+      "line_end": 1489,
+      "depth": 1,
+      "n_words": 195,
+      "richness": {
+        "score": 0.545,
+        "est_steps": 13,
+        "n_step_lines": 13,
+        "n_imperatives": 3,
+        "n_modals": 1,
+        "n_parameters": 11,
+        "n_words": 195
+      },
+      "recommended": false
+    },
+    {
+      "section": "8",
+      "title": "8 QUALITY CONTROL",
+      "char_start": 44177,
+      "char_end": 46235,
+      "line_start": 1490,
+      "line_end": 1544,
+      "depth": 1,
+      "n_words": 317,
+      "richness": {
+        "score": 0.51,
+        "est_steps": 8,
+        "n_step_lines": 8,
+        "n_imperatives": 6,
+        "n_modals": 3,
+        "n_parameters": 3,
+        "n_words": 317
+      },
+      "recommended": false
+    },
+    {
+      "section": "4",
+      "title": "4 HEALTH AND SAFETY WARNINGS.",
+      "char_start": 41028,
+      "char_end": 41853,
+      "line_start": 1370,
+      "line_end": 1410,
+      "depth": 1,
+      "n_words": 117,
+      "richness": {
+        "score": 0.485,
+        "est_steps": 8,
+        "n_step_lines": 8,
+        "n_imperatives": 0,
+        "n_modals": 5,
+        "n_parameters": 0,
+        "n_words": 117
+      },
+      "recommended": false
+    },
+    {
+      "section": "6",
+      "title": "6 HANDLING AND PRESERVATION.",
+      "char_start": 42068,
+      "char_end": 42833,
+      "line_start": 1415,
+      "line_end": 1436,
+      "depth": 1,
+      "n_words": 114,
+      "richness": {
+        "score": 0.413,
+        "est_steps": 6,
+        "n_step_lines": 6,
+        "n_imperatives": 1,
+        "n_modals": 5,
+        "n_parameters": 2,
+        "n_words": 114
+      },
+      "recommended": false
+    },
+    {
+      "section": "3",
+      "title": "3 Procedures - The following are topics that may be appropriate for inclusion in",
+      "char_start": 21241,
+      "char_end": 23513,
+      "line_start": 595,
+      "line_end": 670,
+      "depth": 1,
+      "n_words": 322,
+      "richness": {
+        "score": 0.4,
+        "est_steps": 2,
+        "n_step_lines": 1,
+        "n_imperatives": 3,
+        "n_modals": 5,
+        "n_parameters": 0,
+        "n_words": 322
+      },
+      "recommended": false
+    }
+  ]
+}

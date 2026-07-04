@@ -106,3 +106,7 @@ lib/
 
 # agent tool outputs
 .agents/
+
+# local agent/tooling working files (not research content)
+CLAUDE.md
+review.md

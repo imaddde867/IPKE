@@ -1,0 +1,68 @@
+{
+  "doc_id": "niosh_nmam_surface_sampling_guidance",
+  "scheme": "flat_numbered",
+  "n_chars": 118759,
+  "n_sections_detected": 6,
+  "candidates": [
+    {
+      "section": "93",
+      "title": "93 Brussels, Belgium, European Centre for Ecotoxicology and Toxicology of Chemicals, TR 107 -",
+      "char_start": 98132,
+      "char_end": 118759,
+      "line_start": 1550,
+      "line_end": 1927,
+      "depth": 1,
+      "n_words": 2417,
+      "richness": {
+        "score": 0.58,
+        "est_steps": 3,
+        "n_step_lines": 2,
+        "n_imperatives": 6,
+        "n_modals": 0,
+        "n_parameters": 67,
+        "n_words": 2417
+      },
+      "recommended": false
+    },
+    {
+      "section": "2",
+      "title": "2 [Ashley et al. 2007]. Here, collection efficiencies from a variety of representative substrates",
+      "char_start": 34444,
+      "char_end": 37262,
+      "line_start": 525,
+      "line_end": 568,
+      "depth": 1,
+      "n_words": 384,
+      "richness": {
+        "score": 0.4,
+        "est_steps": 1,
+        "n_step_lines": 1,
+        "n_imperatives": 2,
+        "n_modals": 3,
+        "n_parameters": 1,
+        "n_words": 384
+      },
+      "recommended": false
+    },
+    {
+      "section": "1",
+      "title": "1 Research on the adverse health effects of chemical exposures to include (a)",
+      "char_start": 37262,
+      "char_end": 37666,
+      "line_start": 569,
+      "line_end": 573,
+      "depth": 1,
+      "n_words": 46,
+      "richness": {
+        "score": 0.0,
+        "est_steps": 0,
+        "n_step_lines": 1,
+        "n_imperatives": 0,
+        "n_modals": 0,
+        "n_parameters": 0,
+        "n_words": 46
+      },
+      "recommended": false
+    }
+  ]
+}

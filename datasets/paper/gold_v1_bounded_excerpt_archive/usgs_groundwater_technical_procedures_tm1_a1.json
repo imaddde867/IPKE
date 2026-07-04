@@ -1,0 +1,310 @@
+{
+  "procedure": {
+    "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+    "title": "USGS graduated steel tape water-level measurement excerpt",
+    "version": "Techniques and Methods 1-A1",
+    "domain": "groundwater_measurement",
+    "source": {
+      "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+      "page": "6-7",
+      "section": "GWPD 1 Instructions 1-9"
+    }
+  },
+  "steps": [
+    {
+      "id": "S1",
+      "label": "Open the well",
+      "action_verb": "open",
+      "action_object": "well",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+        "page": "6",
+        "section": "Instruction 1"
+      }
+    },
+    {
+      "id": "S2",
+      "label": "Chalk the lower few feet of the tape",
+      "action_verb": "chalk",
+      "action_object": "steel tape",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C1",
+          "type": "parameter",
+          "text": "Pull the tape across a piece of blue carpenter's chalk.",
+          "attached_to": [
+            "S2"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+        "page": "6",
+        "section": "Instruction 2"
+      }
+    },
+    {
+      "id": "S3",
+      "label": "Review recent measurements from the well, if available, to estimate the hold point on the tape",
+      "action_verb": "review",
+      "action_object": "recent measurements",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+        "page": "6",
+        "section": "Instruction 3"
+      }
+    },
+    {
+      "id": "S4",
+      "label": "Lower the weight and tape into the well and record the HOLD value at the measuring point",
+      "action_verb": "lower",
+      "action_object": "weight and tape",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C3",
+          "type": "guard",
+          "text": "The weight and tape should be lowered into the water slowly to prevent splashing.",
+          "attached_to": [
+            "S4"
+          ],
+          "enforcement": "should"
+        },
+        {
+          "id": "C4",
+          "type": "parameter",
+          "text": "Place the thumb and index finger on the tape graduation that is 0.01 less than the next whole foot mark; continue to lower the end of the tape into the well until the thumb and index finger meet the MP.",
+          "attached_to": [
+            "S4"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C5",
+          "type": "postcondition",
+          "text": "Record the graduation value (the HOLD) in the Hold column of the water-level measurement field form.",
+          "attached_to": [
+            "S4"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+        "page": "6",
+        "section": "Instruction 4"
+      }
+    },
+    {
+      "id": "S5",
+      "label": "Rapidly bring the tape to the surface and record the wetted CUT length and measurement time",
+      "action_verb": "record",
+      "action_object": "CUT length and time",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C6",
+          "type": "guard",
+          "text": "Bring the tape to the surface rapidly before the wetted chalk mark dries and becomes difficult to read.",
+          "attached_to": [
+            "S5"
+          ],
+          "enforcement": "should"
+        },
+        {
+          "id": "C7",
+          "type": "postcondition",
+          "text": "Record the length of the wetted chalk (the CUT) in the Cut row of the water-level measurement field form.",
+          "attached_to": [
+            "S5"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C8",
+          "type": "postcondition",
+          "text": "Record the time of the measurement in the \"Time\" row of the form.",
+          "attached_to": [
+            "S5"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+        "page": "6",
+        "section": "Instruction 5"
+      }
+    },
+    {
+      "id": "S6",
+      "label": "Subtract the CUT from the HOLD and record the depth to water below the MP",
+      "action_verb": "subtract",
+      "action_object": "CUT from HOLD",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C9",
+          "type": "postcondition",
+          "text": "Record this number in the \"WL below MP\" column of the water-level measurement field form. The difference between the HOLD and the CUT is the depth to water below the MP.",
+          "attached_to": [
+            "S6"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+        "page": "6",
+        "section": "Instruction 6"
+      }
+    },
+    {
+      "id": "S7",
+      "label": "Apply the tape-calibration correction to the WL below MP value if required",
+      "action_verb": "apply",
+      "action_object": "calibration correction",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C10",
+          "type": "guard",
+          "text": "If the tape-calibration procedure indicates that a correction is needed at a given water-level depth or for a given water-level range, apply that correction to the \"WL below MP\" value by adding or subtracting the appropriate correction.",
+          "attached_to": [
+            "S7"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+        "page": "6-7",
+        "section": "Instruction 7"
+      }
+    },
+    {
+      "id": "S8",
+      "label": "Record the MP correction length and compute the depth to water below land-surface datum",
+      "action_verb": "record",
+      "action_object": "MP correction and WL below LSD",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C11",
+          "type": "parameter",
+          "text": "The MP correction is positive if the MP is above land surface and is negative if the MP is below land surface (see GWPD 3).",
+          "attached_to": [
+            "S8"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C12",
+          "type": "postcondition",
+          "text": "Subtract the MP correction from the \"WL below MP\" value to get the depth to water below or above land-surface datum.",
+          "attached_to": [
+            "S8"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C13",
+          "type": "postcondition",
+          "text": "Record the water level in the \"WL below LSD\" column of the water-level measurement field form.",
+          "attached_to": [
+            "S8"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C14",
+          "type": "parameter",
+          "text": "If the water level is above LSD, record the depth to water in feet below land surface as a negative number.",
+          "attached_to": [
+            "S8"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+        "page": "7",
+        "section": "Instruction 8"
+      }
+    },
+    {
+      "id": "S9",
+      "label": "Make a check measurement by repeating steps 1 through 5 with a different HOLD value",
+      "action_verb": "check",
+      "action_object": "measurement verification",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C15",
+          "type": "parameter",
+          "text": "The check measurement should be made using a different HOLD value than that used for the original measurement.",
+          "attached_to": [
+            "S9"
+          ],
+          "enforcement": "should"
+        }
+      ],
+      "flags": {
+        "safety_critical": false
+      },
+      "provenance": {
+        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+        "page": "7",
+        "section": "Instruction 9"
+      }
+    }
+  ],
+  "constraints": [],
+  "relations": [],
+  "quality": {
+    "annotation_scope": "bounded_excerpt",
+    "review_status": "reviewed",
+    "annotator": "imad",
+    "review_date": "2026-06-13",
+    "review_notes": "Second-pass review. Added missing steps: S8 (MP correction and WL below LSD calculation, Instruction 8) and S9 (check measurement, Instruction 9). Original draft conflated Instructions 6-7 into one step and entirely omitted Instructions 8-9. All 9 source instructions now have steps. Constraints expanded to capture exact source text including the thumb/index-finger placement detail (C4), the cut/hold/time form-column targets (C7/C8/C9/C12/C13), and the MP-correction sign convention (C11/C14). Total: 9 steps, 15 constraints (was 6 steps, 4 constraints). step:S1 zero_constraints adjudicated; step:S3 zero_constraints adjudicated. S1 and S3 are deliberate single-action steps with no source-level constraints in the bounded excerpt. S1 (Open the well) and S3 (Review recent measurements, if available) have zero attached constraints by design — both are single self-contained actions with no source-attested guards or parameters; conditional 'if available' is execution context, not a constraint. MIGRATION DROP: original C2 'purpose' type ('A wetted chalk mark will identify that part of the tape that was submerged') was explanatory commentary per the locked taxonomy — explains WHY S2 chalks the tape, does not bind execution."
+  }
+}

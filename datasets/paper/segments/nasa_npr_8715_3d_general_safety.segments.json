@@ -1,0 +1,248 @@
+{
+  "doc_id": "nasa_npr_8715_3d_general_safety",
+  "scheme": "dotted_numeric",
+  "n_chars": 94647,
+  "n_sections_detected": 73,
+  "candidates": [
+    {
+      "section": "2.5",
+      "title": "2.5 Core Requirements for System Safety Processes",
+      "char_start": 48250,
+      "char_end": 62353,
+      "line_start": 833,
+      "line_end": 1060,
+      "depth": 1,
+      "n_words": 2063,
+      "richness": {
+        "score": 0.82,
+        "est_steps": 20,
+        "n_step_lines": 20,
+        "n_imperatives": 64,
+        "n_modals": 20,
+        "n_parameters": 2,
+        "n_words": 2063
+      },
+      "recommended": true
+    },
+    {
+      "section": "9.4.2",
+      "title": "9.4.2 Center Directors, SMA Directors, COs, and COTRs shall ensure that contracts contain",
+      "char_start": 76860,
+      "char_end": 94647,
+      "line_start": 1312,
+      "line_end": 1616,
+      "depth": 2,
+      "n_words": 2540,
+      "richness": {
+        "score": 0.713,
+        "est_steps": 30,
+        "n_step_lines": 1,
+        "n_imperatives": 60,
+        "n_modals": 12,
+        "n_parameters": 5,
+        "n_words": 2540
+      },
+      "recommended": true
+    },
+    {
+      "section": "2.8.3",
+      "title": "2.8.3 The System Safety Manager shall:",
+      "char_start": 66274,
+      "char_end": 72426,
+      "line_start": 1124,
+      "line_end": 1245,
+      "depth": 2,
+      "n_words": 929,
+      "richness": {
+        "score": 0.71,
+        "est_steps": 20,
+        "n_step_lines": 2,
+        "n_imperatives": 41,
+        "n_modals": 4,
+        "n_parameters": 7,
+        "n_words": 929
+      },
+      "recommended": true
+    },
+    {
+      "section": "1.7",
+      "title": "1.7 Technical Safety Requirements for NASA-Unique Designs",
+      "char_start": 16904,
+      "char_end": 24119,
+      "line_start": 350,
+      "line_end": 450,
+      "depth": 1,
+      "n_words": 1037,
+      "richness": {
+        "score": 0.693,
+        "est_steps": 9,
+        "n_step_lines": 9,
+        "n_imperatives": 18,
+        "n_modals": 15,
+        "n_parameters": 0,
+        "n_words": 1037
+      },
+      "recommended": false
+    },
+    {
+      "section": "9.4",
+      "title": "9.4 Requirements",
+      "char_start": 2858,
+      "char_end": 10559,
+      "line_start": 77,
+      "line_end": 253,
+      "depth": 1,
+      "n_words": 1145,
+      "richness": {
+        "score": 0.58,
+        "est_steps": 3,
+        "n_step_lines": 3,
+        "n_imperatives": 30,
+        "n_modals": 7,
+        "n_parameters": 16,
+        "n_words": 1145
+      },
+      "recommended": false
+    },
+    {
+      "section": "1.7.2",
+      "title": "1.7.2 Reliability and Failure Tolerance",
+      "char_start": 18623,
+      "char_end": 22960,
+      "line_start": 378,
+      "line_end": 434,
+      "depth": 2,
+      "n_words": 628,
+      "richness": {
+        "score": 0.58,
+        "est_steps": 4,
+        "n_step_lines": 4,
+        "n_imperatives": 10,
+        "n_modals": 9,
+        "n_parameters": 0,
+        "n_words": 628
+      },
+      "recommended": false
+    },
+    {
+      "section": "1.14",
+      "title": "1.14 Hazardous Work Activities That Are Outside NASA Operational Control",
+      "char_start": 29203,
+      "char_end": 42289,
+      "line_start": 531,
+      "line_end": 716,
+      "depth": 1,
+      "n_words": 1971,
+      "richness": {
+        "score": 0.58,
+        "est_steps": 4,
+        "n_step_lines": 4,
+        "n_imperatives": 77,
+        "n_modals": 25,
+        "n_parameters": 3,
+        "n_words": 1971
+      },
+      "recommended": false
+    },
+    {
+      "section": "2.8",
+      "title": "2.8 Documentation",
+      "char_start": 65684,
+      "char_end": 72426,
+      "line_start": 1114,
+      "line_end": 1245,
+      "depth": 1,
+      "n_words": 1019,
+      "richness": {
+        "score": 0.58,
+        "est_steps": 5,
+        "n_step_lines": 5,
+        "n_imperatives": 44,
+        "n_modals": 6,
+        "n_parameters": 7,
+        "n_words": 1019
+      },
+      "recommended": false
+    },
+    {
+      "section": "9.4",
+      "title": "9.4 Requirements",
+      "char_start": 76594,
+      "char_end": 94647,
+      "line_start": 1308,
+      "line_end": 1616,
+      "depth": 1,
+      "n_words": 2574,
+      "richness": {
+        "score": 0.58,
+        "est_steps": 3,
+        "n_step_lines": 3,
+        "n_imperatives": 61,
+        "n_modals": 13,
+        "n_parameters": 5,
+        "n_words": 2574
+      },
+      "recommended": false
+    },
+    {
+      "section": "2.5.2",
+      "title": "2.5.2 System Safety Technical Plan (SSTP)",
+      "char_start": 50391,
+      "char_end": 54798,
+      "line_start": 870,
+      "line_end": 936,
+      "depth": 2,
+      "n_words": 655,
+      "richness": {
+        "score": 0.46,
+        "est_steps": 5,
+        "n_step_lines": 5,
+        "n_imperatives": 16,
+        "n_modals": 7,
+        "n_parameters": 0,
+        "n_words": 655
+      },
+      "recommended": false
+    },
+    {
+      "section": "9.3",
+      "title": "9.3 Authority and Responsibility",
+      "char_start": 73205,
+      "char_end": 76594,
+      "line_start": 1257,
+      "line_end": 1307,
+      "depth": 1,
+      "n_words": 497,
+      "richness": {
+        "score": 0.46,
+        "est_steps": 5,
+        "n_step_lines": 5,
+        "n_imperatives": 15,
+        "n_modals": 4,
+        "n_parameters": 3,
+        "n_words": 497
+      },
+      "recommended": false
+    },
+    {
+      "section": "1.7.1",
+      "title": "1.7.1 Risk Reduction Protocol",
+      "char_start": 16977,
+      "char_end": 18623,
+      "line_start": 352,
+      "line_end": 377,
+      "depth": 2,
+      "n_words": 235,
+      "richness": {
+        "score": 0.447,
+        "est_steps": 3,
+        "n_step_lines": 2,
+        "n_imperatives": 6,
+        "n_modals": 4,
+        "n_parameters": 0,
+        "n_words": 235
+      },
+      "recommended": false
+    }
+  ]
+}

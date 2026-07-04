@@ -1,0 +1,248 @@
+{
+  "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+  "scheme": "dotted_numeric",
+  "n_chars": 674764,
+  "n_sections_detected": 139,
+  "candidates": [
+    {
+      "section": "3.9.3",
+      "title": "3.9.3 Temperature 1, Temperature 2 and Delta Temperature",
+      "char_start": 88718,
+      "char_end": 110704,
+      "line_start": 2890,
+      "line_end": 3634,
+      "depth": 2,
+      "n_words": 3477,
+      "richness": {
+        "score": 1.0,
+        "est_steps": 22,
+        "n_step_lines": 22,
+        "n_imperatives": 58,
+        "n_modals": 30,
+        "n_parameters": 30,
+        "n_words": 3477
+      },
+      "recommended": true
+    },
+    {
+      "section": "5.13.2",
+      "title": "5.13.2 Sample Pump Diaphragm Removal Procedure",
+      "char_start": 446738,
+      "char_end": 483487,
+      "line_start": 14914,
+      "line_end": 16331,
+      "depth": 2,
+      "n_words": 5527,
+      "richness": {
+        "score": 1.0,
+        "est_steps": 31,
+        "n_step_lines": 31,
+        "n_imperatives": 136,
+        "n_modals": 32,
+        "n_parameters": 84,
+        "n_words": 5527
+      },
+      "recommended": true
+    },
+    {
+      "section": "7.13",
+      "title": "7.13 Leak Test (Manual Section 5-7)",
+      "char_start": 512529,
+      "char_end": 539665,
+      "line_start": 17212,
+      "line_end": 18031,
+      "depth": 1,
+      "n_words": 4274,
+      "richness": {
+        "score": 1.0,
+        "est_steps": 35,
+        "n_step_lines": 35,
+        "n_imperatives": 218,
+        "n_modals": 41,
+        "n_parameters": 52,
+        "n_words": 4274
+      },
+      "recommended": true
+    },
+    {
+      "section": "5.14",
+      "title": "5.14 Repair",
+      "char_start": 601180,
+      "char_end": 615580,
+      "line_start": 20013,
+      "line_end": 20562,
+      "depth": 1,
+      "n_words": 2305,
+      "richness": {
+        "score": 0.958,
+        "est_steps": 24,
+        "n_step_lines": 24,
+        "n_imperatives": 60,
+        "n_modals": 14,
+        "n_parameters": 29,
+        "n_words": 2305
+      },
+      "recommended": true
+    },
+    {
+      "section": "4.0",
+      "title": "4.0 MATERIALS AND SUPPLIES",
+      "char_start": 642507,
+      "char_end": 657422,
+      "line_start": 21531,
+      "line_end": 22132,
+      "depth": 1,
+      "n_words": 2376,
+      "richness": {
+        "score": 0.914,
+        "est_steps": 28,
+        "n_step_lines": 28,
+        "n_imperatives": 63,
+        "n_modals": 16,
+        "n_parameters": 28,
+        "n_words": 2376
+      },
+      "recommended": true
+    },
+    {
+      "section": "5.3.2",
+      "title": "5.3.2 Long-Term Storage:",
+      "char_start": 524572,
+      "char_end": 539665,
+      "line_start": 17519,
+      "line_end": 18031,
+      "depth": 2,
+      "n_words": 2342,
+      "richness": {
+        "score": 0.91,
+        "est_steps": 29,
+        "n_step_lines": 29,
+        "n_imperatives": 119,
+        "n_modals": 16,
+        "n_parameters": 29,
+        "n_words": 2342
+      },
+      "recommended": true
+    },
+    {
+      "section": "5.2.2",
+      "title": "5.2.2 Vaisala",
+      "char_start": 658863,
+      "char_end": 670683,
+      "line_start": 22181,
+      "line_end": 22475,
+      "depth": 2,
+      "n_words": 1955,
+      "richness": {
+        "score": 0.894,
+        "est_steps": 36,
+        "n_step_lines": 36,
+        "n_imperatives": 78,
+        "n_modals": 12,
+        "n_parameters": 41,
+        "n_words": 1955
+      },
+      "recommended": true
+    },
+    {
+      "section": "6.2.5",
+      "title": "6.2.5 Perform step 6.1.6",
+      "char_start": 136239,
+      "char_end": 148946,
+      "line_start": 4405,
+      "line_end": 4897,
+      "depth": 2,
+      "n_words": 2129,
+      "richness": {
+        "score": 0.811,
+        "est_steps": 19,
+        "n_step_lines": 19,
+        "n_imperatives": 47,
+        "n_modals": 11,
+        "n_parameters": 9,
+        "n_words": 2129
+      },
+      "recommended": true
+    },
+    {
+      "section": "6.3.4",
+      "title": "6.3.4 Test the O",
+      "char_start": 148946,
+      "char_end": 172685,
+      "line_start": 4898,
+      "line_end": 5587,
+      "depth": 2,
+      "n_words": 3826,
+      "richness": {
+        "score": 0.811,
+        "est_steps": 46,
+        "n_step_lines": 46,
+        "n_imperatives": 101,
+        "n_modals": 38,
+        "n_parameters": 52,
+        "n_words": 3826
+      },
+      "recommended": false
+    },
+    {
+      "section": "6.7.4",
+      "title": "6.7.4 Other Tests",
+      "char_start": 250622,
+      "char_end": 264614,
+      "line_start": 8391,
+      "line_end": 8962,
+      "depth": 2,
+      "n_words": 2320,
+      "richness": {
+        "score": 0.806,
+        "est_steps": 58,
+        "n_step_lines": 58,
+        "n_imperatives": 17,
+        "n_modals": 14,
+        "n_parameters": 98,
+        "n_words": 2320
+      },
+      "recommended": false
+    },
+    {
+      "section": "6.4.2.2",
+      "title": "6.4.2.2 To Remove Currently Sampling Filter Pack:",
+      "char_start": 422748,
+      "char_end": 437305,
+      "line_start": 14174,
+      "line_end": 14691,
+      "depth": 3,
+      "n_words": 2424,
+      "richness": {
+        "score": 0.772,
+        "est_steps": 36,
+        "n_step_lines": 36,
+        "n_imperatives": 85,
+        "n_modals": 17,
+        "n_parameters": 14,
+        "n_words": 2424
+      },
+      "recommended": true
+    },
+    {
+      "section": "6.4.2",
+      "title": "6.4.2 Field Site Operator Procedures",
+      "char_start": 422169,
+      "char_end": 437305,
+      "line_start": 14164,
+      "line_end": 14691,
+      "depth": 2,
+      "n_words": 2512,
+      "richness": {
+        "score": 0.763,
+        "est_steps": 38,
+        "n_step_lines": 38,
+        "n_imperatives": 88,
+        "n_modals": 17,
+        "n_parameters": 14,
+        "n_words": 2512
+      },
+      "recommended": true
+    }
+  ]
+}

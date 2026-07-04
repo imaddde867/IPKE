@@ -5,8 +5,8 @@ End-to-end procedure for an independent second-pass annotator producing IAA-elig
 ## What you are signing up for
 
 - **Per document**: ~3 hours of focused work, blind to the first-pass gold.
-- **Total commitment**: 2 documents minimum (for the paper's κ statistical power).
-- **Output**: 2 new JSON files in `datasets/paper/second_pass/<doc_id>.json`, committed via PR.
+- **Total commitment**: the IAA subset is **3 of the 8 documents** (≥30% of the corpus — see `datasets/paper/iaa_subset.json`). Two annotators splitting the subset, or one annotator taking all three, both satisfy the protocol.
+- **Output**: one JSON file per assigned doc in `datasets/paper/second_pass/<doc_id>.json`, committed via PR.
 - **Authorship**: ≥ 2 documents annotated qualifies for co-authorship on the ECIR 2027 Resource Paper. Single-document contributors are acknowledged.
 - **Deadline**: committed annotations by **2026-08-08** (allows time for IAA computation, baseline runs, and the ECIR abstract due 2026-10-12).
 
@@ -42,26 +42,44 @@ Read in this order:
 
 Do NOT yet open any file under `datasets/paper/gold/`.
 
+## Generate your scaffolds (one command)
+
+Instead of hand-creating each JSON, generate the blank scaffolds for the IAA subset:
+
+```bash
+uv run python scripts/setup_iaa_subset.py select    # writes datasets/paper/iaa_subset.json (the 3 ⭐ docs)
+uv run python scripts/setup_iaa_subset.py scaffold  # writes blank second_pass/<doc>.json + _source/<doc>.txt
+```
+
+For each subset document this creates:
+
+- `datasets/paper/second_pass/<doc_id>.json` — a **blank** scaffold carrying only `doc_id`, procedure title, and the exact source `char_start:char_end` span. It contains **no first-pass steps or constraints** — that is the anchoring-bias control. Fill in `steps[]`, `constraints[]`, `relations[]` yourself.
+- `datasets/paper/second_pass/_source/<doc_id>.txt` — the exact source span the first pass annotated. **Read this, not the gold.** It is the same text window, so your annotation and the first pass cover identical scope (a prerequisite for a meaningful F1/κ).
+
+Do not open `datasets/paper/gold/` at any point before you commit.
+
 ## Per-document workflow
 
 ### Step 1 — Pick a document
 
-Choose from the open assignments in the recruitment memo (`~/Documents/2ndBrain/Projects/IPKE Paper - Thesis to Congress/07-annotator-recruitment-memo.md`) or coordinate with Imad. The 8 available documents are:
+The IAA subset (the three documents that require a second pass) is written by `scripts/setup_iaa_subset.py select` to `datasets/paper/iaa_subset.json`. **⭐ marks the current subset.** The bounded scope below is the section each first-pass gold actually annotates under the locked `full_subprocedure` rule (`docs/annotation/guidelines.md`). All 8 documents are listed for reference; you only need the ⭐ rows unless coordinating extra coverage with Imad.
 
-| Document | Domain | First-pass annotator | Bounded scope |
+| Document | Domain | Bounded scope (locked) | IAA |
 |---|---|---|---|
-| `nasa_npr_8715_3d_general_safety` | Aerospace safety regulation | Imad | NPR 8715.3D §1.5.1–1.7.1.1, p. 8-10 |
-| `epa_guidance_preparing_sops_qag6` | SOP governance | Imad | EPA QA/G-6 §2.0 SOP Process |
-| `olsk_small_cnc_v1_workbook` | Mechanical assembly | Imad | OLSK Small CNC V1 §01.1–01.4 |
-| `epa_field_operations_manual_filter_sampling_sop` | Field sampling SOP | Imad | CASTNET §6.3.3–6.4.1 |
-| `epa_field_sampling_measurement_procedure_validation` | Procedure validation | Imad | EPA LSASD §3.2.1–5.1 |
-| `niosh_nmam_5th_edition_ebook` | Industrial hygiene chemistry | Imad | NIOSH NMAM Method 5022 SAMPLING + SAMPLE PREPARATION |
-| `usgs_groundwater_technical_procedures_tm1_a1` | Field measurement | Imad | USGS GWPD 1 Instructions 1-9 |
-| `usgs_nfm_collection_water_samples_a4` | Field sampling SOP | Imad | USGS NFM Chapter A4 EWI Step 1-2 |
+| `epa_field_operations_manual_filter_sampling_sop` | Field operations | §5.14 Repair | ⭐ |
+| `epa_field_sampling_measurement_procedure_validation` | Quality assurance | §3–5 General Information → Procedure Implementation (whole short doc) | ⭐ |
+| `nasa_npr_8715_3d_general_safety` | Safety requirements | §2.5.2 System Safety Technical Plan (SSTP) | ⭐ |
+| `epa_guidance_preparing_sops_qag6` | Quality assurance | §2.0 SOP Process (2.1–2.6) | |
+| `olsk_small_cnc_v1_workbook` | Mechanical assembly | §01.1–01.5 Electronic Box | |
+| `niosh_nmam_5th_edition_ebook` | Analytical chemistry | Method 2005 SAMPLING / SAMPLE PREPARATION / MEASUREMENT | |
+| `usgs_groundwater_technical_procedures_tm1_a1` | Hydrology | GWPD 1 (graduated steel-tape water level) | |
+| `usgs_nfm_collection_water_samples_a4` | Hydrology | Steps for the EWI sampling method | |
+
+> First-pass golds are model-assisted drafts adjudicated by an independent source-grounded critic pass (annotator field: `model-assisted:<model> + agent-adjudicated`), pending Imad's final sign-off. Your independent human pass is what turns the reported κ into a human–human agreement figure — do not treat the first pass as human-authored when reasoning about independence.
 
 ### Step 2 — Read source text
 
-Open the source extract in `datasets/paper/text/<doc_id>.txt`. Locate the bounded section listed in the table above. The first-pass annotation operates on exactly this section.
+Open `datasets/paper/second_pass/_source/<doc_id>.txt` (created by the `scaffold` command above). This is the exact bounded span the first pass annotated — no need to hunt for section boundaries in the full `datasets/paper/text/<doc_id>.txt`. The bounded section names are in the table above for orientation.
 
 You may also consult the original PDF via the `direct_url` recorded in `datasets/paper/public_sources_manifest.csv` for typographic clarity (table cells, etc.), but the `.txt` is authoritative — that's what the extractor sees.
 
@@ -146,7 +164,7 @@ Use the PR template (link the recruitment memo / Issue #60 / declare independenc
 
 Once the PR is merged, Imad will:
 
-1. Run `make eval-iaa` which computes step F1, constraint F1, and Cohen's κ between your pass and the first-pass gold.
+1. Run `python scripts/setup_iaa_subset.py report` (or `make iaa`), which scores only the completed subset docs and computes step F1, constraint F1, relation F1, and token-label Cohen's κ between your pass and the first-pass gold.
 2. Post the IAA result in the PR thread.
 3. If κ ≥ 0.61 — congratulations, your annotation enters the paper's IAA aggregate.
 4. If κ < 0.61 — open a discussion thread on the disagreements. **Do not** unilaterally update your pass to match gold; the protocol is to discuss and (if needed) update *both* the gold and your pass through a documented adjudication round.

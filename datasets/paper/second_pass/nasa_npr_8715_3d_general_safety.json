@@ -1,15 +1,15 @@
 {
   "procedure": {
-    "doc_id": "epa_field_sampling_measurement_procedure_validation",
-    "title": "Procedure Development, Validation, and Approval",
-    "version": "LSASDPROC-012-R6",
-    "domain": "quality_assurance",
+    "doc_id": "nasa_npr_8715_3d_general_safety",
+    "title": "2.5.2 System Safety Technical Plan (SSTP)",
+    "version": "NASA NPR 8715.3D",
+    "domain": "safety_requirements",
     "source": {
-      "doc_id": "epa_field_sampling_measurement_procedure_validation",
-      "section": "3-5 (General Information\u2013Procedure Implementation)",
+      "doc_id": "nasa_npr_8715_3d_general_safety",
+      "section": "2.5.2 (SSTP)",
       "page": null,
-      "char_start": 3072,
-      "char_end": 10737
+      "char_start": 50391,
+      "char_end": 54798
     }
   },
   "steps": [
@@ -23,8 +23,8 @@
       "constraints": [],
       "flags": {},
       "provenance": {
-        "doc_id": "epa_field_sampling_measurement_procedure_validation",
-        "section": "3-5 (General Information\u2013Procedure Implementation)"
+        "doc_id": "nasa_npr_8715_3d_general_safety",
+        "section": "2.5.2 (SSTP)"
       }
     }
   ],

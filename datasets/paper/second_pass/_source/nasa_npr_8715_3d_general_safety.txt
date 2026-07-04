@@ -1,0 +1,67 @@
+2.5.2 System Safety Technical Plan (SSTP)
+2.5.2.1 The SSTP is designed to be a technical planning guide for the technical
+performance and management of the system safety activities. The SSTP can be a
+stand-alone document, or part of the SMA plan or the Systems Engineering Management
+Plan (SEMP). It provides the specifics of the system safety modeling activities and
+describes what and how safety adverse consequences will be modeled, how system
+safety models (qualitative and probabilistic risk assessments) will be integrated and
+applied for risk-informed decision making and safety monitoring, how the technical
+team(s) responsible for generating and maintaining system safety models will interact
+with the system engineering organizations, the reporting protocol, and the cost and
+schedule associated with accomplishing system safety modeling activities in relation to
+the critical or key events during all phases of the life cycle.
+2.5.2.2 Project managers shall:
+a. Ensure, for Category I project/programs, that the SSTP is approved by the governing
+Program Management Council (PMC) and has concurrence by the cognizant SMA
+managers and the project's senior engineer.
+b. Ensure that the System Safety Manager and the prime contractor (for out-of-house
+projects) have the resources to implement the SSTP.
+c. Ensure, for Category I project/programs, that changes to the SSTP are approved by the
+governing PMC and have concurrence by the Chief, Safety and Mission Assurance.
+d. When the SSTP is not an integral part of the SEMP, ensure the SSTP is coordinated
+with the SEMP for the integration of system safety activities with other system
+engineering technical processes.
+2.5.2.3 The Center SMA Director shall:
+a. In coordination with the program/project manager, assign a System Safety Manager to
+have specific responsibility for the development and implementation of the SSTP.
+b. Ensure that the assigned System Safety Manager has demonstrated expertise in safety
+analysis including, in the case of Category I and II projects, the application of
+probabilistic risk assessment techniques.
+c. Ensure that all personnel with project safety oversight responsibilities are funded by
+other than direct project funding sources.
+2.5.2.4 The assigned System Safety Manager shall:
+a. Develop a SSTP during the project formulation phase and update the plan throughout
+the system life cycle.
+b. Ensure that the scope of system safety technical processes in the SSTP follows the
+graded approach specified in Tables 2.1 and 2.2.
+c. Ensure that the SSTP provides the specifics of the system safety modeling activities
+and their application to risk-informed decision making and safety monitoring throughout
+the project life cycle.
+NPR 8715.3D -- Chapter2
+This document does not bind the public, except as authorized by law or as
+incorporated into a contract. This document is uncontrolled when printed. Check
+the NASA Online Directives Information System (NODIS) Library to verify that
+this is the correct version before use: https://nodis3.gsfc.nasa.gov.
+Page 23 of 47
+NPR 8715.3D -- Chapter2
+Page 23 of 47
+
+d. In consultation with the project managers, establish and document in the SSTP the
+objectives and scope of the system safety tasks and define applicable safety deliverables
+and performance measures.
+e. Provide technical direction and manage implementation of system safety activities as
+specified in the SSTP.
+f. Ensure that system safety engineering activities are integrated into system engineering
+technical processes.
+g. Determine the acceptability of residual risk stemming from safety assessments.
+h. Ensure that specific safety requirements are integrated into overall programmatic
+requirements and are reflected in applicable program and planning documents including
+the statement of work for contractor designs.
+i. Maintain appropriate safety participation in the program design, tests, operations,
+failures and mishaps, and contractor system safety activities at a level consistent with
+mishap potential for the life of the program.
+j. Establish an independent safety reporting channel to keep the Center SMA Director
+apprised of the system safety status (including tests and operations), particularly
+regarding problem areas that may require assistance from the Center, the NASA
+Engineering and Safety Center, or Headquarters.
+k. Support OSMA requirements for audits, assessments, and reviews.

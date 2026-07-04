@@ -1,0 +1,248 @@
+{
+  "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+  "scheme": "flat_numbered",
+  "n_chars": 372431,
+  "n_sections_detected": 497,
+  "candidates": [
+    {
+      "section": "16",
+      "title": "16 Key for well access",
+      "char_start": 36139,
+      "char_end": 61054,
+      "line_start": 910,
+      "line_end": 3378,
+      "depth": 1,
+      "n_words": 4217,
+      "richness": {
+        "score": 0.779,
+        "est_steps": 39,
+        "n_step_lines": 1,
+        "n_imperatives": 78,
+        "n_modals": 5,
+        "n_parameters": 30,
+        "n_words": 4217
+      },
+      "recommended": true
+    },
+    {
+      "section": "8",
+      "title": "8 After completing the well-depth measurement, disinfect",
+      "char_start": 239326,
+      "char_end": 261405,
+      "line_start": 19061,
+      "line_end": 21452,
+      "depth": 1,
+      "n_words": 3779,
+      "richness": {
+        "score": 0.779,
+        "est_steps": 38,
+        "n_step_lines": 1,
+        "n_imperatives": 75,
+        "n_modals": 5,
+        "n_parameters": 29,
+        "n_words": 3779
+      },
+      "recommended": true
+    },
+    {
+      "section": "8",
+      "title": "8 Record estimated discharge in the field notebook and in",
+      "char_start": 204793,
+      "char_end": 236137,
+      "line_start": 14726,
+      "line_end": 18980,
+      "depth": 1,
+      "n_words": 5791,
+      "richness": {
+        "score": 0.778,
+        "est_steps": 37,
+        "n_step_lines": 1,
+        "n_imperatives": 74,
+        "n_modals": 4,
+        "n_parameters": 29,
+        "n_words": 5791
+      },
+      "recommended": true
+    },
+    {
+      "section": "3",
+      "title": "3 Estimate well discharge from the discharge curves shown",
+      "char_start": 145388,
+      "char_end": 168054,
+      "line_start": 9478,
+      "line_end": 11908,
+      "depth": 1,
+      "n_words": 3907,
+      "richness": {
+        "score": 0.774,
+        "est_steps": 38,
+        "n_step_lines": 1,
+        "n_imperatives": 75,
+        "n_modals": 4,
+        "n_parameters": 29,
+        "n_words": 3907
+      },
+      "recommended": true
+    },
+    {
+      "section": "2",
+      "title": "2 Make two sketch maps of the site, one showing the",
+      "char_start": 113733,
+      "char_end": 136584,
+      "line_start": 6667,
+      "line_end": 9132,
+      "depth": 1,
+      "n_words": 3948,
+      "richness": {
+        "score": 0.768,
+        "est_steps": 38,
+        "n_step_lines": 1,
+        "n_imperatives": 75,
+        "n_modals": 5,
+        "n_parameters": 27,
+        "n_words": 3948
+      },
+      "recommended": true
+    },
+    {
+      "section": "6",
+      "title": "6 Record estimated discharge in the field notebook and in",
+      "char_start": 171449,
+      "char_end": 194647,
+      "line_start": 11983,
+      "line_end": 14476,
+      "depth": 1,
+      "n_words": 4021,
+      "richness": {
+        "score": 0.768,
+        "est_steps": 37,
+        "n_step_lines": 1,
+        "n_imperatives": 74,
+        "n_modals": 4,
+        "n_parameters": 27,
+        "n_words": 4021
+      },
+      "recommended": true
+    },
+    {
+      "section": "7",
+      "title": "7 (approximate frequency of aircraft flights along lines of sight for temperature and",
+      "char_start": 314743,
+      "char_end": 337756,
+      "line_start": 23412,
+      "line_end": 25830,
+      "depth": 1,
+      "n_words": 3902,
+      "richness": {
+        "score": 0.768,
+        "est_steps": 38,
+        "n_step_lines": 1,
+        "n_imperatives": 77,
+        "n_modals": 4,
+        "n_parameters": 28,
+        "n_words": 3902
+      },
+      "recommended": true
+    },
+    {
+      "section": "3",
+      "title": "3 RMs: Record a description of the site RMs in the field",
+      "char_start": 75984,
+      "char_end": 97862,
+      "line_start": 3748,
+      "line_end": 6138,
+      "depth": 1,
+      "n_words": 3751,
+      "richness": {
+        "score": 0.737,
+        "est_steps": 38,
+        "n_step_lines": 1,
+        "n_imperatives": 75,
+        "n_modals": 2,
+        "n_parameters": 24,
+        "n_words": 3751
+      },
+      "recommended": true
+    },
+    {
+      "section": "2",
+      "title": "2 High-pressure head measurement (indirect measurement)",
+      "char_start": 266754,
+      "char_end": 274650,
+      "line_start": 21571,
+      "line_end": 22075,
+      "depth": 1,
+      "n_words": 1258,
+      "richness": {
+        "score": 0.71,
+        "est_steps": 20,
+        "n_step_lines": 1,
+        "n_imperatives": 40,
+        "n_modals": 8,
+        "n_parameters": 3,
+        "n_words": 1258
+      },
+      "recommended": true
+    },
+    {
+      "section": "3",
+      "title": "3 Water-level measurement field form for air line measurement using",
+      "char_start": 10155,
+      "char_end": 12390,
+      "line_start": 168,
+      "line_end": 216,
+      "depth": 1,
+      "n_words": 189,
+      "richness": {
+        "score": 0.653,
+        "est_steps": 19,
+        "n_step_lines": 19,
+        "n_imperatives": 3,
+        "n_modals": 0,
+        "n_parameters": 5,
+        "n_words": 189
+      },
+      "recommended": true
+    },
+    {
+      "section": "2",
+      "title": "2 Volume of water required to raise the water level a prescribed distance",
+      "char_start": 12390,
+      "char_end": 23261,
+      "line_start": 217,
+      "line_end": 482,
+      "depth": 1,
+      "n_words": 1613,
+      "richness": {
+        "score": 0.58,
+        "est_steps": 7,
+        "n_step_lines": 1,
+        "n_imperatives": 14,
+        "n_modals": 23,
+        "n_parameters": 7,
+        "n_words": 1613
+      },
+      "recommended": false
+    },
+    {
+      "section": "4",
+      "title": "4 Determine the measuring point correction length fol\u00ad",
+      "char_start": 71043,
+      "char_end": 73548,
+      "line_start": 3626,
+      "line_end": 3696,
+      "depth": 1,
+      "n_words": 440,
+      "richness": {
+        "score": 0.58,
+        "est_steps": 3,
+        "n_step_lines": 2,
+        "n_imperatives": 6,
+        "n_modals": 7,
+        "n_parameters": 0,
+        "n_words": 440
+      },
+      "recommended": false
+    }
+  ]
+}

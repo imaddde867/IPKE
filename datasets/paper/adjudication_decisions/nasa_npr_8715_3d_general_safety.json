@@ -1,0 +1,40 @@
+{
+  "doc_id": "nasa_npr_8715_3d_general_safety",
+  "annotator": "model-assisted:claude-opus-4-8 + agent-adjudicated",
+  "review_date": "2026-07-05",
+  "decisions": [
+    {
+      "kind": "constraint",
+      "id": "C2",
+      "action": "edit",
+      "edits": {
+        "type": "reference"
+      },
+      "note": "C2 describes what the SSTP can be (a parameter of its nature), not a constraint on S13's execution. This is background/definitional, not prescriptive."
+    },
+    {
+      "kind": "constraint",
+      "id": "C4",
+      "action": "edit",
+      "edits": {
+        "type": "reference"
+      },
+      "note": "C4 is a reference/definition of what the SSTP describes, not a precondition or parameter constraining execution of S13/S14."
+    },
+    {
+      "kind": "constraint",
+      "id": "C18",
+      "action": "reject",
+      "note": "C18 duplicates C3 (same text about SSTP specifics and their application to risk-informed decision making and safety monitoring). Redundant constraint."
+    },
+    {
+      "kind": "constraint",
+      "id": "C28",
+      "action": "edit",
+      "edits": {
+        "type": "postcondition"
+      },
+      "note": "C28 describes a postcondition\u2014safety participation must be maintained at the required level\u2014not a parameter defining what participation looks like."
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "doc_id": "olsk_small_cnc_v1_workbook",
+  "annotator": "model-assisted:claude-opus-4-8 + agent-adjudicated",
+  "review_date": "2026-07-05",
+  "decisions": [
+    {
+      "kind": "step",
+      "id": "S1",
+      "action": "reject",
+      "note": "Source text lists Profile 20-400 as a complete part (quantity 1), not to be cut. No cutting operation appears in the source."
+    },
+    {
+      "kind": "step",
+      "id": "S15",
+      "action": "reject",
+      "note": "Source text lists Profile 20-150 as a complete part (quantity 4), not to be cut. No cutting operation appears in the source."
+    },
+    {
+      "kind": "constraint",
+      "id": "C7",
+      "action": "edit",
+      "edits": {
+        "enforcement": "should"
+      },
+      "note": "Source says 'Attach brackets first to the vertical profiles, then to the top and bottom' as a remark/instruction, not a mandatory constraint. Enforcement should be 'should', not 'must'."
+    },
+    {
+      "kind": "constraint",
+      "id": "C8",
+      "action": "edit",
+      "edits": {
+        "enforcement": "must"
+      },
+      "note": "Source states 'The final tightening of the screws should be all together at the end' as a directive in the remarks section. This is a postcondition that must occur, not merely should occur."
+    },
+    {
+      "kind": "constraint",
+      "id": "C1",
+      "action": "reject",
+      "note": "orphaned: parent step S1 rejected (Profile 20-400 is a complete part, not a cut step)"
+    }
+  ]
+}

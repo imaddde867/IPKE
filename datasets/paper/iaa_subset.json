@@ -1,0 +1,15 @@
+{
+  "frac_required": 0.3,
+  "n_total": 8,
+  "n_subset": 3,
+  "subset": [
+    "epa_field_operations_manual_filter_sampling_sop",
+    "epa_field_sampling_measurement_procedure_validation",
+    "nasa_npr_8715_3d_general_safety"
+  ],
+  "domains": {
+    "epa_field_operations_manual_filter_sampling_sop": "field_operations",
+    "epa_field_sampling_measurement_procedure_validation": "quality_assurance",
+    "nasa_npr_8715_3d_general_safety": "safety_requirements"
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "doc_id": "usgs_nfm_collection_water_samples_a4",
+  "annotator": "model-assisted:claude-opus-4-8 + agent-adjudicated",
+  "review_date": "2026-07-05",
+  "decisions": [
+    {
+      "kind": "constraint",
+      "id": "C6",
+      "action": "edit",
+      "edits": {
+        "enforcement": "should"
+      },
+      "note": "Source says 'Collect samples for microbiological analyses using equipment and techniques described in NFM 7' as guidance; text does not mandate microbiological sampling in the EWI procedure itself."
+    },
+    {
+      "kind": "constraint",
+      "id": "C31",
+      "action": "edit",
+      "edits": {
+        "enforcement": "should"
+      },
+      "note": "Source says 'Use CH/DH techniques, as required' \u2014 conditional on whether they are required, not unconditional mandate."
+    },
+    {
+      "kind": "constraint",
+      "id": "C40",
+      "action": "reject",
+      "note": "Duplicate of C37 with identical intent; C40 is a redundant reference constraint."
+    },
+    {
+      "kind": "constraint",
+      "id": "C42",
+      "action": "reject",
+      "note": "References NFM 7 for biological indicators; source text does not attach biological indicators to Step 7 (equipment selection). Step 1 preparation mentions NFM 7 only for microbiological sampling technique, not as a general reference for Step 7."
+    }
+  ]
+}

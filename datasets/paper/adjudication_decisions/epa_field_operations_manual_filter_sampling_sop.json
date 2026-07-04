@@ -1,0 +1,40 @@
+{
+  "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+  "annotator": "model-assisted:claude-opus-4-8 + agent-adjudicated",
+  "review_date": "2026-07-05",
+  "decisions": [
+    {
+      "kind": "constraint",
+      "id": "C2",
+      "action": "edit",
+      "edits": {
+        "type": "guard"
+      },
+      "note": "C2 describes a conditional flow range for a specific use case ('For MFCs to be used at 1.5 Lpm'), not a mandatory parameter for all calibrations. Type should be guard, not parameter."
+    },
+    {
+      "kind": "constraint",
+      "id": "C4",
+      "action": "edit",
+      "edits": {
+        "type": "postcondition",
+        "attached_to": [
+          "S11"
+        ]
+      },
+      "note": "Recording happens at each level (S8\u2013S10), but the data entry onto the form occurs in S11, so postcondition should attach to S11, not the recording steps."
+    },
+    {
+      "kind": "constraint",
+      "id": "C7",
+      "action": "edit",
+      "edits": {
+        "type": "postcondition",
+        "attached_to": [
+          "S14"
+        ]
+      },
+      "note": "C7 describes the target outcome of S14 (adjust to achieve 1.50 or 3.00), not a parameter input to the step. Type should be postcondition."
+    }
+  ]
+}
