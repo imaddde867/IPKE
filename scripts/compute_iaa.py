@@ -11,6 +11,8 @@ from collections import Counter
 from pathlib import Path
 from typing import Any
 
+from src.benchmark.taxonomy import LOCKED_CONSTRAINT_TYPES, LOCKED_ENFORCEMENT_LEVELS
+
 
 TOKEN_RE = re.compile(r"\b\w+\b")
 
@@ -132,6 +134,56 @@ def relation_set(annotation: dict[str, Any]) -> set[tuple[str, str]]:
     return relations
 
 
+def _quality_issues(annotation: dict[str, Any], role: str) -> list[str]:
+    quality = annotation.get("quality", {})
+    issues: list[str] = []
+    if quality.get("review_status") != "reviewed":
+        issues.append(
+            f"{role} quality.review_status must be 'reviewed' "
+            f"(got {quality.get('review_status')!r})"
+        )
+    if not quality.get("annotator"):
+        issues.append(f"{role} quality.annotator missing")
+    if not quality.get("review_date"):
+        issues.append(f"{role} quality.review_date missing")
+    return issues
+
+
+def validate_iaa_pair(
+    reference: dict[str, Any], predicted: dict[str, Any], filename: str
+) -> list[str]:
+    issues: list[str] = []
+    issues.extend(_quality_issues(reference, "gold"))
+    issues.extend(_quality_issues(predicted, "second"))
+
+    gold_annotator = reference.get("quality", {}).get("annotator")
+    second_annotator = predicted.get("quality", {}).get("annotator")
+    if gold_annotator and second_annotator and gold_annotator == second_annotator:
+        issues.append(f"{filename}: annotator must differ for independent IAA")
+
+    for role, annotation in (("gold", reference), ("second", predicted)):
+        for constraint, _step_id in _iter_constraint_dicts(annotation):
+            cid = constraint.get("id", "?")
+            ctype = constraint.get("type")
+            if ctype not in LOCKED_CONSTRAINT_TYPES:
+                issues.append(
+                    f"{filename}: {role} constraint {cid} type={ctype!r} "
+                    "not in locked vocabulary"
+                )
+            enforcement = constraint.get("enforcement")
+            if enforcement not in LOCKED_ENFORCEMENT_LEVELS:
+                issues.append(
+                    f"{filename}: {role} constraint {cid} "
+                    f"enforcement={enforcement!r} invalid"
+                )
+            refs: list[str] = []
+            for field in ("attached_to", "applies_to"):
+                refs.extend(_coerce_refs(constraint.get(field)))
+            if not refs:
+                issues.append(f"{filename}: {role} constraint {cid} missing attachment")
+    return issues
+
+
 def labeled_tokens(annotation: dict[str, Any]) -> Counter[tuple[str, str]]:
     counts: Counter[tuple[str, str]] = Counter()
     for text in step_set(annotation):
@@ -237,6 +289,10 @@ def compute_iaa(gold_dir: Path, second_dir: Path) -> dict[str, Any]:
         document_id = gold_path.stem
         reference = json.loads(gold_path.read_text(encoding="utf-8"))
         predicted = json.loads(second_path.read_text(encoding="utf-8"))
+        issues = validate_iaa_pair(reference, predicted, gold_path.name)
+        if issues:
+            message = "IAA eligibility failed:\n" + "\n".join(f"  - {issue}" for issue in issues)
+            raise SystemExit(message)
         metrics = compare_annotations(reference, predicted)
         # _pairs already included by compare_annotations; no recomputation needed
         documents[document_id] = metrics

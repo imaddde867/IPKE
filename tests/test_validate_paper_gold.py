@@ -132,6 +132,70 @@ def test_step_with_no_constraints_warns(tmp_path: Path) -> None:
     assert any("0 attached constraints" in m for m in msgs)
 
 
+def test_adjudicated_zero_constraint_step_does_not_warn(tmp_path: Path) -> None:
+    a = json.loads(json.dumps(VALID_ANNOTATION))
+    a["steps"][0]["constraints"] = []
+    a["quality"]["review_notes"] = (
+        "step:S1 zero_constraints adjudicated. S1 is a deliberate "
+        "single-action step with no source-level constraints in the bounded excerpt."
+    )
+    msgs = validate_file(_write(tmp_path, a))
+    assert not any("0 attached constraints" in m for m in msgs)
+
+
+def test_adjudicated_dense_step_does_not_warn(tmp_path: Path) -> None:
+    a = json.loads(json.dumps(VALID_ANNOTATION))
+    a["steps"][0]["constraints"] = [
+        {
+            "id": f"C{i}",
+            "type": "parameter",
+            "enforcement": "must",
+            "text": f"Parameter {i}",
+            "attached_to": ["S1"],
+        }
+        for i in range(11)
+    ]
+    a["quality"]["review_notes"] = (
+        "step:S1 too_many_constraints adjudicated. S1 retains 11 "
+        "constraints because the source presents the rules as one procedural step."
+    )
+    msgs = validate_file(_write(tmp_path, a))
+    assert not any("consider splitting step" in m for m in msgs)
+
+
+def test_adjudication_for_other_step_does_not_suppress(tmp_path: Path) -> None:
+    """Adjudication for S1 should NOT suppress warning for S2."""
+    a = json.loads(json.dumps(VALID_ANNOTATION))
+    a["steps"] = [
+        {"id": "S1", "label": "Step 1", "constraints": [{"id": "C1", "type": "guard", "enforcement": "must", "text": "Be careful", "attached_to": ["S1"]}]},
+        {"id": "S2", "label": "Step 2", "constraints": []},
+    ]
+    a["quality"]["review_notes"] = "step:S1 zero_constraints adjudicated"
+    msgs = validate_file(_write(tmp_path, a))
+    assert any("S2" in m and "0 attached constraints" in m for m in msgs)
+
+
+def test_adjudication_for_other_warning_kind_does_not_suppress(tmp_path: Path) -> None:
+    """Adjudicating 'too_many_constraints' for S1 should NOT suppress 'zero_constraints' for S1."""
+    a = json.loads(json.dumps(VALID_ANNOTATION))
+    a["steps"][0]["constraints"] = []
+    a["quality"]["review_notes"] = "step:S1 too_many_constraints adjudicated"
+    msgs = validate_file(_write(tmp_path, a))
+    assert any("0 attached constraints" in m for m in msgs)
+
+
+def test_adjudication_requires_exact_step_id(tmp_path: Path) -> None:
+    """A note containing S1 as a substring (e.g., 'S10') should NOT suppress S1."""
+    a = json.loads(json.dumps(VALID_ANNOTATION))
+    a["steps"] = [
+        {"id": "S1", "label": "Step 1", "constraints": []},
+        {"id": "S10", "label": "Step 10", "constraints": []},
+    ]
+    a["quality"]["review_notes"] = "step:S10 zero_constraints adjudicated"
+    msgs = validate_file(_write(tmp_path, a))
+    assert any("step:S1:" in m and "0 attached constraints" in m for m in msgs)
+
+
 def test_seed_corpus_passes(tmp_path: Path) -> None:
     """All 8 reviewed seed-corpus files in datasets/paper/gold must pass."""
     gold_dir = Path("datasets/paper/gold")

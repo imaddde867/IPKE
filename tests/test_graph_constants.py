@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from src.benchmark.taxonomy import LOCKED_CONSTRAINT_TYPES
 from src.graph.constants import (
     STEP_REF_KEYS,
     LOWER_REL_MAP,
@@ -34,8 +35,13 @@ class TestConstants:
         assert isinstance(ALLOWED_CONDITION_TYPES, set)
         assert "precondition" in ALLOWED_CONDITION_TYPES
         assert "postcondition" in ALLOWED_CONDITION_TYPES
-        assert "safety" in ALLOWED_CONDITION_TYPES
-        assert "exception" in ALLOWED_CONDITION_TYPES
+
+    def test_allowed_condition_types_match_benchmark_taxonomy(self):
+        assert ALLOWED_CONDITION_TYPES == LOCKED_CONSTRAINT_TYPES
+        assert "safety" not in ALLOWED_CONDITION_TYPES
+        assert "environment" not in ALLOWED_CONDITION_TYPES
+        assert "quality" not in ALLOWED_CONDITION_TYPES
+        assert "exception" not in ALLOWED_CONDITION_TYPES
 
 
 class TestNormalizeId:

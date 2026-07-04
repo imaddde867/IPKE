@@ -37,6 +37,6 @@ Every gold file must:
 1. Parse as valid JSON against `schemas/ipke_annotation.schema.json`.
 2. Contain `steps`, `constraints`, stable step IDs, stable constraint IDs.
 3. Have `quality.review_status = "reviewed"` for paper inclusion.
-4. Have `quality.token_label_kappa ≥ 0.61` if a second-pass pair exists.
+4. Pass the strict paper validator, including locked taxonomy, enforcement, attachment, and reviewed quality metadata.
 
-Run: `uv run python scripts/validate_gold.py datasets/paper/gold/`
+Run: `uv run python scripts/validate_paper_gold.py --gold-dir datasets/paper/gold --strict`

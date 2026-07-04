@@ -124,6 +124,7 @@ def run_evaluation(
     embedding_model: str = "all-mpnet-base-v2",
     device: Optional[str] = None,
     preserve_conflicts: bool = False,
+    strict_paper: bool = False,
 ) -> Dict[str, Optional[float]]:
     """Evaluate a single prediction/gold pair for the requested tiers."""
     gold_doc = load_json(Path(gold)) if isinstance(gold, (str, Path)) else gold
@@ -142,6 +143,7 @@ def run_evaluation(
             evaluator_emb,
             threshold,
             return_alignment_map="B" in tiers_upper,
+            strict_paper=strict_paper,
         )
         if isinstance(tier_a_result, tuple):
             tier_a_metrics, step_alignment_map = tier_a_result
@@ -183,6 +185,11 @@ def parse_args(argv: Optional[Sequence[str]] = None) -> argparse.Namespace:
         help="SentenceTransformer model to use for semantic alignment.",
     )
     parser.add_argument("--device", type=str, default=None, help="SentenceTransformer device override.")
+    parser.add_argument(
+        "--strict-paper",
+        action="store_true",
+        help="Reject non-IPKE-Bench constraint taxonomy/enforcement before scoring.",
+    )
     args = parser.parse_args(argv)
     if not args.run_dir and (args.gold_dir is None or args.pred_dir is None):
         parser.error("Provide --run-dir or both --gold_dir and --pred_dir.")
@@ -254,6 +261,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
             threshold=args.threshold,
             preprocessor=preprocessor,
             embedder=embedder,
+            strict_paper=args.strict_paper,
         )
         doc_results[doc_id] = metrics
 

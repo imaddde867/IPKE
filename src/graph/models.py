@@ -50,11 +50,11 @@ class Condition(BaseModel):
     type: Optional[Literal[
         "precondition",
         "postcondition",
-        "safety",
-        "environment",
-        "quality",
-        "exception",
-    ]] = "precondition"
+        "guard",
+        "parameter",
+        "role_assignment",
+        "reference",
+    ]] = "guard"
     expression: str = Field(..., description="Condition expression or clause")
     context: Optional[str] = None
 
@@ -122,4 +122,3 @@ class Graph(BaseModel):
             "parameters": len(self.parameters),
             "edges": len(self.edges),
         }
-
