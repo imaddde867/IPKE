@@ -18,6 +18,7 @@ Top-level entry point for **IPKE-Bench**, the constraint-aware benchmark for pro
 | Reproduce the §1 motivating result | `make eval-blindness` — runs `scripts/constraint_blindness_report.py` |
 | Build / extend the IPKE pipeline | `README.md` (the pipeline-side entry doc) |
 | Understand the domain vocabulary | `CONTEXT.md` |
+| Follow the current execution direction | `docs/paper/2026-07-04-execution-direction.md` |
 
 ## What makes IPKE-Bench different
 
@@ -54,7 +55,7 @@ Target additions for genre diversity (tracked in PRD):
 
 ## Quality gates
 
-A gold annotation is paper-grade if and only if `uv run python scripts/validate_paper_gold.py` returns no errors. Gates:
+A gold annotation is paper-grade if and only if `uv run python scripts/validate_paper_gold.py --strict` returns no errors. Gates:
 
 - `quality.review_status == "reviewed"`
 - `quality.annotator` and `quality.review_date` set
@@ -89,7 +90,8 @@ Pre-publication, cite the PRD and the GitHub repository. A formal BibTeX entry w
 | Independent annotator workflow | ✅ shipped (PR #85) |
 | Recruited independent annotators | 🟡 outreach pending |
 | Corpus expansion to 12 docs | 🟡 candidate sources identified |
-| D2 baseline sweep (4 configs × 5 seeds) | ⏳ gated on reviewed-gold completion |
+| D2 baseline sweep (4 configs × 5 seeds) | ⏳ open; first milestone is one real-model non-empty metrics row |
 | D3 constraint-aware retrieval task | ⏳ optional, post-D2 |
 
 See `docs/plans/2026-06-13-ipke-bench-taxonomy-and-review.md` for the sprint history that produced this state.
+See `docs/paper/2026-07-04-execution-direction.md` for the current issue order and active board state.

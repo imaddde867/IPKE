@@ -2,6 +2,8 @@
 
 Updated: 2026-06-13. Reframed per advisor review: the benchmark is the contribution; baselines, retrieval, and reproducibility infrastructure are *demonstration experiments* within the artifact, not parallel contributions. Constraint-blindness, measured directly on the seed corpus, is the §1 motivating result.
 
+Current execution direction: `docs/paper/2026-07-04-execution-direction.md`.
+
 ## Objective
 
 Release **IPKE-Bench**: a constraint-aware benchmark and evaluation package for procedural knowledge extraction from safety-critical industrial documents. Land at ECIR 2027 Resource Paper Track.
@@ -84,7 +86,7 @@ The artifact is the contribution. Order of cuts under time pressure: D3 → D2 �
 - **≥ 4 documents (≥ 30% of the 12-doc target) have independent second-pass annotation** by a human annotator blind to gold during their pass. LLM-drafted `second_pass/*.json` files (marked `review_status="llm_draft"`) do NOT count. **Open** — recruitment pending.
 - Every IAA pair has κ ≥ 0.61 (substantial, Landis & Koch). Target κ ≥ 0.70. **Open**.
 - Multi-seed (N=5) baseline sweep complete; CIs and bootstrap p-values reported. **Open** (D2 in §Demonstration experiments).
-- **Datasheet** (`docs/dataset/datasheet.md`, Gebru format) and annotation guidelines committed. ✅ done as of 2026-06-13 sprint.
+- **Datasheet** (`docs/dataset/datasheet.md`, Gebru format) and annotation guidelines committed. ✅ done as of 2026-06-13 sprint; final datasheet polish remains open for the 12-document corpus.
 - `make eval` regenerates every paper table on a fresh clone. ✅ wired for D1; D2/D3 wire-up follows their implementation.
 
 ### P1 — strongly recommended
@@ -126,8 +128,8 @@ The `bounded_excerpt` choice is justified by (a) controlling annotation cost for
    - **FDA Food Code** (food safety procedures, public domain, US FDA)
    - **NIST SP 800-61 Rev. 2** (computer security incident handling, US gov, public domain)
    - **Open-license OEM service manual** — candidate sources: John Deere Operator Manuals (some are open), iFixit guides (CC BY-NC-SA), or further OLSK kits (CC BY-SA).
-3. **Demonstration experiments (D2, D3) not started.** Gated on reviewed gold + recruited annotators; lower priority than the artifact itself.
-4. **Datasheet not drafted.**
+3. **Demonstration experiments (D2, D3) not started.** D2 is now the main compute blocker after D1 is pinned: first produce one real-model, non-empty metrics row, then scale to the full multi-seed grid.
+4. **Datasheet finalization.** The seed-corpus datasheet exists; update it when the corpus reaches 12 documents and per-document licensing is final.
 
 The taxonomy + guidelines + paper-grade validator + constraint-blindness report are now committed (PR #85). The κ-grade IAA blocker is the next critical-path item.
 
