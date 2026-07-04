@@ -45,10 +45,9 @@ vision or time-series pilots.
 |---|---|---|
 | #87 Expand corpus to 12 documents | ready-for-human | Needs genre diversity, not just count. |
 | #93 Track unmatched paper text status | ready-for-human | Resolve `niosh_nmam_surface_sampling_guidance` ambiguity. |
-| #98 Dataset datasheet | ready-for-human | Existing datasheet needs final license/status polish at 12 docs. |
+| #98 Finalize dataset datasheet | ready-for-human | Existing datasheet needs final license/status polish after #87. |
 | #66 Beta sensitivity for DSC | ready-for-agent | Run after DSC/DP setup is stable. |
 | #67 Phi weight sensitivity | ready-for-agent | Run from stored sweep outputs after #55. |
-| #95 Constraint-aware retrieval task | ready-for-agent | Optional D3, useful if D2 lands early. |
 | #96 PAGED metric comparison | ready-for-agent | One benchmark-map comparison row. |
 | #97 JSON-LD export | ready-for-agent | Reusability and ESWC/Semantic-Web angle. |
 
@@ -56,6 +55,7 @@ vision or time-series pilots.
 
 | Issue | Owner mode | Notes |
 |---|---|---|
+| #95 Optional D3 constraint-aware retrieval | ready-for-agent | Do only if D2 lands early; cut before D2 under time pressure. |
 | #99 Expert human study | ready-for-human | Nice-to-have, not a Resource Track blocker. |
 | #100 Finnish-language extension | ready-for-human | Only if suitable Finnish SOPs are cleared. |
 
@@ -85,4 +85,3 @@ vision or time-series pilots.
 
 Work on a branch. Do not work directly on `main`. Do not rewrite reviewed gold
 or report JSONs by hand. If a result is wrong, fix the script and regenerate it.
-
