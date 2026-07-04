@@ -20,15 +20,10 @@ import sys
 from collections.abc import Iterable
 from pathlib import Path
 
-LOCKED_TYPES = {
-    "precondition",
-    "postcondition",
-    "guard",
-    "parameter",
-    "role_assignment",
-    "reference",
-}
-LOCKED_ENFORCEMENT = {"must", "should", "may"}
+from src.benchmark.taxonomy import LOCKED_CONSTRAINT_TYPES, LOCKED_ENFORCEMENT_LEVELS
+
+LOCKED_TYPES = LOCKED_CONSTRAINT_TYPES
+LOCKED_ENFORCEMENT = LOCKED_ENFORCEMENT_LEVELS
 
 
 def iter_constraints(annotation: dict) -> Iterable[tuple[str, str, dict]]:
@@ -40,6 +35,11 @@ def iter_constraints(annotation: dict) -> Iterable[tuple[str, str, dict]]:
         yield "top", c.get("id", "?"), c
 
 
+def _adjudicates_warning(review_notes: str, step_id: str, warning_kind: str) -> bool:
+    marker = f"step:{step_id} {warning_kind} adjudicated"
+    return marker in review_notes
+
+
 def validate_file(path: Path) -> list[str]:
     errors: list[str] = []
     warnings: list[str] = []
@@ -49,6 +49,7 @@ def validate_file(path: Path) -> list[str]:
         return [f"JSON parse error: {e}"]
 
     quality = d.get("quality", {})
+    review_notes = str(quality.get("review_notes") or "")
     if quality.get("review_status") != "reviewed":
         errors.append(f"quality.review_status != 'reviewed' (got {quality.get('review_status')!r})")
     if not quality.get("annotator"):
@@ -102,15 +103,17 @@ def validate_file(path: Path) -> list[str]:
         procedure = step_procedure_counts.get(sid, 0)
         total = embedded + procedure
         if total == 0:
-            warnings.append(
-                f"step:{sid}: 0 attached constraints (embedded={embedded}, procedure-level={procedure}); "
-                "re-read source"
-            )
+            if not _adjudicates_warning(review_notes, sid, "zero_constraints"):
+                warnings.append(
+                    f"step:{sid}: 0 attached constraints (embedded={embedded}, procedure-level={procedure}); "
+                    "re-read source"
+                )
         elif total > 10:
-            warnings.append(
-                f"step:{sid}: {total} constraints (embedded={embedded}, procedure-level={procedure}); "
-                "consider splitting step"
-            )
+            if not _adjudicates_warning(review_notes, sid, "too_many_constraints"):
+                warnings.append(
+                    f"step:{sid}: {total} constraints (embedded={embedded}, procedure-level={procedure}); "
+                    "consider splitting step"
+                )
 
     return [f"ERROR: {e}" for e in errors] + [f"WARN: {w}" for w in warnings]
 

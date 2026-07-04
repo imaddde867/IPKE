@@ -137,7 +137,7 @@ Set the following fields in `quality` before considering the file done:
 - `review_status: "reviewed"`
 - `annotator: "<your-name>"`
 - `review_date: "<YYYY-MM-DD>"`
-- `review_notes: "<1-3 sentence summary of changes from draft, plus any ambiguity flags>"`
+- `review_notes: "<1-3 sentence summary of changes from draft, plus any ambiguity flags>"` — to adjudicate a strict-validator warning, embed the exact token `step:{id} {kind} adjudicated` (e.g. `step:S1 zero_constraints adjudicated`) in this field; one token per warning suppressed.
 
 ## Worked example
 

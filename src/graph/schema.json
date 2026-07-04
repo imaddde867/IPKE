@@ -70,10 +70,10 @@
             null,
             "precondition",
             "postcondition",
-            "safety",
-            "environment",
-            "quality",
-            "exception"
+            "guard",
+            "parameter",
+            "role_assignment",
+            "reference"
           ]
         },
         "expression": {"type": "string"},

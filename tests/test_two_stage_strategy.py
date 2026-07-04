@@ -44,6 +44,23 @@ class TestTwoStageStrategy:
         assert "attached_to" in template
         assert "step id" in template.lower()
 
+    def test_p3_stage2_template_mentions_locked_taxonomy(self, strategy):
+        """Verify Stage 2 prompt requests the locked IPKE-Bench constraint schema."""
+        template = strategy.stage2_template
+        for expected in [
+            "precondition",
+            "postcondition",
+            "guard",
+            "parameter",
+            "role_assignment",
+            "reference",
+            "enforcement",
+            "must",
+            "should",
+            "may",
+        ]:
+            assert expected in template
+
     def test_p3_extracts_steps_in_stage1(self, strategy):
         """Verify P3 can extract steps in Stage 1."""
         mock_backend = Mock()
@@ -130,6 +147,7 @@ class TestTwoStageStrategy:
                         "id": "C1",
                         "expression": "Guard for S1",
                         "type": "guard",
+                        "enforcement": "must",
                         "attached_to": ["S1"],
                         "confidence": 0.85
                     },
@@ -137,6 +155,7 @@ class TestTwoStageStrategy:
                         "id": "C2",
                         "expression": "Guard for S2",
                         "type": "guard",
+                        "enforcement": "must",
                         "attached_to": ["S2"],
                         "confidence": 0.85
                     }
@@ -170,6 +189,7 @@ class TestTwoStageStrategy:
                         "id": "C1",
                         "expression": "Valid constraint",
                         "type": "guard",
+                        "enforcement": "must",
                         "attached_to": ["S1"],
                         "confidence": 0.85
                     },
@@ -177,6 +197,7 @@ class TestTwoStageStrategy:
                         "id": "C2",
                         "expression": "Invalid constraint",
                         "type": "guard",
+                        "enforcement": "must",
                         "attached_to": ["S99"],
                         "confidence": 0.85
                     },
@@ -184,6 +205,7 @@ class TestTwoStageStrategy:
                         "id": "C3",
                         "expression": "Another invalid",
                         "type": "guard",
+                        "enforcement": "must",
                         "attached_to": ["S2", "S3"],
                         "confidence": 0.85
                     }
@@ -216,6 +238,7 @@ class TestTwoStageStrategy:
                         "id": "C1",
                         "expression": "Guard",
                         "type": "guard",
+                        "enforcement": "must",
                         "attached_to": ["S1"],
                         "confidence": 0.85
                     },
@@ -223,6 +246,7 @@ class TestTwoStageStrategy:
                         "id": "C2",
                         "expression": "No attachment",
                         "type": "guard",
+                        "enforcement": "must",
                         "confidence": 0.85
                     }
                 ],
@@ -234,6 +258,33 @@ class TestTwoStageStrategy:
 
         assert len(result.constraints) == 1
         assert result.constraints[0]["id"] == "C1"
+
+    def test_p3_filters_constraints_with_invalid_type(self, strategy):
+        """Verify P3 filters constraints outside the locked benchmark taxonomy."""
+        constraints = [
+            {
+                "id": "C1",
+                "expression": "Wear gloves",
+                "type": "warning",
+                "enforcement": "must",
+                "attached_to": ["S1"],
+            }
+        ]
+
+        assert strategy._validate_constraints(constraints, {"S1"}) == []
+
+    def test_p3_filters_constraints_without_enforcement(self, strategy):
+        """Verify P3 filters constraints missing locked enforcement metadata."""
+        constraints = [
+            {
+                "id": "C1",
+                "expression": "Wear gloves",
+                "type": "guard",
+                "attached_to": ["S1"],
+            }
+        ]
+
+        assert strategy._validate_constraints(constraints, {"S1"}) == []
 
     def test_p3_handles_empty_step_extraction(self, strategy):
         """Verify P3 handles gracefully when Stage 1 extracts no steps."""
@@ -269,6 +320,7 @@ class TestTwoStageStrategy:
                         "id": "C1",
                         "expression": "Guard",
                         "type": "guard",
+                        "enforcement": "must",
                         "attached_to": ["S1"],
                         "confidence": 0.85
                     }
@@ -332,6 +384,7 @@ class TestTwoStageStrategy:
                         "id": "C1",
                         "expression": "Before heating",
                         "type": "precondition",
+                        "enforcement": "must",
                         "attached_to": ["S1"],
                         "confidence": 0.88
                     },
@@ -339,6 +392,7 @@ class TestTwoStageStrategy:
                         "id": "C2",
                         "expression": "Temp < 100°C",
                         "type": "guard",
+                        "enforcement": "must",
                         "attached_to": ["S1"],
                         "confidence": 0.90
                     },
@@ -346,6 +400,7 @@ class TestTwoStageStrategy:
                         "id": "C3",
                         "expression": "Stir continuously",
                         "type": "parameter",
+                        "enforcement": "must",
                         "attached_to": ["S1"],
                         "confidence": 0.85
                     }
@@ -378,7 +433,8 @@ class TestTwoStageStrategy:
                     {
                         "id": "C1",
                         "expression": "Daily maintenance",
-                        "type": "schedule",
+                        "type": "guard",
+                        "enforcement": "must",
                         "attached_to": ["S1", "S2"],
                         "confidence": 0.90
                     }
@@ -410,6 +466,7 @@ class TestTwoStageStrategy:
                         "id": "C1",
                         "expression": "Mixed attachment",
                         "type": "guard",
+                        "enforcement": "must",
                         "attached_to": ["S1", "S99", "S2"],
                         "confidence": 0.85
                     }
@@ -441,6 +498,7 @@ class TestTwoStageStrategy:
                         "id": "C1",
                         "expression": "Guard",
                         "type": "guard",
+                        "enforcement": "must",
                         "attached_to": "S1",
                         "confidence": 0.85
                     }
@@ -482,8 +540,8 @@ class TestTwoStageStrategy:
             assert "</s>" in kwargs["stop"]
             assert "[/INST]" in kwargs["stop"]
 
-    def test_p3_backward_compatible_with_simple_constraints(self, strategy):
-        """Verify P3 handles simpler constraint formats."""
+    def test_p3_filters_simple_constraints_missing_schema_metadata(self, strategy):
+        """Verify P3 filters constraints that omit locked schema metadata."""
         mock_backend = Mock()
         mock_backend.generate.side_effect = [
             json.dumps({
@@ -508,7 +566,7 @@ class TestTwoStageStrategy:
 
         result = strategy.run(mock_backend, "text", "manual")
 
-        assert len(result.constraints) == 1
+        assert len(result.constraints) == 0
 
     def test_p3_stage1_template_format_compatible(self, strategy):
         """Verify Stage 1 template includes proper placeholders."""
@@ -541,6 +599,7 @@ class TestTwoStageStrategy:
                         "id": "C1",
                         "expression": "Guard",
                         "type": "guard",
+                        "enforcement": "must",
                         "attached_to": ["S1"],
                         "confidence": 0.85
                     },
@@ -548,6 +607,7 @@ class TestTwoStageStrategy:
                         "id": "C2",
                         "expression": "Temporal",
                         "type": "temporal",
+                        "enforcement": "must",
                         "attached_to": ["S1"],
                         "confidence": 0.87
                     }
@@ -558,8 +618,8 @@ class TestTwoStageStrategy:
 
         result = strategy.run(mock_backend, "text", "manual")
 
+        assert len(result.constraints) == 1
         assert result.constraints[0]["type"] == "guard"
-        assert result.constraints[1]["type"] == "temporal"
 
     def test_p3_empty_steps_in_stage2_response(self, strategy):
         """Verify P3 correctly ignores empty steps from Stage 2."""
@@ -580,6 +640,7 @@ class TestTwoStageStrategy:
                         "id": "C1",
                         "expression": "Guard",
                         "type": "guard",
+                        "enforcement": "must",
                         "attached_to": ["S1"],
                         "confidence": 0.85
                     }

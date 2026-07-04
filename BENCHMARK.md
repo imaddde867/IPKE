@@ -54,7 +54,7 @@ Target additions for genre diversity (tracked in PRD):
 
 ## Quality gates
 
-A gold annotation is paper-grade if and only if `uv run python scripts/validate_paper_gold.py` returns no errors. Gates:
+A gold annotation is paper-grade if and only if `uv run python scripts/validate_paper_gold.py --strict` returns no errors. Gates:
 
 - `quality.review_status == "reviewed"`
 - `quality.annotator` and `quality.review_date` set

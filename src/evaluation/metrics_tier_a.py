@@ -25,6 +25,7 @@ from src.evaluation.alignment import (
     align_by_text,
     alignment_to_id_map,
 )
+from src.benchmark.taxonomy import LOCKED_CONSTRAINT_TYPES, LOCKED_ENFORCEMENT_LEVELS
 
 
 NESTED_CONSTRAINT_KINDS = (
@@ -40,7 +41,7 @@ NESTED_CONSTRAINT_KINDS = (
 )
 
 
-def normalize_doc_constraints(doc: Dict[str, Any]) -> List[Dict[str, Any]]:
+def normalize_doc_constraints(doc: Dict[str, Any], *, strict_paper: bool = False) -> List[Dict[str, Any]]:
     """Return a flat list of constraints with at least one step link.
 
     Accepts three gold/pred shapes:
@@ -59,7 +60,10 @@ def normalize_doc_constraints(doc: Dict[str, Any]) -> List[Dict[str, Any]]:
     """
     top = doc.get("constraints")
     if isinstance(top, list) and top:
-        return list(top)
+        constraints = list(top)
+        if strict_paper:
+            _validate_paper_constraints(constraints)
+        return constraints
 
     flat: List[Dict[str, Any]] = []
     for step in doc.get("steps", []) or []:
@@ -102,7 +106,23 @@ def normalize_doc_constraints(doc: Dict[str, Any]) -> List[Dict[str, Any]]:
                     new_item = dict(item)
                     new_item.setdefault("type", kind)
                     flat.append(new_item)
+    if strict_paper:
+        _validate_paper_constraints(flat)
     return flat
+
+
+def _validate_paper_constraints(constraints: Sequence[Dict[str, Any]]) -> None:
+    for constraint in constraints:
+        cid = constraint.get("id", "?")
+        ctype = constraint.get("type")
+        if ctype not in LOCKED_CONSTRAINT_TYPES:
+            raise ValueError(f"constraint {cid}: type={ctype!r} not in locked vocabulary")
+        enforcement = constraint.get("enforcement")
+        if enforcement not in LOCKED_ENFORCEMENT_LEVELS:
+            raise ValueError(f"constraint {cid}: enforcement={enforcement!r} invalid")
+        links = collect_constraint_links(constraint)
+        if not links:
+            raise ValueError(f"constraint {cid}: missing attachment")
 
 
 def derive_sequence_adjacency(length: int) -> Set[Tuple[int, int]]:
@@ -255,6 +275,7 @@ def evaluate_tier_a_document(
     embedder: EmbeddingCache,
     threshold: float,
     return_alignment_map: bool = False,
+    strict_paper: bool = False,
 ) -> Union[Dict[str, Optional[float]], Tuple[Dict[str, Optional[float]], Dict[str, str]]]:
     gold_steps = gold_doc.get("steps", [])
     pred_steps = pred_doc.get("steps", [])
@@ -268,8 +289,8 @@ def evaluate_tier_a_document(
     metrics = compute_step_metrics(step_alignment, gold_adj, pred_adj, gold_order, pred_order)
 
     constraints_metrics = tier_a_constraints_metrics(
-        normalize_doc_constraints(gold_doc),
-        normalize_doc_constraints(pred_doc),
+        normalize_doc_constraints(gold_doc, strict_paper=strict_paper),
+        normalize_doc_constraints(pred_doc, strict_paper=strict_paper),
         preprocessor,
         embedder,
         threshold,

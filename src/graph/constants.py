@@ -14,6 +14,8 @@ from __future__ import annotations
 
 from typing import Any, Dict, List
 
+from src.benchmark.taxonomy import LOCKED_CONSTRAINT_TYPES
+
 
 STEP_REF_KEYS: tuple[str, ...] = (
     "step",
@@ -28,14 +30,7 @@ STEP_REF_KEYS: tuple[str, ...] = (
 )
 
 
-ALLOWED_CONDITION_TYPES: set[str] = {
-    "precondition",
-    "postcondition",
-    "safety",
-    "environment",
-    "quality",
-    "exception",
-}
+ALLOWED_CONDITION_TYPES: set[str] = set(LOCKED_CONSTRAINT_TYPES)
 
 
 LOWER_REL_MAP: dict[str, str] = {

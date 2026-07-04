@@ -1,8 +1,10 @@
 # Reproducibility
 
-This file documents how to regenerate every table in the paper from scratch on a fresh
-clone. It is a reviewer expectation at ECIR/ESWC and should be updated whenever the
-experimental setup changes.
+This file documents the current reproducibility path for the IPKE-Bench artifact.
+At the current 8-document seed-corpus stage, `make eval` regenerates the D1
+constraint-blindness reports and dry-runs the D2 sweep plan. Final ECIR table
+regeneration requires the open P0 gates: 12 reviewed documents, eligible independent
+second-pass annotations, and completed D2 model runs.
 
 ---
 
@@ -90,7 +92,7 @@ export LLM_MODEL_PATH=models/mistral-7b-instruct-v0.2.Q4_K_M.gguf
 
 ---
 
-## Step-by-step: regenerate all tables
+## Step-by-step: current seed-corpus reproducibility
 
 ### 1. Run default test suite
 
@@ -103,31 +105,25 @@ Expected: all non-integration tests pass. No GPU or model required.
 ### 2. Validate gold dataset
 
 ```bash
-uv run python -c "
-import json, jsonschema, glob
-schema = json.load(open('schemas/ipke_annotation.schema.json'))
-for f in glob.glob('datasets/paper/gold/*.json'):
-    jsonschema.validate(json.load(open(f)), schema)
-    print('PASS', f.split('/')[-1])
-"
+uv run python scripts/validate_paper_gold.py --gold-dir datasets/paper/gold --strict
 ```
 
-### 3. Reproduce IAA report (Table: annotator agreement)
+### 3. Check IAA eligibility
+
+The current `datasets/paper/second_pass` files are draft placeholders and are not
+eligible for reported IAA. The command below should fail closed until independent,
+reviewed second-pass annotations replace them.
 
 ```bash
 uv run python scripts/compute_iaa.py \
   --gold-dir datasets/paper/gold \
   --second-dir datasets/paper/second_pass \
   --out results/iaa_reproduced.json
-
-# Compare with committed report:
-diff <(python3 -c "import json; print(json.dumps(json.load(open('datasets/paper/reports/issue_53_iaa_report.json')), sort_keys=True, indent=2))") \
-     <(python3 -c "import json; print(json.dumps(json.load(open('results/iaa_reproduced.json')), sort_keys=True, indent=2))")
 ```
 
-Expected: identical output to `datasets/paper/reports/issue_53_iaa_report.json`.
+Expected today: non-zero exit with `IAA eligibility failed`.
 
-### 4. Run multi-seed extraction sweep (main results table)
+### 4. Run multi-seed extraction sweep (future main results table)
 
 Requires model file. Set `LLM_MODEL_PATH` before running.
 

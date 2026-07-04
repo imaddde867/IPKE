@@ -15,7 +15,7 @@ test:
 
 # Paper-grade validator: enforces locked taxonomy + IAA-ready metadata.
 eval-validate:
-	$(PYTHON) scripts/validate_paper_gold.py --gold-dir $(PAPER_GOLD)
+	$(PYTHON) scripts/validate_paper_gold.py --gold-dir $(PAPER_GOLD) --strict
 
 # Constraint-blindness baseline (D1 in PRD): regenerates the §1 motivating table.
 # Uses the Tier-A protocol matcher (SBERT cos >= 0.75) plus a loose-threshold
@@ -30,7 +30,7 @@ eval-blindness:
 		--out $(PAPER_REPORTS)/constraint_blindness_v2_sbert050.json
 
 # IAA: meaningful only once independent (non-llm_draft) second_pass files exist.
-eval-iaa:
+eval-iaa: eval-validate
 	$(PYTHON) scripts/compute_iaa.py \
 		--gold-dir $(PAPER_GOLD) \
 		--second-dir $(PAPER_SECOND) \
