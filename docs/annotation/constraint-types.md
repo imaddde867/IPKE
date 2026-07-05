@@ -66,11 +66,66 @@ This is the canonical migration table for the 8 reviewed gold files. Apply mecha
 
 ## Relationship to PAGED and Carriero & Celino
 
-PAGED operates on step-to-step edges (sequential / conditional / parallel / optional). IPKE-Bench's `precondition` overlaps PAGED's `sequential`; the rest of the taxonomy is orthogonal because PAGED does not encode constraint-on-step edges.
+**PAGED does encode constraint-to-action edges** — this must be stated
+accurately, because the differentiation is not "we have constraint edges and
+they don't." PAGED (Du et al., ACL 2024; 3,394 documents) represents two
+constraint element types — `DataConstraint` and `ActionConstraint` — and links
+them to actions via `Constraint Flow` edges (5,807 of them), using fixed
+relation templates such as *"For {Action}, pay attention to that
+{ActionConstraint}"* and *"{Action} require access to {DataConstraint}"*.
+
+IPKE-Bench differs on four axes that a reviewer can verify, none of which is
+"presence of constraint edges":
+
+1. **Semantic typing depth.** PAGED collapses all constraints into
+   data-vs-action (2 types). IPKE-Bench distinguishes six —
+   precondition, postcondition, guard, parameter, role_assignment,
+   reference — which separates, e.g., a *guard* ("do not proceed until
+   pressure < 5 bar") from a *parameter* ("torque to 12 N·m") that PAGED's
+   `ActionConstraint` would merge.
+
+2. **The enforcement (deontic) axis — PAGED has none.** IPKE-Bench scores an
+   orthogonal must / should / may grade drawn from the modal verbs of the
+   source ("shall" / "should" / "may"). In a regulated SOP this is the line
+   between a violation and a suggestion; no procedural-graph benchmark
+   currently measures it. This is the sharpest single point of novelty and
+   should be framed as co-headline with attachment, not a footnote.
+
+3. **Attachment scored by exact step-id F1, not text overlap.** PAGED evaluates
+   its textual elements (actor / action / constraint) with a BLEU-based
+   surface-form score. IPKE-Bench scores the *attachment edge itself* —
+   whether the constraint is bound to the correct step id — as strict + fuzzy
+   precision/recall. We measure the binding; PAGED measures the string.
+
+4. **Gold provenance and domain.** PAGED states expert annotation at its scale
+   is too costly and derives its gold from a pre-existing BPMN business-process
+   model collection (Dumas et al., 2018) plus WikiHow-trained segmentation and
+   hand-written templates — i.e. template-derived silver over business-process /
+   WikiHow-style text. IPKE-Bench is human-verified gold over real regulated
+   safety-critical SOPs (EPA / NASA / NIOSH / USGS). Small-and-verified is a
+   deliberate counterpart to large-and-templated, not a deficiency (see the
+   scale-asymmetry note in the datasheet).
+
+A finding *inside* PAGED supports the IPKE thesis directly: PAGED reports that
+LLMs reach state-of-the-art on extracting element *text* (actor/action/
+constraint) but stay below ~0.5 F1 on gateway/flow *structure* prediction.
+Extracting constraint text is easy; getting the logical binding right is where
+models fail — which is precisely the edge IPKE-Bench isolates and scores.
 
 Carriero & Celino 2024 extracts steps, actions, objects, equipment, and temporal information but does not represent guards, role assignments, or parameter constraints. IPKE-Bench's taxonomy is a strict superset of their schema with respect to constraint coverage.
 
 The taxonomy is therefore *additive* to the existing benchmark map and is the methodological contribution of the IPKE-Bench Resource Paper, alongside the dataset itself.
+
+### Capability comparison (drop-in for Related Work)
+
+| Axis | PAGED (ACL 2024) | Carriero & Celino 2024 | **IPKE-Bench** |
+|---|---|---|---|
+| Constraint types | 2 (data / action) | 0 (no constraint schema) | **6 typed** |
+| Enforcement (must/should/may) | ✗ | ✗ | **✓** |
+| Attachment metric | BLEU text overlap | — | **exact step-id F1 (strict + fuzzy)** |
+| Gold provenance | template-derived silver (BPMN + WikiHow) | expert (small) | **human-verified** |
+| Domain | business process / WikiHow | recipes / how-to | **regulated safety SOPs** |
+| Scale | 3,394 docs | small | 8 docs (diagnostic, verified) |
 
 ## Change log
 

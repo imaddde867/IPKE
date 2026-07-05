@@ -25,7 +25,7 @@ Fallback:
 
 ## Problem
 
-Existing procedural-knowledge benchmarks measure step coverage, ordering, and graph topology. None of them treat **constraint attachment** — the explicit edge that binds a guard, parameter, or precondition to the step it governs — as a primary evaluation target.
+Existing procedural-knowledge benchmarks measure step coverage, ordering, and graph topology. The nearest, PAGED (Du et al., ACL 2024), *does* link two coarse constraint types (data / action) to actions via constraint-flow edges — this must be acknowledged up front — but it scores those elements by BLEU text overlap, uses template-derived silver labels over business-process/WikiHow text, and has no enforcement dimension. No benchmark treats **typed, deontically-graded (must/should/may) constraint attachment** — the explicit edge that binds a *guard*, *parameter*, or *precondition* to the step it governs, scored by exact step-id F1 on human-verified regulated SOPs — as a primary evaluation target. That specific bundle, not "constraint edges" in general, is the gap. (Axis-by-axis comparison: `docs/annotation/constraint-types.md`.)
 
 Without that edge:
 
@@ -101,6 +101,7 @@ The artifact is the contribution. Order of cuts under time pressure: D3 → D2 �
 
 - Expert human study (Spearman ρ between Φ and trust ratings, n≈3 raters, 40-60 extractions).
 - Finnish-language extension if CoRe partner provides SOPs.
+- Per-constraint verbatim `source_span` + a **grounding** sub-metric (does the extracted constraint's span overlap gold?). Hallucination guard beyond the existing near-verbatim wording rule; a third scored axis beside type and attachment. Decide at camera-ready whether it lands here or in the follow-up method paper. See `docs/paper/related-work.md` §4.
 
 ## Annotation methodology (locked)
 
@@ -143,6 +144,7 @@ See `2ndBrain/Projects/IPKE Paper - Thesis to Congress/05-timeline.md` for the 6
 - ECIR 2027 dates: https://www.ecir2027.co.uk/
 - Constraint taxonomy: `docs/annotation/constraint-types.md`
 - Annotation guidelines: `docs/annotation/guidelines.md`
+- Related-work positioning (PAGED differentiation, RE/deontic bridge, scale-asymmetry framing): `docs/paper/related-work.md`
 - Constraint-blindness reports: `datasets/paper/reports/constraint_blindness_v2_sbert075.json` (Tier-A protocol matcher) and `datasets/paper/reports/constraint_blindness_v2_sbert050.json` (loose threshold sensitivity)
 - Domain glossary: `CONTEXT.md`
 - Reproducibility: `REPRODUCIBILITY.md`

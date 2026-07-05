@@ -29,13 +29,18 @@ the field measure it.
 A contribution reaches the top tier when it is **necessary, not merely novel.**
 Test the idea against that bar:
 
-- **It names a real gap, not a marginal one.** PAGED, CAMB, KEO and the broader
-  procedural-IE line measure step coverage and graph topology. The clause that
-  makes a procedure *safe* — "*do not* open the valve *until* pressure < 5 bar",
-  "the operator *must* wear a respirator *before* sampling" — is exactly the part
-  they leave unscored. In safety-critical industrial procedures that omission is
-  not cosmetic; it is the difference between a procedure a system can follow and
-  one it can only paraphrase.
+- **It names a real gap, not a marginal one.** The nearest benchmark, PAGED
+  (ACL 2024), *does* link constraints to actions — so the honest gap is not
+  "no one attaches constraints." It is that PAGED uses two coarse constraint
+  types, template-derived silver labels over business-process/WikiHow text, a
+  BLEU text-overlap score, and **no enforcement dimension at all**. The clause
+  that makes a procedure *safe* — "*do not* open the valve *until* pressure < 5
+  bar" (a guard), "the operator *must* wear a respirator *before* sampling" (a
+  must-graded precondition) — depends on a typed, deontically-graded, step-bound
+  edge that no benchmark currently scores. Our whitespace is the *bundle*:
+  six-way typing + must/should/may enforcement + exact step-id attachment F1 +
+  human-verified regulated SOPs. State it as that bundle, never as "first to
+  attach constraints" — the latter is false and a reviewer will know it.
 - **It is measurable.** Constraint attachment reduces to typed, enforcement-
   graded, step-anchored edges — a structure that admits precision/recall, fuzzy
   semantic alignment, and inter-annotator agreement. A gap you can define but not
