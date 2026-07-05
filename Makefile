@@ -22,25 +22,24 @@ eval-validate:
 # Constraint-blindness baseline (D1 in PRD): regenerates the §1 motivating table.
 # Uses the Tier-A protocol matcher (SBERT cos >= 0.75) plus a loose-threshold
 # sensitivity run at 0.50.
+#
+# NOTE (2026-07): the --expect-* reproducibility pins were retired here. They
+# encoded the *thin-gold* numbers (reviewed_total 117, expansion 3.66x); after
+# the deep re-annotation the golds are 5.9x deeper (reviewed_total 199), so the
+# fixed D1 draft (generated at the old scope) vs the new deep golds is now a
+# CROSS-REGIME comparison. The ratio is arithmetically real but not an
+# apples-to-apples claim yet -- see docs/paper/D1_SCOPE_DECISION.md. This target
+# now REGENERATES + prints for inspection; it is no longer a pass/fail gate.
+# Re-pin via `make repro-blindness` once the D1 scope decision is locked.
 eval-blindness:
 	mkdir -p $(PAPER_REPORTS)
 	$(PYTHON) scripts/constraint_blindness_report.py \
 		--draft-ref $(D1_DRAFT_REF) \
 		--matcher semantic --threshold 0.75 \
-		--expect-draft-total 32 \
-		--expect-reviewed-total 117 \
-		--expect-recovered 24 \
-		--expect-recall 0.2051 \
-		--expect-expansion 3.6562 \
 		--out $(PAPER_REPORTS)/constraint_blindness_v2_sbert075.json
 	$(PYTHON) scripts/constraint_blindness_report.py \
 		--draft-ref $(D1_DRAFT_REF) \
 		--matcher semantic --threshold 0.50 \
-		--expect-draft-total 32 \
-		--expect-reviewed-total 117 \
-		--expect-recovered 72 \
-		--expect-recall 0.6154 \
-		--expect-expansion 3.6562 \
 		--out $(PAPER_REPORTS)/constraint_blindness_v2_sbert050.json
 
 # IAA: meaningful only once independent (non-llm_draft) second_pass files exist.
