@@ -33,11 +33,18 @@ Without that edge:
 - A retrieval system over an extracted PKG cannot answer "what must hold before step X" without an explicit attached_to / applies_to edge.
 - An LLM-drafted gold (or extractor output) can score well on step F1 while completely missing the safety scaffolding around the procedural backbone.
 
-The seed corpus already exhibits the phenomenon. The headline finding is matcher-independent: **LLM-drafted gold across 8 documents produced 3.66× fewer constraints than the reviewed gold (32 vs 117)**. Even when every produced constraint maps to one in gold (best case), the LLM under-produces by 73% of the reviewed total.
+> **⚠ Numbers under decision (2026-07).** The `3.66× / 32-vs-117` figures below
+> are **thin-gold-era**. After the deep re-annotation the golds hold 199 reviewed
+> constraints, so the fixed D1 draft vs the new golds is a *cross-regime*
+> comparison (current arithmetic: 6.22× / 12-vs-199). Which framing §1 uses is an
+> **open decision** — see `docs/paper/D1_SCOPE_DECISION.md`. Do not cite the
+> numbers in this section as final until that decision is locked.
+
+The seed corpus already exhibits the phenomenon. The headline finding is matcher-independent: **LLM-drafted gold across 8 documents produced 3.66× fewer constraints than the reviewed gold (32 vs 117)** *(thin-gold-era; see banner above)*. Even when every produced constraint maps to one in gold (best case), the LLM under-produces by 73% of the reviewed total.
 
 Recall numbers depend on the chosen matcher and threshold; the paper reports both extremes for transparency. At the Tier-A protocol matcher (SBERT cos ≥ 0.75 over the constraint text) the draft recovers 20.5%; at a loose cos ≥ 0.50 it recovers 61.0% — see `datasets/paper/reports/constraint_blindness_v2_sbert075.json` and `_sbert050.json`. The per-type breakdown is presented with the threshold attached inline (not as standalone headline numbers), because small per-type sample sizes (n=2 for `reference`, n=9 for `role_assignment`) make extreme recall values brittle.
 
-The durable claim for §1 is the 3.66× under-production, not the per-type recall percentages.
+The durable claim for §1 is the *under-production ratio* (magnitude to be finalised per the scope decision above), not the per-type recall percentages.
 
 ## Intended users
 
@@ -69,7 +76,7 @@ The IPKE-Bench dataset, taxonomy, evaluation protocol, and reproducibility packa
 
 Three demonstration experiments support the benchmark, ranked by paper priority:
 
-- **D1. Constraint-blindness baseline** — **REQUIRED, DONE.** Per-type recall of LLM-drafted gold against reviewed gold using the Tier-A protocol matcher (SBERT cos ≥ 0.75). Headline numbers in `datasets/paper/reports/constraint_blindness_v2_sbert075.json`. Shows the benchmark is non-trivial before any extractor is run, with a clean reproducible script.
+- **D1. Constraint-blindness baseline** — **REQUIRED, SCRIPT DONE / SCOPE UNDER DECISION.** Per-type recall of LLM-drafted gold against reviewed gold using the Tier-A protocol matcher (SBERT cos ≥ 0.75). The report regenerates cleanly (`datasets/paper/reports/constraint_blindness_v2_sbert075.json`) and shows the benchmark is non-trivial before any extractor is run. **The headline framing is not yet locked** — the fixed D1 draft is now cross-regime against the deep golds; resolve per `docs/paper/D1_SCOPE_DECISION.md` before camera-ready.
 
 - **D2. Local baseline sweep** — **EXPECTED BEFORE SUBMISSION.** 4 configs (Fixed/DSC × P0/P3) × 5 seeds × 12 documents. Φ + 95% CI + paired bootstrap. Demonstrates the benchmark discriminates configurations. Drop only if reviewed-gold + IAA gates slip past mid-September.
 

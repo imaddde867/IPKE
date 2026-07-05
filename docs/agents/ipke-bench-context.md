@@ -12,7 +12,7 @@ If you are reframing or summarising the project, lead with the benchmark, not th
 
 ## §1 motivating result (live, regenerable)
 
-LLM-drafted gold across 8 documents produced **3.66× fewer constraints** than the human-reviewed gold on the same source text (32 vs 117). At the Tier-A protocol matcher (SBERT cos ≥ 0.75) the draft recovers **20.5%** of reviewed constraints; at cos ≥ 0.50 it recovers **61.5%**. The expansion ratio is matcher-independent and is the durable §1 claim.
+LLM-drafted gold across 8 documents produced **3.66× fewer constraints** than the human-reviewed gold on the same source text (32 vs 117) — **thin-gold-era numbers**. After the deep re-annotation the golds hold 199 constraints, so the fixed draft is now cross-regime (current arithmetic ≈ 6.22×); the §1 framing is **under decision** per `docs/paper/D1_SCOPE_DECISION.md`. The expansion ratio (magnitude TBD) is the durable §1 claim.
 
 Reproduce with:
 
