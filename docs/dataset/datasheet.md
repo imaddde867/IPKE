@@ -72,7 +72,7 @@ No standard train/dev/test split. IPKE-Bench is an evaluation-only benchmark; re
 
 ### 2.8 Are there errors, sources of noise, or redundancies?
 
-- **LLM-drafted scaffolding**: every reviewed file started as an LLM-drafted JSON skeleton. The constraint-blindness baseline (`datasets/paper/reports/constraint_blindness_v2_sbert075.json`) quantifies the under-recall of the original draft: 3.66× under-production of constraints, 20.5% macro recall at the Tier-A protocol matcher (SBERT cos ≥ 0.75). This is a known property of the draft pipeline; the reviewed gold corrects it via the workflow in `docs/annotation/guidelines.md`.
+- **LLM-drafted scaffolding**: every reviewed file started as an LLM-drafted JSON skeleton. The constraint-blindness baseline (`datasets/paper/reports/constraint_blindness_v2_sbert075.json`) quantifies the under-recall of the original draft: 3.66× under-production of constraints, 20.5% macro recall at the Tier-A protocol matcher (SBERT cos ≥ 0.75) *(thin-gold-era figures; the ratio against the deep 199-constraint golds is under decision — see `docs/paper/D1_SCOPE_DECISION.md`)*. This is a known property of the draft pipeline; the reviewed gold corrects it via the workflow in `docs/annotation/guidelines.md`.
 - **Scope**: every gold currently uses `quality.annotation_scope = "bounded_excerpt"` (1-3 pages of a multi-step + multi-constraint section). Reviewers consuming the full source document outside the bounded section will see additional procedural content that is not annotated.
 
 ### 2.9 Is the dataset self-contained?

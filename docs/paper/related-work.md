@@ -63,9 +63,10 @@ first so a reviewer cannot use it against us:
 > IPKE-Bench is a **small, expert-verified diagnostic benchmark** — the
 > deliberate counterpart to large, template-derived silver sets. For measuring
 > whether an extractor gets *typed, graded, step-bound constraints* right, label
-> fidelity dominates label volume: a 3.66× under-production of constraints by an
-> LLM draft (our §1 finding) is only diagnosable against gold that is itself
-> correct. Eight documents, each human-verified against source, spanning five
+> fidelity dominates label volume: a multi-fold under-production of constraints
+> by an LLM draft (our §1 finding; exact ratio under decision per
+> `docs/paper/D1_SCOPE_DECISION.md`) is only diagnosable against gold that is
+> itself correct. Eight documents, each human-verified against source, spanning five
 > regulatory families, is sized for *evaluation*, not training — researchers
 > tune on external corpora (PAGED, ProPara, OpenPI) and report on IPKE-Bench.
 
