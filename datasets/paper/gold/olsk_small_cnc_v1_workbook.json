@@ -20,7 +20,19 @@
       "action_object": "Bracket 20 to frame",
       "arguments": [],
       "parameters": [],
-      "constraints": [],
+      "constraints": [
+        {
+          "id": "C10",
+          "type": "guard",
+          "text": "Not necessary to be absolutely precise",
+          "attached_to": [
+            "S2",
+            "S3",
+            "S4"
+          ],
+          "enforcement": "may"
+        }
+      ],
       "flags": {},
       "provenance": {
         "doc_id": "olsk_small_cnc_v1_workbook",
@@ -275,7 +287,7 @@
             "S16",
             "S17"
           ],
-          "enforcement": "should"
+          "enforcement": "must"
         }
       ],
       "flags": {},
@@ -445,7 +457,7 @@
           "attached_to": [
             "S26"
           ],
-          "enforcement": "must"
+          "enforcement": "should"
         }
       ],
       "flags": {},
@@ -457,12 +469,128 @@
     }
   ],
   "constraints": [],
-  "relations": [],
+  "relations": [
+    {
+      "source": "S2",
+      "target": "S3",
+      "type": "NEXT"
+    },
+    {
+      "source": "S3",
+      "target": "S4",
+      "type": "NEXT"
+    },
+    {
+      "source": "S4",
+      "target": "S5",
+      "type": "NEXT"
+    },
+    {
+      "source": "S5",
+      "target": "S6",
+      "type": "NEXT"
+    },
+    {
+      "source": "S6",
+      "target": "S7",
+      "type": "NEXT"
+    },
+    {
+      "source": "S7",
+      "target": "S8",
+      "type": "NEXT"
+    },
+    {
+      "source": "S8",
+      "target": "S9",
+      "type": "NEXT"
+    },
+    {
+      "source": "S9",
+      "target": "S10",
+      "type": "NEXT"
+    },
+    {
+      "source": "S10",
+      "target": "S11",
+      "type": "NEXT"
+    },
+    {
+      "source": "S11",
+      "target": "S12",
+      "type": "NEXT"
+    },
+    {
+      "source": "S12",
+      "target": "S13",
+      "type": "NEXT"
+    },
+    {
+      "source": "S13",
+      "target": "S14",
+      "type": "NEXT"
+    },
+    {
+      "source": "S14",
+      "target": "S16",
+      "type": "NEXT"
+    },
+    {
+      "source": "S16",
+      "target": "S17",
+      "type": "NEXT"
+    },
+    {
+      "source": "S17",
+      "target": "S18",
+      "type": "NEXT"
+    },
+    {
+      "source": "S18",
+      "target": "S19",
+      "type": "NEXT"
+    },
+    {
+      "source": "S19",
+      "target": "S20",
+      "type": "NEXT"
+    },
+    {
+      "source": "S20",
+      "target": "S21",
+      "type": "NEXT"
+    },
+    {
+      "source": "S21",
+      "target": "S22",
+      "type": "NEXT"
+    },
+    {
+      "source": "S22",
+      "target": "S23",
+      "type": "NEXT"
+    },
+    {
+      "source": "S23",
+      "target": "S24",
+      "type": "NEXT"
+    },
+    {
+      "source": "S24",
+      "target": "S25",
+      "type": "NEXT"
+    },
+    {
+      "source": "S25",
+      "target": "S26",
+      "type": "NEXT"
+    }
+  ],
   "quality": {
     "annotation_scope": "full_subprocedure",
     "review_status": "reviewed",
     "annotator": "model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off)",
     "review_date": "2026-07-05",
-    "review_notes": "Adjudicated 2026-07-05 by model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off) via scripts/adjudicate.py from model-assisted draft. Decisions: 30 accept, 2 edit, 3 reject, 0 add.\nstep:S1 REJECT -- Source text lists Profile 20-400 as a complete part (quantity 1), not to be cut. No cutting operation appears in the source.\nstep:S2 ACCEPT\nstep:S3 ACCEPT\nstep:S4 ACCEPT\nstep:S5 ACCEPT\nstep:S6 ACCEPT\nstep:S7 ACCEPT\nstep:S8 ACCEPT\nstep:S9 ACCEPT\nstep:S10 ACCEPT\nstep:S11 ACCEPT\nstep:S12 ACCEPT\nstep:S13 ACCEPT\nstep:S14 ACCEPT\nstep:S15 REJECT -- Source text lists Profile 20-150 as a complete part (quantity 4), not to be cut. No cutting operation appears in the source.\nstep:S16 ACCEPT\nstep:S17 ACCEPT\nstep:S18 ACCEPT\nstep:S19 ACCEPT\nstep:S20 ACCEPT\nstep:S21 ACCEPT\nstep:S22 ACCEPT\nstep:S23 ACCEPT\nstep:S24 ACCEPT\nstep:S25 ACCEPT\nstep:S26 ACCEPT\nconstraint:C1 REJECT -- orphaned: parent step S1 rejected (Profile 20-400 is a complete part, not a cut step)\nconstraint:C2 ACCEPT\nconstraint:C3 ACCEPT\nconstraint:C5 ACCEPT\nconstraint:C4 ACCEPT\nconstraint:C6 ACCEPT\nconstraint:C7 EDIT ['enforcement'] -- Source says 'Attach brackets first to the vertical profiles, then to the top and bottom' as a remark/instruction, not a mandatory constraint. Enforcement should be 'should', not 'must'.\nconstraint:C9 ACCEPT\nconstraint:C8 EDIT ['enforcement'] -- Source states 'The final tightening of the screws should be all together at the end' as a directive in the remarks section. This is a postcondition that must occur, not merely should occur.\nNOTE: assembly workbook; steps are imperative fastening actions with intrinsically low constraint density (a property of the source, not under-annotation).\n[strict-warning adjudication] step:S2 zero_constraints adjudicated; step:S3 zero_constraints adjudicated; step:S4 zero_constraints adjudicated; step:S7 zero_constraints adjudicated; step:S8 zero_constraints adjudicated; step:S11 zero_constraints adjudicated; step:S12 zero_constraints adjudicated; step:S13 zero_constraints adjudicated; step:S14 zero_constraints adjudicated; step:S18 zero_constraints adjudicated; step:S19 zero_constraints adjudicated; step:S20 zero_constraints adjudicated; step:S21 zero_constraints adjudicated; step:S22 zero_constraints adjudicated; step:S23 zero_constraints adjudicated; step:S24 zero_constraints adjudicated; step:S25 zero_constraints adjudicated"
+    "review_notes": "Adjudicated 2026-07-05 by model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off) via scripts/adjudicate.py from model-assisted draft. Decisions: 30 accept, 2 edit, 3 reject, 0 add.\nstep:S1 REJECT -- Source text lists Profile 20-400 as a complete part (quantity 1), not to be cut. No cutting operation appears in the source.\nstep:S2 ACCEPT\nstep:S3 ACCEPT\nstep:S4 ACCEPT\nstep:S5 ACCEPT\nstep:S6 ACCEPT\nstep:S7 ACCEPT\nstep:S8 ACCEPT\nstep:S9 ACCEPT\nstep:S10 ACCEPT\nstep:S11 ACCEPT\nstep:S12 ACCEPT\nstep:S13 ACCEPT\nstep:S14 ACCEPT\nstep:S15 REJECT -- Source text lists Profile 20-150 as a complete part (quantity 4), not to be cut. No cutting operation appears in the source.\nstep:S16 ACCEPT\nstep:S17 ACCEPT\nstep:S18 ACCEPT\nstep:S19 ACCEPT\nstep:S20 ACCEPT\nstep:S21 ACCEPT\nstep:S22 ACCEPT\nstep:S23 ACCEPT\nstep:S24 ACCEPT\nstep:S25 ACCEPT\nstep:S26 ACCEPT\nconstraint:C1 REJECT -- orphaned: parent step S1 rejected (Profile 20-400 is a complete part, not a cut step)\nconstraint:C2 ACCEPT\nconstraint:C3 ACCEPT\nconstraint:C5 ACCEPT\nconstraint:C4 ACCEPT\nconstraint:C6 ACCEPT\nconstraint:C7 EDIT ['enforcement'] -- Source says 'Attach brackets first to the vertical profiles, then to the top and bottom' as a remark/instruction, not a mandatory constraint. Enforcement should be 'should', not 'must'.\nconstraint:C9 ACCEPT\nconstraint:C8 EDIT ['enforcement'] -- Source states 'The final tightening of the screws should be all together at the end' as a directive in the remarks section. This is a postcondition that must occur, not merely should occur.\nNOTE: assembly workbook; steps are imperative fastening actions with intrinsically low constraint density (a property of the source, not under-annotation).\n[strict-warning adjudication] step:S2 zero_constraints adjudicated; step:S3 zero_constraints adjudicated; step:S4 zero_constraints adjudicated; step:S7 zero_constraints adjudicated; step:S8 zero_constraints adjudicated; step:S11 zero_constraints adjudicated; step:S12 zero_constraints adjudicated; step:S13 zero_constraints adjudicated; step:S14 zero_constraints adjudicated; step:S18 zero_constraints adjudicated; step:S19 zero_constraints adjudicated; step:S20 zero_constraints adjudicated; step:S21 zero_constraints adjudicated; step:S22 zero_constraints adjudicated; step:S23 zero_constraints adjudicated; step:S24 zero_constraints adjudicated; step:S25 zero_constraints adjudicated\n[verbatim-grounding pass 2026-07-06, agent, pending human sign-off] All constraint texts already verbatim. Enforcement realigned to the guidelines modal-verb mapping: C7 'Attach brackets first...' is an unmodified imperative -> must (reverses the adjudication downgrade to should); C8 text reads 'should be all together' -> should (reverses the adjudication upgrade to must; the modal governs). Added C10 'Not necessary to be absolutely precise' (guard/may, S2-S4) — the 01.1 squaring-tolerance remark was unannotated. 8 -> 9 constraints.\n[relations pass 2026-07-06, agent, pending human sign-off] Step-graph relations annotated by hand: NEXT = document-order procedural succession; fork NEXT edges plus ALTERNATIVE_TO only where the source states mutually exclusive branches. Conditional in-step behaviour stays encoded as guard constraints. Loops (check-measurement repeat, per-vertical sampling) not modeled to keep the graph acyclic. NOTE: current Tier-B eval synthesizes a linear NEXT chain from steps-array order and does not read this field; relations are provided as explicit gold ordering/branching for graph consumers and export."
   }
 }

@@ -104,17 +104,7 @@
       "action_object": "standard procedures",
       "arguments": [],
       "parameters": [],
-      "constraints": [
-        {
-          "id": "C5",
-          "type": "precondition",
-          "text": "Standard procedures are established environmental sampling or measurement procedures used and accepted within the environmental industry",
-          "attached_to": [
-            "S4"
-          ],
-          "enforcement": "must"
-        }
-      ],
+      "constraints": [],
       "flags": {},
       "provenance": {
         "doc_id": "epa_field_sampling_measurement_procedure_validation",
@@ -133,7 +123,7 @@
         {
           "id": "C6",
           "type": "parameter",
-          "text": "Procedures subject to periodic review",
+          "text": "LSASD procedures are subject to periodic review",
           "attached_to": [
             "S5"
           ],
@@ -141,7 +131,7 @@
         },
         {
           "id": "C8",
-          "type": "precondition",
+          "type": "guard",
           "text": "LSASD procedures undergoing periodic review that are updated with minor modifications are not subject to the validation process described in Section 4",
           "attached_to": [
             "S5",
@@ -167,12 +157,12 @@
       "constraints": [
         {
           "id": "C7",
-          "type": "postcondition",
-          "text": "Revise procedures to ensure continuing suitability and conformance with applicable industry standards and requirements",
+          "type": "guard",
+          "text": "where necessary, may be revised to ensure continuing suitability and conformance with applicable industry standards and requirements",
           "attached_to": [
             "S6"
           ],
-          "enforcement": "should"
+          "enforcement": "may"
         }
       ],
       "flags": {},
@@ -207,6 +197,15 @@
             "S7"
           ],
           "enforcement": "must"
+        },
+        {
+          "id": "C48",
+          "type": "guard",
+          "text": "New standard procedures may be adopted for use by LSASD field investigators",
+          "attached_to": [
+            "S7"
+          ],
+          "enforcement": "may"
         }
       ],
       "flags": {},
@@ -232,6 +231,17 @@
             "S8"
           ],
           "enforcement": "must"
+        },
+        {
+          "id": "C47",
+          "type": "role_assignment",
+          "text": "When it is necessary to use a non-standard sampling or measurement procedure, the project leader will",
+          "attached_to": [
+            "S8",
+            "S9",
+            "S10"
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {},
@@ -248,17 +258,7 @@
       "action_object": "customer agreement",
       "arguments": [],
       "parameters": [],
-      "constraints": [
-        {
-          "id": "C12",
-          "type": "postcondition",
-          "text": "Document that the customer agrees with the use of a non-standard procedure",
-          "attached_to": [
-            "S9"
-          ],
-          "enforcement": "must"
-        }
-      ],
+      "constraints": [],
       "flags": {},
       "provenance": {
         "doc_id": "epa_field_sampling_measurement_procedure_validation",
@@ -277,7 +277,7 @@
         {
           "id": "C13",
           "type": "postcondition",
-          "text": "Document in the project file the customer's request and the need for using a non-standard procedure",
+          "text": "Document in the project file the customer’s request and the need for using a non-standard procedure (i.e., description of the project request and why it required the use of a non-standard procedure)",
           "attached_to": [
             "S10"
           ],
@@ -303,6 +303,15 @@
           "id": "C14",
           "type": "postcondition",
           "text": "Non-standard procedures will be fully validated according to Section 4 of this procedure",
+          "attached_to": [
+            "S11"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C46",
+          "type": "parameter",
+          "text": "Validation will be as extensive as is necessary to meet the needs of the given application",
           "attached_to": [
             "S11"
           ],
@@ -376,7 +385,7 @@
       "constraints": [
         {
           "id": "C17",
-          "type": "precondition",
+          "type": "guard",
           "text": "When it is necessary for FSB to develop procedures for their own use, it will be a planned activity",
           "attached_to": [
             "S14"
@@ -427,7 +436,7 @@
         {
           "id": "C19",
           "type": "precondition",
-          "text": "Management will ensure adequate resources (time, equipment, funding, personnel, etc.) are available to aid in the development process",
+          "text": "Management will also ensure adequate resources (time, equipment, funding, personnel, etc.) are available to aid in the development process",
           "attached_to": [
             "S16"
           ],
@@ -453,6 +462,15 @@
           "id": "C20",
           "type": "role_assignment",
           "text": "If a team of staff members is tasked with the procedure development, management will designate an individual to serve as the team leader",
+          "attached_to": [
+            "S17"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C43",
+          "type": "role_assignment",
+          "text": "This individual will be responsible for facilitating the development process",
           "attached_to": [
             "S17"
           ],
@@ -498,17 +516,7 @@
       "action_object": "operating procedure",
       "arguments": [],
       "parameters": [],
-      "constraints": [
-        {
-          "id": "C22",
-          "type": "postcondition",
-          "text": "Development of an operating procedure",
-          "attached_to": [
-            "S19"
-          ],
-          "enforcement": "must"
-        }
-      ],
+      "constraints": [],
       "flags": {},
       "provenance": {
         "doc_id": "epa_field_sampling_measurement_procedure_validation",
@@ -532,6 +540,15 @@
             "S20"
           ],
           "enforcement": "must"
+        },
+        {
+          "id": "C44",
+          "type": "parameter",
+          "text": "Members may consist of subject matter experts (SMEs) and representatives from both FSB sections, as appropriate",
+          "attached_to": [
+            "S20"
+          ],
+          "enforcement": "may"
         }
       ],
       "flags": {},
@@ -552,7 +569,7 @@
         {
           "id": "C24",
           "type": "precondition",
-          "text": "Management will ensure adequate resources are available to complete the validation",
+          "text": "ensure adequate resources are available to complete the validation",
           "attached_to": [
             "S21"
           ],
@@ -582,6 +599,15 @@
             "S22"
           ],
           "enforcement": "must"
+        },
+        {
+          "id": "C45",
+          "type": "role_assignment",
+          "text": "The team leader will serve as the point of contact for the team and facilitate the validation process",
+          "attached_to": [
+            "S22"
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {},
@@ -602,7 +628,7 @@
         {
           "id": "C26",
           "type": "parameter",
-          "text": "The validation plan should address, at a minimum, the objective of the validation, acceptance criteria, the level of testing necessary and peer review",
+          "text": "a validation plan that should address, at a minimum, the objective of the validation, acceptance criteria, the level of testing necessary and peer review",
           "attached_to": [
             "S23"
           ],
@@ -676,7 +702,7 @@
       "constraints": [
         {
           "id": "C29",
-          "type": "precondition",
+          "type": "role_assignment",
           "text": "A member or members of the validation team will be present during the field test or evaluation",
           "attached_to": [
             "S26"
@@ -698,17 +724,7 @@
       "action_object": "conditions, performance, and practicality",
       "arguments": [],
       "parameters": [],
-      "constraints": [
-        {
-          "id": "C30",
-          "type": "postcondition",
-          "text": "Record information on the conditions, performance, and practicality of the proposed procedure",
-          "attached_to": [
-            "S27"
-          ],
-          "enforcement": "must"
-        }
-      ],
+      "constraints": [],
       "flags": {},
       "provenance": {
         "doc_id": "epa_field_sampling_measurement_procedure_validation",
@@ -727,7 +743,16 @@
         {
           "id": "C31",
           "type": "parameter",
-          "text": "Assessment using the acceptance criteria established by the team in the validation plan",
+          "text": "assess the results using the acceptance criteria established by the team in the validation plan",
+          "attached_to": [
+            "S28"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C42",
+          "type": "precondition",
+          "text": "After completion of the field test or evaluation",
           "attached_to": [
             "S28"
           ],
@@ -810,8 +835,8 @@
         },
         {
           "id": "C35",
-          "type": "parameter",
-          "text": "Records generated during the validation process: Validation plan, Relevant literature, Draft and final operating procedures, Results of field tests and/or evaluations, Results of the assessment",
+          "type": "postcondition",
+          "text": "The following records will be generated during the validation process: Validation plan; Relevant literature; Draft and final operating procedures; Results of field tests and/or evaluations; Results of the assessment",
           "attached_to": [
             "S31"
           ],
@@ -929,7 +954,7 @@
         {
           "id": "C41",
           "type": "reference",
-          "text": "In accordance with LSASD Operating Procedure for Training and Competency (LSASDPROC-1003, most recent version)",
+          "text": "LSASD Operating Procedure for Training and Competency (LSASDPROC-1003, most recent version)",
           "attached_to": [
             "S35"
           ],
@@ -945,12 +970,198 @@
     }
   ],
   "constraints": [],
-  "relations": [],
+  "relations": [
+    {
+      "source": "S1",
+      "target": "S2",
+      "type": "NEXT"
+    },
+    {
+      "source": "S2",
+      "target": "S3",
+      "type": "NEXT"
+    },
+    {
+      "source": "S3",
+      "target": "S4",
+      "type": "NEXT"
+    },
+    {
+      "source": "S4",
+      "target": "S5",
+      "type": "NEXT"
+    },
+    {
+      "source": "S5",
+      "target": "S6",
+      "type": "NEXT"
+    },
+    {
+      "source": "S6",
+      "target": "S7",
+      "type": "NEXT"
+    },
+    {
+      "source": "S7",
+      "target": "S8",
+      "type": "NEXT"
+    },
+    {
+      "source": "S8",
+      "target": "S9",
+      "type": "NEXT"
+    },
+    {
+      "source": "S9",
+      "target": "S10",
+      "type": "NEXT"
+    },
+    {
+      "source": "S10",
+      "target": "S11",
+      "type": "NEXT"
+    },
+    {
+      "source": "S11",
+      "target": "S12",
+      "type": "NEXT"
+    },
+    {
+      "source": "S11",
+      "target": "S13",
+      "type": "NEXT"
+    },
+    {
+      "source": "S12",
+      "target": "S13",
+      "type": "ALTERNATIVE_TO"
+    },
+    {
+      "source": "S13",
+      "target": "S14",
+      "type": "NEXT"
+    },
+    {
+      "source": "S14",
+      "target": "S15",
+      "type": "NEXT"
+    },
+    {
+      "source": "S15",
+      "target": "S16",
+      "type": "NEXT"
+    },
+    {
+      "source": "S16",
+      "target": "S17",
+      "type": "NEXT"
+    },
+    {
+      "source": "S17",
+      "target": "S18",
+      "type": "NEXT"
+    },
+    {
+      "source": "S18",
+      "target": "S19",
+      "type": "NEXT"
+    },
+    {
+      "source": "S19",
+      "target": "S20",
+      "type": "NEXT"
+    },
+    {
+      "source": "S20",
+      "target": "S21",
+      "type": "NEXT"
+    },
+    {
+      "source": "S21",
+      "target": "S22",
+      "type": "NEXT"
+    },
+    {
+      "source": "S22",
+      "target": "S23",
+      "type": "NEXT"
+    },
+    {
+      "source": "S23",
+      "target": "S24",
+      "type": "NEXT"
+    },
+    {
+      "source": "S24",
+      "target": "S25",
+      "type": "NEXT"
+    },
+    {
+      "source": "S25",
+      "target": "S26",
+      "type": "NEXT"
+    },
+    {
+      "source": "S26",
+      "target": "S27",
+      "type": "NEXT"
+    },
+    {
+      "source": "S27",
+      "target": "S28",
+      "type": "NEXT"
+    },
+    {
+      "source": "S28",
+      "target": "S29",
+      "type": "NEXT"
+    },
+    {
+      "source": "S28",
+      "target": "S30",
+      "type": "NEXT"
+    },
+    {
+      "source": "S29",
+      "target": "S30",
+      "type": "ALTERNATIVE_TO"
+    },
+    {
+      "source": "S29",
+      "target": "S31",
+      "type": "NEXT"
+    },
+    {
+      "source": "S30",
+      "target": "S31",
+      "type": "NEXT"
+    },
+    {
+      "source": "S31",
+      "target": "S32",
+      "type": "NEXT"
+    },
+    {
+      "source": "S32",
+      "target": "S33",
+      "type": "NEXT"
+    },
+    {
+      "source": "S33",
+      "target": "S34",
+      "type": "NEXT"
+    },
+    {
+      "source": "S34",
+      "target": "S35",
+      "type": "NEXT"
+    }
+  ],
   "quality": {
     "annotation_scope": "full_subprocedure",
     "review_status": "reviewed",
     "annotator": "model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off)",
     "review_date": "2026-07-05",
-    "review_notes": "Adjudicated 2026-07-05 by model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off) via scripts/adjudicate.py from model-assisted draft. Decisions: 73 accept, 3 edit, 0 reject, 0 add.\nstep:S1 ACCEPT\nstep:S2 ACCEPT\nstep:S3 ACCEPT\nstep:S4 ACCEPT\nstep:S5 ACCEPT\nstep:S6 ACCEPT\nstep:S7 ACCEPT\nstep:S8 ACCEPT\nstep:S9 ACCEPT\nstep:S10 ACCEPT\nstep:S11 ACCEPT\nstep:S12 ACCEPT\nstep:S13 ACCEPT\nstep:S14 ACCEPT\nstep:S15 ACCEPT\nstep:S16 ACCEPT\nstep:S17 ACCEPT\nstep:S18 ACCEPT\nstep:S19 ACCEPT\nstep:S20 ACCEPT\nstep:S21 ACCEPT\nstep:S22 ACCEPT\nstep:S23 ACCEPT\nstep:S24 ACCEPT\nstep:S25 ACCEPT\nstep:S26 ACCEPT\nstep:S27 ACCEPT\nstep:S28 ACCEPT\nstep:S29 ACCEPT\nstep:S30 ACCEPT\nstep:S31 ACCEPT\nstep:S32 ACCEPT\nstep:S33 ACCEPT\nstep:S34 ACCEPT\nstep:S35 ACCEPT\nconstraint:C1 ACCEPT\nconstraint:C2 ACCEPT\nconstraint:C3 ACCEPT\nconstraint:C4 ACCEPT\nconstraint:C5 ACCEPT\nconstraint:C6 ACCEPT\nconstraint:C8 EDIT ['type'] -- Guard describes a condition that prevents validation, not a condition that must exist before steps S5/S6 occur. It applies to S11 (validation step), not to periodic review steps.\nconstraint:C7 ACCEPT\nconstraint:C9 ACCEPT\nconstraint:C10 ACCEPT\nconstraint:C11 ACCEPT\nconstraint:C12 ACCEPT\nconstraint:C13 ACCEPT\nconstraint:C14 EDIT ['type'] -- Section 3.2.2 states 'Non-standard procedures will be fully validated' as a requirement for S11, not a precondition to it. The validation process itself produces this state.\nconstraint:C15 ACCEPT\nconstraint:C16 ACCEPT\nconstraint:C17 ACCEPT\nconstraint:C18 ACCEPT\nconstraint:C19 ACCEPT\nconstraint:C20 ACCEPT\nconstraint:C21 ACCEPT\nconstraint:C22 ACCEPT\nconstraint:C23 ACCEPT\nconstraint:C24 ACCEPT\nconstraint:C25 ACCEPT\nconstraint:C26 ACCEPT\nconstraint:C27 EDIT ['enforcement'] -- Text states 'The team will update the validation plan, as necessary' — this is a directive, not optional guidance. Should enforce as must.\nconstraint:C28 ACCEPT\nconstraint:C29 ACCEPT\nconstraint:C30 ACCEPT\nconstraint:C31 ACCEPT\nconstraint:C32 ACCEPT\nconstraint:C33 ACCEPT\nconstraint:C34 ACCEPT\nconstraint:C35 ACCEPT\nconstraint:C36 ACCEPT\nconstraint:C37 ACCEPT\nconstraint:C38 ACCEPT\nconstraint:C39 ACCEPT\nconstraint:C40 ACCEPT\nconstraint:C41 ACCEPT\nEDGE CASE (short standalone): full document is a single complete process (<2k words); annotated end-to-end per guidelines short-standalone rule."
+    "review_notes": "Adjudicated 2026-07-05 by model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off) via scripts/adjudicate.py from model-assisted draft. Decisions: 73 accept, 3 edit, 0 reject, 0 add.\nstep:S1 ACCEPT\nstep:S2 ACCEPT\nstep:S3 ACCEPT\nstep:S4 ACCEPT\nstep:S5 ACCEPT\nstep:S6 ACCEPT\nstep:S7 ACCEPT\nstep:S8 ACCEPT\nstep:S9 ACCEPT\nstep:S10 ACCEPT\nstep:S11 ACCEPT\nstep:S12 ACCEPT\nstep:S13 ACCEPT\nstep:S14 ACCEPT\nstep:S15 ACCEPT\nstep:S16 ACCEPT\nstep:S17 ACCEPT\nstep:S18 ACCEPT\nstep:S19 ACCEPT\nstep:S20 ACCEPT\nstep:S21 ACCEPT\nstep:S22 ACCEPT\nstep:S23 ACCEPT\nstep:S24 ACCEPT\nstep:S25 ACCEPT\nstep:S26 ACCEPT\nstep:S27 ACCEPT\nstep:S28 ACCEPT\nstep:S29 ACCEPT\nstep:S30 ACCEPT\nstep:S31 ACCEPT\nstep:S32 ACCEPT\nstep:S33 ACCEPT\nstep:S34 ACCEPT\nstep:S35 ACCEPT\nconstraint:C1 ACCEPT\nconstraint:C2 ACCEPT\nconstraint:C3 ACCEPT\nconstraint:C4 ACCEPT\nconstraint:C5 ACCEPT\nconstraint:C6 ACCEPT\nconstraint:C8 EDIT ['type'] -- Guard describes a condition that prevents validation, not a condition that must exist before steps S5/S6 occur. It applies to S11 (validation step), not to periodic review steps.\nconstraint:C7 ACCEPT\nconstraint:C9 ACCEPT\nconstraint:C10 ACCEPT\nconstraint:C11 ACCEPT\nconstraint:C12 ACCEPT\nconstraint:C13 ACCEPT\nconstraint:C14 EDIT ['type'] -- Section 3.2.2 states 'Non-standard procedures will be fully validated' as a requirement for S11, not a precondition to it. The validation process itself produces this state.\nconstraint:C15 ACCEPT\nconstraint:C16 ACCEPT\nconstraint:C17 ACCEPT\nconstraint:C18 ACCEPT\nconstraint:C19 ACCEPT\nconstraint:C20 ACCEPT\nconstraint:C21 ACCEPT\nconstraint:C22 ACCEPT\nconstraint:C23 ACCEPT\nconstraint:C24 ACCEPT\nconstraint:C25 ACCEPT\nconstraint:C26 ACCEPT\nconstraint:C27 EDIT ['enforcement'] -- Text states 'The team will update the validation plan, as necessary' — this is a directive, not optional guidance. Should enforce as must.\nconstraint:C28 ACCEPT\nconstraint:C29 ACCEPT\nconstraint:C30 ACCEPT\nconstraint:C31 ACCEPT\nconstraint:C32 ACCEPT\nconstraint:C33 ACCEPT\nconstraint:C34 ACCEPT\nconstraint:C35 ACCEPT\nconstraint:C36 ACCEPT\nconstraint:C37 ACCEPT\nconstraint:C38 ACCEPT\nconstraint:C39 ACCEPT\nconstraint:C40 ACCEPT\nconstraint:C41 ACCEPT\nEDGE CASE (short standalone): full document is a single complete process (<2k words); annotated end-to-end per guidelines short-standalone rule.\n[verbatim-grounding pass 2026-07-06, agent, pending human sign-off] Eight constraint texts re-grounded to contiguous verbatim source spans (C6, C7, C19, C24, C26, C31, C35, C13 extended with its i.e.-parenthetical; C41 narrowed to the referenced document title to remove full containment inside C40). Dropped C5 (Section 2.1 definition — guidelines 'What to drop: Definitions'), C12, C22, C30 (zero-information restatements of their own steps). Retyped per the guidelines decision sequence: C7 -> guard/may ('where necessary, may be revised'), C8 and C17 -> guard (exemption/when-trigger conditions), C29 -> role_assignment (team-member presence), C35 -> postcondition (generated records). Added missed constraints: C42 'After completion of the field test or evaluation' (precondition, S28), C43 facilitator responsibility (role_assignment, S17), C44 team composition (parameter/may, S20), C45 team-leader point of contact (role_assignment, S22), C46 'Validation will be as extensive as is necessary...' (parameter, S11), C47 'the project leader will' 3.2.1 role intro (role_assignment, S8-S10), C48 'New standard procedures may be adopted...' (guard/may, S7). 41 -> 44 constraints.\nstep:S4 zero_constraints adjudicated (definition dropped; usage step carries no separate condition); step:S9 zero_constraints adjudicated (covered via C47 attachment); step:S19 zero_constraints adjudicated; step:S27 zero_constraints adjudicated\n[relations pass 2026-07-06, agent, pending human sign-off] Step-graph relations annotated by hand: NEXT = document-order procedural succession; fork NEXT edges plus ALTERNATIVE_TO only where the source states mutually exclusive branches (S12 outside-quality-system vs S13 adopt-into-quality-system per 3.2.2/3.2.3; S29 finalize vs S30 return-to-earlier-steps per 4.5.1; both rejoin at S31). Conditional in-step behaviour stays encoded as guard constraints. Loops (check-measurement repeat, per-vertical sampling) not modeled to keep the graph acyclic. NOTE: current Tier-B eval synthesizes a linear NEXT chain from steps-array order and does not read this field; relations are provided as explicit gold ordering/branching for graph consumers and export."
   }
 }

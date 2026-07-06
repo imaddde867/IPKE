@@ -1,15 +1,15 @@
 {
   "procedure": {
     "doc_id": "epa_field_operations_manual_filter_sampling_sop",
-    "title": "5.14 Repair",
+    "title": "6.0 Calibration / Post-Calibration (Mass Flow Controller)",
     "version": "CASTNET FOM",
     "domain": "field_operations",
     "source": {
       "doc_id": "epa_field_operations_manual_filter_sampling_sop",
-      "section": "5.14",
+      "section": "IV.C.3 Mass Flow Controller — 6.0 Calibration / Post-Calibration (6.1.1–6.1.10)",
       "page": null,
-      "char_start": 601180,
-      "char_end": 612180
+      "char_start": 609373,
+      "char_end": 611246
     }
   },
   "steps": [
@@ -34,7 +34,7 @@
       "flags": {},
       "provenance": {
         "doc_id": "epa_field_operations_manual_filter_sampling_sop",
-        "section": "5.14",
+        "section": "IV.C.3 Mass Flow Controller — 6.0 Calibration / Post-Calibration (6.1.1–6.1.10)",
         "page": null
       }
     },
@@ -49,7 +49,7 @@
       "flags": {},
       "provenance": {
         "doc_id": "epa_field_operations_manual_filter_sampling_sop",
-        "section": "5.14",
+        "section": "IV.C.3 Mass Flow Controller — 6.0 Calibration / Post-Calibration (6.1.1–6.1.10)",
         "page": null
       }
     },
@@ -60,11 +60,21 @@
       "action_object": "Definer suction port to MFC inlet port",
       "arguments": [],
       "parameters": [],
-      "constraints": [],
+      "constraints": [
+        {
+          "id": "C10",
+          "type": "parameter",
+          "text": "using latex or Teflon tubing",
+          "attached_to": [
+            "S3"
+          ],
+          "enforcement": "must"
+        }
+      ],
       "flags": {},
       "provenance": {
         "doc_id": "epa_field_operations_manual_filter_sampling_sop",
-        "section": "5.14",
+        "section": "IV.C.3 Mass Flow Controller — 6.0 Calibration / Post-Calibration (6.1.1–6.1.10)",
         "page": null
       }
     },
@@ -79,7 +89,7 @@
       "flags": {},
       "provenance": {
         "doc_id": "epa_field_operations_manual_filter_sampling_sop",
-        "section": "5.14",
+        "section": "IV.C.3 Mass Flow Controller — 6.0 Calibration / Post-Calibration (6.1.1–6.1.10)",
         "page": null
       }
     },
@@ -90,11 +100,21 @@
       "action_object": "MFC display",
       "arguments": [],
       "parameters": [],
-      "constraints": [],
+      "constraints": [
+        {
+          "id": "C11",
+          "type": "precondition",
+          "text": "With the vacuum pump off",
+          "attached_to": [
+            "S5"
+          ],
+          "enforcement": "must"
+        }
+      ],
       "flags": {},
       "provenance": {
         "doc_id": "epa_field_operations_manual_filter_sampling_sop",
-        "section": "5.14",
+        "section": "IV.C.3 Mass Flow Controller — 6.0 Calibration / Post-Calibration (6.1.1–6.1.10)",
         "page": null
       }
     },
@@ -109,7 +129,7 @@
       "flags": {},
       "provenance": {
         "doc_id": "epa_field_operations_manual_filter_sampling_sop",
-        "section": "5.14",
+        "section": "IV.C.3 Mass Flow Controller — 6.0 Calibration / Post-Calibration (6.1.1–6.1.10)",
         "page": null
       }
     },
@@ -124,7 +144,7 @@
         {
           "id": "C2",
           "type": "guard",
-          "text": "For MFCs to be used at 1.5 Lpm, do respective flows at 1.00, 1.25, 1.50, 1.75, 2.00, and 2.25 Lpm",
+          "text": "For MFCs to be used at 1.5 Lpm, for example, do respective flows at 1.00, 1.25, 1.50, 1.75, 2.00, and 2.25 Lpm",
           "attached_to": [
             "S7",
             "S8",
@@ -137,7 +157,7 @@
       "flags": {},
       "provenance": {
         "doc_id": "epa_field_operations_manual_filter_sampling_sop",
-        "section": "5.14",
+        "section": "IV.C.3 Mass Flow Controller — 6.0 Calibration / Post-Calibration (6.1.1–6.1.10)",
         "page": null
       }
     },
@@ -152,7 +172,7 @@
       "flags": {},
       "provenance": {
         "doc_id": "epa_field_operations_manual_filter_sampling_sop",
-        "section": "5.14",
+        "section": "IV.C.3 Mass Flow Controller — 6.0 Calibration / Post-Calibration (6.1.1–6.1.10)",
         "page": null
       }
     },
@@ -167,7 +187,7 @@
       "flags": {},
       "provenance": {
         "doc_id": "epa_field_operations_manual_filter_sampling_sop",
-        "section": "5.14",
+        "section": "IV.C.3 Mass Flow Controller — 6.0 Calibration / Post-Calibration (6.1.1–6.1.10)",
         "page": null
       }
     },
@@ -182,7 +202,7 @@
         {
           "id": "C3",
           "type": "parameter",
-          "text": "Average of ten good runs for the Definer",
+          "text": "average of ten good runs, entered into the STP column",
           "attached_to": [
             "S10"
           ],
@@ -192,7 +212,7 @@
       "flags": {},
       "provenance": {
         "doc_id": "epa_field_operations_manual_filter_sampling_sop",
-        "section": "5.14",
+        "section": "IV.C.3 Mass Flow Controller — 6.0 Calibration / Post-Calibration (6.1.1–6.1.10)",
         "page": null
       }
     },
@@ -207,7 +227,7 @@
         {
           "id": "C4",
           "type": "postcondition",
-          "text": "Record the MFC display, the Flow_Mass (entered into the voltage column), and the MFM measurement on the Mass Flow Data Form in the As Left section",
+          "text": "At each level of flow, record the MFC display, the “Flow_Mass” (entered into the voltage column), and the MFM measurement (average of ten good runs, entered into the STP column) on the Mass Flow Data Form in the As Left section",
           "attached_to": [
             "S11"
           ],
@@ -217,7 +237,7 @@
       "flags": {},
       "provenance": {
         "doc_id": "epa_field_operations_manual_filter_sampling_sop",
-        "section": "5.14",
+        "section": "IV.C.3 Mass Flow Controller — 6.0 Calibration / Post-Calibration (6.1.1–6.1.10)",
         "page": null
       }
     },
@@ -251,7 +271,7 @@
       "flags": {},
       "provenance": {
         "doc_id": "epa_field_operations_manual_filter_sampling_sop",
-        "section": "5.14",
+        "section": "IV.C.3 Mass Flow Controller — 6.0 Calibration / Post-Calibration (6.1.1–6.1.10)",
         "page": null
       }
     },
@@ -266,7 +286,7 @@
       "flags": {},
       "provenance": {
         "doc_id": "epa_field_operations_manual_filter_sampling_sop",
-        "section": "5.14",
+        "section": "IV.C.3 Mass Flow Controller — 6.0 Calibration / Post-Calibration (6.1.1–6.1.10)",
         "page": null
       }
     },
@@ -286,12 +306,21 @@
             "S14"
           ],
           "enforcement": "must"
+        },
+        {
+          "id": "C12",
+          "type": "parameter",
+          "text": "Using the average of ten good runs for the Definer",
+          "attached_to": [
+            "S14"
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {},
       "provenance": {
         "doc_id": "epa_field_operations_manual_filter_sampling_sop",
-        "section": "5.14",
+        "section": "IV.C.3 Mass Flow Controller — 6.0 Calibration / Post-Calibration (6.1.1–6.1.10)",
         "page": null
       }
     },
@@ -316,7 +345,7 @@
       "flags": {},
       "provenance": {
         "doc_id": "epa_field_operations_manual_filter_sampling_sop",
-        "section": "5.14",
+        "section": "IV.C.3 Mass Flow Controller — 6.0 Calibration / Post-Calibration (6.1.1–6.1.10)",
         "page": null
       }
     },
@@ -343,7 +372,7 @@
       "flags": {},
       "provenance": {
         "doc_id": "epa_field_operations_manual_filter_sampling_sop",
-        "section": "5.14",
+        "section": "IV.C.3 Mass Flow Controller — 6.0 Calibration / Post-Calibration (6.1.1–6.1.10)",
         "page": null
       }
     },
@@ -358,7 +387,7 @@
       "flags": {},
       "provenance": {
         "doc_id": "epa_field_operations_manual_filter_sampling_sop",
-        "section": "5.14",
+        "section": "IV.C.3 Mass Flow Controller — 6.0 Calibration / Post-Calibration (6.1.1–6.1.10)",
         "page": null
       }
     },
@@ -373,18 +402,104 @@
       "flags": {},
       "provenance": {
         "doc_id": "epa_field_operations_manual_filter_sampling_sop",
-        "section": "5.14",
+        "section": "IV.C.3 Mass Flow Controller — 6.0 Calibration / Post-Calibration (6.1.1–6.1.10)",
         "page": null
       }
     }
   ],
   "constraints": [],
-  "relations": [],
+  "relations": [
+    {
+      "source": "S1",
+      "target": "S2",
+      "type": "NEXT"
+    },
+    {
+      "source": "S2",
+      "target": "S3",
+      "type": "NEXT"
+    },
+    {
+      "source": "S3",
+      "target": "S4",
+      "type": "NEXT"
+    },
+    {
+      "source": "S4",
+      "target": "S5",
+      "type": "NEXT"
+    },
+    {
+      "source": "S5",
+      "target": "S6",
+      "type": "NEXT"
+    },
+    {
+      "source": "S6",
+      "target": "S7",
+      "type": "NEXT"
+    },
+    {
+      "source": "S7",
+      "target": "S8",
+      "type": "NEXT"
+    },
+    {
+      "source": "S8",
+      "target": "S9",
+      "type": "NEXT"
+    },
+    {
+      "source": "S9",
+      "target": "S10",
+      "type": "NEXT"
+    },
+    {
+      "source": "S10",
+      "target": "S11",
+      "type": "NEXT"
+    },
+    {
+      "source": "S11",
+      "target": "S12",
+      "type": "NEXT"
+    },
+    {
+      "source": "S12",
+      "target": "S13",
+      "type": "NEXT"
+    },
+    {
+      "source": "S13",
+      "target": "S14",
+      "type": "NEXT"
+    },
+    {
+      "source": "S14",
+      "target": "S15",
+      "type": "NEXT"
+    },
+    {
+      "source": "S15",
+      "target": "S16",
+      "type": "NEXT"
+    },
+    {
+      "source": "S16",
+      "target": "S17",
+      "type": "NEXT"
+    },
+    {
+      "source": "S17",
+      "target": "S18",
+      "type": "NEXT"
+    }
+  ],
   "quality": {
     "annotation_scope": "full_subprocedure",
     "review_status": "reviewed",
     "annotator": "model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off)",
     "review_date": "2026-07-05",
-    "review_notes": "Adjudicated 2026-07-05 by model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off) via scripts/adjudicate.py from model-assisted draft. Decisions: 24 accept, 3 edit, 0 reject, 0 add.\nstep:S1 ACCEPT\nstep:S2 ACCEPT\nstep:S3 ACCEPT\nstep:S4 ACCEPT\nstep:S5 ACCEPT\nstep:S6 ACCEPT\nstep:S7 ACCEPT\nstep:S8 ACCEPT\nstep:S9 ACCEPT\nstep:S10 ACCEPT\nstep:S11 ACCEPT\nstep:S12 ACCEPT\nstep:S13 ACCEPT\nstep:S14 ACCEPT\nstep:S15 ACCEPT\nstep:S16 ACCEPT\nstep:S17 ACCEPT\nstep:S18 ACCEPT\nconstraint:C1 ACCEPT\nconstraint:C2 EDIT ['type'] -- C2 describes a conditional flow range for a specific use case ('For MFCs to be used at 1.5 Lpm'), not a mandatory parameter for all calibrations. Type should be guard, not parameter.\nconstraint:C4 EDIT ['attached_to', 'type'] -- Recording happens at each level (S8–S10), but the data entry onto the form occurs in S11, so postcondition should attach to S11, not the recording steps.\nconstraint:C3 ACCEPT\nconstraint:C5 ACCEPT\nconstraint:C6 ACCEPT\nconstraint:C7 EDIT ['attached_to', 'type'] -- C7 describes the target outcome of S14 (adjust to achieve 1.50 or 3.00), not a parameter input to the step. Type should be postcondition.\nconstraint:C8 ACCEPT\nconstraint:C9 ACCEPT\n[strict-warning adjudication] step:S2 zero_constraints adjudicated; step:S3 zero_constraints adjudicated; step:S4 zero_constraints adjudicated; step:S5 zero_constraints adjudicated; step:S6 zero_constraints adjudicated; step:S8 zero_constraints adjudicated; step:S9 zero_constraints adjudicated; step:S13 zero_constraints adjudicated; step:S17 zero_constraints adjudicated; step:S18 zero_constraints adjudicated"
+    "review_notes": "Adjudicated 2026-07-05 by model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off) via scripts/adjudicate.py from model-assisted draft. Decisions: 24 accept, 3 edit, 0 reject, 0 add.\nstep:S1 ACCEPT\nstep:S2 ACCEPT\nstep:S3 ACCEPT\nstep:S4 ACCEPT\nstep:S5 ACCEPT\nstep:S6 ACCEPT\nstep:S7 ACCEPT\nstep:S8 ACCEPT\nstep:S9 ACCEPT\nstep:S10 ACCEPT\nstep:S11 ACCEPT\nstep:S12 ACCEPT\nstep:S13 ACCEPT\nstep:S14 ACCEPT\nstep:S15 ACCEPT\nstep:S16 ACCEPT\nstep:S17 ACCEPT\nstep:S18 ACCEPT\nconstraint:C1 ACCEPT\nconstraint:C2 EDIT ['type'] -- C2 describes a conditional flow range for a specific use case ('For MFCs to be used at 1.5 Lpm'), not a mandatory parameter for all calibrations. Type should be guard, not parameter.\nconstraint:C4 EDIT ['attached_to', 'type'] -- Recording happens at each level (S8–S10), but the data entry onto the form occurs in S11, so postcondition should attach to S11, not the recording steps.\nconstraint:C3 ACCEPT\nconstraint:C5 ACCEPT\nconstraint:C6 ACCEPT\nconstraint:C7 EDIT ['attached_to', 'type'] -- C7 describes the target outcome of S14 (adjust to achieve 1.50 or 3.00), not a parameter input to the step. Type should be postcondition.\nconstraint:C8 ACCEPT\nconstraint:C9 ACCEPT\n[strict-warning adjudication] step:S2 zero_constraints adjudicated; step:S3 zero_constraints adjudicated; step:S4 zero_constraints adjudicated; step:S5 zero_constraints adjudicated; step:S6 zero_constraints adjudicated; step:S8 zero_constraints adjudicated; step:S9 zero_constraints adjudicated; step:S13 zero_constraints adjudicated; step:S17 zero_constraints adjudicated; step:S18 zero_constraints adjudicated\n[verbatim-grounding pass 2026-07-06, agent, pending human sign-off] Corrected procedure metadata: annotated unit is the Mass Flow Controller SOP section 6.0 Calibration / Post-Calibration (6.1.1-6.1.10), NOT '5.14 Repair' (5.14 is a one-line manufacturer-return note in the O3-monitor SOP); char span tightened 601180:612180 -> 609373:611246 to the exact unit. C2 restored verbatim ('for example' was dropped). C4 restored to the full 6.1.7 sentence (summarisation had removed the STP-column parenthetical). C3 re-grounded to the 6.1.7 parenthetical 'average of ten good runs, entered into the STP column' (its old text spliced wording from 6.1.9, which governs S14, not S10). Added missed constraints per guidelines source signals: C10 'using latex or Teflon tubing' (parameter, S3), C11 'With the vacuum pump off' (precondition, S5), C12 'Using the average of ten good runs for the Definer' (parameter, S14). 9 -> 12 constraints.\n[relations pass 2026-07-06, agent, pending human sign-off] Step-graph relations annotated by hand: NEXT = document-order procedural succession; fork NEXT edges plus ALTERNATIVE_TO only where the source states mutually exclusive branches. Conditional in-step behaviour stays encoded as guard constraints. Loops (check-measurement repeat, per-vertical sampling) not modeled to keep the graph acyclic. NOTE: current Tier-B eval synthesizes a linear NEXT chain from steps-array order and does not read this field; relations are provided as explicit gold ordering/branching for graph consumers and export."
   }
 }

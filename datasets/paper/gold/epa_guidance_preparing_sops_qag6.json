@@ -9,7 +9,7 @@
       "section": "2.0 SOP Process (2.1-2.6)",
       "page": null,
       "char_start": 10437,
-      "char_end": 17026
+      "char_end": 16382
     }
   },
   "steps": [
@@ -43,7 +43,16 @@
           "attached_to": [
             "S2"
           ],
-          "enforcement": "must"
+          "enforcement": "should"
+        },
+        {
+          "id": "C36",
+          "type": "guard",
+          "text": "A team approach can be followed, especially for multi-tasked processes where the experiences of a number of individuals are critical",
+          "attached_to": [
+            "S2"
+          ],
+          "enforcement": "may"
         }
       ],
       "flags": {},
@@ -68,7 +77,7 @@
           "attached_to": [
             "S3"
           ],
-          "enforcement": "must"
+          "enforcement": "should"
         }
       ],
       "flags": {},
@@ -93,7 +102,7 @@
           "attached_to": [
             "S4"
           ],
-          "enforcement": "must"
+          "enforcement": "should"
         }
       ],
       "flags": {},
@@ -113,12 +122,12 @@
       "constraints": [
         {
           "id": "C4",
-          "type": "precondition",
-          "text": "reviewed by one or more individuals with appropriate training and experience with the process",
+          "type": "role_assignment",
+          "text": "SOPs should be reviewed (that is, validated) by one or more individuals with appropriate training and experience with the process",
           "attached_to": [
             "S5"
           ],
-          "enforcement": "must"
+          "enforcement": "should"
         }
       ],
       "flags": {},
@@ -179,22 +188,22 @@
         {
           "id": "C6",
           "type": "precondition",
-          "text": "approved as described in the organization's Quality Management Plan or its own SOP for preparation of SOPs",
+          "text": "The finalized SOPs should be approved as described in the organization’s Quality Management Plan or its own SOP for preparation of SOPs",
           "attached_to": [
             "S8",
             "S9"
           ],
-          "enforcement": "must"
+          "enforcement": "should"
         },
         {
           "id": "C7",
           "type": "role_assignment",
-          "text": "immediate supervisor, such as a section or branch chief, and the organization's quality assurance officer review and approve each SOP",
+          "text": "Generally the immediate supervisor, such as a section or branch chief, and the organization’s quality assurance officer review and approve each SOP",
           "attached_to": [
             "S8",
             "S9"
           ],
-          "enforcement": "must"
+          "enforcement": "should"
         }
       ],
       "flags": {},
@@ -284,7 +293,7 @@
           "attached_to": [
             "S12"
           ],
-          "enforcement": "must"
+          "enforcement": "should"
         }
       ],
       "flags": {},
@@ -304,12 +313,13 @@
       "constraints": [
         {
           "id": "C11",
-          "type": "parameter",
-          "text": "modify only the pertinent section of an SOP and indicate the change date/revision number for that section",
+          "type": "guard",
+          "text": "If desired, modify only the pertinent section of an SOP and indicate the change date/revision number for that section in the Table of Contents and the document control notation",
           "attached_to": [
-            "S13"
+            "S13",
+            "S14"
           ],
-          "enforcement": "should"
+          "enforcement": "may"
         }
       ],
       "flags": {},
@@ -326,17 +336,7 @@
       "action_object": "Table of Contents with change date and revision number for modified section",
       "arguments": [],
       "parameters": [],
-      "constraints": [
-        {
-          "id": "C12",
-          "type": "postcondition",
-          "text": "Table of Contents and the document control notation updated with revision information",
-          "attached_to": [
-            "S14"
-          ],
-          "enforcement": "must"
-        }
-      ],
+      "constraints": [],
       "flags": {},
       "provenance": {
         "doc_id": "epa_guidance_preparing_sops_qag6",
@@ -369,12 +369,30 @@
       "constraints": [
         {
           "id": "C13",
-          "type": "precondition",
-          "text": "SOPs should be systematically reviewed on a periodic basis, e.g. every 1-2 years",
+          "type": "parameter",
+          "text": "SOPs should be also systematically reviewed on a periodic basis, e.g. every 1-2 years",
           "attached_to": [
             "S16"
           ],
-          "enforcement": "must"
+          "enforcement": "should"
+        },
+        {
+          "id": "C37",
+          "type": "parameter",
+          "text": "The review process should not be overly cumbersome to encourage timely review",
+          "attached_to": [
+            "S16"
+          ],
+          "enforcement": "should"
+        },
+        {
+          "id": "C38",
+          "type": "role_assignment",
+          "text": "The frequency of review should be indicated by management in the organization’s Quality Management Plan",
+          "attached_to": [
+            "S16"
+          ],
+          "enforcement": "should"
         }
       ],
       "flags": {},
@@ -399,7 +417,7 @@
           "attached_to": [
             "S17"
           ],
-          "enforcement": "must"
+          "enforcement": "should"
         }
       ],
       "flags": {},
@@ -419,10 +437,11 @@
       "constraints": [
         {
           "id": "C15",
-          "type": "precondition",
-          "text": "if an SOP describes a process that is no longer followed, it should be withdrawn from the current file",
+          "type": "guard",
+          "text": "If an SOP describes a process that is no longer followed, it should be withdrawn from the current file and archived",
           "attached_to": [
-            "S18"
+            "S18",
+            "S19"
           ],
           "enforcement": "should"
         }
@@ -441,17 +460,7 @@
       "action_object": "withdrawn SOP for historical reference",
       "arguments": [],
       "parameters": [],
-      "constraints": [
-        {
-          "id": "C16",
-          "type": "postcondition",
-          "text": "withdrawn SOP archived",
-          "attached_to": [
-            "S19"
-          ],
-          "enforcement": "must"
-        }
-      ],
+      "constraints": [],
       "flags": {},
       "provenance": {
         "doc_id": "epa_guidance_preparing_sops_qag6",
@@ -470,11 +479,12 @@
         {
           "id": "C17",
           "type": "guard",
-          "text": "checklists or forms included as part of an activity should be referenced at the points in the procedure where they are to be used",
+          "text": "Any checklists or forms included as part of an activity should be referenced at the points in the procedure where they are to be used and then attached to the SOP",
           "attached_to": [
-            "S20"
+            "S20",
+            "S21"
           ],
-          "enforcement": "must"
+          "enforcement": "should"
         }
       ],
       "flags": {},
@@ -493,9 +503,9 @@
       "parameters": [],
       "constraints": [
         {
-          "id": "C18",
-          "type": "postcondition",
-          "text": "checklists attached to the SOP",
+          "id": "C39",
+          "type": "guard",
+          "text": "Remember that the checklist is not the SOP, but a part of the SOP",
           "attached_to": [
             "S21"
           ],
@@ -519,8 +529,8 @@
       "constraints": [
         {
           "id": "C19",
-          "type": "parameter",
-          "text": "detailed checklists prepared specifically for a given activity",
+          "type": "guard",
+          "text": "In some cases, detailed checklists are prepared specifically for a given activity",
           "attached_to": [
             "S22"
           ],
@@ -570,11 +580,11 @@
         {
           "id": "C21",
           "type": "postcondition",
-          "text": "copies of specific checklists maintained in the file with the activity results and/or with the SOP",
+          "text": "Copies of specific checklists should be then maintained in the file with the activity results and/or with the SOP",
           "attached_to": [
             "S24"
           ],
-          "enforcement": "must"
+          "enforcement": "should"
         }
       ],
       "flags": {},
@@ -599,7 +609,7 @@
           "attached_to": [
             "S25"
           ],
-          "enforcement": "must"
+          "enforcement": "should"
         },
         {
           "id": "C23",
@@ -608,7 +618,7 @@
           "attached_to": [
             "S25"
           ],
-          "enforcement": "must"
+          "enforcement": "should"
         }
       ],
       "flags": {},
@@ -654,11 +664,11 @@
         {
           "id": "C25",
           "type": "parameter",
-          "text": "document control notation located in the upper right-hand corner of each document page following the title page",
+          "text": "Generally this type of document control notation is located in the upper right-hand corner of each document page following the title page",
           "attached_to": [
             "S27"
           ],
-          "enforcement": "must"
+          "enforcement": "should"
         }
       ],
       "flags": {},
@@ -679,7 +689,7 @@
         {
           "id": "C26",
           "type": "postcondition",
-          "text": "organization maintain a master list of all SOPs",
+          "text": "The organization should maintain a master list of all SOPs",
           "attached_to": [
             "S28"
           ],
@@ -704,11 +714,11 @@
         {
           "id": "C27",
           "type": "parameter",
-          "text": "master list should indicate the SOP number, version number, date of issuance, title, author, status, organizational division, branch, section, and any historical information regarding past versions",
+          "text": "This file or database should indicate the SOP number, version number, date of issuance, title, author, status, organizational division, branch, section, and any historical information regarding past versions",
           "attached_to": [
             "S29"
           ],
-          "enforcement": "must"
+          "enforcement": "should"
         }
       ],
       "flags": {},
@@ -783,7 +793,7 @@
           "attached_to": [
             "S32"
           ],
-          "enforcement": "must"
+          "enforcement": "should"
         }
       ],
       "flags": {},
@@ -804,11 +814,12 @@
         {
           "id": "C31",
           "type": "postcondition",
-          "text": "Quality Management Plan should designate where, and how, outdated versions are to be maintained or archived in a manner to prevent their continued use, as well as to be available for historical data review",
+          "text": "That plan should also designated where, and how, outdated versions are to be maintained or archived in a manner to prevent their continued use, as well as to be available for historical data review",
           "attached_to": [
-            "S33"
+            "S33",
+            "S34"
           ],
-          "enforcement": "must"
+          "enforcement": "should"
         }
       ],
       "flags": {},
@@ -825,17 +836,7 @@
       "action_object": "outdated versions in manner to be available for historical data review",
       "arguments": [],
       "parameters": [],
-      "constraints": [
-        {
-          "id": "C32",
-          "type": "guard",
-          "text": "outdated versions maintained or archived in a manner to prevent their continued use, as well as to be available for historical data review",
-          "attached_to": [
-            "S34"
-          ],
-          "enforcement": "must"
-        }
-      ],
+      "constraints": [],
       "flags": {},
       "provenance": {
         "doc_id": "epa_guidance_preparing_sops_qag6",
@@ -850,17 +851,7 @@
       "action_object": "electronic storage and retrieval mechanisms for easier access to SOPs",
       "arguments": [],
       "parameters": [],
-      "constraints": [
-        {
-          "id": "C33",
-          "type": "parameter",
-          "text": "electronic storage and retrieval mechanisms",
-          "attached_to": [
-            "S35"
-          ],
-          "enforcement": "should"
-        }
-      ],
+      "constraints": [],
       "flags": {},
       "provenance": {
         "doc_id": "epa_guidance_preparing_sops_qag6",
@@ -895,12 +886,188 @@
     }
   ],
   "constraints": [],
-  "relations": [],
+  "relations": [
+    {
+      "source": "S1",
+      "target": "S2",
+      "type": "NEXT"
+    },
+    {
+      "source": "S2",
+      "target": "S3",
+      "type": "NEXT"
+    },
+    {
+      "source": "S3",
+      "target": "S4",
+      "type": "NEXT"
+    },
+    {
+      "source": "S4",
+      "target": "S5",
+      "type": "NEXT"
+    },
+    {
+      "source": "S5",
+      "target": "S6",
+      "type": "NEXT"
+    },
+    {
+      "source": "S6",
+      "target": "S7",
+      "type": "NEXT"
+    },
+    {
+      "source": "S7",
+      "target": "S8",
+      "type": "NEXT"
+    },
+    {
+      "source": "S8",
+      "target": "S9",
+      "type": "NEXT"
+    },
+    {
+      "source": "S9",
+      "target": "S10",
+      "type": "NEXT"
+    },
+    {
+      "source": "S10",
+      "target": "S11",
+      "type": "NEXT"
+    },
+    {
+      "source": "S11",
+      "target": "S12",
+      "type": "NEXT"
+    },
+    {
+      "source": "S12",
+      "target": "S13",
+      "type": "NEXT"
+    },
+    {
+      "source": "S13",
+      "target": "S14",
+      "type": "NEXT"
+    },
+    {
+      "source": "S14",
+      "target": "S15",
+      "type": "NEXT"
+    },
+    {
+      "source": "S15",
+      "target": "S16",
+      "type": "NEXT"
+    },
+    {
+      "source": "S16",
+      "target": "S17",
+      "type": "NEXT"
+    },
+    {
+      "source": "S17",
+      "target": "S18",
+      "type": "NEXT"
+    },
+    {
+      "source": "S18",
+      "target": "S19",
+      "type": "NEXT"
+    },
+    {
+      "source": "S19",
+      "target": "S20",
+      "type": "NEXT"
+    },
+    {
+      "source": "S20",
+      "target": "S21",
+      "type": "NEXT"
+    },
+    {
+      "source": "S21",
+      "target": "S22",
+      "type": "NEXT"
+    },
+    {
+      "source": "S22",
+      "target": "S23",
+      "type": "NEXT"
+    },
+    {
+      "source": "S23",
+      "target": "S24",
+      "type": "NEXT"
+    },
+    {
+      "source": "S24",
+      "target": "S25",
+      "type": "NEXT"
+    },
+    {
+      "source": "S25",
+      "target": "S26",
+      "type": "NEXT"
+    },
+    {
+      "source": "S26",
+      "target": "S27",
+      "type": "NEXT"
+    },
+    {
+      "source": "S27",
+      "target": "S28",
+      "type": "NEXT"
+    },
+    {
+      "source": "S28",
+      "target": "S29",
+      "type": "NEXT"
+    },
+    {
+      "source": "S29",
+      "target": "S30",
+      "type": "NEXT"
+    },
+    {
+      "source": "S30",
+      "target": "S31",
+      "type": "NEXT"
+    },
+    {
+      "source": "S31",
+      "target": "S32",
+      "type": "NEXT"
+    },
+    {
+      "source": "S32",
+      "target": "S33",
+      "type": "NEXT"
+    },
+    {
+      "source": "S33",
+      "target": "S34",
+      "type": "NEXT"
+    },
+    {
+      "source": "S34",
+      "target": "S35",
+      "type": "NEXT"
+    },
+    {
+      "source": "S35",
+      "target": "S36",
+      "type": "NEXT"
+    }
+  ],
   "quality": {
     "annotation_scope": "full_subprocedure",
     "review_status": "reviewed",
     "annotator": "model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off)",
     "review_date": "2026-07-05",
-    "review_notes": "Adjudicated 2026-07-05 by model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off) via scripts/adjudicate.py from model-assisted draft. Decisions: 66 accept, 4 edit, 0 reject, 0 add.\nstep:S1 ACCEPT\nstep:S2 ACCEPT\nstep:S3 ACCEPT\nstep:S4 ACCEPT\nstep:S5 ACCEPT\nstep:S6 ACCEPT\nstep:S7 ACCEPT\nstep:S8 ACCEPT\nstep:S9 ACCEPT\nstep:S10 ACCEPT\nstep:S11 ACCEPT\nstep:S12 ACCEPT\nstep:S13 ACCEPT\nstep:S14 ACCEPT\nstep:S15 ACCEPT\nstep:S16 ACCEPT\nstep:S17 ACCEPT\nstep:S18 ACCEPT\nstep:S19 ACCEPT\nstep:S20 ACCEPT\nstep:S21 ACCEPT\nstep:S22 ACCEPT\nstep:S23 ACCEPT\nstep:S24 ACCEPT\nstep:S25 ACCEPT\nstep:S26 ACCEPT\nstep:S27 ACCEPT\nstep:S28 ACCEPT\nstep:S29 ACCEPT\nstep:S30 ACCEPT\nstep:S31 ACCEPT\nstep:S32 ACCEPT\nstep:S33 ACCEPT\nstep:S34 ACCEPT\nstep:S35 ACCEPT\nstep:S36 ACCEPT\nconstraint:C1 ACCEPT\nconstraint:C2 ACCEPT\nconstraint:C3 ACCEPT\nconstraint:C4 ACCEPT\nconstraint:C5 ACCEPT\nconstraint:C6 EDIT ['type'] -- Text says approval should follow the Quality Management Plan; this is a precondition for S8/S9, not a precondition to them. Type should be 'postcondition' or 'guard' describing what must be true before approval happens, but as written it describes the process itself.\nconstraint:C7 ACCEPT\nconstraint:C8 ACCEPT\nconstraint:C9 ACCEPT\nconstraint:C10 EDIT ['enforcement'] -- Source text (2.3): 'whenever procedures are changed, SOPs should be updated and re-approved.' The prescriptive force here is stronger than a suggestion—this is a standing requirement, not optional.\nconstraint:C11 ACCEPT\nconstraint:C12 ACCEPT\nconstraint:C13 EDIT ['enforcement'] -- Source text (2.3): 'SOPs need to remain current to be useful. Therefore... SOPs should be also systematically reviewed on a periodic basis.' This is mandatory maintenance, not discretionary.\nconstraint:C14 ACCEPT\nconstraint:C15 ACCEPT\nconstraint:C16 ACCEPT\nconstraint:C17 ACCEPT\nconstraint:C18 ACCEPT\nconstraint:C19 ACCEPT\nconstraint:C20 ACCEPT\nconstraint:C21 ACCEPT\nconstraint:C22 EDIT ['enforcement'] -- Source text (2.5): 'Each organization should develop a numbering system...' The word 'should' here is prescriptive for organizational policy; it is not optional.\nconstraint:C23 ACCEPT\nconstraint:C24 ACCEPT\nconstraint:C25 ACCEPT\nconstraint:C26 ACCEPT\nconstraint:C27 ACCEPT\nconstraint:C28 ACCEPT\nconstraint:C29 ACCEPT\nconstraint:C30 ACCEPT\nconstraint:C31 ACCEPT\nconstraint:C32 ACCEPT\nconstraint:C33 ACCEPT\nconstraint:C34 ACCEPT\n[strict-warning adjudication] step:S1 zero_constraints adjudicated; step:S7 zero_constraints adjudicated; step:S9 zero_constraints adjudicated; step:S15 zero_constraints adjudicated"
+    "review_notes": "Adjudicated 2026-07-05 by model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off) via scripts/adjudicate.py from model-assisted draft. Decisions: 66 accept, 4 edit, 0 reject, 0 add.\nstep:S1 ACCEPT\nstep:S2 ACCEPT\nstep:S3 ACCEPT\nstep:S4 ACCEPT\nstep:S5 ACCEPT\nstep:S6 ACCEPT\nstep:S7 ACCEPT\nstep:S8 ACCEPT\nstep:S9 ACCEPT\nstep:S10 ACCEPT\nstep:S11 ACCEPT\nstep:S12 ACCEPT\nstep:S13 ACCEPT\nstep:S14 ACCEPT\nstep:S15 ACCEPT\nstep:S16 ACCEPT\nstep:S17 ACCEPT\nstep:S18 ACCEPT\nstep:S19 ACCEPT\nstep:S20 ACCEPT\nstep:S21 ACCEPT\nstep:S22 ACCEPT\nstep:S23 ACCEPT\nstep:S24 ACCEPT\nstep:S25 ACCEPT\nstep:S26 ACCEPT\nstep:S27 ACCEPT\nstep:S28 ACCEPT\nstep:S29 ACCEPT\nstep:S30 ACCEPT\nstep:S31 ACCEPT\nstep:S32 ACCEPT\nstep:S33 ACCEPT\nstep:S34 ACCEPT\nstep:S35 ACCEPT\nstep:S36 ACCEPT\nconstraint:C1 ACCEPT\nconstraint:C2 ACCEPT\nconstraint:C3 ACCEPT\nconstraint:C4 ACCEPT\nconstraint:C5 ACCEPT\nconstraint:C6 EDIT ['type'] -- Text says approval should follow the Quality Management Plan; this is a precondition for S8/S9, not a precondition to them. Type should be 'postcondition' or 'guard' describing what must be true before approval happens, but as written it describes the process itself.\nconstraint:C7 ACCEPT\nconstraint:C8 ACCEPT\nconstraint:C9 ACCEPT\nconstraint:C10 EDIT ['enforcement'] -- Source text (2.3): 'whenever procedures are changed, SOPs should be updated and re-approved.' The prescriptive force here is stronger than a suggestion—this is a standing requirement, not optional.\nconstraint:C11 ACCEPT\nconstraint:C12 ACCEPT\nconstraint:C13 EDIT ['enforcement'] -- Source text (2.3): 'SOPs need to remain current to be useful. Therefore... SOPs should be also systematically reviewed on a periodic basis.' This is mandatory maintenance, not discretionary.\nconstraint:C14 ACCEPT\nconstraint:C15 ACCEPT\nconstraint:C16 ACCEPT\nconstraint:C17 ACCEPT\nconstraint:C18 ACCEPT\nconstraint:C19 ACCEPT\nconstraint:C20 ACCEPT\nconstraint:C21 ACCEPT\nconstraint:C22 EDIT ['enforcement'] -- Source text (2.5): 'Each organization should develop a numbering system...' The word 'should' here is prescriptive for organizational policy; it is not optional.\nconstraint:C23 ACCEPT\nconstraint:C24 ACCEPT\nconstraint:C25 ACCEPT\nconstraint:C26 ACCEPT\nconstraint:C27 ACCEPT\nconstraint:C28 ACCEPT\nconstraint:C29 ACCEPT\nconstraint:C30 ACCEPT\nconstraint:C31 ACCEPT\nconstraint:C32 ACCEPT\nconstraint:C33 ACCEPT\nconstraint:C34 ACCEPT\n[strict-warning adjudication] step:S1 zero_constraints adjudicated; step:S7 zero_constraints adjudicated; step:S9 zero_constraints adjudicated; step:S15 zero_constraints adjudicated\n[verbatim-grounding pass 2026-07-06, agent, pending human sign-off] Twelve constraint texts re-grounded to contiguous verbatim source spans (C4 restored '(that is, validated)', C6/C7 restored sentence heads with curly apostrophes, C13 restored 'be also', C19 restored 'In some cases', C21/C25/C26/C27 restored sentence heads, C31 kept the source's own wording 'should also designated' — source typo, not OCR). Merged fragment pairs back to their single source sentences: C11+C12 -> C11 (full 'If desired...' sentence, guard/may, S13-S14), C15+C16 -> C15 (full withdraw-and-archive sentence, guard, S18-S19), C17+C18 -> C17 (full reference-and-attach sentence, S20-S21). Dropped C32 (fully contained in C31; C31 now attaches S33-S34) and C33 ('electronic storage and retrieval mechanisms' — fragment of a descriptive comparison sentence, not a constraint). Enforcement realigned to the guidelines modal-verb mapping ('should' -> should) on C1-C4, C6, C7, C10, C13, C14, C17, C21, C22, C23, C25, C27, C30, C31 — this reverses the adjudication upgrades on C10/C13/C22; the guidelines mapping and its be-conservative IAA rule govern. Retyped C4 -> role_assignment (reviewer qualification), C13 -> parameter (review rate), C15/C19 -> guard (conditionals). Added missed constraints: C36 team-approach permission (guard/may, S2), C37 review-not-cumbersome (parameter/should, S16), C38 review frequency indicated by management in the QMP (role_assignment/should, S16), C39 'Remember that the checklist is not the SOP' caution (guard/must, S21). char_end 17026 -> 16382 (annotated unit ends before section 3.0). 34 -> 33 constraints.\nstep:S14 zero_constraints adjudicated (covered via C11 attachment); step:S19 zero_constraints adjudicated (covered via C15 attachment); step:S34 zero_constraints adjudicated (covered via C31 attachment); step:S35 zero_constraints adjudicated\n[relations pass 2026-07-06, agent, pending human sign-off] Step-graph relations annotated by hand: NEXT = document-order procedural succession; fork NEXT edges plus ALTERNATIVE_TO only where the source states mutually exclusive branches. Conditional in-step behaviour stays encoded as guard constraints. Loops (check-measurement repeat, per-vertical sampling) not modeled to keep the graph acyclic. NOTE: current Tier-B eval synthesizes a linear NEXT chain from steps-array order and does not read this field; relations are provided as explicit gold ordering/branching for graph consumers and export."
   }
 }

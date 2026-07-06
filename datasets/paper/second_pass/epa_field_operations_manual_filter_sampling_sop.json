@@ -1,15 +1,15 @@
 {
   "procedure": {
     "doc_id": "epa_field_operations_manual_filter_sampling_sop",
-    "title": "5.14 Repair",
+    "title": "6.0 Calibration / Post-Calibration (Mass Flow Controller)",
     "version": "CASTNET FOM",
     "domain": "field_operations",
     "source": {
       "doc_id": "epa_field_operations_manual_filter_sampling_sop",
-      "section": "5.14",
+      "section": "IV.C.3 Mass Flow Controller — 6.0 Calibration / Post-Calibration (6.1.1–6.1.10)",
       "page": null,
-      "char_start": 601180,
-      "char_end": 612180
+      "char_start": 609373,
+      "char_end": 611246
     }
   },
   "steps": [
@@ -24,7 +24,7 @@
       "flags": {},
       "provenance": {
         "doc_id": "epa_field_operations_manual_filter_sampling_sop",
-        "section": "5.14"
+        "section": "IV.C.3 Mass Flow Controller — 6.0 Calibration / Post-Calibration (6.1.1–6.1.10)"
       }
     }
   ],

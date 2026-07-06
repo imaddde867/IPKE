@@ -24,9 +24,25 @@
         {
           "id": "C5",
           "type": "precondition",
-          "text": "For Category I project/programs, SSTP must be approved by the governing Program Management Council",
+          "text": "Ensure, for Category I project/programs, that the SSTP is approved by the governing Program Management Council (PMC)",
           "attached_to": [
             "S1"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C31",
+          "type": "role_assignment",
+          "text": "Project managers shall",
+          "attached_to": [
+            "S1",
+            "S2",
+            "S3",
+            "S4",
+            "S5",
+            "S6",
+            "S7",
+            "S8"
           ],
           "enforcement": "must"
         }
@@ -49,7 +65,7 @@
         {
           "id": "C6",
           "type": "precondition",
-          "text": "For Category I project/programs, SSTP must have concurrence by the cognizant SMA managers and the project's senior engineer",
+          "text": "has concurrence by the cognizant SMA managers and the project's senior engineer",
           "attached_to": [
             "S2",
             "S3"
@@ -90,7 +106,7 @@
         {
           "id": "C7",
           "type": "postcondition",
-          "text": "System Safety Manager and the prime contractor (for out-of-house projects) must have the resources to implement the SSTP",
+          "text": "Ensure that the System Safety Manager and the prime contractor (for out-of-house projects) have the resources to implement the SSTP",
           "attached_to": [
             "S4",
             "S5"
@@ -131,7 +147,7 @@
         {
           "id": "C8",
           "type": "precondition",
-          "text": "For Category I project/programs, changes to the SSTP must be approved by the governing PMC",
+          "text": "Ensure, for Category I project/programs, that changes to the SSTP are approved by the governing PMC",
           "attached_to": [
             "S6"
           ],
@@ -140,7 +156,7 @@
         {
           "id": "C9",
           "type": "precondition",
-          "text": "For Category I project/programs, changes to the SSTP must have concurrence by the Chief, Safety and Mission Assurance",
+          "text": "have concurrence by the Chief, Safety and Mission Assurance",
           "attached_to": [
             "S6",
             "S7"
@@ -206,9 +222,21 @@
         {
           "id": "C11",
           "type": "role_assignment",
-          "text": "The Center SMA Director shall assign a System Safety Manager to have specific responsibility for the development and implementation of the SSTP",
+          "text": "In coordination with the program/project manager, assign a System Safety Manager to have specific responsibility for the development and implementation of the SSTP",
           "attached_to": [
             "S9"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C32",
+          "type": "role_assignment",
+          "text": "The Center SMA Director shall",
+          "attached_to": [
+            "S9",
+            "S10",
+            "S11",
+            "S12"
           ],
           "enforcement": "must"
         }
@@ -231,7 +259,7 @@
         {
           "id": "C12",
           "type": "postcondition",
-          "text": "Assigned System Safety Manager must have demonstrated expertise in safety analysis",
+          "text": "Ensure that the assigned System Safety Manager has demonstrated expertise in safety analysis",
           "attached_to": [
             "S10"
           ],
@@ -256,7 +284,7 @@
         {
           "id": "C13",
           "type": "postcondition",
-          "text": "For Category I and II projects, System Safety Manager must have expertise in the application of probabilistic risk assessment techniques",
+          "text": "including, in the case of Category I and II projects, the application of probabilistic risk assessment techniques",
           "attached_to": [
             "S11"
           ],
@@ -281,7 +309,7 @@
         {
           "id": "C14",
           "type": "postcondition",
-          "text": "All personnel with project safety oversight responsibilities must be funded by other than direct project funding sources",
+          "text": "Ensure that all personnel with project safety oversight responsibilities are funded by other than direct project funding sources",
           "attached_to": [
             "S12"
           ],
@@ -304,40 +332,46 @@
       "parameters": [],
       "constraints": [
         {
-          "id": "C1",
-          "type": "reference",
-          "text": "SSTP is designed to be a technical planning guide for the technical performance and management of the system safety activities",
-          "attached_to": [
-            "S13",
-            "S14"
-          ],
-          "enforcement": "must"
-        },
-        {
-          "id": "C2",
-          "type": "reference",
-          "text": "SSTP can be a stand-alone document, or part of the SMA plan or the Systems Engineering Management Plan (SEMP)",
-          "attached_to": [
-            "S13"
-          ],
-          "enforcement": "must"
-        },
-        {
-          "id": "C4",
-          "type": "reference",
-          "text": "SSTP describes how the technical team(s) responsible for generating and maintaining system safety models will interact with the system engineering organizations, the reporting protocol, and the cost and schedule associated with accomplishing system safety modeling activities in relation to the critical or key events during all phases of the life cycle",
-          "attached_to": [
-            "S13",
-            "S14"
-          ],
-          "enforcement": "must"
-        },
-        {
           "id": "C15",
           "type": "precondition",
-          "text": "SSTP must be developed during the project formulation phase",
+          "text": "Develop a SSTP during the project formulation phase",
           "attached_to": [
             "S13"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C22",
+          "type": "role_assignment",
+          "text": "The assigned System Safety Manager shall",
+          "attached_to": [
+            "S13",
+            "S14",
+            "S15",
+            "S16",
+            "S17",
+            "S18",
+            "S19",
+            "S20",
+            "S21",
+            "S22",
+            "S23",
+            "S24",
+            "S25",
+            "S26",
+            "S27",
+            "S28",
+            "S29",
+            "S30",
+            "S31",
+            "S32",
+            "S33",
+            "S34",
+            "S35",
+            "S36",
+            "S37",
+            "S38",
+            "S39"
           ],
           "enforcement": "must"
         }
@@ -360,7 +394,7 @@
         {
           "id": "C16",
           "type": "postcondition",
-          "text": "SSTP must be updated throughout the system life cycle",
+          "text": "update the plan throughout the system life cycle",
           "attached_to": [
             "S14"
           ],
@@ -410,7 +444,7 @@
         {
           "id": "C3",
           "type": "parameter",
-          "text": "SSTP provides the specifics of the system safety modeling activities and describes what and how safety adverse consequences will be modeled, how system safety models (qualitative and probabilistic risk assessments) will be integrated and applied for risk-informed decision making and safety monitoring",
+          "text": "Ensure that the SSTP provides the specifics of the system safety modeling activities and their application to risk-informed decision making and safety monitoring throughout the project life cycle",
           "attached_to": [
             "S16",
             "S17",
@@ -466,10 +500,13 @@
       "constraints": [
         {
           "id": "C19",
-          "type": "postcondition",
-          "text": "Objectives and scope of the system safety tasks must be established and documented in the SSTP",
+          "type": "role_assignment",
+          "text": "In consultation with the project managers, establish and document in the SSTP the objectives and scope of the system safety tasks and define applicable safety deliverables and performance measures",
           "attached_to": [
-            "S19"
+            "S19",
+            "S20",
+            "S21",
+            "S22"
           ],
           "enforcement": "must"
         }
@@ -488,18 +525,7 @@
       "action_object": "applicable safety deliverables",
       "arguments": [],
       "parameters": [],
-      "constraints": [
-        {
-          "id": "C20",
-          "type": "postcondition",
-          "text": "Applicable safety deliverables and performance measures must be defined and documented in the SSTP",
-          "attached_to": [
-            "S20",
-            "S21"
-          ],
-          "enforcement": "must"
-        }
-      ],
+      "constraints": [],
       "flags": {},
       "provenance": {
         "doc_id": "nasa_npr_8715_3d_general_safety",
@@ -524,22 +550,12 @@
     },
     {
       "id": "S22",
-      "label": "Document safety tasks and deliverables in SSTP",
+      "label": "Document objectives and scope of system safety tasks in SSTP",
       "action_verb": "document",
-      "action_object": "safety tasks and deliverables",
+      "action_object": "objectives and scope of system safety tasks",
       "arguments": [],
       "parameters": [],
-      "constraints": [
-        {
-          "id": "C21",
-          "type": "postcondition",
-          "text": "Safety tasks and deliverables must be documented in the SSTP",
-          "attached_to": [
-            "S22"
-          ],
-          "enforcement": "must"
-        }
-      ],
+      "constraints": [],
       "flags": {},
       "provenance": {
         "doc_id": "nasa_npr_8715_3d_general_safety",
@@ -556,11 +572,12 @@
       "parameters": [],
       "constraints": [
         {
-          "id": "C22",
-          "type": "role_assignment",
-          "text": "The assigned System Safety Manager shall provide technical direction for system safety activities",
+          "id": "C23",
+          "type": "reference",
+          "text": "Provide technical direction and manage implementation of system safety activities as specified in the SSTP",
           "attached_to": [
-            "S23"
+            "S23",
+            "S24"
           ],
           "enforcement": "must"
         }
@@ -579,17 +596,7 @@
       "action_object": "implementation of system safety activities",
       "arguments": [],
       "parameters": [],
-      "constraints": [
-        {
-          "id": "C23",
-          "type": "role_assignment",
-          "text": "The assigned System Safety Manager shall manage implementation of system safety activities as specified in the SSTP",
-          "attached_to": [
-            "S24"
-          ],
-          "enforcement": "must"
-        }
-      ],
+      "constraints": [],
       "flags": {},
       "provenance": {
         "doc_id": "nasa_npr_8715_3d_general_safety",
@@ -608,7 +615,7 @@
         {
           "id": "C24",
           "type": "postcondition",
-          "text": "System safety engineering activities must be integrated into system engineering technical processes",
+          "text": "Ensure that system safety engineering activities are integrated into system engineering technical processes",
           "attached_to": [
             "S25"
           ],
@@ -633,7 +640,7 @@
         {
           "id": "C25",
           "type": "postcondition",
-          "text": "Acceptability of residual risk stemming from safety assessments must be determined",
+          "text": "Determine the acceptability of residual risk stemming from safety assessments",
           "attached_to": [
             "S26"
           ],
@@ -658,7 +665,7 @@
         {
           "id": "C26",
           "type": "postcondition",
-          "text": "Specific safety requirements must be integrated into overall programmatic requirements",
+          "text": "Ensure that specific safety requirements are integrated into overall programmatic requirements",
           "attached_to": [
             "S27"
           ],
@@ -683,7 +690,7 @@
         {
           "id": "C27",
           "type": "postcondition",
-          "text": "Safety requirements must be reflected in applicable program and planning documents including the statement of work for contractor designs",
+          "text": "are reflected in applicable program and planning documents including the statement of work for contractor designs",
           "attached_to": [
             "S28",
             "S29"
@@ -724,7 +731,7 @@
         {
           "id": "C28",
           "type": "postcondition",
-          "text": "Appropriate safety participation must be maintained in the program design, tests, operations, failures and mishaps, and contractor system safety activities at a level consistent with mishap potential for the life of the program",
+          "text": "Maintain appropriate safety participation in the program design, tests, operations, failures and mishaps, and contractor system safety activities at a level consistent with mishap potential for the life of the program",
           "attached_to": [
             "S30",
             "S31",
@@ -797,7 +804,7 @@
         {
           "id": "C29",
           "type": "postcondition",
-          "text": "An independent safety reporting channel must be established to keep the Center SMA Director apprised of the system safety status (including tests and operations), particularly regarding problem areas that may require assistance from the Center, the NASA Engineering and Safety Center, or Headquarters",
+          "text": "Establish an independent safety reporting channel to keep the Center SMA Director apprised of the system safety status (including tests and operations), particularly regarding problem areas that may require assistance from the Center, the NASA Engineering and Safety Center, or Headquarters",
           "attached_to": [
             "S34",
             "S35",
@@ -854,7 +861,7 @@
         {
           "id": "C30",
           "type": "postcondition",
-          "text": "OSMA requirements for audits, assessments, and reviews must be supported",
+          "text": "Support OSMA requirements for audits, assessments, and reviews",
           "attached_to": [
             "S37",
             "S38",
@@ -902,12 +909,203 @@
     }
   ],
   "constraints": [],
-  "relations": [],
+  "relations": [
+    {
+      "source": "S1",
+      "target": "S2",
+      "type": "NEXT"
+    },
+    {
+      "source": "S2",
+      "target": "S3",
+      "type": "NEXT"
+    },
+    {
+      "source": "S3",
+      "target": "S4",
+      "type": "NEXT"
+    },
+    {
+      "source": "S4",
+      "target": "S5",
+      "type": "NEXT"
+    },
+    {
+      "source": "S5",
+      "target": "S6",
+      "type": "NEXT"
+    },
+    {
+      "source": "S6",
+      "target": "S7",
+      "type": "NEXT"
+    },
+    {
+      "source": "S7",
+      "target": "S8",
+      "type": "NEXT"
+    },
+    {
+      "source": "S8",
+      "target": "S9",
+      "type": "NEXT"
+    },
+    {
+      "source": "S9",
+      "target": "S10",
+      "type": "NEXT"
+    },
+    {
+      "source": "S10",
+      "target": "S11",
+      "type": "NEXT"
+    },
+    {
+      "source": "S11",
+      "target": "S12",
+      "type": "NEXT"
+    },
+    {
+      "source": "S12",
+      "target": "S13",
+      "type": "NEXT"
+    },
+    {
+      "source": "S13",
+      "target": "S14",
+      "type": "NEXT"
+    },
+    {
+      "source": "S14",
+      "target": "S15",
+      "type": "NEXT"
+    },
+    {
+      "source": "S15",
+      "target": "S16",
+      "type": "NEXT"
+    },
+    {
+      "source": "S16",
+      "target": "S17",
+      "type": "NEXT"
+    },
+    {
+      "source": "S17",
+      "target": "S18",
+      "type": "NEXT"
+    },
+    {
+      "source": "S18",
+      "target": "S19",
+      "type": "NEXT"
+    },
+    {
+      "source": "S19",
+      "target": "S20",
+      "type": "NEXT"
+    },
+    {
+      "source": "S20",
+      "target": "S21",
+      "type": "NEXT"
+    },
+    {
+      "source": "S21",
+      "target": "S22",
+      "type": "NEXT"
+    },
+    {
+      "source": "S22",
+      "target": "S23",
+      "type": "NEXT"
+    },
+    {
+      "source": "S23",
+      "target": "S24",
+      "type": "NEXT"
+    },
+    {
+      "source": "S24",
+      "target": "S25",
+      "type": "NEXT"
+    },
+    {
+      "source": "S25",
+      "target": "S26",
+      "type": "NEXT"
+    },
+    {
+      "source": "S26",
+      "target": "S27",
+      "type": "NEXT"
+    },
+    {
+      "source": "S27",
+      "target": "S28",
+      "type": "NEXT"
+    },
+    {
+      "source": "S28",
+      "target": "S29",
+      "type": "NEXT"
+    },
+    {
+      "source": "S29",
+      "target": "S30",
+      "type": "NEXT"
+    },
+    {
+      "source": "S30",
+      "target": "S31",
+      "type": "NEXT"
+    },
+    {
+      "source": "S31",
+      "target": "S32",
+      "type": "NEXT"
+    },
+    {
+      "source": "S32",
+      "target": "S33",
+      "type": "NEXT"
+    },
+    {
+      "source": "S33",
+      "target": "S34",
+      "type": "NEXT"
+    },
+    {
+      "source": "S34",
+      "target": "S35",
+      "type": "NEXT"
+    },
+    {
+      "source": "S35",
+      "target": "S36",
+      "type": "NEXT"
+    },
+    {
+      "source": "S36",
+      "target": "S37",
+      "type": "NEXT"
+    },
+    {
+      "source": "S37",
+      "target": "S38",
+      "type": "NEXT"
+    },
+    {
+      "source": "S38",
+      "target": "S39",
+      "type": "NEXT"
+    }
+  ],
   "quality": {
     "annotation_scope": "full_subprocedure",
     "review_status": "reviewed",
     "annotator": "model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off)",
     "review_date": "2026-07-05",
-    "review_notes": "Adjudicated 2026-07-05 by model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off) via scripts/adjudicate.py from model-assisted draft. Decisions: 65 accept, 3 edit, 1 reject, 0 add.\nstep:S1 ACCEPT\nstep:S2 ACCEPT\nstep:S3 ACCEPT\nstep:S4 ACCEPT\nstep:S5 ACCEPT\nstep:S6 ACCEPT\nstep:S7 ACCEPT\nstep:S8 ACCEPT\nstep:S9 ACCEPT\nstep:S10 ACCEPT\nstep:S11 ACCEPT\nstep:S12 ACCEPT\nstep:S13 ACCEPT\nstep:S14 ACCEPT\nstep:S15 ACCEPT\nstep:S16 ACCEPT\nstep:S17 ACCEPT\nstep:S18 ACCEPT\nstep:S19 ACCEPT\nstep:S20 ACCEPT\nstep:S21 ACCEPT\nstep:S22 ACCEPT\nstep:S23 ACCEPT\nstep:S24 ACCEPT\nstep:S25 ACCEPT\nstep:S26 ACCEPT\nstep:S27 ACCEPT\nstep:S28 ACCEPT\nstep:S29 ACCEPT\nstep:S30 ACCEPT\nstep:S31 ACCEPT\nstep:S32 ACCEPT\nstep:S33 ACCEPT\nstep:S34 ACCEPT\nstep:S35 ACCEPT\nstep:S36 ACCEPT\nstep:S37 ACCEPT\nstep:S38 ACCEPT\nstep:S39 ACCEPT\nconstraint:C5 ACCEPT\nconstraint:C6 ACCEPT\nconstraint:C7 ACCEPT\nconstraint:C8 ACCEPT\nconstraint:C9 ACCEPT\nconstraint:C10 ACCEPT\nconstraint:C11 ACCEPT\nconstraint:C12 ACCEPT\nconstraint:C13 ACCEPT\nconstraint:C14 ACCEPT\nconstraint:C1 ACCEPT\nconstraint:C2 EDIT ['type'] -- C2 describes what the SSTP can be (a parameter of its nature), not a constraint on S13's execution. This is background/definitional, not prescriptive.\nconstraint:C4 EDIT ['type'] -- C4 is a reference/definition of what the SSTP describes, not a precondition or parameter constraining execution of S13/S14.\nconstraint:C15 ACCEPT\nconstraint:C16 ACCEPT\nconstraint:C17 ACCEPT\nconstraint:C3 ACCEPT\nconstraint:C18 REJECT -- C18 duplicates C3 (same text about SSTP specifics and their application to risk-informed decision making and safety monitoring). Redundant constraint.\nconstraint:C19 ACCEPT\nconstraint:C20 ACCEPT\nconstraint:C21 ACCEPT\nconstraint:C22 ACCEPT\nconstraint:C23 ACCEPT\nconstraint:C24 ACCEPT\nconstraint:C25 ACCEPT\nconstraint:C26 ACCEPT\nconstraint:C27 ACCEPT\nconstraint:C28 EDIT ['type'] -- C28 describes a postcondition—safety participation must be maintained at the required level—not a parameter defining what participation looks like.\nconstraint:C29 ACCEPT\nconstraint:C30 ACCEPT\nEDGE CASE (requirements/policy doc): NPR 8715.3D is requirement-structured; each 'shall/should' clause treated as a procedural step per docs/annotation/guidelines.md. Steps are normative requirements, not temporally-ordered actions.\n[strict-warning adjudication] step:S3 zero_constraints adjudicated; step:S5 zero_constraints adjudicated; step:S7 zero_constraints adjudicated; step:S17 zero_constraints adjudicated; step:S18 zero_constraints adjudicated; step:S21 zero_constraints adjudicated; step:S29 zero_constraints adjudicated; step:S31 zero_constraints adjudicated; step:S32 zero_constraints adjudicated; step:S33 zero_constraints adjudicated; step:S35 zero_constraints adjudicated; step:S36 zero_constraints adjudicated; step:S38 zero_constraints adjudicated; step:S39 zero_constraints adjudicated"
+    "review_notes": "Adjudicated 2026-07-05 by model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off) via scripts/adjudicate.py from model-assisted draft. Decisions: 65 accept, 3 edit, 1 reject, 0 add.\nstep:S1 ACCEPT\nstep:S2 ACCEPT\nstep:S3 ACCEPT\nstep:S4 ACCEPT\nstep:S5 ACCEPT\nstep:S6 ACCEPT\nstep:S7 ACCEPT\nstep:S8 ACCEPT\nstep:S9 ACCEPT\nstep:S10 ACCEPT\nstep:S11 ACCEPT\nstep:S12 ACCEPT\nstep:S13 ACCEPT\nstep:S14 ACCEPT\nstep:S15 ACCEPT\nstep:S16 ACCEPT\nstep:S17 ACCEPT\nstep:S18 ACCEPT\nstep:S19 ACCEPT\nstep:S20 ACCEPT\nstep:S21 ACCEPT\nstep:S22 ACCEPT\nstep:S23 ACCEPT\nstep:S24 ACCEPT\nstep:S25 ACCEPT\nstep:S26 ACCEPT\nstep:S27 ACCEPT\nstep:S28 ACCEPT\nstep:S29 ACCEPT\nstep:S30 ACCEPT\nstep:S31 ACCEPT\nstep:S32 ACCEPT\nstep:S33 ACCEPT\nstep:S34 ACCEPT\nstep:S35 ACCEPT\nstep:S36 ACCEPT\nstep:S37 ACCEPT\nstep:S38 ACCEPT\nstep:S39 ACCEPT\nconstraint:C5 ACCEPT\nconstraint:C6 ACCEPT\nconstraint:C7 ACCEPT\nconstraint:C8 ACCEPT\nconstraint:C9 ACCEPT\nconstraint:C10 ACCEPT\nconstraint:C11 ACCEPT\nconstraint:C12 ACCEPT\nconstraint:C13 ACCEPT\nconstraint:C14 ACCEPT\nconstraint:C1 ACCEPT\nconstraint:C2 EDIT ['type'] -- C2 describes what the SSTP can be (a parameter of its nature), not a constraint on S13's execution. This is background/definitional, not prescriptive.\nconstraint:C4 EDIT ['type'] -- C4 is a reference/definition of what the SSTP describes, not a precondition or parameter constraining execution of S13/S14.\nconstraint:C15 ACCEPT\nconstraint:C16 ACCEPT\nconstraint:C17 ACCEPT\nconstraint:C3 ACCEPT\nconstraint:C18 REJECT -- C18 duplicates C3 (same text about SSTP specifics and their application to risk-informed decision making and safety monitoring). Redundant constraint.\nconstraint:C19 ACCEPT\nconstraint:C20 ACCEPT\nconstraint:C21 ACCEPT\nconstraint:C22 ACCEPT\nconstraint:C23 ACCEPT\nconstraint:C24 ACCEPT\nconstraint:C25 ACCEPT\nconstraint:C26 ACCEPT\nconstraint:C27 ACCEPT\nconstraint:C28 EDIT ['type'] -- C28 describes a postcondition—safety participation must be maintained at the required level—not a parameter defining what participation looks like.\nconstraint:C29 ACCEPT\nconstraint:C30 ACCEPT\nEDGE CASE (requirements/policy doc): NPR 8715.3D is requirement-structured; each 'shall/should' clause treated as a procedural step per docs/annotation/guidelines.md. Steps are normative requirements, not temporally-ordered actions.\n[strict-warning adjudication] step:S3 zero_constraints adjudicated; step:S5 zero_constraints adjudicated; step:S7 zero_constraints adjudicated; step:S17 zero_constraints adjudicated; step:S18 zero_constraints adjudicated; step:S21 zero_constraints adjudicated; step:S29 zero_constraints adjudicated; step:S31 zero_constraints adjudicated; step:S32 zero_constraints adjudicated; step:S33 zero_constraints adjudicated; step:S35 zero_constraints adjudicated; step:S36 zero_constraints adjudicated; step:S38 zero_constraints adjudicated; step:S39 zero_constraints adjudicated\n[verbatim-grounding pass 2026-07-06, agent, pending human sign-off] All constraint texts re-grounded to contiguous verbatim source spans (guidelines: Verbatim wording rule). Dropped C1, C2, C4 — definitional sentences from 2.5.2.1 (guidelines 'What to drop: Definitions'; adjudication notes themselves called C2/C4 background/definitional). C3 re-grounded to the prescriptive 2.5.2.4.c clause (was drawn from descriptive 2.5.2.1). Collapsed C19/C20/C21 (three paraphrased restatements of the single 2.5.2.4.d sentence) into C19 = verbatim item-d sentence, role_assignment, attached S19-S22; S22 relabeled 'Document objectives and scope of system safety tasks in SSTP' (source says document objectives/scope, not 'tasks and deliverables'). C22 rebuilt as block role_assignment 'The assigned System Safety Manager shall' attached S13-S39; C23 rebuilt as verbatim 2.5.2.4.e (reference, S23-S24) replacing two spliced role restatements. Added C31 'Project managers shall' (S1-S8) and C32 'The Center SMA Director shall' (S9-S12) — shall-list role intros per guidelines role/actor-naming signal. Net 29 -> 26 constraints.\nstep:S20 zero_constraints adjudicated; step:S22 zero_constraints adjudicated; step:S24 zero_constraints adjudicated\n[relations pass 2026-07-06, agent, pending human sign-off] Step-graph relations annotated by hand: NEXT = document-order procedural succession; fork NEXT edges plus ALTERNATIVE_TO only where the source states mutually exclusive branches. Conditional in-step behaviour stays encoded as guard constraints. Loops (check-measurement repeat, per-vertical sampling) not modeled to keep the graph acyclic. NOTE: current Tier-B eval synthesizes a linear NEXT chain from steps-array order and does not read this field; relations are provided as explicit gold ordering/branching for graph consumers and export."
   }
 }

@@ -9,7 +9,7 @@
       "section": "Steps for the EWI sampling method",
       "page": null,
       "char_start": 82092,
-      "char_end": 91092
+      "char_end": 95437
     }
   },
   "steps": [
@@ -83,7 +83,7 @@
         {
           "id": "C44",
           "type": "reference",
-          "text": "Consult NFM 9 for field safety",
+          "text": "NFM 9 for field safety",
           "attached_to": [
             "S3"
           ],
@@ -202,17 +202,7 @@
       "action_object": "stream from bank to bank and longitudinally",
       "arguments": [],
       "parameters": [],
-      "constraints": [
-        {
-          "id": "C43",
-          "type": "reference",
-          "text": "Consult NFM 8 for bottom-material sampling",
-          "attached_to": [
-            "S8"
-          ],
-          "enforcement": "should"
-        }
-      ],
+      "constraints": [],
       "flags": {},
       "provenance": {
         "doc_id": "usgs_nfm_collection_water_samples_a4",
@@ -231,7 +221,7 @@
         {
           "id": "C41",
           "type": "reference",
-          "text": "Consult NFM 6 for field measurements",
+          "text": "NFM 6 for field measurements",
           "attached_to": [
             "S9",
             "S12"
@@ -543,7 +533,7 @@
         {
           "id": "C46",
           "type": "guard",
-          "text": "Sampling near or downstream from large instream obstructions such as bridges and piers could result in artificially elevated concentrations of suspended sediments if the sampler is immersed in an eddy caused by the obstruction",
+          "text": "Sampling near or downstream from large instream obstructions such as bridges and piers could result in artificially elevated concentrations of suspended sediments if the sampler is immersed in an eddy that is caused by the obstruction",
           "attached_to": [
             "S20"
           ],
@@ -647,7 +637,16 @@
         {
           "id": "C20",
           "type": "parameter",
-          "text": "Approximate the mean velocity of the vertical in feet per second by timing a floating marker as it travels a known distance. Divide the distance (in feet) by the time (in seconds) and multiply by 0.86",
+          "text": "Approximate the mean velocity of the vertical in feet per second by timing a floating marker (such as a peanut) as it travels a known distance",
+          "attached_to": [
+            "S25"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C48",
+          "type": "parameter",
+          "text": "Divide the distance (in feet) by the time (in seconds) and multiply by 0.86",
           "attached_to": [
             "S25"
           ],
@@ -696,8 +695,8 @@
       "constraints": [
         {
           "id": "C22",
-          "type": "postcondition",
-          "text": "If the minimum volume of sample (relative to depth of the vertical) is not collected at the slowest increment, then the EWI method cannot be used at this cross section to collect a discharge-weighted sample",
+          "type": "guard",
+          "text": "If the minimum volume of sample (relative to depth of the vertical) is not collected at this vertical, then the EWI method cannot be used at this cross section to collect a discharge-weighted sample",
           "attached_to": [
             "S27"
           ],
@@ -830,7 +829,7 @@
         {
           "id": "C23",
           "type": "guard",
-          "text": "keep the transit rate unidirectional, constant, and within the isokinetic transit range of the sampler when collecting isokinetic samples",
+          "text": "Remember that you must keep the transit rate unidirectional, constant, and within the isokinetic transit range of the sampler when collecting isokinetic samples at each centroid",
           "attached_to": [
             "S32",
             "S33"
@@ -883,6 +882,36 @@
           "text": "Lower field-rinsed sampler at the predetermined constant transit rate until slight contact is made with the streambed. Do not pause upon contacting the streambed",
           "attached_to": [
             "S32"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C62",
+          "type": "guard",
+          "text": "Do not overfill the sampler container",
+          "attached_to": [
+            "S32",
+            "S33"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C63",
+          "type": "guard",
+          "text": "Do not underfill the sampler container (Appendix A4-A)",
+          "attached_to": [
+            "S32",
+            "S33"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C64",
+          "type": "guard",
+          "text": "If the required volume cannot be collected, use the EDI method to obtain discharge-weighted samples",
+          "attached_to": [
+            "S32",
+            "S33"
           ],
           "enforcement": "must"
         }
@@ -946,16 +975,25 @@
     },
     {
       "id": "S35",
-      "label": "Process samples per NFM 5",
-      "action_verb": "process",
-      "action_object": "samples",
+      "label": "Inspect each subsample as it is collected",
+      "action_verb": "inspect",
+      "action_object": "each subsample",
       "arguments": [],
       "parameters": [],
       "constraints": [
         {
-          "id": "C37",
-          "type": "reference",
-          "text": "Process samples per NFM 5",
+          "id": "C49",
+          "type": "parameter",
+          "text": "looking for overfilling or underfilling of the sampler container and (or) the presence of anomalously large amounts of particulates that might have been captured because of excessive streambed disturbance during sample collection",
+          "attached_to": [
+            "S35"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C50",
+          "type": "guard",
+          "text": "If you note any of these conditions, discard the sample, making sure there are no residual particulates left in the container, and resample",
           "attached_to": [
             "S35"
           ],
@@ -971,6 +1009,175 @@
     },
     {
       "id": "S36",
+      "label": "Move sampling equipment to the next vertical",
+      "action_verb": "move",
+      "action_object": "sampling equipment to the next vertical",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C51",
+          "type": "parameter",
+          "text": "Maintain the selected transit rate",
+          "attached_to": [
+            "S36"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C52",
+          "type": "guard",
+          "text": "Subsamples can be collected at several verticals before emptying the sampler container, as long as the maximum volume of sample in a bottle or bag sampler has not been exceeded",
+          "attached_to": [
+            "S36"
+          ],
+          "enforcement": "may"
+        },
+        {
+          "id": "C53",
+          "type": "guard",
+          "text": "If the container is overfilled, it is necessary to resample",
+          "attached_to": [
+            "S36"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S37",
+      "label": "Continue to the next vertical until no more samples can be collected without overfilling",
+      "action_verb": "continue",
+      "action_object": "to the next vertical",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S38",
+      "label": "Empty the subsample into a field-rinsed churn or cone splitter and repeat collection at all verticals",
+      "action_verb": "empty",
+      "action_object": "subsample into churn or cone splitter",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C54",
+          "type": "guard",
+          "text": "If the total volume of the subsamples to be collected will exceed the operational capacity of the churn, select from the following options: use a smaller nozzle; or, use a cone splitter; or, use the EDI method, if appropriate",
+          "attached_to": [
+            "S38"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C55",
+          "type": "guard",
+          "text": "To ensure that all particulates are transferred with the sample, swirl the subsample gently to keep particulates suspended and pour the subsample quickly into the churn or cone splitter",
+          "attached_to": [
+            "S38"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C56",
+          "type": "parameter",
+          "text": "Sample EWI verticals as many times as necessary to ensure that an adequate sample volume is collected as required for analysis, but sample at each vertical an equal number of times",
+          "attached_to": [
+            "S38"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C65",
+          "type": "guard",
+          "text": "If flow is stable during sampling, then multiple samples can be collected at each vertical during a single traverse along the cross section",
+          "attached_to": [
+            "S38"
+          ],
+          "enforcement": "may"
+        },
+        {
+          "id": "C66",
+          "type": "postcondition",
+          "text": "Document on field forms the method used",
+          "attached_to": [
+            "S38"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S39",
+      "label": "Record end-of-sampling information",
+      "action_verb": "record",
+      "action_object": "end-of-sampling information",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C57",
+          "type": "postcondition",
+          "text": "Record the following information after all samples have been collected: Sampling end time; Ending gage height; All field observations and any deviations from standard sampling procedures",
+          "attached_to": [
+            "S39"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S40",
+      "label": "Process samples per NFM 5",
+      "action_verb": "process",
+      "action_object": "samples",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C37",
+          "type": "reference",
+          "text": "Refer to NFM 5",
+          "attached_to": [
+            "S40"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_nfm_collection_water_samples_a4",
+        "section": "Steps for the EWI sampling method",
+        "page": null
+      }
+    },
+    {
+      "id": "S41",
       "label": "Clean equipment per NFM 3",
       "action_verb": "clean",
       "action_object": "equipment",
@@ -980,9 +1187,45 @@
         {
           "id": "C38",
           "type": "reference",
-          "text": "Clean equipment per NFM 3",
+          "text": "Refer to NFM 3",
           "attached_to": [
-            "S36"
+            "S41"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C58",
+          "type": "guard",
+          "text": "If the sampler will not be reused during a field trip, rinse sampler components with deionized water before they dry and place them into a plastic bag for transporting to the office laboratory to be cleaned",
+          "attached_to": [
+            "S41"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C59",
+          "type": "guard",
+          "text": "If the sampler will be reused during the field trip, rinse the components with DIW while still wet from sampling and then field-clean while at the sampling site using the prescribed procedures (NFM 3). Reassemble the sampler",
+          "attached_to": [
+            "S41"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C60",
+          "type": "guard",
+          "text": "Collect a field blank, if required, after sampling equipment has been cleaned at the sampling site",
+          "attached_to": [
+            "S41"
+          ],
+          "enforcement": "may"
+        },
+        {
+          "id": "C61",
+          "type": "postcondition",
+          "text": "Place the cleaned sampler into a plastic bag and seal for transport to the next site",
+          "attached_to": [
+            "S41"
           ],
           "enforcement": "must"
         }
@@ -996,12 +1239,213 @@
     }
   ],
   "constraints": [],
-  "relations": [],
+  "relations": [
+    {
+      "source": "S1",
+      "target": "S2",
+      "type": "NEXT"
+    },
+    {
+      "source": "S2",
+      "target": "S3",
+      "type": "NEXT"
+    },
+    {
+      "source": "S3",
+      "target": "S4",
+      "type": "NEXT"
+    },
+    {
+      "source": "S4",
+      "target": "S5",
+      "type": "NEXT"
+    },
+    {
+      "source": "S5",
+      "target": "S6",
+      "type": "NEXT"
+    },
+    {
+      "source": "S6",
+      "target": "S7",
+      "type": "NEXT"
+    },
+    {
+      "source": "S7",
+      "target": "S8",
+      "type": "NEXT"
+    },
+    {
+      "source": "S8",
+      "target": "S9",
+      "type": "NEXT"
+    },
+    {
+      "source": "S9",
+      "target": "S10",
+      "type": "NEXT"
+    },
+    {
+      "source": "S10",
+      "target": "S11",
+      "type": "NEXT"
+    },
+    {
+      "source": "S11",
+      "target": "S12",
+      "type": "NEXT"
+    },
+    {
+      "source": "S12",
+      "target": "S13",
+      "type": "NEXT"
+    },
+    {
+      "source": "S13",
+      "target": "S14",
+      "type": "NEXT"
+    },
+    {
+      "source": "S14",
+      "target": "S15",
+      "type": "NEXT"
+    },
+    {
+      "source": "S15",
+      "target": "S16",
+      "type": "NEXT"
+    },
+    {
+      "source": "S16",
+      "target": "S17",
+      "type": "NEXT"
+    },
+    {
+      "source": "S17",
+      "target": "S18",
+      "type": "NEXT"
+    },
+    {
+      "source": "S18",
+      "target": "S19",
+      "type": "NEXT"
+    },
+    {
+      "source": "S19",
+      "target": "S20",
+      "type": "NEXT"
+    },
+    {
+      "source": "S20",
+      "target": "S21",
+      "type": "NEXT"
+    },
+    {
+      "source": "S21",
+      "target": "S22",
+      "type": "NEXT"
+    },
+    {
+      "source": "S22",
+      "target": "S23",
+      "type": "NEXT"
+    },
+    {
+      "source": "S23",
+      "target": "S24",
+      "type": "NEXT"
+    },
+    {
+      "source": "S24",
+      "target": "S25",
+      "type": "NEXT"
+    },
+    {
+      "source": "S25",
+      "target": "S26",
+      "type": "NEXT"
+    },
+    {
+      "source": "S26",
+      "target": "S27",
+      "type": "NEXT"
+    },
+    {
+      "source": "S27",
+      "target": "S28",
+      "type": "NEXT"
+    },
+    {
+      "source": "S28",
+      "target": "S29",
+      "type": "NEXT"
+    },
+    {
+      "source": "S29",
+      "target": "S30",
+      "type": "NEXT"
+    },
+    {
+      "source": "S30",
+      "target": "S31",
+      "type": "NEXT"
+    },
+    {
+      "source": "S31",
+      "target": "S32",
+      "type": "NEXT"
+    },
+    {
+      "source": "S32",
+      "target": "S33",
+      "type": "NEXT"
+    },
+    {
+      "source": "S33",
+      "target": "S34",
+      "type": "NEXT"
+    },
+    {
+      "source": "S34",
+      "target": "S35",
+      "type": "NEXT"
+    },
+    {
+      "source": "S35",
+      "target": "S36",
+      "type": "NEXT"
+    },
+    {
+      "source": "S36",
+      "target": "S37",
+      "type": "NEXT"
+    },
+    {
+      "source": "S37",
+      "target": "S38",
+      "type": "NEXT"
+    },
+    {
+      "source": "S38",
+      "target": "S39",
+      "type": "NEXT"
+    },
+    {
+      "source": "S39",
+      "target": "S40",
+      "type": "NEXT"
+    },
+    {
+      "source": "S40",
+      "target": "S41",
+      "type": "NEXT"
+    }
+  ],
   "quality": {
     "annotation_scope": "full_subprocedure",
     "review_status": "reviewed",
     "annotator": "model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off)",
     "review_date": "2026-07-05",
-    "review_notes": "Adjudicated 2026-07-05 by model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off) via scripts/adjudicate.py from model-assisted draft. Decisions: 79 accept, 2 edit, 2 reject, 0 add.\nstep:S1 ACCEPT\nstep:S2 ACCEPT\nstep:S3 ACCEPT\nstep:S4 ACCEPT\nstep:S5 ACCEPT\nstep:S6 ACCEPT\nstep:S7 ACCEPT\nstep:S8 ACCEPT\nstep:S9 ACCEPT\nstep:S10 ACCEPT\nstep:S11 ACCEPT\nstep:S12 ACCEPT\nstep:S13 ACCEPT\nstep:S14 ACCEPT\nstep:S15 ACCEPT\nstep:S16 ACCEPT\nstep:S17 ACCEPT\nstep:S18 ACCEPT\nstep:S19 ACCEPT\nstep:S20 ACCEPT\nstep:S21 ACCEPT\nstep:S22 ACCEPT\nstep:S23 ACCEPT\nstep:S24 ACCEPT\nstep:S25 ACCEPT\nstep:S26 ACCEPT\nstep:S27 ACCEPT\nstep:S28 ACCEPT\nstep:S29 ACCEPT\nstep:S30 ACCEPT\nstep:S31 ACCEPT\nstep:S32 ACCEPT\nstep:S33 ACCEPT\nstep:S34 ACCEPT\nstep:S35 ACCEPT\nstep:S36 ACCEPT\nconstraint:C1 ACCEPT\nconstraint:C39 ACCEPT\nconstraint:C2 ACCEPT\nconstraint:C44 ACCEPT\nconstraint:C3 ACCEPT\nconstraint:C4 ACCEPT\nconstraint:C5 ACCEPT\nconstraint:C6 EDIT ['enforcement'] -- Source says 'Collect samples for microbiological analyses using equipment and techniques described in NFM 7' as guidance; text does not mandate microbiological sampling in the EWI procedure itself.\nconstraint:C42 REJECT -- References NFM 7 for biological indicators; source text does not attach biological indicators to Step 7 (equipment selection). Step 1 preparation mentions NFM 7 only for microbiological sampling technique, not as a general reference for Step 7.\nconstraint:C43 ACCEPT\nconstraint:C41 ACCEPT\nconstraint:C7 ACCEPT\nconstraint:C8 ACCEPT\nconstraint:C45 ACCEPT\nconstraint:C47 ACCEPT\nconstraint:C14 ACCEPT\nconstraint:C15 ACCEPT\nconstraint:C16 ACCEPT\nconstraint:C17 ACCEPT\nconstraint:C18 ACCEPT\nconstraint:C9 ACCEPT\nconstraint:C10 ACCEPT\nconstraint:C11 ACCEPT\nconstraint:C12 ACCEPT\nconstraint:C13 ACCEPT\nconstraint:C46 ACCEPT\nconstraint:C19 ACCEPT\nconstraint:C26 ACCEPT\nconstraint:C20 ACCEPT\nconstraint:C21 ACCEPT\nconstraint:C22 ACCEPT\nconstraint:C30 ACCEPT\nconstraint:C31 EDIT ['enforcement'] -- Source says 'Use CH/DH techniques, as required' — conditional on whether they are required, not unconditional mandate.\nconstraint:C32 ACCEPT\nconstraint:C33 ACCEPT\nconstraint:C34 ACCEPT\nconstraint:C23 ACCEPT\nconstraint:C24 ACCEPT\nconstraint:C25 ACCEPT\nconstraint:C27 ACCEPT\nconstraint:C28 ACCEPT\nconstraint:C35 ACCEPT\nconstraint:C36 ACCEPT\nconstraint:C29 ACCEPT\nconstraint:C37 ACCEPT\nconstraint:C40 REJECT -- Duplicate of C37 with identical intent; C40 is a redundant reference constraint.\nconstraint:C38 ACCEPT\n[strict-warning adjudication] step:S5 zero_constraints adjudicated; step:S6 zero_constraints adjudicated; step:S11 zero_constraints adjudicated; step:S12 zero_constraints adjudicated; step:S21 zero_constraints adjudicated; step:S22 zero_constraints adjudicated; step:S23 zero_constraints adjudicated; step:S29 zero_constraints adjudicated"
+    "review_notes": "Adjudicated 2026-07-05 by model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off) via scripts/adjudicate.py from model-assisted draft. Decisions: 79 accept, 2 edit, 2 reject, 0 add.\nstep:S1 ACCEPT\nstep:S2 ACCEPT\nstep:S3 ACCEPT\nstep:S4 ACCEPT\nstep:S5 ACCEPT\nstep:S6 ACCEPT\nstep:S7 ACCEPT\nstep:S8 ACCEPT\nstep:S9 ACCEPT\nstep:S10 ACCEPT\nstep:S11 ACCEPT\nstep:S12 ACCEPT\nstep:S13 ACCEPT\nstep:S14 ACCEPT\nstep:S15 ACCEPT\nstep:S16 ACCEPT\nstep:S17 ACCEPT\nstep:S18 ACCEPT\nstep:S19 ACCEPT\nstep:S20 ACCEPT\nstep:S21 ACCEPT\nstep:S22 ACCEPT\nstep:S23 ACCEPT\nstep:S24 ACCEPT\nstep:S25 ACCEPT\nstep:S26 ACCEPT\nstep:S27 ACCEPT\nstep:S28 ACCEPT\nstep:S29 ACCEPT\nstep:S30 ACCEPT\nstep:S31 ACCEPT\nstep:S32 ACCEPT\nstep:S33 ACCEPT\nstep:S34 ACCEPT\nstep:S35 ACCEPT\nstep:S36 ACCEPT\nconstraint:C1 ACCEPT\nconstraint:C39 ACCEPT\nconstraint:C2 ACCEPT\nconstraint:C44 ACCEPT\nconstraint:C3 ACCEPT\nconstraint:C4 ACCEPT\nconstraint:C5 ACCEPT\nconstraint:C6 EDIT ['enforcement'] -- Source says 'Collect samples for microbiological analyses using equipment and techniques described in NFM 7' as guidance; text does not mandate microbiological sampling in the EWI procedure itself.\nconstraint:C42 REJECT -- References NFM 7 for biological indicators; source text does not attach biological indicators to Step 7 (equipment selection). Step 1 preparation mentions NFM 7 only for microbiological sampling technique, not as a general reference for Step 7.\nconstraint:C43 ACCEPT\nconstraint:C41 ACCEPT\nconstraint:C7 ACCEPT\nconstraint:C8 ACCEPT\nconstraint:C45 ACCEPT\nconstraint:C47 ACCEPT\nconstraint:C14 ACCEPT\nconstraint:C15 ACCEPT\nconstraint:C16 ACCEPT\nconstraint:C17 ACCEPT\nconstraint:C18 ACCEPT\nconstraint:C9 ACCEPT\nconstraint:C10 ACCEPT\nconstraint:C11 ACCEPT\nconstraint:C12 ACCEPT\nconstraint:C13 ACCEPT\nconstraint:C46 ACCEPT\nconstraint:C19 ACCEPT\nconstraint:C26 ACCEPT\nconstraint:C20 ACCEPT\nconstraint:C21 ACCEPT\nconstraint:C22 ACCEPT\nconstraint:C30 ACCEPT\nconstraint:C31 EDIT ['enforcement'] -- Source says 'Use CH/DH techniques, as required' — conditional on whether they are required, not unconditional mandate.\nconstraint:C32 ACCEPT\nconstraint:C33 ACCEPT\nconstraint:C34 ACCEPT\nconstraint:C23 ACCEPT\nconstraint:C24 ACCEPT\nconstraint:C25 ACCEPT\nconstraint:C27 ACCEPT\nconstraint:C28 ACCEPT\nconstraint:C35 ACCEPT\nconstraint:C36 ACCEPT\nconstraint:C29 ACCEPT\nconstraint:C37 ACCEPT\nconstraint:C40 REJECT -- Duplicate of C37 with identical intent; C40 is a redundant reference constraint.\nconstraint:C38 ACCEPT\n[strict-warning adjudication] step:S5 zero_constraints adjudicated; step:S6 zero_constraints adjudicated; step:S11 zero_constraints adjudicated; step:S12 zero_constraints adjudicated; step:S21 zero_constraints adjudicated; step:S22 zero_constraints adjudicated; step:S23 zero_constraints adjudicated; step:S29 zero_constraints adjudicated\n[verbatim-grounding + completion pass 2026-07-06, agent, pending human sign-off] char_end 91092 -> 95437: the old span cut off mid-Step 4c, so Steps 4d-4g and the Step 6 cleaning bullets were never annotated ('take the whole unit' scope rule). Added S35 (inspect subsample, C49-C50), S36 (move to next vertical, C51-C53), S37 (continue until overfill limit), S38 (empty into churn/cone + repeat, C54-C56, C65-C66), S39 (record end-of-sampling info, C57); old S35/S36 renumbered S40/S41 (adjudication log above refers to the old numbering). Added S32/S33 traverse guards C62-C64 (do-not-overfill, do-not-underfill, EDI fallback) and S41 cleaning constraints C58-C61. Text re-grounds: C22 restored 'at this vertical' (had been substituted) and retyped guard; C23 restored full 'Remember that you must... at each centroid'; C20 restored '(such as a peanut)' with the divide-multiply formula split into C48 (its old text spliced across a skipped sentence); C46 restored 'that is'; C37/C38 -> verbatim 'Refer to NFM 5'/'Refer to NFM 3'; C41/C44 -> verbatim footnote fragments (invented 'Consult' prefixes removed). Dropped C43 (NFM 8 bottom-material reference — no annotated step it governs). OCR hyphen/space repairs in C3/C4/C10/C21 retained per guidelines. Deferred to human: the Appendix A4-A round-trip-transit TECHNICAL NOTE after Step 4e (possible reference constraint on S36/S24). 45 -> 63 constraints, 36 -> 41 steps.\nstep:S37 zero_constraints adjudicated; step:S8 zero_constraints adjudicated (C43 NFM-8 reference dropped as ungoverned; S8 inspection qualifiers live in S9/S10 constraints)\n[relations pass 2026-07-06, agent, pending human sign-off] Step-graph relations annotated by hand: NEXT = document-order procedural succession; fork NEXT edges plus ALTERNATIVE_TO only where the source states mutually exclusive branches. Conditional in-step behaviour stays encoded as guard constraints. Loops (check-measurement repeat, per-vertical sampling) not modeled to keep the graph acyclic. NOTE: current Tier-B eval synthesizes a linear NEXT chain from steps-array order and does not read this field; relations are provided as explicit gold ordering/branching for graph consumers and export."
   }
 }
