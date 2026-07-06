@@ -223,10 +223,10 @@ def apply_decisions(draft: dict, decisions: list[dict], *,
     prior = q.get("review_notes", "")
     header = (f"Adjudicated {review_date} by {annotator} via scripts/adjudicate.py "
               f"from model-assisted draft. Decisions: "
-              f"{sum(1 for l in log if 'ACCEPT' in l)} accept, "
-              f"{sum(1 for l in log if 'EDIT' in l)} edit, "
-              f"{sum(1 for l in log if 'REJECT' in l)} reject, "
-              f"{sum(1 for l in log if 'ADD' in l)} add.")
+              f"{sum(1 for line in log if 'ACCEPT' in line)} accept, "
+              f"{sum(1 for line in log if 'EDIT' in line)} edit, "
+              f"{sum(1 for line in log if 'REJECT' in line)} reject, "
+              f"{sum(1 for line in log if 'ADD' in line)} add.")
     q["review_notes"] = header + "\n" + "\n".join(log)
     if prior and "Model-assisted DRAFT" not in prior:
         q["review_notes"] = prior + "\n---\n" + q["review_notes"]

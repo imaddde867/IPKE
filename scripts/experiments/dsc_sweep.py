@@ -23,7 +23,6 @@ from scripts.experiments.experiment_utils import (
     DEFAULT_GOLD_TIER_A,
     DEFAULT_GOLD_TIER_B,
     DEFAULT_RESULTS_ROOT,
-    DEFAULT_TIMEOUT,
     EvaluationPaths,
     ServiceConfig,
     aggregate_metric_row,

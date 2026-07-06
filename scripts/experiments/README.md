@@ -63,3 +63,8 @@ Other common options:
 5. **Final 3×3 grid:** Once the “best” configuration per method is fixed, restart all three services with those env values and run `python scripts/experiments/run_all_chunking_experiments.py --documents datasets/archive/test_data/text/3m_marine_oem_sop.txt datasets/archive/test_data/text/DOA_Food_Man_Proc_Stor.txt datasets/archive/test_data/text/op_firesafety_guideline.txt`. The resulting timestamped directory under `results/` plus the evaluation summaries from the sweep form the clean experimental record for your research chapter.
 
 Feel free to mix and match inputs (e.g., run semantic sweeps on just one doc by passing `--documents path/to/doc.txt`) or tighten the grids to zoom into promising regions. The helpers intentionally keep everything ASCII and scriptable for lab automation / CI.*** End Patch
+
+## Related utilities
+
+- `multi_seed_sweep.py` — multi-seed variant of the loop; raw per-seed metrics feed `scripts/reevaluate_metrics.py`.
+- `prepare_human_eval_samples.py` — bundle predictions (and optional gold) into a compact JSON for the expert human study (PRD P2 / issue #99).

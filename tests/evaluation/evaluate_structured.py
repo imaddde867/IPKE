@@ -20,7 +20,7 @@ from __future__ import annotations
 import argparse
 import json
 from dataclasses import dataclass
-from typing import Dict, List, Set, Tuple
+from typing import Dict, Set, Tuple
 
 from src.graph.models import Graph, normalize_text
 

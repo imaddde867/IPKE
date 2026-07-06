@@ -12,15 +12,11 @@ from __future__ import annotations
 from typing import Dict, List, Sequence
 
 import numpy as np
-import pytest
 
 from src.evaluation.metrics import (
     AlignmentResult,
     TextPreprocessor,
-    align_by_text,
     evaluate_tier_a_document,
-    extract_constraint_text,
-    extract_step_text,
     normalize_doc_constraints,
     tier_a_constraints_metrics,
 )

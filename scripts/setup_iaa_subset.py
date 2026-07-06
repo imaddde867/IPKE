@@ -158,7 +158,8 @@ def do_scaffold(only: list[str] | None, force: bool = False) -> None:
     (SECOND / "_source").mkdir(parents=True, exist_ok=True)
     for doc in subset:
         if doc not in golds:
-            print(f"  SKIP {doc}: no gold"); continue
+            print(f"  SKIP {doc}: no gold")
+            continue
         out = SECOND / f"{doc}.json"
         if out.exists() and not force:
             # only preserve a genuine in-progress human file; refresh stale scaffolds
@@ -195,7 +196,8 @@ def do_report(out: Path) -> int:
     # compute_iaa scores every doc present in BOTH dirs; stage ONLY completed
     # subset docs into a temp dir so stale/non-subset second_pass files can't
     # pollute the run.
-    import shutil, tempfile
+    import shutil
+    import tempfile
     stage = Path(tempfile.mkdtemp(prefix="iaa_second_"))
     for d in done:
         shutil.copy(SECOND / f"{d}.json", stage / f"{d}.json")
@@ -204,7 +206,8 @@ def do_report(out: Path) -> int:
     print("running:", " ".join(cmd))
     r = subprocess.run(cmd, cwd=str(REPO), env={"PYTHONPATH": str(REPO), **_env()},
                        capture_output=True, text=True)
-    sys.stdout.write(r.stdout); sys.stderr.write(r.stderr)
+    sys.stdout.write(r.stdout)
+    sys.stderr.write(r.stderr)
     if r.returncode != 0:
         return r.returncode
     metrics = json.loads(out.read_text())
@@ -217,7 +220,7 @@ def do_report(out: Path) -> int:
               if isinstance(f1, (int, float)) else f"  {k:16} F1=n/a")
     kappa = agg.get("token_label_kappa")
     print(f"  {'token_label':16} kappa={kappa:.3f}" if isinstance(kappa, (int, float))
-          else f"  token_label      kappa=n/a")
+          else "  token_label      kappa=n/a")
     print(f"metrics -> {out}")
     return 0
 
@@ -230,17 +233,21 @@ def _env() -> dict:
 def main() -> int:
     ap = argparse.ArgumentParser(description="Prepare/report the >=30% IAA double-annotation subset.")
     sub = ap.add_subparsers(dest="mode", required=True)
-    p_sel = sub.add_parser("select"); p_sel.add_argument("--frac", type=float, default=0.30)
+    p_sel = sub.add_parser("select")
+    p_sel.add_argument("--frac", type=float, default=0.30)
     p_sca = sub.add_parser("scaffold")
     p_sca.add_argument("--only", nargs="*", default=None)
     p_sca.add_argument("--force", action="store_true", help="overwrite existing scaffolds")
-    p_rep = sub.add_parser("report"); p_rep.add_argument("--out", type=Path,
+    p_rep = sub.add_parser("report")
+    p_rep.add_argument("--out", type=Path,
                                                          default=REPO / "results" / "iaa.json")
     args = ap.parse_args()
     if args.mode == "select":
-        do_select(args.frac); return 0
+        do_select(args.frac)
+        return 0
     if args.mode == "scaffold":
-        do_scaffold(args.only, force=args.force); return 0
+        do_scaffold(args.only, force=args.force)
+        return 0
     if args.mode == "report":
         return do_report(args.out)
     return 2

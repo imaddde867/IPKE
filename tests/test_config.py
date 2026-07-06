@@ -2,7 +2,6 @@
 Test configuration system
 """
 import pytest
-import os
 from src.core.unified_config import UnifiedConfig, get_config, reload_config, Environment
 
 

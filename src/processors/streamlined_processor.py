@@ -5,11 +5,14 @@ Industrial Procedural Knowledge Extraction - Document Processor
 import time
 import hashlib
 import asyncio
-from typing import Dict, Any, Optional, Callable, TypeVar
+from typing import TYPE_CHECKING, Dict, Any, Optional, Callable, TypeVar
 from dataclasses import dataclass
 from pathlib import Path
 from concurrent.futures import ThreadPoolExecutor
 from threading import Lock
+
+if TYPE_CHECKING:  # pragma: no cover
+    from src.ai.knowledge_engine import UnifiedKnowledgeEngine
 
 # Document processing libraries (optional)
 try:

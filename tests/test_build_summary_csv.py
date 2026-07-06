@@ -1,6 +1,5 @@
 import json
 import sys
-from pathlib import Path
 
 from scripts.experiments import build_summary_csv
 
