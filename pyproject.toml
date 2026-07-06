@@ -72,3 +72,15 @@ llama-cpp-python = { url = "https://github.com/abetlen/llama-cpp-python/releases
 #   Uses the direct cu124 wheel pinned in [tool.uv.sources].
 # CPU (default):
 #   uv sync --extra llm
+
+[tool.ruff.lint]
+# E731 (lambda assignment) is accepted in tests for tiny stubs.
+ignore = []
+
+[tool.ruff.lint.per-file-ignores]
+# Repo-root sys.path bootstrap precedes src imports in runnable modules.
+"scripts/**" = ["E402"]
+"tests/**" = ["E402", "E731"]
+"tools/**" = ["E402"]
+"src/evaluation/*.py" = ["E402"]
+"src/graph/adapter.py" = ["E402"]

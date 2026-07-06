@@ -184,14 +184,12 @@ def run_sweep(
 ) -> bool:
     log_path = log_dir / f"{sweep.name}.log"
     logging.info("Preparing %s sweep.", sweep.name)
-    health_ok = True
     try:
         check_service_health(host, sweep.health_port, timeout=health_timeout, interval=health_interval)
     except Exception as exc:  # pragma: no cover - network required
         message = f"{sweep.name} health check failed: {exc}"
         logging.warning(message)
         record_error(message)
-        health_ok = False
 
     command = sweep.build_command(output_root=output_root / sweep.output_subdir, documents=documents)
     logging.info("Starting %s sweep. Logs -> %s", sweep.name, log_path)

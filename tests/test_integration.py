@@ -70,7 +70,7 @@ class TestIntegration:
             # Verify processing occurred
             assert data['processing_time'] > 0
             
-            print(f"\n=== Integration Test Results ===")
+            print("\n=== Integration Test Results ===")
             print(f"Document ID: {data['document_id']}")
             print(f"Entities Extracted: {len(data['entities'])}")
             print(f"Confidence Score: {data['confidence_score']:.2f}")
@@ -78,7 +78,7 @@ class TestIntegration:
             print(f"Strategy Used: {data['strategy_used']}")
             
             if data['entities']:
-                print(f"\nSample Entities:")
+                print("\nSample Entities:")
                 for i, entity in enumerate(data['entities'][:3], 1):
                     print(f"{i}. {entity['entity_type']}: {entity['content'][:100]}")
         

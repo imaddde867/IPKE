@@ -11,7 +11,7 @@ import tempfile
 import json
 import base64
 from pathlib import Path
-from typing import Dict, Any, List, Tuple
+from typing import Dict, Any, List
 
 import pandas as pd
 import streamlit as st
@@ -392,7 +392,7 @@ def render_sidebar():
     st.sidebar.divider()
     strategy_labels = {"P0": "Zero-Shot", "P1": "CoT", "P2": "Few-Shot", "P3": "Two-Stage"}
     chunking_label = "dsc" if config.chunking_method in {"dual_semantic", "parent_only"} else config.chunking_method
-    st.sidebar.caption(f"**Model:** Mistral-7B (Q4_K_M)")
+    st.sidebar.caption("**Model:** Mistral-7B (Q4_K_M)")
     st.sidebar.caption(f"**Strategy:** {strategy_labels.get(config.prompting_strategy, config.prompting_strategy)} | **Chunking:** {chunking_label}")
 
 

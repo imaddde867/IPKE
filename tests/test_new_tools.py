@@ -216,12 +216,12 @@ def test_bootstrap_mismatched_lengths_raises():
 
 def test_eval_multiseed_rejects_unreviewed_gold(tmp_path):
     """Guard blocks full sweep when gold has review_status != 'reviewed'."""
-    import json
     from scripts.eval_multiseed import main
 
     gold_dir = tmp_path / "gold"
     text_dir = tmp_path / "text"
-    gold_dir.mkdir(); text_dir.mkdir()
+    gold_dir.mkdir()
+    text_dir.mkdir()
 
     # Unreviewed gold file
     (gold_dir / "doc1.json").write_text(json.dumps({
@@ -241,12 +241,12 @@ def test_eval_multiseed_rejects_unreviewed_gold(tmp_path):
 
 def test_eval_multiseed_dry_run_skips_guard(tmp_path):
     """--dry-run bypasses the unreviewed guard."""
-    import json
     from scripts.eval_multiseed import main
 
     gold_dir = tmp_path / "gold"
     text_dir = tmp_path / "text"
-    gold_dir.mkdir(); text_dir.mkdir()
+    gold_dir.mkdir()
+    text_dir.mkdir()
 
     (gold_dir / "doc1.json").write_text(json.dumps({
         "procedure": {"doc_id": "doc1", "title": "t"},
@@ -266,7 +266,6 @@ def test_eval_multiseed_dry_run_skips_guard(tmp_path):
 
 def test_eval_multiseed_allow_unreviewed_bypasses_guard(tmp_path, monkeypatch, capsys):
     """--allow-unreviewed must bypass the guard; test must not load real models."""
-    import json
     import scripts.eval_multiseed as em
     from scripts.eval_multiseed import main
 
@@ -306,7 +305,6 @@ def test_eval_multiseed_allow_unreviewed_bypasses_guard(tmp_path, monkeypatch, c
 
 def test_eval_multiseed_rejects_malformed_gold(tmp_path):
     """Malformed gold JSON must block the sweep (fail closed), not silently pass."""
-    import json
     from scripts.eval_multiseed import main
 
     gold_dir = tmp_path / "gold"
