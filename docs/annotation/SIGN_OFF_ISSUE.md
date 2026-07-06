@@ -25,21 +25,31 @@ datasheet still tells the truth about how each label was produced.
 
 ## What you're signing off on
 
-251 steps / 199 constraints across 8 documents (locked `full_subprocedure`
+256 steps / 231 constraints across 8 documents (locked `full_subprocedure`
 scope, 6-type taxonomy: precondition, postcondition, guard, parameter,
 role_assignment, reference; enforcement ∈ must/should/may).
 
+> **2026-07-06 agent verbatim-grounding + completion pass.** Every gold was
+> re-read against its source `.txt` span before this sign-off: all constraint
+> texts re-grounded to contiguous verbatim source wording (guidelines Verbatim
+> wording rule), definitional/restatement constraints dropped, missed
+> constraints added, enforcement realigned to the modal-verb mapping, and two
+> mis-located spans corrected (epa_filter was annotating the MFC SOP §6.0, not
+> "5.14 Repair"; usgs_groundwater was annotating the Figure-2 field form, its
+> Instructions were re-authored; usgs_nfm's span cut off Steps 4d–6, now
+> annotated). Details in each gold's `review_notes`. Counts below are current.
+
 | Document | Section signed off | Steps | Constraints |
 |---|---|--:|--:|
-| epa_field_operations_manual_filter_sampling_sop | 5.14 Repair | 18 | 9 |
-| epa_field_sampling_measurement_procedure_validation | Procedure Development, Validation & Approval | 35 | 41 |
-| epa_guidance_preparing_sops_qag6 | 2.0 SOP Process | 36 | 34 |
-| nasa_npr_8715_3d_general_safety | 2.5.2 System Safety Technical Plan | 39 | 29 |
-| niosh_nmam_5th_edition_ebook | Method 2005 (Nitroaromatic compounds) | 34 | 21 |
-| olsk_small_cnc_v1_workbook | 01 Electronic Box assembly | 24 | 8 |
-| usgs_groundwater_technical_procedures_tm1_a1 | GWPD 1 (water-level measurement) | 29 | 12 |
-| usgs_nfm_collection_water_samples_a4 | EWI sampling steps | 36 | 45 |
-| **TOTAL** | | **251** | **199** |
+| epa_field_operations_manual_filter_sampling_sop | MFC SOP — 6.0 Calibration / Post-Calibration (6.1.1–6.1.10) | 18 | 12 |
+| epa_field_sampling_measurement_procedure_validation | Procedure Development, Validation & Approval | 35 | 44 |
+| epa_guidance_preparing_sops_qag6 | 2.0 SOP Process (2.1–2.6) | 36 | 33 |
+| nasa_npr_8715_3d_general_safety | 2.5.2 System Safety Technical Plan | 39 | 26 |
+| niosh_nmam_5th_edition_ebook | Method 2005 (Nitroaromatic compounds) | 34 | 24 |
+| olsk_small_cnc_v1_workbook | 01 Electronic Box assembly | 24 | 9 |
+| usgs_groundwater_technical_procedures_tm1_a1 | GWPD 1 — Instructions 1–14 + Data Recording | 29 | 20 |
+| usgs_nfm_collection_water_samples_a4 | EWI sampling steps (1–6, complete) | 41 | 63 |
+| **TOTAL** | | **256** | **231** |
 
 ---
 

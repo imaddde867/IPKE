@@ -6,276 +6,373 @@
     "domain": "hydrology",
     "source": {
       "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-      "section": "GWPD 1",
+      "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
       "page": null,
-      "char_start": 29259,
-      "char_end": 34875
+      "char_start": 26590,
+      "char_end": 33570
     }
   },
   "steps": [
     {
       "id": "S1",
-      "label": "Record site identification information",
-      "action_verb": "record",
-      "action_object": "site ID and station name",
+      "label": "Open the well",
+      "action_verb": "open",
+      "action_object": "well",
       "arguments": [],
       "parameters": [],
       "constraints": [],
       "flags": {},
       "provenance": {
         "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
         "page": null
       }
     },
     {
       "id": "S2",
-      "label": "Record measurement method selection",
-      "action_verb": "select",
-      "action_object": "method of water-level measurement code",
-      "arguments": [],
-      "parameters": [],
-      "constraints": [],
-      "flags": {},
-      "provenance": {
-        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
-        "page": null
-      }
-    },
-    {
-      "id": "S3",
-      "label": "Record site status for water level",
-      "action_verb": "record",
-      "action_object": "site status code",
-      "arguments": [],
-      "parameters": [],
-      "constraints": [],
-      "flags": {},
-      "provenance": {
-        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
-        "page": null
-      }
-    },
-    {
-      "id": "S4",
-      "label": "Record measurement point height",
-      "action_verb": "record",
-      "action_object": "measuring point height",
-      "arguments": [],
-      "parameters": [],
-      "constraints": [],
-      "flags": {},
-      "provenance": {
-        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
-        "page": null
-      }
-    },
-    {
-      "id": "S5",
-      "label": "Record beginning date of measurement",
-      "action_verb": "record",
-      "action_object": "beginning date",
-      "arguments": [],
-      "parameters": [],
-      "constraints": [],
-      "flags": {},
-      "provenance": {
-        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
-        "page": null
-      }
-    },
-    {
-      "id": "S6",
-      "label": "Record measuring point remarks",
-      "action_verb": "record",
-      "action_object": "MP remarks",
-      "arguments": [],
-      "parameters": [],
-      "constraints": [],
-      "flags": {},
-      "provenance": {
-        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
-        "page": null
-      }
-    },
-    {
-      "id": "S8",
-      "label": "Lower tape until weight touches water surface",
-      "action_verb": "lower",
-      "action_object": "tape with weight",
-      "arguments": [],
-      "parameters": [],
-      "constraints": [],
-      "flags": {},
-      "provenance": {
-        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
-        "page": null
-      }
-    },
-    {
-      "id": "S9",
-      "label": "Note the chalk mark wetting on the tape",
-      "action_verb": "observe",
-      "action_object": "chalk mark wetted by water",
-      "arguments": [],
-      "parameters": [],
-      "constraints": [],
-      "flags": {},
-      "provenance": {
-        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
-        "page": null
-      }
-    },
-    {
-      "id": "S10",
-      "label": "Read the distance on the graduated tape",
-      "action_verb": "read",
-      "action_object": "graduated tape measurement",
-      "arguments": [],
-      "parameters": [],
-      "constraints": [
-        {
-          "id": "C11",
-          "type": "parameter",
-          "text": "field measurements recorded to the nearest 0.01 foot or to the appropriate precision based on the judgment of the hydrographer",
-          "attached_to": [
-            "S10",
-            "S11"
-          ],
-          "enforcement": "must"
-        }
-      ],
-      "flags": {},
-      "provenance": {
-        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
-        "page": null
-      }
-    },
-    {
-      "id": "S11",
-      "label": "Record the water-level measurement value",
-      "action_verb": "record",
-      "action_object": "water-level measurement",
-      "arguments": [],
-      "parameters": [],
-      "constraints": [
-        {
-          "id": "C10",
-          "type": "postcondition",
-          "text": "all water-level data recorded on the water-level measurement field form or handheld computer program such as MONKES",
-          "attached_to": [
-            "S11",
-            "S12",
-            "S13",
-            "S14",
-            "S15",
-            "S20"
-          ],
-          "enforcement": "must"
-        }
-      ],
-      "flags": {},
-      "provenance": {
-        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
-        "page": null
-      }
-    },
-    {
-      "id": "S12",
-      "label": "Record the date of field visit",
-      "action_verb": "record",
-      "action_object": "date of field visit",
-      "arguments": [],
-      "parameters": [],
-      "constraints": [],
-      "flags": {},
-      "provenance": {
-        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
-        "page": null
-      }
-    },
-    {
-      "id": "S13",
-      "label": "Record the time of measurement",
-      "action_verb": "record",
-      "action_object": "time of measurement",
-      "arguments": [],
-      "parameters": [],
-      "constraints": [],
-      "flags": {},
-      "provenance": {
-        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
-        "page": null
-      }
-    },
-    {
-      "id": "S14",
-      "label": "Record the equipment ID",
-      "action_verb": "record",
-      "action_object": "equipment ID",
-      "arguments": [],
-      "parameters": [],
-      "constraints": [],
-      "flags": {},
-      "provenance": {
-        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
-        "page": null
-      }
-    },
-    {
-      "id": "S15",
-      "label": "Record the water-level type code",
-      "action_verb": "record",
-      "action_object": "water-level type code",
-      "arguments": [],
-      "parameters": [],
-      "constraints": [],
-      "flags": {},
-      "provenance": {
-        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
-        "page": null
-      }
-    },
-    {
-      "id": "S16",
-      "label": "Make a second measurement of water level",
-      "action_verb": "measure",
-      "action_object": "water level again",
-      "arguments": [],
-      "parameters": [],
-      "constraints": [],
-      "flags": {},
-      "provenance": {
-        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
-        "page": null
-      }
-    },
-    {
-      "id": "S17",
-      "label": "Compare the two measurements for agreement",
-      "action_verb": "compare",
-      "action_object": "first and second measurements",
+      "label": "Chalk the lower few feet of the tape",
+      "action_verb": "chalk",
+      "action_object": "lower few feet of the tape",
       "arguments": [],
       "parameters": [],
       "constraints": [
         {
           "id": "C1",
           "type": "parameter",
-          "text": "measurements must agree within 0.02 foot",
+          "text": "by pulling the tape across a piece of blue carpenter’s chalk",
+          "attached_to": [
+            "S2"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
+        "page": null
+      }
+    },
+    {
+      "id": "S3",
+      "label": "Review recent measurements from the well to estimate the hold point",
+      "action_verb": "review",
+      "action_object": "recent measurements from the well",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
+        "page": null
+      }
+    },
+    {
+      "id": "S4",
+      "label": "Lower the weight and tape into the well until the lower end of the tape is submerged",
+      "action_verb": "lower",
+      "action_object": "weight and tape into the well",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C2",
+          "type": "guard",
+          "text": "The weight and tape should be lowered into the water slowly to prevent splashing",
+          "attached_to": [
+            "S4"
+          ],
+          "enforcement": "should"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
+        "page": null
+      }
+    },
+    {
+      "id": "S5",
+      "label": "Place thumb and index finger on the tape graduation",
+      "action_verb": "place",
+      "action_object": "thumb and index finger on the tape graduation",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C3",
+          "type": "parameter",
+          "text": "Place the thumb and index finger on the tape graduation that is 0.01 less than the next whole foot mark",
+          "attached_to": [
+            "S5"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
+        "page": null
+      }
+    },
+    {
+      "id": "S6",
+      "label": "Continue to lower the tape until thumb and index finger meet the MP",
+      "action_verb": "lower",
+      "action_object": "end of the tape into the well",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
+        "page": null
+      }
+    },
+    {
+      "id": "S7",
+      "label": "Record the graduation value (the HOLD) in the Hold column of the field form",
+      "action_verb": "record",
+      "action_object": "graduation value (HOLD)",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C19",
+          "type": "postcondition",
+          "text": "All water-level data are recorded on the water-level measurement field form (fig. 2) or by using a handheld computer program such as MONKES",
+          "attached_to": [
+            "S7",
+            "S9",
+            "S10",
+            "S11",
+            "S13",
+            "S15",
+            "S20"
+          ],
+          "enforcement": "must"
+        },
+        {
+          "id": "C20",
+          "type": "parameter",
+          "text": "Field measurements are recorded to the nearest 0.01 foot or to the appropriate precision based on the judgment of the hydrographer",
+          "attached_to": [
+            "S7",
+            "S9",
+            "S11",
+            "S15"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
+        "page": null
+      }
+    },
+    {
+      "id": "S8",
+      "label": "Rapidly bring the tape to the surface",
+      "action_verb": "bring",
+      "action_object": "tape to the surface",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C4",
+          "type": "guard",
+          "text": "before the wetted chalk mark dries and becomes difficult to read",
+          "attached_to": [
+            "S8"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
+        "page": null
+      }
+    },
+    {
+      "id": "S9",
+      "label": "Record the length of the wetted chalk (the CUT) in the Cut row of the field form",
+      "action_verb": "record",
+      "action_object": "length of the wetted chalk (CUT)",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
+        "page": null
+      }
+    },
+    {
+      "id": "S10",
+      "label": "Record the time of the measurement in the Time row of the form",
+      "action_verb": "record",
+      "action_object": "time of the measurement",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
+        "page": null
+      }
+    },
+    {
+      "id": "S11",
+      "label": "Subtract the CUT from the HOLD and record in the WL below MP column",
+      "action_verb": "subtract",
+      "action_object": "CUT from the HOLD",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
+        "page": null
+      }
+    },
+    {
+      "id": "S12",
+      "label": "Apply the tape correction to the WL below MP value",
+      "action_verb": "apply",
+      "action_object": "tape correction to the WL below MP value",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C5",
+          "type": "guard",
+          "text": "If the tape-calibration procedure indicates that a correction is needed at a given water-level depth or for a given water-level range, apply that correction to the “WL below MP” value by adding or subtracting the appropriate correction",
+          "attached_to": [
+            "S12"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
+        "page": null
+      }
+    },
+    {
+      "id": "S13",
+      "label": "Record the MP correction length on the MP correction row of the field form",
+      "action_verb": "record",
+      "action_object": "MP correction length",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C6",
+          "type": "parameter",
+          "text": "the MP correction is positive if the MP is above land surface and is negative if the MP is below land surface (GWPD 3)",
+          "attached_to": [
+            "S13"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
+        "page": null
+      }
+    },
+    {
+      "id": "S14",
+      "label": "Subtract the MP correction from the WL below MP value to get depth to water relative to LSD",
+      "action_verb": "subtract",
+      "action_object": "MP correction from the WL below MP value",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
+        "page": null
+      }
+    },
+    {
+      "id": "S15",
+      "label": "Record the water level in the WL below LSD column of the field form",
+      "action_verb": "record",
+      "action_object": "water level in the WL below LSD column",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C7",
+          "type": "guard",
+          "text": "If the water level is above LSD, record the depth to water in feet below land surface as a negative number",
+          "attached_to": [
+            "S15"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
+        "page": null
+      }
+    },
+    {
+      "id": "S16",
+      "label": "Make a check measurement by repeating steps 1 through 5",
+      "action_verb": "make",
+      "action_object": "check measurement",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C8",
+          "type": "parameter",
+          "text": "The check measurement should be made using a different HOLD value than that used for the original measurement",
+          "attached_to": [
+            "S16"
+          ],
+          "enforcement": "should"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
+        "page": null
+      }
+    },
+    {
+      "id": "S17",
+      "label": "Compare the check measurement with the original measurement",
+      "action_verb": "compare",
+      "action_object": "check measurement with the original measurement",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C9",
+          "type": "guard",
+          "text": "If the check measurement does not agree with the original measurement within 0.02 foot, continue to make measurements until the reason for lack of agreement is determined or the results are shown to be reliable",
           "attached_to": [
             "S17",
             "S18"
@@ -286,32 +383,22 @@
       "flags": {},
       "provenance": {
         "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
         "page": null
       }
     },
     {
       "id": "S18",
-      "label": "Continue measuring until agreement within 0.02 foot or reason is determined",
+      "label": "Continue measurements until the reason for disagreement is determined or results are reliable",
       "action_verb": "continue",
-      "action_object": "water-level measurements",
+      "action_object": "measurements",
       "arguments": [],
       "parameters": [],
-      "constraints": [
-        {
-          "id": "C2",
-          "type": "postcondition",
-          "text": "continue to make measurements until the reason for lack of agreement is determined or the results are shown to be reliable",
-          "attached_to": [
-            "S18"
-          ],
-          "enforcement": "must"
-        }
-      ],
+      "constraints": [],
       "flags": {},
       "provenance": {
         "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
         "page": null
       }
     },
@@ -319,54 +406,64 @@
       "id": "S19",
       "label": "Select the measurement most representative of field conditions",
       "action_verb": "select",
-      "action_object": "most representative measurement",
+      "action_object": "measurement most representative of field conditions",
       "arguments": [],
       "parameters": [],
-      "constraints": [],
+      "constraints": [
+        {
+          "id": "C10",
+          "type": "guard",
+          "text": "If more than two measurements are made, use best judgment to select the measurement most representative of field conditions",
+          "attached_to": [
+            "S19"
+          ],
+          "enforcement": "must"
+        }
+      ],
       "flags": {},
       "provenance": {
         "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
         "page": null
       }
     },
     {
       "id": "S20",
-      "label": "Complete the final measurement section of the field form",
+      "label": "Complete the Final Measurement for GWSI portion of the field form",
       "action_verb": "complete",
-      "action_object": "final measurement for GWSI section",
+      "action_object": "Final Measurement for GWSI portion of the field form",
       "arguments": [],
       "parameters": [],
       "constraints": [],
       "flags": {},
       "provenance": {
         "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
         "page": null
       }
     },
     {
       "id": "S21",
-      "label": "Disinfect the submerged portion of the tape",
+      "label": "Disinfect the part of the tape that was submerged",
       "action_verb": "disinfect",
-      "action_object": "submerged part of tape",
+      "action_object": "part of the tape that was submerged",
       "arguments": [],
       "parameters": [],
       "constraints": [
         {
-          "id": "C3",
-          "type": "guard",
-          "text": "disinfect and rinse that part of the tape that was submerged below the water surface to reduce the possibility of contamination of other wells from the tape",
+          "id": "C11",
+          "type": "precondition",
+          "text": "After completing the water-level measurement",
           "attached_to": [
             "S21",
             "S22"
           ],
-          "enforcement": "should"
+          "enforcement": "must"
         },
         {
           "id": "C12",
           "type": "reference",
-          "text": "disinfection and rinsing procedure as described in the National Field Manual (Wilde, 2004)",
+          "text": "as described in the National Field Manual (Wilde, 2004)",
           "attached_to": [
             "S21",
             "S22"
@@ -377,22 +474,22 @@
       "flags": {},
       "provenance": {
         "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
         "page": null
       }
     },
     {
       "id": "S22",
-      "label": "Rinse the submerged portion of the tape",
+      "label": "Rinse the part of the tape that was submerged",
       "action_verb": "rinse",
-      "action_object": "submerged part of tape",
+      "action_object": "part of the tape that was submerged",
       "arguments": [],
       "parameters": [],
       "constraints": [],
       "flags": {},
       "provenance": {
         "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
         "page": null
       }
     },
@@ -407,32 +504,32 @@
       "flags": {},
       "provenance": {
         "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
         "page": null
       }
     },
     {
       "id": "S24",
-      "label": "Periodically inspect the tape for rust, breaks, and kinks",
-      "action_verb": "inspect",
-      "action_object": "tape for rust, breaks, kinks, and stretch",
+      "label": "Maintain the tape in good working condition",
+      "action_verb": "maintain",
+      "action_object": "tape",
       "arguments": [],
       "parameters": [],
       "constraints": [
         {
-          "id": "C4",
-          "type": "postcondition",
-          "text": "periodically check the tape for rust, breaks, kinks, and possible stretch due to the suspended weight",
+          "id": "C13",
+          "type": "parameter",
+          "text": "by periodically checking the tape for rust, breaks, kinks, and possible stretch due to the suspended weight of the tape and the tape weight",
           "attached_to": [
             "S24"
           ],
-          "enforcement": "should"
+          "enforcement": "must"
         }
       ],
       "flags": {},
       "provenance": {
         "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
         "page": null
       }
     },
@@ -440,16 +537,17 @@
       "id": "S25",
       "label": "Recalibrate the tape annually",
       "action_verb": "recalibrate",
-      "action_object": "steel tape",
+      "action_object": "tape",
       "arguments": [],
       "parameters": [],
       "constraints": [
         {
-          "id": "C5",
+          "id": "C14",
           "type": "parameter",
-          "text": "tape should be recalibrated annually",
+          "text": "The tape should be recalibrated annually and recorded in the calibration logbook",
           "attached_to": [
-            "S25"
+            "S25",
+            "S26"
           ],
           "enforcement": "should"
         }
@@ -457,24 +555,25 @@
       "flags": {},
       "provenance": {
         "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
         "page": null
       }
     },
     {
       "id": "S26",
-      "label": "Record calibration results in the calibration logbook",
+      "label": "Record the recalibration in the calibration logbook",
       "action_verb": "record",
-      "action_object": "calibration data in logbook",
+      "action_object": "recalibration in the calibration logbook",
       "arguments": [],
       "parameters": [],
       "constraints": [
         {
-          "id": "C6",
+          "id": "C18",
           "type": "postcondition",
-          "text": "calibration results recorded in the calibration logbook",
+          "text": "All calibration and maintenance data associated with steel tape use are recorded in the calibration and maintenance equipment logbook",
           "attached_to": [
-            "S26"
+            "S26",
+            "S29"
           ],
           "enforcement": "must"
         }
@@ -482,108 +581,243 @@
       "flags": {},
       "provenance": {
         "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
         "page": null
       }
     },
     {
       "id": "S27",
-      "label": "Check for oil layer on water surface in pumped wells",
-      "action_verb": "check",
-      "action_object": "water surface for oil layer",
+      "label": "Read the tape at the top of the oil mark and use this value for the water-level measurement",
+      "action_verb": "read",
+      "action_object": "tape at the top of the oil mark",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C15",
+          "type": "guard",
+          "text": "If the oil layer is a foot or less thick, read the tape at the top of the oil mark and use this value for the water-level measurement instead of the wetted chalk mark",
+          "attached_to": [
+            "S27"
+          ],
+          "enforcement": "must"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
+        "page": null
+      }
+    },
+    {
+      "id": "S28",
+      "label": "Detect water in the oil using an interface probe or water-detector paste",
+      "action_verb": "detect",
+      "action_object": "presence of water in the oil",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C16",
+          "type": "guard",
+          "text": "if several feet of oil are present in the well, or if it is necessary to know the thickness of the oil layer, an electronic “interface probe,” or a commercially available water-detector paste can be used that will detect the presence of water in the oil",
+          "attached_to": [
+            "S28"
+          ],
+          "enforcement": "may"
+        },
+        {
+          "id": "C17",
+          "type": "parameter",
+          "text": "the water level can be estimated by adding the thickness of the oil layer times its density to the oil-water interface altitude",
+          "attached_to": [
+            "S28"
+          ],
+          "enforcement": "may"
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
+        "page": null
+      }
+    },
+    {
+      "id": "S29",
+      "label": "Record all calibration and maintenance data in the equipment logbook",
+      "action_verb": "record",
+      "action_object": "calibration and maintenance data",
       "arguments": [],
       "parameters": [],
       "constraints": [],
       "flags": {},
       "provenance": {
         "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
-        "page": null
-      }
-    },
-    {
-      "id": "S28",
-      "label": "Read tape at top of oil mark if oil layer is a foot or less",
-      "action_verb": "read",
-      "action_object": "tape at top of oil mark",
-      "arguments": [],
-      "parameters": [],
-      "constraints": [
-        {
-          "id": "C7",
-          "type": "guard",
-          "text": "if oil layer is a foot or less thick, read the tape at the top of the oil mark and use this value for the water-level measurement instead of the wetted chalk mark",
-          "attached_to": [
-            "S28"
-          ],
-          "enforcement": "must"
-        }
-      ],
-      "flags": {},
-      "provenance": {
-        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
-        "page": null
-      }
-    },
-    {
-      "id": "S29",
-      "label": "Use interface probe or water-detector paste for thick oil layers",
-      "action_verb": "use",
-      "action_object": "interface probe or water-detector paste",
-      "arguments": [],
-      "parameters": [],
-      "constraints": [
-        {
-          "id": "C8",
-          "type": "guard",
-          "text": "if several feet of oil are present in the well, or if it is necessary to know the thickness of the oil layer, use an electronic interface probe or water-detector paste",
-          "attached_to": [
-            "S29"
-          ],
-          "enforcement": "should"
-        }
-      ],
-      "flags": {},
-      "provenance": {
-        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
-        "page": null
-      }
-    },
-    {
-      "id": "S30",
-      "label": "Record all calibration and maintenance data in equipment logbook",
-      "action_verb": "record",
-      "action_object": "calibration and maintenance data in logbook",
-      "arguments": [],
-      "parameters": [],
-      "constraints": [
-        {
-          "id": "C9",
-          "type": "postcondition",
-          "text": "all calibration and maintenance data associated with steel tape use recorded in the calibration and maintenance equipment logbook",
-          "attached_to": [
-            "S30"
-          ],
-          "enforcement": "must"
-        }
-      ],
-      "flags": {},
-      "provenance": {
-        "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
-        "section": "GWPD 1",
+        "section": "GWPD 1 — Instructions (items 1–14) + Data Recording",
         "page": null
       }
     }
   ],
   "constraints": [],
-  "relations": [],
+  "relations": [
+    {
+      "source": "S1",
+      "target": "S2",
+      "type": "NEXT"
+    },
+    {
+      "source": "S2",
+      "target": "S3",
+      "type": "NEXT"
+    },
+    {
+      "source": "S3",
+      "target": "S4",
+      "type": "NEXT"
+    },
+    {
+      "source": "S4",
+      "target": "S5",
+      "type": "NEXT"
+    },
+    {
+      "source": "S5",
+      "target": "S6",
+      "type": "NEXT"
+    },
+    {
+      "source": "S6",
+      "target": "S7",
+      "type": "NEXT"
+    },
+    {
+      "source": "S7",
+      "target": "S8",
+      "type": "NEXT"
+    },
+    {
+      "source": "S8",
+      "target": "S9",
+      "type": "NEXT"
+    },
+    {
+      "source": "S9",
+      "target": "S10",
+      "type": "NEXT"
+    },
+    {
+      "source": "S10",
+      "target": "S11",
+      "type": "NEXT"
+    },
+    {
+      "source": "S11",
+      "target": "S12",
+      "type": "NEXT"
+    },
+    {
+      "source": "S12",
+      "target": "S13",
+      "type": "NEXT"
+    },
+    {
+      "source": "S13",
+      "target": "S14",
+      "type": "NEXT"
+    },
+    {
+      "source": "S14",
+      "target": "S15",
+      "type": "NEXT"
+    },
+    {
+      "source": "S15",
+      "target": "S16",
+      "type": "NEXT"
+    },
+    {
+      "source": "S16",
+      "target": "S17",
+      "type": "NEXT"
+    },
+    {
+      "source": "S17",
+      "target": "S18",
+      "type": "NEXT"
+    },
+    {
+      "source": "S18",
+      "target": "S19",
+      "type": "NEXT"
+    },
+    {
+      "source": "S19",
+      "target": "S20",
+      "type": "NEXT"
+    },
+    {
+      "source": "S20",
+      "target": "S21",
+      "type": "NEXT"
+    },
+    {
+      "source": "S21",
+      "target": "S22",
+      "type": "NEXT"
+    },
+    {
+      "source": "S22",
+      "target": "S23",
+      "type": "NEXT"
+    },
+    {
+      "source": "S23",
+      "target": "S24",
+      "type": "NEXT"
+    },
+    {
+      "source": "S24",
+      "target": "S25",
+      "type": "NEXT"
+    },
+    {
+      "source": "S25",
+      "target": "S26",
+      "type": "NEXT"
+    },
+    {
+      "source": "S26",
+      "target": "S27",
+      "type": "NEXT"
+    },
+    {
+      "source": "S26",
+      "target": "S28",
+      "type": "NEXT"
+    },
+    {
+      "source": "S27",
+      "target": "S28",
+      "type": "ALTERNATIVE_TO"
+    },
+    {
+      "source": "S27",
+      "target": "S29",
+      "type": "NEXT"
+    },
+    {
+      "source": "S28",
+      "target": "S29",
+      "type": "NEXT"
+    }
+  ],
   "quality": {
     "annotation_scope": "full_subprocedure",
     "review_status": "reviewed",
     "annotator": "model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off)",
     "review_date": "2026-07-05",
-    "review_notes": "Adjudicated 2026-07-05 by model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off) via scripts/adjudicate.py from model-assisted draft. Decisions: 38 accept, 3 edit, 1 reject, 0 add.\nstep:S1 ACCEPT\nstep:S2 ACCEPT\nstep:S3 ACCEPT\nstep:S4 ACCEPT\nstep:S5 ACCEPT\nstep:S6 ACCEPT\nstep:S7 REJECT -- Source describes lowering tape until weight touches water, not a separate 'lower into well' step. S7 and S8 should be consolidated or S7 removed as a distinct action.\nstep:S8 ACCEPT\nstep:S9 ACCEPT\nstep:S10 ACCEPT\nstep:S11 ACCEPT\nstep:S12 ACCEPT\nstep:S13 ACCEPT\nstep:S14 ACCEPT\nstep:S15 ACCEPT\nstep:S16 ACCEPT\nstep:S17 ACCEPT\nstep:S18 ACCEPT\nstep:S19 ACCEPT\nstep:S20 ACCEPT\nstep:S21 ACCEPT\nstep:S22 ACCEPT\nstep:S23 ACCEPT\nstep:S24 ACCEPT\nstep:S25 ACCEPT\nstep:S26 ACCEPT\nstep:S27 ACCEPT\nstep:S28 ACCEPT\nstep:S29 ACCEPT\nstep:S30 ACCEPT\nconstraint:C11 ACCEPT\nconstraint:C10 EDIT ['attached_to'] -- Source says water-level data recorded on form or handheld program; S12–S15 are intermediate recording steps, not final data recording. C10 should attach to S20 (final measurement section) as the postcondition for all data being recorded.\nconstraint:C1 ACCEPT\nconstraint:C2 ACCEPT\nconstraint:C3 EDIT ['enforcement'] -- Source says disinfection 'will reduce the possibility of contamination'; prescriptive language 'should' matches the stated purpose/benefit, not absolute requirement.\nconstraint:C12 ACCEPT\nconstraint:C4 EDIT ['attached_to'] -- Source says 'Maintain the tape in good working condition by periodically checking…'; the postcondition is the state of maintenance, not separate from S24.\nconstraint:C5 ACCEPT\nconstraint:C6 ACCEPT\nconstraint:C7 ACCEPT\nconstraint:C8 ACCEPT\nconstraint:C9 ACCEPT\n[strict-warning adjudication] step:S1 zero_constraints adjudicated; step:S2 zero_constraints adjudicated; step:S3 zero_constraints adjudicated; step:S4 zero_constraints adjudicated; step:S5 zero_constraints adjudicated; step:S6 zero_constraints adjudicated; step:S8 zero_constraints adjudicated; step:S9 zero_constraints adjudicated; step:S12 zero_constraints adjudicated; step:S13 zero_constraints adjudicated; step:S14 zero_constraints adjudicated; step:S15 zero_constraints adjudicated; step:S16 zero_constraints adjudicated; step:S19 zero_constraints adjudicated; step:S20 zero_constraints adjudicated; step:S22 zero_constraints adjudicated; step:S23 zero_constraints adjudicated; step:S27 zero_constraints adjudicated"
+    "review_notes": "Adjudicated 2026-07-05 by model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off) via scripts/adjudicate.py from model-assisted draft. Decisions: 38 accept, 3 edit, 1 reject, 0 add.\nstep:S1 ACCEPT\nstep:S2 ACCEPT\nstep:S3 ACCEPT\nstep:S4 ACCEPT\nstep:S5 ACCEPT\nstep:S6 ACCEPT\nstep:S7 REJECT -- Source describes lowering tape until weight touches water, not a separate 'lower into well' step. S7 and S8 should be consolidated or S7 removed as a distinct action.\nstep:S8 ACCEPT\nstep:S9 ACCEPT\nstep:S10 ACCEPT\nstep:S11 ACCEPT\nstep:S12 ACCEPT\nstep:S13 ACCEPT\nstep:S14 ACCEPT\nstep:S15 ACCEPT\nstep:S16 ACCEPT\nstep:S17 ACCEPT\nstep:S18 ACCEPT\nstep:S19 ACCEPT\nstep:S20 ACCEPT\nstep:S21 ACCEPT\nstep:S22 ACCEPT\nstep:S23 ACCEPT\nstep:S24 ACCEPT\nstep:S25 ACCEPT\nstep:S26 ACCEPT\nstep:S27 ACCEPT\nstep:S28 ACCEPT\nstep:S29 ACCEPT\nstep:S30 ACCEPT\nconstraint:C11 ACCEPT\nconstraint:C10 EDIT ['attached_to'] -- Source says water-level data recorded on form or handheld program; S12–S15 are intermediate recording steps, not final data recording. C10 should attach to S20 (final measurement section) as the postcondition for all data being recorded.\nconstraint:C1 ACCEPT\nconstraint:C2 ACCEPT\nconstraint:C3 EDIT ['enforcement'] -- Source says disinfection 'will reduce the possibility of contamination'; prescriptive language 'should' matches the stated purpose/benefit, not absolute requirement.\nconstraint:C12 ACCEPT\nconstraint:C4 EDIT ['attached_to'] -- Source says 'Maintain the tape in good working condition by periodically checking…'; the postcondition is the state of maintenance, not separate from S24.\nconstraint:C5 ACCEPT\nconstraint:C6 ACCEPT\nconstraint:C7 ACCEPT\nconstraint:C8 ACCEPT\nconstraint:C9 ACCEPT\n[strict-warning adjudication] step:S1 zero_constraints adjudicated; step:S2 zero_constraints adjudicated; step:S3 zero_constraints adjudicated; step:S4 zero_constraints adjudicated; step:S5 zero_constraints adjudicated; step:S6 zero_constraints adjudicated; step:S8 zero_constraints adjudicated; step:S9 zero_constraints adjudicated; step:S12 zero_constraints adjudicated; step:S13 zero_constraints adjudicated; step:S14 zero_constraints adjudicated; step:S15 zero_constraints adjudicated; step:S16 zero_constraints adjudicated; step:S19 zero_constraints adjudicated; step:S20 zero_constraints adjudicated; step:S22 zero_constraints adjudicated; step:S23 zero_constraints adjudicated; step:S27 zero_constraints adjudicated\n[re-annotation pass 2026-07-06, agent, pending human sign-off] Annotated unit corrected to GWPD 1 'Instructions' (items 1-14) plus 'Data Recording'; char span 29259:34875 -> 26590:33570. The previous span began on the Figure 2 field-form page: prior S1-S6, S12, S14, S15 were field-form captions (SITE ID, METHOD C239, SITE STATUS C238, M.P. HEIGHT C323, BEGINNING DATE C321, M.P. REMARKS C324, Date of Field Visit, Equipment ID, TYPE C243) annotated as procedure steps, while Instructions 1-8 (open well, chalk tape, review recent measurements, lower tape and record HOLD, bring tape up and record CUT and time, subtract CUT from HOLD, tape correction, MP correction and WL below LSD) were absent; prior S27 ('Check for oil layer') had no source action. Steps fully re-authored from the Instructions text (29 steps); all 20 constraints grounded to contiguous verbatim source spans (OCR soft hyphens and line-break hyphenation repaired per guidelines Verbatim wording rule; step numbering here supersedes the step IDs referenced in the adjudication log above). Prior C3 folded the purpose sentence 'This will reduce the possibility of contamination...' into the constraint (guidelines: purpose statements are not constraints); replaced by the 'After completing the water-level measurement' precondition (C11) and the NFM reference (C12). 12 -> 20 constraints.\nstep:S1 zero_constraints adjudicated; step:S3 zero_constraints adjudicated; step:S6 zero_constraints adjudicated; step:S14 zero_constraints adjudicated; step:S23 zero_constraints adjudicated; step:S10 zero_constraints adjudicated (covered via C19 attachment); step:S11 zero_constraints adjudicated (covered via C19/C20 attachment); step:S18 zero_constraints adjudicated (covered via C9 attachment); step:S29 zero_constraints adjudicated (covered via C18 attachment)\n[relations pass 2026-07-06, agent, pending human sign-off] Step-graph relations annotated by hand: NEXT = document-order procedural succession; fork NEXT edges plus ALTERNATIVE_TO only where the source states mutually exclusive branches (S27 oil layer <= 1 ft vs S28 several feet of oil per Instruction 14; rejoin at S29). Conditional in-step behaviour stays encoded as guard constraints. Loops (check-measurement repeat, per-vertical sampling) not modeled to keep the graph acyclic. NOTE: current Tier-B eval synthesizes a linear NEXT chain from steps-array order and does not read this field; relations are provided as explicit gold ordering/branching for graph consumers and export."
   }
 }

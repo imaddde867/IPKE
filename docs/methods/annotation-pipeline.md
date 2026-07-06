@@ -147,19 +147,24 @@ Eight bounded procedures under the locked `full_subprocedure` scope
 
 **Constraint type distribution:** postcondition 60, parameter 42, guard 38,
 precondition 29, reference 16, role_assignment 14.
-**Enforcement distribution:** must 165, should 28, may 6.
+**Enforcement distribution:** must 172, should 42, may 17 (after the 2026-07-06
+verbatim-grounding pass realigned enforcement to the guidelines' modal-verb
+mapping).
 
-Constraint density is genuinely source-dependent, not a defect: repair and
-assembly procedures (filter-sampling repair 9, OLSK electronic-box 8) carry far
-fewer constraints than QA-governance procedures (EPA validation 41, USGS NFM
-45). This variance is recorded in `review_notes`, not smoothed away.
+Constraint density is genuinely source-dependent, not a defect: calibration and
+assembly procedures (MFC calibration 12, OLSK electronic-box 9) carry far
+fewer constraints than QA-governance and field-sampling procedures (EPA
+validation 44, USGS NFM 63). This variance is recorded in `review_notes`, not
+smoothed away.
 
 For continuity: the pre-release thin golds covered the same 8 documents at 43
-steps / 117 constraints total; the re-annotation under the locked scope reaches
-251 steps / 199 constraints — a 5.8× increase in step depth — while the old
-bounded-excerpt golds are preserved under
-`datasets/paper/gold_v1_bounded_excerpt_archive/` and the before/after counts in
-`datasets/paper/gold_depth_comparison.json`.
+steps / 117 constraints total; the re-annotation under the locked scope, after
+the 2026-07-06 source-verbatim grounding and completion pass (mis-located spans
+corrected, missed constraints added, restatements dropped — per-file log in
+each gold's `review_notes`), reaches **256 steps / 231 constraints** — a 6.0×
+increase in step depth — while the old bounded-excerpt golds are preserved
+under `datasets/paper/gold_v1_bounded_excerpt_archive/` and the before/after
+counts in `datasets/paper/gold_depth_comparison.json`.
 
 ## Edge cases and how they were handled
 

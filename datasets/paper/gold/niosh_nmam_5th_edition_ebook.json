@@ -65,12 +65,22 @@
     },
     {
       "id": "S3",
-      "label": "Attach sampler to personal sampling pump with flexible tubing",
+      "label": "Attach sampler to personal sampling pump",
       "action_verb": "attach",
       "action_object": "sampler to pump",
       "arguments": [],
       "parameters": [],
-      "constraints": [],
+      "constraints": [
+        {
+          "id": "C24",
+          "type": "parameter",
+          "text": "with flexible tubing",
+          "attached_to": [
+            "S3"
+          ],
+          "enforcement": "must"
+        }
+      ],
       "flags": {},
       "provenance": {
         "doc_id": "niosh_nmam_5th_edition_ebook",
@@ -103,6 +113,15 @@
             "S4"
           ],
           "enforcement": "must"
+        },
+        {
+          "id": "C22",
+          "type": "reference",
+          "text": "Note the maximum and minimum sample volumes on page 2005-1",
+          "attached_to": [
+            "S4"
+          ],
+          "enforcement": "must"
         }
       ],
       "flags": {},
@@ -123,7 +142,7 @@
         {
           "id": "C5",
           "type": "guard",
-          "text": "Cap both ends of the sampler. Pack securely for shipment",
+          "text": "Pack securely for shipment",
           "attached_to": [
             "S5"
           ],
@@ -147,8 +166,8 @@
       "constraints": [
         {
           "id": "C6",
-          "type": "precondition",
-          "text": "Include the glass wool plug with the front sorbent section",
+          "type": "guard",
+          "text": "include the glass wool plug",
           "attached_to": [
             "S6"
           ],
@@ -204,7 +223,7 @@
     },
     {
       "id": "S9",
-      "label": "Attach crimp cap securely to each vial",
+      "label": "Attach crimp cap to each vial",
       "action_verb": "attach",
       "action_object": "crimp cap to vial",
       "arguments": [],
@@ -238,7 +257,7 @@
         {
           "id": "C9",
           "type": "parameter",
-          "text": "Desorb 30 min in an ultrasonic bath",
+          "text": "Allow to desorb 30 min in an ultrasonic bath",
           "attached_to": [
             "S10"
           ],
@@ -271,8 +290,8 @@
         },
         {
           "id": "C11",
-          "type": "postcondition",
-          "text": "Additional standards may be added to extend the calibration curve if necessary",
+          "type": "guard",
+          "text": "If necessary, additional standards may be added to extend the calibration curve",
           "attached_to": [
             "S11"
           ],
@@ -293,7 +312,17 @@
       "action_object": "calibration stock to methanol",
       "arguments": [],
       "parameters": [],
-      "constraints": [],
+      "constraints": [
+        {
+          "id": "C23",
+          "type": "parameter",
+          "text": "in 10-mL volumetric flasks",
+          "attached_to": [
+            "S12"
+          ],
+          "enforcement": "must"
+        }
+      ],
       "flags": {},
       "provenance": {
         "doc_id": "niosh_nmam_5th_edition_ebook",
@@ -738,12 +767,178 @@
     }
   ],
   "constraints": [],
-  "relations": [],
+  "relations": [
+    {
+      "source": "S1",
+      "target": "S2",
+      "type": "NEXT"
+    },
+    {
+      "source": "S2",
+      "target": "S3",
+      "type": "NEXT"
+    },
+    {
+      "source": "S3",
+      "target": "S4",
+      "type": "NEXT"
+    },
+    {
+      "source": "S4",
+      "target": "S5",
+      "type": "NEXT"
+    },
+    {
+      "source": "S5",
+      "target": "S6",
+      "type": "NEXT"
+    },
+    {
+      "source": "S6",
+      "target": "S7",
+      "type": "NEXT"
+    },
+    {
+      "source": "S7",
+      "target": "S8",
+      "type": "NEXT"
+    },
+    {
+      "source": "S8",
+      "target": "S9",
+      "type": "NEXT"
+    },
+    {
+      "source": "S9",
+      "target": "S10",
+      "type": "NEXT"
+    },
+    {
+      "source": "S10",
+      "target": "S11",
+      "type": "NEXT"
+    },
+    {
+      "source": "S11",
+      "target": "S12",
+      "type": "NEXT"
+    },
+    {
+      "source": "S12",
+      "target": "S13",
+      "type": "NEXT"
+    },
+    {
+      "source": "S13",
+      "target": "S14",
+      "type": "NEXT"
+    },
+    {
+      "source": "S14",
+      "target": "S15",
+      "type": "NEXT"
+    },
+    {
+      "source": "S15",
+      "target": "S16",
+      "type": "NEXT"
+    },
+    {
+      "source": "S16",
+      "target": "S17",
+      "type": "NEXT"
+    },
+    {
+      "source": "S17",
+      "target": "S18",
+      "type": "NEXT"
+    },
+    {
+      "source": "S18",
+      "target": "S19",
+      "type": "NEXT"
+    },
+    {
+      "source": "S19",
+      "target": "S20",
+      "type": "NEXT"
+    },
+    {
+      "source": "S20",
+      "target": "S21",
+      "type": "NEXT"
+    },
+    {
+      "source": "S21",
+      "target": "S22",
+      "type": "NEXT"
+    },
+    {
+      "source": "S22",
+      "target": "S23",
+      "type": "NEXT"
+    },
+    {
+      "source": "S23",
+      "target": "S24",
+      "type": "NEXT"
+    },
+    {
+      "source": "S24",
+      "target": "S25",
+      "type": "NEXT"
+    },
+    {
+      "source": "S25",
+      "target": "S26",
+      "type": "NEXT"
+    },
+    {
+      "source": "S26",
+      "target": "S27",
+      "type": "NEXT"
+    },
+    {
+      "source": "S27",
+      "target": "S28",
+      "type": "NEXT"
+    },
+    {
+      "source": "S28",
+      "target": "S29",
+      "type": "NEXT"
+    },
+    {
+      "source": "S29",
+      "target": "S30",
+      "type": "NEXT"
+    },
+    {
+      "source": "S30",
+      "target": "S31",
+      "type": "NEXT"
+    },
+    {
+      "source": "S31",
+      "target": "S32",
+      "type": "NEXT"
+    },
+    {
+      "source": "S32",
+      "target": "S33",
+      "type": "NEXT"
+    },
+    {
+      "source": "S33",
+      "target": "S34",
+      "type": "NEXT"
+    }
+  ],
   "quality": {
     "annotation_scope": "full_subprocedure",
     "review_status": "reviewed",
     "annotator": "model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off)",
     "review_date": "2026-07-05",
-    "review_notes": "Adjudicated 2026-07-05 by model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off) via scripts/adjudicate.py from model-assisted draft. Decisions: 53 accept, 2 edit, 0 reject, 0 add.\nstep:S1 ACCEPT\nstep:S2 ACCEPT\nstep:S3 ACCEPT\nstep:S4 ACCEPT\nstep:S5 ACCEPT\nstep:S6 ACCEPT\nstep:S7 ACCEPT\nstep:S8 ACCEPT\nstep:S9 ACCEPT\nstep:S10 ACCEPT\nstep:S11 ACCEPT\nstep:S12 ACCEPT\nstep:S13 ACCEPT\nstep:S14 ACCEPT\nstep:S15 ACCEPT\nstep:S16 ACCEPT\nstep:S17 ACCEPT\nstep:S18 ACCEPT\nstep:S19 ACCEPT\nstep:S20 ACCEPT\nstep:S21 ACCEPT\nstep:S22 ACCEPT\nstep:S23 ACCEPT\nstep:S24 ACCEPT\nstep:S25 ACCEPT\nstep:S26 ACCEPT\nstep:S27 ACCEPT\nstep:S28 ACCEPT\nstep:S29 ACCEPT\nstep:S30 ACCEPT\nstep:S31 ACCEPT\nstep:S32 ACCEPT\nstep:S33 ACCEPT\nstep:S34 ACCEPT\nconstraint:C1 ACCEPT\nconstraint:C2 ACCEPT\nconstraint:C3 ACCEPT\nconstraint:C4 ACCEPT\nconstraint:C5 ACCEPT\nconstraint:C6 ACCEPT\nconstraint:C7 ACCEPT\nconstraint:C8 ACCEPT\nconstraint:C9 ACCEPT\nconstraint:C10 ACCEPT\nconstraint:C11 ACCEPT\nconstraint:C12 ACCEPT\nconstraint:C13 ACCEPT\nconstraint:C14 ACCEPT\nconstraint:C15 ACCEPT\nconstraint:C16 EDIT ['attached_to', 'type'] -- Constraint is phrased as a guard condition (if/then check), not a precondition. Attached to individual steps, not as prerequisite to all downstream work.\nconstraint:C17 ACCEPT\nconstraint:C18 ACCEPT\nconstraint:C19 ACCEPT\nconstraint:C20 EDIT ['type'] -- Source text presents this as a NOTE within step 13 (calculations), making it a guard/verification step, not a postcondition of the four measurement steps.\nconstraint:C21 ACCEPT\n[strict-warning adjudication] step:S3 zero_constraints adjudicated; step:S7 zero_constraints adjudicated; step:S12 zero_constraints adjudicated; step:S13 zero_constraints adjudicated; step:S14 zero_constraints adjudicated; step:S15 zero_constraints adjudicated; step:S19 zero_constraints adjudicated; step:S20 zero_constraints adjudicated; step:S21 zero_constraints adjudicated; step:S23 zero_constraints adjudicated; step:S26 zero_constraints adjudicated; step:S28 zero_constraints adjudicated; step:S30 zero_constraints adjudicated; step:S31 zero_constraints adjudicated; step:S32 zero_constraints adjudicated; step:S34 zero_constraints adjudicated"
+    "review_notes": "Adjudicated 2026-07-05 by model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off) via scripts/adjudicate.py from model-assisted draft. Decisions: 53 accept, 2 edit, 0 reject, 0 add.\nstep:S1 ACCEPT\nstep:S2 ACCEPT\nstep:S3 ACCEPT\nstep:S4 ACCEPT\nstep:S5 ACCEPT\nstep:S6 ACCEPT\nstep:S7 ACCEPT\nstep:S8 ACCEPT\nstep:S9 ACCEPT\nstep:S10 ACCEPT\nstep:S11 ACCEPT\nstep:S12 ACCEPT\nstep:S13 ACCEPT\nstep:S14 ACCEPT\nstep:S15 ACCEPT\nstep:S16 ACCEPT\nstep:S17 ACCEPT\nstep:S18 ACCEPT\nstep:S19 ACCEPT\nstep:S20 ACCEPT\nstep:S21 ACCEPT\nstep:S22 ACCEPT\nstep:S23 ACCEPT\nstep:S24 ACCEPT\nstep:S25 ACCEPT\nstep:S26 ACCEPT\nstep:S27 ACCEPT\nstep:S28 ACCEPT\nstep:S29 ACCEPT\nstep:S30 ACCEPT\nstep:S31 ACCEPT\nstep:S32 ACCEPT\nstep:S33 ACCEPT\nstep:S34 ACCEPT\nconstraint:C1 ACCEPT\nconstraint:C2 ACCEPT\nconstraint:C3 ACCEPT\nconstraint:C4 ACCEPT\nconstraint:C5 ACCEPT\nconstraint:C6 ACCEPT\nconstraint:C7 ACCEPT\nconstraint:C8 ACCEPT\nconstraint:C9 ACCEPT\nconstraint:C10 ACCEPT\nconstraint:C11 ACCEPT\nconstraint:C12 ACCEPT\nconstraint:C13 ACCEPT\nconstraint:C14 ACCEPT\nconstraint:C15 ACCEPT\nconstraint:C16 EDIT ['attached_to', 'type'] -- Constraint is phrased as a guard condition (if/then check), not a precondition. Attached to individual steps, not as prerequisite to all downstream work.\nconstraint:C17 ACCEPT\nconstraint:C18 ACCEPT\nconstraint:C19 ACCEPT\nconstraint:C20 EDIT ['type'] -- Source text presents this as a NOTE within step 13 (calculations), making it a guard/verification step, not a postcondition of the four measurement steps.\nconstraint:C21 ACCEPT\n[strict-warning adjudication] step:S3 zero_constraints adjudicated; step:S7 zero_constraints adjudicated; step:S12 zero_constraints adjudicated; step:S13 zero_constraints adjudicated; step:S14 zero_constraints adjudicated; step:S15 zero_constraints adjudicated; step:S19 zero_constraints adjudicated; step:S20 zero_constraints adjudicated; step:S21 zero_constraints adjudicated; step:S23 zero_constraints adjudicated; step:S26 zero_constraints adjudicated; step:S28 zero_constraints adjudicated; step:S30 zero_constraints adjudicated; step:S31 zero_constraints adjudicated; step:S32 zero_constraints adjudicated; step:S34 zero_constraints adjudicated\n[verbatim-grounding pass 2026-07-06, agent, pending human sign-off] C6 re-grounded to the verbatim step-5 parenthetical 'include the glass wool plug' and retyped guard (in-step check, not precondition). C11 restored to source order 'If necessary, additional standards may be added...' and retyped guard (conditional permission, not postcondition). C9 restored verbatim 'Allow to desorb...'. C5 narrowed to 'Pack securely for shipment' (rest was a restatement of S5). S9 label trimmed so C8 carries the 'securely' requirement. Added missed constraints: C22 'Note the maximum and minimum sample volumes on page 2005-1' (reference, S4 — numeric-volume watch item), C23 'in 10-mL volumetric flasks' (parameter, S12), C24 'with flexible tubing' (parameter, S3). 21 -> 24 constraints.\n[relations pass 2026-07-06, agent, pending human sign-off] Step-graph relations annotated by hand: NEXT = document-order procedural succession; fork NEXT edges plus ALTERNATIVE_TO only where the source states mutually exclusive branches. Conditional in-step behaviour stays encoded as guard constraints. Loops (check-measurement repeat, per-vertical sampling) not modeled to keep the graph acyclic. NOTE: current Tier-B eval synthesizes a linear NEXT chain from steps-array order and does not read this field; relations are provided as explicit gold ordering/branching for graph consumers and export."
   }
 }

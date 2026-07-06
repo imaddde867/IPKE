@@ -6,7 +6,7 @@
     "domain": "quality_assurance",
     "source": {
       "doc_id": "epa_field_sampling_measurement_procedure_validation",
-      "section": "3-5 (General Information\u2013Procedure Implementation)",
+      "section": "3-5 (General Information–Procedure Implementation)",
       "page": null,
       "char_start": 3072,
       "char_end": 10737
@@ -24,7 +24,7 @@
       "flags": {},
       "provenance": {
         "doc_id": "epa_field_sampling_measurement_procedure_validation",
-        "section": "3-5 (General Information\u2013Procedure Implementation)"
+        "section": "3-5 (General Information–Procedure Implementation)"
       }
     }
   ],
