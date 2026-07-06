@@ -1,6 +1,6 @@
 # IPKE-Bench Datasheet
 
-Datasheet for the IPKE-Bench seed corpus and benchmark artifact, following the format of Gebru et al. (2021), *Datasheets for Datasets*. Updated 2026-06-13 with the 8-document seed corpus. Will be regenerated at each corpus expansion.
+Datasheet for the IPKE-Bench seed corpus and benchmark artifact, following the format of Gebru et al. (2021), *Datasheets for Datasets*. Updated 2026-06-13 with the 8-document seed corpus; updated 2026-07-06 after the full-subprocedure re-annotation and source-verbatim grounding pass (per-file change log in each gold's `quality.review_notes`). Will be regenerated at each corpus expansion.
 
 ## 1. Motivation
 
@@ -39,19 +39,21 @@ The 8 seed documents are the original IPKE thesis selection plus public-source d
 
 JSON conforming to `schemas/ipke_annotation.schema.json`. See `docs/annotation/guidelines.md` for the annotation schema in human-readable form and `docs/annotation/constraint-types.md` for the locked 6-type × 3-enforcement vocabulary.
 
-Per-instance statistics for the seed corpus (after the 2026-06-13 standards-review fixes):
+Per-instance statistics for the seed corpus (after the 2026-07 full-subprocedure re-annotation + 2026-07-06 verbatim-grounding pass; annotated unit named in each gold's `procedure.source.section`):
 
 | Document | Domain | Steps | Constraints |
 |---|---|---:|---:|
-| `nasa_npr_8715_3d_general_safety` | Aerospace safety regulation | 4 | 9 |
-| `epa_guidance_preparing_sops_qag6` | SOP governance | 4 | 17 |
-| `olsk_small_cnc_v1_workbook` | Mechanical assembly | 4 | 7 |
-| `epa_field_operations_manual_filter_sampling_sop` | Field sampling SOP | 6 | 19 |
-| `epa_field_sampling_measurement_procedure_validation` | Procedure validation | 5 | 15 |
-| `niosh_nmam_5th_edition_ebook` | Industrial hygiene chemistry | 6 | 12 |
-| `usgs_groundwater_technical_procedures_tm1_a1` | Field measurement | 9 | 14 |
-| `usgs_nfm_collection_water_samples_a4` | Field sampling SOP | 5 | 24 |
-| **TOTAL** | | **43** | **117** |
+| `nasa_npr_8715_3d_general_safety` | Aerospace safety regulation | 39 | 26 |
+| `epa_guidance_preparing_sops_qag6` | SOP governance | 36 | 33 |
+| `olsk_small_cnc_v1_workbook` | Mechanical assembly | 24 | 9 |
+| `epa_field_operations_manual_filter_sampling_sop` | Field calibration SOP (MFC) | 18 | 12 |
+| `epa_field_sampling_measurement_procedure_validation` | Procedure validation | 35 | 44 |
+| `niosh_nmam_5th_edition_ebook` | Industrial hygiene chemistry | 34 | 24 |
+| `usgs_groundwater_technical_procedures_tm1_a1` | Field measurement | 29 | 20 |
+| `usgs_nfm_collection_water_samples_a4` | Field sampling SOP | 41 | 63 |
+| **TOTAL** | | **256** | **231** |
+
+Each gold also carries hand-annotated step-graph `relations` (`NEXT` document-order succession plus `ALTERNATIVE_TO` for mutually exclusive branches). The thin bounded-excerpt v1 golds (43 steps / 117 constraints) are preserved under `datasets/paper/gold_v1_bounded_excerpt_archive/`; the before/after counts are in `datasets/paper/gold_depth_comparison.json`.
 
 ### 2.4 Is there a label or target associated with each instance?
 
@@ -59,7 +61,7 @@ The annotation IS the label. Tier-A evaluation metrics (`StepF1`, `ConstraintCov
 
 ### 2.5 Is any information missing?
 
-- **Independent second-pass annotations**: only `epa_field_sampling_measurement_procedure_validation.json` and `olsk_small_cnc_v1_workbook.json` have `second_pass/` files, and both are marked `review_status="llm_draft"` (not independent). The paper's κ ≥ 0.61 claim is open pending recruitment.
+- **Independent second-pass annotations**: `second_pass/` currently holds three blank, anchoring-safe IAA scaffolds (`epa_field_operations_manual_filter_sampling_sop`, `epa_field_sampling_measurement_procedure_validation`, `nasa_npr_8715_3d_general_safety`) plus one legacy `llm_draft` file (`olsk_small_cnc_v1_workbook`). No independent human second pass exists yet; the paper's κ ≥ 0.61 claim is open pending recruitment.
 - **Per-document license attribution inside the JSON**: currently consolidated in `datasets/paper/public_sources_manifest.csv`; will be denormalised into each gold's `procedure.source.license` field in the next manifest update.
 
 ### 2.6 Are there explicit relationships between individual instances?
@@ -72,8 +74,8 @@ No standard train/dev/test split. IPKE-Bench is an evaluation-only benchmark; re
 
 ### 2.8 Are there errors, sources of noise, or redundancies?
 
-- **LLM-drafted scaffolding**: every reviewed file started as an LLM-drafted JSON skeleton. The constraint-blindness baseline (`datasets/paper/reports/constraint_blindness_v2_sbert075.json`) quantifies the under-recall of the original draft: 3.66× under-production of constraints, 20.5% macro recall at the Tier-A protocol matcher (SBERT cos ≥ 0.75) *(thin-gold-era figures; the ratio against the deep 199-constraint golds is under decision — see `docs/paper/D1_SCOPE_DECISION.md`)*. This is a known property of the draft pipeline; the reviewed gold corrects it via the workflow in `docs/annotation/guidelines.md`.
-- **Scope**: every gold currently uses `quality.annotation_scope = "bounded_excerpt"` (1-3 pages of a multi-step + multi-constraint section). Reviewers consuming the full source document outside the bounded section will see additional procedural content that is not annotated.
+- **Model-assisted scaffolding**: every reviewed file started as a model-assisted draft, then passed agent adjudication and a 2026-07-06 source-verbatim grounding pass; final human sign-off appends `+ human-verified:<handle>` to the annotator field. The constraint-blindness reports (`datasets/paper/reports/constraint_blindness_v2_sbert{075,050}.json`, reproduced by `make repro-blindness`) quantify the thin-era draft against the current golds: 32 vs 231 constraints (7.22× expansion), a *cross-regime* annotation-economics figure — framing decided in `docs/paper/D1_SCOPE_DECISION.md`.
+- **Scope**: every gold uses `quality.annotation_scope = "full_subprocedure"` (one coherent, complete procedure annotated end-to-end; unit named in `procedure.source.section`). Reviewers consuming the full source document outside that unit will see additional procedural content that is not annotated.
 
 ### 2.9 Is the dataset self-contained?
 
@@ -91,7 +93,7 @@ Document selection criteria:
 
 1. Public-domain or open-licensed (CC-BY, US federal works, open-source workbooks).
 2. Stable URL on the issuing organisation's site.
-3. Procedural content with multi-step + multi-constraint sections suitable for bounded-excerpt annotation.
+3. Procedural content with a coherent, complete multi-step + multi-constraint sub-procedure suitable for full-subprocedure annotation.
 
 Documents were downloaded with `scripts/download_public_sources.py` and text-extracted with `scripts/extract_public_documents.py`. SHA-256 checksums are recorded in `datasets/paper/public_sources_manifest.csv`.
 
@@ -110,8 +112,11 @@ Documents were downloaded with `scripts/download_public_sources.py` and text-ext
 ### 3.4 Over what timeframe?
 
 - Seed-corpus draft pipeline: April-June 2026.
-- Human review of all 8 documents: 13 June 2026.
+- Human review of all 8 documents (thin bounded-excerpt pass): 13 June 2026.
 - Locked taxonomy applied: 13 June 2026.
+- Full-subprocedure re-annotation (model-assisted + agent adjudication): 4-5 July 2026.
+- Source-verbatim grounding + completion pass: 6 July 2026.
+- Human sign-off of all 8 golds: July 2026 (in progress).
 - Planned independent IAA pass: July-August 2026.
 - Corpus expansion to 12 documents: July-September 2026.
 

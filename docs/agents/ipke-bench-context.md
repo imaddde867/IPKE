@@ -12,12 +12,13 @@ If you are reframing or summarising the project, lead with the benchmark, not th
 
 ## §1 motivating result (live, regenerable)
 
-LLM-drafted gold across 8 documents produced **3.66× fewer constraints** than the human-reviewed gold on the same source text (32 vs 117) — **thin-gold-era numbers**. After the deep re-annotation the golds hold 199 constraints, so the fixed draft is now cross-regime (current arithmetic ≈ 6.22×); the §1 framing is **under decision** per `docs/paper/D1_SCOPE_DECISION.md`. The expansion ratio (magnitude TBD) is the durable §1 claim.
+§1 framing **decided 2026-07-06** (`docs/paper/D1_SCOPE_DECISION.md`, option 2): the headline is **corpus depth** — the thin bounded-excerpt pass held 43 steps / 117 constraints across the 8 documents; the full-subprocedure re-annotation plus 2026-07-06 verbatim-grounding pass yields **256 steps / 231 constraints**. The thin-era LLM draft vs the current golds (32 vs 231, **7.22× expansion**) is a labelled *cross-regime* annotation-economics illustration, not an extractor-quality claim; the apples-to-apples motivator is the D2 P0 baseline's ConstraintCoverage on signed-off gold.
 
 Reproduce with:
 
 ```bash
-make eval-blindness
+make eval-blindness    # regenerates + prints (informational)
+make repro-blindness   # asserts the pinned numbers (32 vs 231, 7.22x)
 ```
 
 Reports land in `datasets/paper/reports/constraint_blindness_v2_sbert{050,075}.json`. If you change the seed corpus, re-run and update `BENCHMARK.md`, `docs/dataset/datasheet.md`, and `docs/paper/ipke-bench-resource-prd.md` headline numbers.

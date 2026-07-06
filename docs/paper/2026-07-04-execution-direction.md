@@ -85,3 +85,24 @@ vision or time-series pilots.
 
 Work on a branch. Do not work directly on `main`. Do not rewrite reviewed gold
 or report JSONs by hand. If a result is wrong, fix the script and regenerate it.
+
+---
+
+## Status update — 2026-07-07
+
+Supersessions since this board was written:
+
+- **#89-equivalent D1 pinning: done.** The D1 scope decision is resolved
+  (option 2, `docs/paper/D1_SCOPE_DECISION.md`); the cross-regime numbers are
+  pinned in the non-gate `make repro-blindness` target. `make eval-blindness`
+  stays informational.
+- **Gold quality pass: done (2026-07-06).** All 8 golds re-read against source,
+  verbatim-grounded, completed, and hand-annotated with step relations —
+  256 steps / 231 constraints. Per-file log in each gold's `review_notes`;
+  summary in `docs/annotation/SIGN_OFF_ISSUE.md`.
+- **Next gate: human sign-off** (`scripts/sign_off_gold.py`, SIGN_OFF_ISSUE.md).
+  #55 (D2 sweep) starts after sign-off; #90 (IAA recruitment) unchanged.
+- The gold hand-editing prohibition below predates the 2026-07-06 annotation
+  pass: annotation *content* is human/agent judgment applied to the data files
+  directly (with the strict validator as the gate); report JSONs remain
+  script-generated only.

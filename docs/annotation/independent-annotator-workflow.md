@@ -66,14 +66,14 @@ The IAA subset (the three documents that require a second pass) is written by `s
 
 | Document | Domain | Bounded scope (locked) | IAA |
 |---|---|---|---|
-| `epa_field_operations_manual_filter_sampling_sop` | Field operations | §5.14 Repair | ⭐ |
+| `epa_field_operations_manual_filter_sampling_sop` | Field operations | MFC SOP §6.0 Calibration / Post-Calibration (6.1.1–6.1.10) | ⭐ |
 | `epa_field_sampling_measurement_procedure_validation` | Quality assurance | §3–5 General Information → Procedure Implementation (whole short doc) | ⭐ |
 | `nasa_npr_8715_3d_general_safety` | Safety requirements | §2.5.2 System Safety Technical Plan (SSTP) | ⭐ |
 | `epa_guidance_preparing_sops_qag6` | Quality assurance | §2.0 SOP Process (2.1–2.6) | |
 | `olsk_small_cnc_v1_workbook` | Mechanical assembly | §01.1–01.5 Electronic Box | |
 | `niosh_nmam_5th_edition_ebook` | Analytical chemistry | Method 2005 SAMPLING / SAMPLE PREPARATION / MEASUREMENT | |
-| `usgs_groundwater_technical_procedures_tm1_a1` | Hydrology | GWPD 1 (graduated steel-tape water level) | |
-| `usgs_nfm_collection_water_samples_a4` | Hydrology | Steps for the EWI sampling method | |
+| `usgs_groundwater_technical_procedures_tm1_a1` | Hydrology | GWPD 1 — Instructions 1–14 + Data Recording | |
+| `usgs_nfm_collection_water_samples_a4` | Hydrology | Steps for the EWI sampling method (Steps 1–6, complete) | |
 
 > First-pass golds are model-assisted drafts adjudicated by an independent source-grounded critic pass (annotator field: `model-assisted:<model> + agent-adjudicated`), pending Imad's final sign-off. Your independent human pass is what turns the reported κ into a human–human agreement figure — do not treat the first pass as human-authored when reasoning about independence.
 
@@ -126,7 +126,7 @@ Schema skeleton:
   "constraints": [],
   "relations": [],
   "quality": {
-    "annotation_scope": "bounded_excerpt",
+    "annotation_scope": "full_subprocedure",
     "review_status": "reviewed",
     "annotator": "<your-handle>",
     "review_date": "<YYYY-MM-DD>",
