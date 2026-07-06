@@ -1,5 +1,5 @@
 .PHONY: test eval eval-full eval-thesis eval-blindness eval-validate eval-iaa smoke-extract paper-table clean-artifacts \
-        gold-draft gold-adjudicate gold-pipeline iaa-setup iaa
+        gold-draft gold-adjudicate gold-pipeline iaa-setup iaa repro-blindness
 
 PYTHON := uv run python
 
@@ -25,12 +25,12 @@ eval-validate:
 #
 # NOTE (2026-07): the --expect-* reproducibility pins were retired here. They
 # encoded the *thin-gold* numbers (reviewed_total 117, expansion 3.66x); after
-# the deep re-annotation the golds are 5.9x deeper (reviewed_total 199), so the
-# fixed D1 draft (generated at the old scope) vs the new deep golds is now a
-# CROSS-REGIME comparison. The ratio is arithmetically real but not an
-# apples-to-apples claim yet -- see docs/paper/D1_SCOPE_DECISION.md. This target
-# now REGENERATES + prints for inspection; it is no longer a pass/fail gate.
-# Re-pin via `make repro-blindness` once the D1 scope decision is locked.
+# the deep re-annotation the golds are 5.9x deeper, so the fixed D1 draft
+# (generated at the old scope) vs the deep golds is a CROSS-REGIME comparison.
+# D1 scope DECIDED 2026-07-06 (option 2): S1 leads with corpus depth; the
+# cross-regime ratio stays a labelled secondary illustration, pinned in
+# `make repro-blindness` (non-gate). See docs/paper/D1_SCOPE_DECISION.md.
+# This target regenerates + prints; it is not a pass/fail gate.
 eval-blindness:
 	mkdir -p $(PAPER_REPORTS)
 	$(PYTHON) scripts/constraint_blindness_report.py \
@@ -41,6 +41,26 @@ eval-blindness:
 		--draft-ref $(D1_DRAFT_REF) \
 		--matcher semantic --threshold 0.50 \
 		--out $(PAPER_REPORTS)/constraint_blindness_v2_sbert050.json
+
+# Pinned reproduction of the D1 cross-regime illustration (2026-07-06 gold state:
+# 231 reviewed constraints after the verbatim-grounding pass). Fails loudly if the
+# committed golds or the fixed draft drift. Deliberately NOT part of gold-pipeline
+# (assertions belong on a locked experiment, not on the pre-push gate).
+repro-blindness:
+	mkdir -p $(PAPER_REPORTS)
+	$(PYTHON) scripts/constraint_blindness_report.py \
+		--draft-ref $(D1_DRAFT_REF) \
+		--matcher semantic --threshold 0.75 \
+		--expect-draft-total 32 --expect-reviewed-total 231 \
+		--expect-recovered 14 --expect-recall 0.0606 --expect-expansion 7.2188 \
+		--out $(PAPER_REPORTS)/constraint_blindness_v2_sbert075.json
+	$(PYTHON) scripts/constraint_blindness_report.py \
+		--draft-ref $(D1_DRAFT_REF) \
+		--matcher semantic --threshold 0.50 \
+		--expect-draft-total 32 --expect-reviewed-total 231 \
+		--expect-recovered 87 --expect-recall 0.3766 --expect-expansion 7.2188 \
+		--out $(PAPER_REPORTS)/constraint_blindness_v2_sbert050.json
+	@echo "OK: D1 cross-regime illustration reproduces (32 vs 231, 7.22x)."
 
 # IAA: meaningful only once independent (non-llm_draft) second_pass files exist.
 eval-iaa: eval-validate
