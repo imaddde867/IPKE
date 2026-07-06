@@ -33,18 +33,16 @@ Without that edge:
 - A retrieval system over an extracted PKG cannot answer "what must hold before step X" without an explicit attached_to / applies_to edge.
 - An LLM-drafted gold (or extractor output) can score well on step F1 while completely missing the safety scaffolding around the procedural backbone.
 
-> **⚠ Numbers under decision (2026-07).** The `3.66× / 32-vs-117` figures below
-> are **thin-gold-era**. After the deep re-annotation the golds hold 199 reviewed
-> constraints, so the fixed D1 draft vs the new golds is a *cross-regime*
-> comparison (current arithmetic: 6.22× / 12-vs-199). Which framing §1 uses is an
-> **open decision** — see `docs/paper/D1_SCOPE_DECISION.md`. Do not cite the
-> numbers in this section as final until that decision is locked.
+> **D1 scope decided 2026-07-06 (option 2)** — see
+> `docs/paper/D1_SCOPE_DECISION.md`. §1 leads with **corpus depth under the
+> locked scope rule**; the draft-vs-gold ratio is a labelled *cross-regime*
+> illustration, pinned in the non-gate `make repro-blindness` target.
 
-The seed corpus already exhibits the phenomenon. The headline finding is matcher-independent: **LLM-drafted gold across 8 documents produced 3.66× fewer constraints than the reviewed gold (32 vs 117)** *(thin-gold-era; see banner above)*. Even when every produced constraint maps to one in gold (best case), the LLM under-produces by 73% of the reviewed total.
+The corpus itself exhibits the phenomenon. **§1 headline (corpus depth):** the thin bounded-excerpt seed pass produced 43 steps / 117 constraints across the 8 documents; re-annotating the *same* documents end-to-end under the locked full-subprocedure scope rule, with source-verbatim constraint grounding, yields **256 steps / 231 reviewed constraints** — the constraint scaffolding that excerpt-scale annotation and naive drafting leave unmeasured.
 
-Recall numbers depend on the chosen matcher and threshold; the paper reports both extremes for transparency. At the Tier-A protocol matcher (SBERT cos ≥ 0.75 over the constraint text) the draft recovers 20.5%; at a loose cos ≥ 0.50 it recovers 61.0% — see `datasets/paper/reports/constraint_blindness_v2_sbert075.json` and `_sbert050.json`. The per-type breakdown is presented with the threshold attached inline (not as standalone headline numbers), because small per-type sample sizes (n=2 for `reference`, n=9 for `role_assignment`) make extreme recall values brittle.
+**Secondary illustration (cross-regime, labelled as such):** the fixed thin-era LLM draft holds 32 constraints against the 231 reviewed — a **7.22× expansion**. At the Tier-A protocol matcher (SBERT cos ≥ 0.75 over the constraint text) the draft recovers 6.1%; at a loose cos ≥ 0.50 it recovers 37.7% — see `datasets/paper/reports/constraint_blindness_v2_sbert075.json` and `_sbert050.json`, reproduced by `make repro-blindness`. Draft and gold come from different annotation regimes, so this is annotation-economics evidence, not an extractor-quality claim. The per-type breakdown stays threshold-attached inline (small per-type sample sizes make extreme recall values brittle).
 
-The durable claim for §1 is the *under-production ratio* (magnitude to be finalised per the scope decision above), not the per-type recall percentages.
+The durable §1 claim is corpus depth plus, once D2 runs on the signed-off gold, the P0 zero-shot local baseline's ConstraintCoverage / ConstraintAttachmentF1 — the benchmark itself measures the blindness, apples-to-apples.
 
 ## Intended users
 

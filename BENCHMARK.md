@@ -26,14 +26,17 @@ Existing procedural-knowledge benchmarks (PAGED, KEO, CAMB, Carriero & Celino 20
 
 IPKE-Bench fills that gap. Annotations carry typed constraints (`precondition`, `postcondition`, `guard`, `parameter`, `role_assignment`, `reference`) with `enforcement` mapped from the source modal verb (`must` / `should` / `may`), each explicitly attached to one or more steps via `attached_to` (step-embedded) or `applies_to` (procedure-level).
 
-## §1 motivating result (2026-06-13 seed corpus)
+## §1 motivating result (framing decided 2026-07-06 — see docs/paper/D1_SCOPE_DECISION.md)
 
-LLM-drafted gold across 8 documents produced **3.66× fewer constraints** than the same documents reviewed by a human against the source text (32 vs 117). Even at the Tier-A protocol matcher (SBERT cos ≥ 0.75) the draft recovers 20.5% of the reviewed constraints; at a loose cos ≥ 0.50 it recovers 61.5%. The expansion ratio is matcher-independent.
+**Corpus depth (headline).** The thin bounded-excerpt seed pass held 43 steps / 117 constraints across the 8 documents. Re-annotating the *same* documents end-to-end under the locked full-subprocedure scope rule, with source-verbatim constraint grounding, yields **256 steps / 231 reviewed constraints** — the constraint scaffolding that excerpt-scale annotation leaves unmeasured.
 
-Regenerate with:
+**Cross-regime illustration (labelled).** The fixed thin-era LLM draft holds 32 constraints vs the 231 reviewed (**7.22× expansion**); at the Tier-A matcher (SBERT cos ≥ 0.75) it recovers 6.1%, at cos ≥ 0.50 it recovers 37.7%. Draft and gold come from different annotation regimes — annotation-economics evidence, not an extractor-quality claim. The apples-to-apples number is the D2 P0 zero-shot baseline's ConstraintCoverage on the signed-off benchmark.
+
+Regenerate (informational) with:
 
 ```bash
-make eval-blindness
+make eval-blindness      # regenerates + prints, no assertions
+make repro-blindness     # asserts the pinned numbers (32 vs 231, 7.22x)
 ```
 
 Reports land in `datasets/paper/reports/constraint_blindness_v2_sbert{050,075}.json`.
