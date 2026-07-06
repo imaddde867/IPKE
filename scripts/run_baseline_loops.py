@@ -71,8 +71,7 @@ def generate_visualizations(run_dir: Path) -> None:
         import matplotlib
         matplotlib.use('Agg')
         import matplotlib.pyplot as plt
-        import numpy as np
-        
+
         eval_file = run_dir / "evaluation_report.json"
         if not eval_file.exists():
             return
@@ -83,7 +82,6 @@ def generate_visualizations(run_dir: Path) -> None:
         plots_dir = run_dir / "plots"
         plots_dir.mkdir(exist_ok=True)
         
-        docs = [k for k in metrics.keys() if k != "macro_avg"]
         available_metrics = ["StepF1", "AdjacencyF1", "Kendall", 
                             "ConstraintCoverage", "ConstraintAttachmentF1", "A_score"]
         

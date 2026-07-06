@@ -16,7 +16,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Set, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Sequence, Union
 
 from .models import Condition, Edge, Graph, Step
 from src.validation.constraint_validator import ValidationReport, validate_constraints

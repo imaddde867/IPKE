@@ -6,8 +6,7 @@ from src.exceptions import (
     BaseKnowledgeExtractionError,
     ProcessingError,
     AIError,
-    ValidationError,
-    ConfigurationError
+    ValidationError
 )
 
 

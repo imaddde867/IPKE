@@ -460,7 +460,7 @@ def main(argv: list[str] | None = None) -> int:
             pval = paired_bootstrap_pvalue(curr_scores, prior_scores, args.bootstrap_n)
             bootstrap_results["Phi_pvalue"] = pval
             print(f"  Paired bootstrap Phi p-value: {pval:.4f}  (n_docs={len(shared_docs)}, n_boot={args.bootstrap_n})")
-            print(f"  (Dror et al. 2018 procedure; H0: mean Phi difference == 0)")
+            print("  (Dror et al. 2018 procedure; H0: mean Phi difference == 0)")
         else:
             print(f"  WARNING: only {len(shared_docs)} shared docs — bootstrap skipped (need ≥ 2).")
 
@@ -479,7 +479,7 @@ def main(argv: list[str] | None = None) -> int:
 
     print()
     _print_summary_table(summary_rows)
-    print(f"\nNote: CI via scipy.stats.t.ppf(0.975, df=n-1). n = docs x seeds.")
+    print("\nNote: CI via scipy.stats.t.ppf(0.975, df=n-1). n = docs x seeds.")
     print(f"      Phi sensitivity across {len(phi_schemes)} weight scheme(s): {phi_schemes}")
 
     return 0

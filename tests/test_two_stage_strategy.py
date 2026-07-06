@@ -1,7 +1,7 @@
 """Tests for the P3 Two-Stage prompt strategy."""
 
 import json
-from unittest.mock import Mock, call
+from unittest.mock import Mock
 
 import pytest
 
