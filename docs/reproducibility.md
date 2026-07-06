@@ -48,6 +48,7 @@ targets:
 
 ```bash
 make gold-pipeline    # deterministic gate: strict-validate the 8 golds + regenerate D1 numbers (no model)
+make repro-blindness  # assert the pinned D1 cross-regime numbers (32 vs 231, 7.22x); non-gate
 make gold-draft DOC=<doc_id> SEG=<segments.json> CAND=<candidate_id>   # draft one procedure (needs model backend)
 make gold-adjudicate DOC=<doc_id>                                     # replay a persisted adjudication log -> reviewed gold
 make iaa-setup        # select >=30% subset + emit blank (anchoring-safe) second-pass scaffolds
@@ -77,5 +78,6 @@ Each final experiment run must record:
 ## Known Limits
 
 - Thesis archive results cover three documents.
-- ECIR paper experiments require `datasets/paper/` expansion.
-- ConstraintAttachmentF1 remains strict unless the fuzzy metric task is implemented.
+- ECIR paper experiments require `datasets/paper/` expansion to 12 documents plus completed D2 model runs.
+- Constraint matching reports both the fuzzy Tier-A protocol matcher (SBERT cos ≥ 0.75, `src/evaluation/alignment.py`) and strict exact-match; per-type recall at small n is brittle and is always reported threshold-attached.
+- Gold `relations` (NEXT / ALTERNATIVE_TO) are annotated but Tier-B currently synthesizes its NEXT chain from steps-array order; wiring the scorers to gold relations is an open design choice.

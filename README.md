@@ -17,13 +17,19 @@ A local, privacy-preserving pipeline and benchmark for extracting structured Pro
 - **Dual Semantic Chunker (DSC)** — global DP objective over heading-aligned embeddings: `J(B) = Σ H(b) − λ|B|` with heading bonus β·𝟙[j is heading].
 - **P3 Two-Stage Decomposition** — decouples step extraction (Stage 1) from constraint attachment (Stage 2, with mandatory step-ID back-reference). Reduces schema drift in mid-size models.
 
+## Benchmark Status
+
+8-document seed corpus, **256 steps / 231 constraints**, full-subprocedure scope, source-verbatim constraint texts, hand-annotated step relations. All golds pass the strict paper-grade validator; human sign-off in progress. See [BENCHMARK.md](BENCHMARK.md) and the [dataset datasheet](docs/dataset/datasheet.md).
+
 ## Reproducible Commands
 
 ```bash
 uv sync
-make test
+make test              # unit tests
+make gold-pipeline     # strict gold validation + D1 blindness regeneration (fresh-clone gate)
+make repro-blindness   # asserts the pinned D1 numbers (32 vs 231, 7.22x)
 make smoke-extract
-make eval
+make eval              # validator + blindness + multiseed dry-run plan
 ```
 
 Experiment artifacts are written under `runs/` and are intentionally ignored by git.
@@ -36,8 +42,9 @@ Experiment artifacts are written under `runs/` and are intentionally ignored by 
 
 ## Research Reproducibility
 
-- [Reproducibility guide](docs/reproducibility.md)
+- [Reproducibility guide](REPRODUCIBILITY.md)
 - [Annotation methodology](docs/methods/annotation-pipeline.md)
+- [Annotation guidelines](docs/annotation/guidelines.md) · [constraint taxonomy](docs/annotation/constraint-types.md)
 - [Implemented DSC method note](docs/methods/dsc-implementation.md)
 - [Paper dataset workspace](datasets/paper/README.md)
 
@@ -74,12 +81,22 @@ Research distribution for academic and regulated industrial settings. See `LICEN
 
 ---
 
-Turku University of Applied Sciences · 2025
+Turku University of Applied Sciences · 2025–2026
 
 ## Local LLM (Mistral 7B, GGUF)
 
-- Download weights (requires a Hugging Face token):  
-  `python - <<'PY'\nfrom huggingface_hub import hf_hub_download\nhf_hub_download(\n  repo_id=\"TheBloke/Mistral-7B-Instruct-v0.2-GGUF\",\n  filename=\"mistral-7b-instruct-v0.2.Q4_K_M.gguf\",\n  local_dir=\"models/llm\",\n  local_dir_use_symlinks=False,\n)\nPY`
+- Download weights (requires a Hugging Face token):
+
+  ```bash
+  python - <<'PY'
+  from huggingface_hub import hf_hub_download
+  hf_hub_download(
+      repo_id="TheBloke/Mistral-7B-Instruct-v0.2-GGUF",
+      filename="mistral-7b-instruct-v0.2.Q4_K_M.gguf",
+      local_dir="models/llm",
+  )
+  PY
+  ```
 
 - Metal (Apple silicon, fastest locally):  
   `uv sync --extra llm --index-url https://abetlen.github.io/llama-cpp-python/whl/metal`  
