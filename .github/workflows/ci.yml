@@ -25,7 +25,7 @@ jobs:
         run: uv sync --locked --extra app
 
       - name: Lint
-        run: uv run ruff check .
+        run: uvx ruff@0.15.10 check .
 
       - name: Run tests
         run: uv run pytest
