@@ -1,11 +1,13 @@
 # Reproducibility
 
-This file documents the current reproducibility path for the IPKE method-paper evidence.
-At the current candidate-corpus stage, `make eval` regenerates the D1
-constraint-blindness reports and dry-runs the D2 sweep plan. Final ECIR table
-regeneration requires the open P0 gates: an explicit inclusion manifest, 12 eligible
-human-verified procedures, eligible independent second-pass annotations, and completed
-D2 model runs.
+This file separates historical/development diagnostics from confirmatory IPKE
+method-paper evidence. `make eval` and `make gold-pipeline` reproduce the legacy D1
+diagnostics and dry-run the superseded D2 sweep plan; neither establishes paper
+eligibility. Before a confirmatory sweep begins, the open P0 gates are an explicit
+inclusion manifest, 12 eligible human-verified procedures, eligible independent
+second-pass annotations, corrected and frozen causal controls, and completed runs of
+the eventual canonical experiment design. The human-verification criterion is exposed
+as `make eval-paper-gate`.
 
 ---
 
@@ -63,7 +65,7 @@ uv pip install llama-cpp-python --force-reinstall
 | Context length | 4096 tokens |
 | Temperature | 0.1 |
 | Default seed | 42 |
-| Seeds used for paper | 0, 1, 2, 3, 4 (N=5) |
+| Historical development seeds | 0, 1, 2, 3, 4 (N=5) |
 | Chunking method | dual_semantic (DSC) |
 | Prompting strategy | P3 (two-stage) |
 
@@ -89,11 +91,17 @@ export LLM_MODEL_PATH=models/mistral-7b-instruct-v0.2.Q4_K_M.gguf
 | DSC + P3 (Metal, Q4_K_M) | ~2-4 min |
 | DSC + P3 (CPU-only, Q4_K_M) | ~15-30 min |
 | Metric evaluation (CPU) | < 5 sec per doc |
-| Full multi-seed sweep (5 seeds x 8 docs) | ~3-4 hours (Metal) |
+| Historical development sweep (5 seeds x 8 candidate files) | ~3-4 hours (Metal) |
 
 ---
 
-## Step-by-step: current seed-corpus reproducibility
+## Development diagnostics and paper-evidence gate
+
+The current eight-file directory is a historical/development candidate corpus, not a
+confirmatory test set. It includes artifacts that the July 11 manual audits exclude
+pending issue #112 or a source-faithful rebuild. The commands below remain useful for
+structural checks and legacy diagnostics, but their outputs are not current paper
+evidence.
 
 ### 1. Run default test suite
 
@@ -142,12 +150,15 @@ uv run python scripts/compute_iaa.py \
 
 Expected today: non-zero exit with `IAA eligibility failed`.
 
-### 4. Run multi-seed extraction sweep (future main results table)
+### 4. Historical 5x8 development sweep template (not confirmatory)
 
-Requires model file. Set `LLM_MODEL_PATH` before running. The commands below
-remain development templates until the runner consumes the confirmatory
-inclusion manifest; outputs over the entire current directory are not
-confirmatory paper evidence.
+Requires a model file. Set `LLM_MODEL_PATH` before running. These legacy commands
+process the entire current candidate directory, including excluded artifacts, and do
+not implement the corrected causal controls. `make eval-full` now depends on
+`eval-paper-gate`, so it cannot begin while the directory is unsigned. Even after
+human sign-off, this 5x8 configuration does not become confirmatory: issue #112 must
+define the inclusion manifest and the causal-control design must be corrected and
+frozen first.
 
 ```bash
 # Development configuration: DSC + P3, 5 seeds, current gold directory
@@ -188,9 +199,10 @@ uv run python scripts/eval_multiseed.py \
   --out-dir results/ablation_baseline/
 ```
 
-### 5. Compute bootstrap significance
+### 5. Compute bootstrap significance for historical development outputs
 
-After running steps 4 ablations, compare full system vs baseline:
+After running the step 4 development ablations, compare the legacy full-system and
+baseline outputs:
 
 ```bash
 uv run python scripts/eval_multiseed.py \
@@ -202,10 +214,9 @@ uv run python scripts/eval_multiseed.py \
   --bootstrap-n 10000
 ```
 
-The `results_summary_<ts>.csv` file contains `Phi_pvalue` — this is the p-value for
-the paired bootstrap test (H0: mean Phi difference == 0). Report this value in the
-paper next to the main DSC+P3 vs baseline comparison. p < 0.05 is the minimum;
-p < 0.01 is preferred.
+The `results_summary_<ts>.csv` file contains `Phi_pvalue` - the paired-bootstrap
+p-value for H0: mean Phi difference == 0. Treat it as a development diagnostic only;
+do not report it as confirmatory evidence from the current method-paper design.
 
 ### 6. Also evaluate on thesis gold (for continuity with thesis numbers)
 
@@ -219,9 +230,10 @@ uv run python scripts/eval_multiseed.py \
 
 ---
 
-## Phi weight sensitivity
+## Historical Phi weight sensitivity
 
-The paper reports Phi under three weighting schemes to verify ranking stability:
+The legacy runner computes Phi under three weighting schemes to inspect ranking
+stability during development:
 
 | Scheme | Coverage | StepF1 | Kendall |
 |---|---|---|---|
@@ -230,9 +242,8 @@ The paper reports Phi under three weighting schemes to verify ranking stability:
 | Coverage-heavy | 0.6 | 0.2 | 0.2 |
 
 These are computed automatically when `--phi-weights` is passed to `eval_multiseed.py`.
-The `results_summary_*.csv` contains one column per scheme. If the DSC+P3 ranking is
-stable across all three, report that. If not, it is a metric validity problem to
-disclose.
+The `results_summary_*.csv` contains one column per scheme. Stability across these
+weights is not a substitute for the corrected confirmatory causal-control design.
 
 ---
 
@@ -289,11 +300,13 @@ uv run python tools/iaa_check.py \
 - [ ] JSON-LD / schema.org export example included for IR community
 
 ### Experiments
-- [ ] `make eval` dry-run passes on fresh clone ✓
+- [ ] Corrected causal controls frozen before any headline sweep
+- [ ] Canonical confirmatory runner consumes the inclusion manifest
+- [ ] Historical `make eval` dry-run passes on fresh clone ✓
 - [ ] Multi-seed sweep completed (N=5 seeds, n_docs=12)
 - [ ] Ablation table: 4 configurations × 5 seeds
 - [ ] Bootstrap p-value computed for main comparison (`--compare-against`)
-- [ ] Phi sensitivity table (3 weight schemes, auto-generated by `make eval-full`)
+- [ ] Phi sensitivity plan updated for the canonical confirmatory runner
 - [ ] Constraint-type breakdown table (guard / parameter / precondition / postcondition)
 - [ ] Text-RAG vs PKG-backed retrieval comparison (constraint-type query recall)
 

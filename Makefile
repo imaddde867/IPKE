@@ -15,7 +15,7 @@ D1_DRAFT_REF   := 2379c8ef8cae044c9e8b9c708c3f25faa7166ca8
 test:
 	uv run pytest
 
-# Paper-grade validator: enforces locked taxonomy + IAA-ready metadata.
+# Structural validator: enforces locked taxonomy + IAA-ready metadata.
 eval-validate:
 	$(PYTHON) scripts/validate_paper_gold.py --gold-dir $(PAPER_GOLD) --strict
 
@@ -46,10 +46,10 @@ eval-blindness:
 		--matcher semantic --threshold 0.50 \
 		--out $(PAPER_REPORTS)/constraint_blindness_v2_sbert050.json
 
-# Pinned reproduction of the D1 cross-regime illustration (2026-07-06 gold state:
-# 231 reviewed constraints after the verbatim-grounding pass). Fails loudly if the
-# committed golds or the fixed draft drift. Deliberately NOT part of gold-pipeline
-# (assertions belong on a locked experiment, not on the pre-push gate).
+# Pinned reproduction of the historical D1 cross-regime illustration (2026-07-06
+# agent-adjudicated state: 231 constraints after the verbatim-grounding pass).
+# This is a structural snapshot, not human-verified paper evidence. Fails loudly if
+# the committed golds or the fixed draft drift.
 repro-blindness:
 	mkdir -p $(PAPER_REPORTS)
 	$(PYTHON) scripts/constraint_blindness_report.py \
@@ -103,11 +103,13 @@ gold-adjudicate:
 		--annotator "$$($(PYTHON) -c 'import json,sys;print(json.load(open("datasets/paper/adjudication_decisions/$(DOC).json"))["annotator"])')" \
 		--out-dir $(PAPER_GOLD)
 
-# One-command reproducibility gate for the annotation resource: validate the
-# committed golds (strict), then regenerate the D1 constraint-blindness numbers.
-# Deterministic; needs no model. This is the target a reviewer runs on a fresh clone.
+# Historical/development diagnostics: structurally validate the current candidate
+# gold directory, then regenerate the D1 constraint-blindness numbers. Deterministic;
+# needs no model. This target does not establish paper eligibility; use
+# eval-paper-gate for the human-verification criterion.
 gold-pipeline: eval-validate eval-blindness
-	@echo "OK: 8 golds pass strict validation; D1 blindness numbers regenerated."
+	@echo "OK: development structural validation and D1 diagnostics completed."
+	@echo "Paper eligibility requires: make eval-paper-gate"
 
 # Prepare the >=30% IAA double-annotation subset + blank (anchoring-safe) scaffolds.
 iaa-setup:
@@ -119,9 +121,9 @@ iaa-setup:
 iaa:
 	$(PYTHON) scripts/setup_iaa_subset.py report --out $(PAPER_REPORTS)/iaa_latest.json
 
-# Dry-run: plan only, no model needed. Safe on a fresh clone.
-# Runs validator + D1 blindness report so the artifact's §1 numbers regenerate
-# one-command per PRD acceptance gate.
+# Historical/development dry-run: plan only, no model needed. Safe on a fresh clone.
+# Runs structural validation plus the legacy D1 blindness diagnostics; it is not a
+# confirmatory paper-evidence command.
 eval: eval-validate eval-blindness
 	$(PYTHON) scripts/eval_multiseed.py \
 		--gold-dir $(PAPER_GOLD) \
@@ -132,8 +134,9 @@ eval: eval-validate eval-blindness
 		--phi-weights 0.6:0.2:0.2 \
 		--dry-run
 
-# Full sweep (D2 in PRD): requires reviewed gold AND LLM_MODEL_PATH.
-eval-full: eval-validate
+# Historical 5x8 development sweep from the superseded D2 design. It is not the
+# current confirmatory design and cannot start until the paper-evidence gate passes.
+eval-full: eval-paper-gate
 	$(PYTHON) scripts/eval_multiseed.py \
 		--gold-dir $(PAPER_GOLD) \
 		--text-dir $(PAPER_TEXT) \

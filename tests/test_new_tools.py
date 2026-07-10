@@ -438,6 +438,11 @@ def test_makefile_has_explicit_paper_evidence_gate():
     ) in text
 
 
+def test_makefile_eval_full_requires_paper_evidence_gate():
+    text = Path("Makefile").read_text(encoding="utf-8")
+    assert "eval-full: eval-paper-gate" in text
+
+
 def test_makefile_eval_iaa_depends_on_validation():
     text = Path("Makefile").read_text(encoding="utf-8")
     assert "eval-iaa: eval-validate" in text
