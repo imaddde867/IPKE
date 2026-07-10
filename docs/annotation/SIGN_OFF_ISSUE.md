@@ -11,7 +11,8 @@
 
 The current gold directory contains eight files carrying the annotator string
 `model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off)`.
-They pass the strict validator, but **no human has verified the labels yet.**
+They pass the strict validator, but **human sign-off is 0 of 8: no human has
+verified any file's labels yet.**
 For confirmatory method-paper evidence, the annotator-of-record for every
 included procedure gold must be a person. Strict validation is not sufficient.
 Do not report confirmatory results until the inclusion manifest is explicit,
@@ -27,37 +28,41 @@ datasheet still tells the truth about how each label was produced.
 ## Current candidate inventory
 
 The directory currently contains 256 steps / 231 constraints across eight
-documents (locked `full_subprocedure` scope, 6-type taxonomy: precondition,
-postcondition, guard, parameter, role_assignment, reference; enforcement ∈
-must/should/may). This inventory is not the confirmatory inclusion manifest.
+agent-annotated candidate files (6-type taxonomy: precondition, postcondition,
+guard, parameter, role_assignment, reference; enforcement ∈ must/should/may).
+This inventory is not the confirmatory inclusion manifest, and every row remains
+unsigned.
 
-> **Confirmatory inclusion decision (#112, 2026-07-11).** NASA NPR 8715.3D
-> section 2.5.2 is a requirements stress test, not an eligible confirmatory
-> procedure. Do not append a `human-verified` procedure-gold marker to
-> `nasa_npr_8715_3d_general_safety.json` until #112 resolves its exclusion or
-> secondary representation. Never sign it merely to make a gate pass.
+Current exclusions are explicit:
 
-> **2026-07-06 agent verbatim-grounding + completion pass.** Every gold was
-> re-read against its source `.txt` span before this sign-off: all constraint
-> texts re-grounded to contiguous verbatim source wording (guidelines Verbatim
-> wording rule), definitional/restatement constraints dropped, missed
-> constraints added, enforcement realigned to the modal-verb mapping, and two
-> mis-located spans corrected (epa_filter was annotating the MFC SOP §6.0, not
-> "5.14 Repair"; usgs_groundwater was annotating the Figure-2 field form, its
-> Instructions were re-authored; usgs_nfm's span cut off Steps 4d–6, now
-> annotated). Details in each gold's `review_notes`. Counts below are current.
+- **NASA NPR 8715.3D:** excluded from confirmatory procedural evaluation under
+  issue #112 because section 2.5.2 is a requirements block, not an executable
+  procedure. It may only return as a corrected secondary stress test.
+- **OLSK Small CNC:** current gold excluded pending a manual, source-faithful
+  rebuild based on the [2026-07-11 audit](manual-review/2026-07-11-olsk-small-cnc.md).
+- **NIOSH Method 2005:** current gold excluded pending manual repair and rebuild
+  based on the [2026-07-11 audit](manual-review/2026-07-11-niosh-method-2005.md).
 
-| Document | Section signed off | Steps | Constraints |
-|---|---|--:|--:|
-| epa_field_operations_manual_filter_sampling_sop | MFC SOP — 6.0 Calibration / Post-Calibration (6.1.1–6.1.10) | 18 | 12 |
-| epa_field_sampling_measurement_procedure_validation | Procedure Development, Validation & Approval | 35 | 44 |
-| epa_guidance_preparing_sops_qag6 | 2.0 SOP Process (2.1–2.6) | 36 | 33 |
-| nasa_npr_8715_3d_general_safety | 2.5.2 System Safety Technical Plan | 39 | 26 |
-| niosh_nmam_5th_edition_ebook | Method 2005 (Nitroaromatic compounds) | 34 | 24 |
-| olsk_small_cnc_v1_workbook | 01 Electronic Box assembly | 24 | 9 |
-| usgs_groundwater_technical_procedures_tm1_a1 | GWPD 1 — Instructions 1–14 + Data Recording | 29 | 20 |
-| usgs_nfm_collection_water_samples_a4 | EWI sampling steps (1–6, complete) | 41 | 63 |
-| **TOTAL** | | **256** | **231** |
+> **2026-07-06 agent verbatim-grounding + completion pass.** This was an
+> agent-authored attempt to improve grounding and completeness, not human
+> sign-off and not evidence that every gold was substantively correct. The pass
+> reported re-grounding constraint text, dropping restatements, adding missed
+> constraints, realigning enforcement, and correcting selected spans. The July
+> 11 manual audits later found material semantic, scope, granularity, attachment,
+> and control-flow defects in NASA, OLSK, and NIOSH. Treat the per-file
+> `review_notes` and counts below as historical candidate-pipeline records.
+
+| Document | Candidate/annotated section | Steps | Constraints | Human sign-off | Confirmatory status |
+|---|---|--:|--:|---|---|
+| epa_field_operations_manual_filter_sampling_sop | MFC SOP - 6.0 Calibration / Post-Calibration (6.1.1-6.1.10) | 18 | 12 | No | Candidate pending #112 manifest |
+| epa_field_sampling_measurement_procedure_validation | Procedure Development, Validation & Approval | 35 | 44 | No | Candidate pending #112 manifest |
+| epa_guidance_preparing_sops_qag6 | 2.0 SOP Process (2.1-2.6) | 36 | 33 | No | Candidate pending #112 manifest |
+| nasa_npr_8715_3d_general_safety | 2.5.2 System Safety Technical Plan | 39 | 26 | No | Excluded under #112 |
+| niosh_nmam_5th_edition_ebook | Method 2005 (Nitroaromatic compounds) | 34 | 24 | No | Excluded pending manual rebuild (2026-07-11 audit) |
+| olsk_small_cnc_v1_workbook | 01 Electronic Box assembly | 24 | 9 | No | Excluded pending manual rebuild (2026-07-11 audit) |
+| usgs_groundwater_technical_procedures_tm1_a1 | GWPD 1 - Instructions 1-14 + Data Recording | 29 | 20 | No | Candidate pending #112 manifest |
+| usgs_nfm_collection_water_samples_a4 | EWI sampling steps (1-6, complete) | 41 | 63 | No | Candidate pending #112 manifest |
+| **TOTAL** | | **256** | **231** | **0/8** | **3 current exclusions** |
 
 ---
 
@@ -97,27 +102,29 @@ attachment, keep the edit minimal and re-run the validator (step 3) after.
 > Watch-items flagged during adjudication (spend extra time here):
 > - **nasa** is excluded from confirmatory procedure evaluation under #112.
 >   Do not stamp it as human-verified procedure gold.
-> - **olsk** is constraint-light (8 across 24 steps) by nature — confirm we
->   didn't under-annotate, but don't manufacture constraints.
-> - **niosh** carries numeric flow-rate/volume parameters — check the numbers.
+> - **olsk** is excluded pending a manual, source-faithful rebuild after the
+>   2026-07-11 audit. Do not stamp the current file.
+> - **niosh** is excluded pending manual repair of its scope, safety coverage,
+>   formula, granularity, and control flow after the 2026-07-11 audit. Do not
+>   stamp the current file.
 
 ### 2. Stamp each included gold (human reviewer only)
 
 After personally reviewing an included document, dry-run that document first
 (writes nothing, shows before/after):
 ```bash
-python3 scripts/sign_off_gold.py --annotator imad --doc <included_doc_id>
+uv run python scripts/sign_off_gold.py --annotator imad --doc <included_doc_id>
 ```
 Then apply only to that included document and auto-validate:
 ```bash
-python3 scripts/sign_off_gold.py --annotator imad --doc <included_doc_id> --apply
+uv run python scripts/sign_off_gold.py --annotator imad --doc <included_doc_id> --apply
 ```
 This appends `+ human-verified:imad`, sets `review_status=reviewed`,
 `review_date=<today>`, and runs the strict validator. It is idempotent and
 refuses to leave you in a failing state (non-zero exit if any gold breaks).
 
-Do not use the unscoped apply-all form while the excluded NASA artifact remains
-in the directory. Only a human reviewer may supply this sign-off marker.
+Do not use the unscoped apply-all form while excluded artifacts remain in the
+directory. Only a human reviewer may supply this sign-off marker.
 
 ### 3. Confirm the release gate is green
 ```bash
@@ -129,9 +136,9 @@ manifest. Every included gold's annotator string should then read
 `... + human-verified:imad`.
 `make eval-validate` and `make gold-pipeline` are not substitutes: strict
 structural and annotation-contract validation can pass before a human signs off.
-Because `eval-paper-gate` currently checks every JSON file in `PAPER_GOLD`, an
-excluded NASA failure must be resolved through #112's corpus representation,
-not by adding a false procedure-gold sign-off.
+Because `eval-paper-gate` currently checks every JSON file in `PAPER_GOLD`,
+failures for excluded NASA, OLSK, and NIOSH artifacts must be resolved through
+#112's corpus representation and manual rebuilds, not by adding false sign-off.
 
 ### 4. Commit, push the branch, and open a draft PR
 ```bash
@@ -152,6 +159,7 @@ gh pr create --draft --base main --head gold/human-sign-off \
 - [ ] Every included procedure gold read against source; label errors fixed
 - [ ] Every included gold's annotator string ends with `+ human-verified:imad`
 - [ ] NASA NPR 8715.3D has no procedure-gold human marker while #112 remains unresolved
+- [ ] Current OLSK and NIOSH golds have no human marker until their manual rebuilds are complete
 - [ ] `PAPER_GOLD` matches the inclusion manifest and `make eval-paper-gate` exits 0
 - [ ] Committed and pushed
 - [ ] (separate, after this) IAA second pass on the 3-doc subset — that closes the *agreement* claim; this issue closes the *human-verified* claim
