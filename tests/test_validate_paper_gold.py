@@ -208,3 +208,29 @@ def test_seed_corpus_passes(tmp_path: Path) -> None:
         if errs:
             failures.append((f.name, errs))
     assert not failures, f"Seed corpus failures: {failures}"
+
+
+def test_human_verified_mode_rejects_agent_review(tmp_path: Path) -> None:
+    annotation = json.loads(json.dumps(VALID_ANNOTATION))
+    annotation["quality"]["annotator"] = (
+        "model-assisted:qwen + agent-adjudicated (pending human sign-off)"
+    )
+
+    messages = validate_file(
+        _write(tmp_path, annotation), require_human_verified=True
+    )
+
+    assert any("pending human sign-off" in error for error in _errors(messages))
+
+
+def test_human_verified_mode_accepts_signed_annotation(tmp_path: Path) -> None:
+    annotation = json.loads(json.dumps(VALID_ANNOTATION))
+    annotation["quality"]["annotator"] = (
+        "model-assisted:qwen + agent-adjudicated + human-verified:imad"
+    )
+
+    messages = validate_file(
+        _write(tmp_path, annotation), require_human_verified=True
+    )
+
+    assert _errors(messages) == []
