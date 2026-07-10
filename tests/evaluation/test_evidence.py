@@ -1,0 +1,72 @@
+from __future__ import annotations
+
+import pytest
+
+from src.evaluation.evidence import assess_annotation_evidence
+
+
+def _annotation(annotator: str, *, status: str = "reviewed") -> dict:
+    return {
+        "quality": {
+            "review_status": status,
+            "annotator": annotator,
+            "review_date": "2026-07-10",
+        }
+    }
+
+
+@pytest.mark.parametrize(
+    ("annotation", "expected"),
+    [
+        (
+            _annotation(
+                "model-assisted:qwen + agent-adjudicated (pending human sign-off)"
+            ),
+            (
+                True,
+                False,
+                False,
+                ("quality.annotator still contains pending human sign-off",),
+            ),
+        ),
+        (
+            _annotation(
+                "model-assisted:qwen + agent-adjudicated + human-verified:imad"
+            ),
+            (True, True, True, ()),
+        ),
+        (
+            _annotation("agent-adjudicated"),
+            (
+                True,
+                False,
+                False,
+                ("quality.annotator lacks a + human-verified:<handle> marker",),
+            ),
+        ),
+        (
+            {},
+            (
+                False,
+                False,
+                False,
+                (
+                    "quality.review_status must be 'reviewed'",
+                    "quality.annotator missing",
+                    "quality.review_date missing",
+                ),
+            ),
+        ),
+    ],
+)
+def test_assess_annotation_evidence_classifies_review_provenance(
+    annotation: dict, expected: tuple[bool, bool, bool, tuple[str, ...]]
+) -> None:
+    result = assess_annotation_evidence(annotation)
+
+    assert (
+        result.declared_reviewed,
+        result.human_verified,
+        result.evidence_eligible,
+        result.issues,
+    ) == expected
