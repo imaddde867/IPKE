@@ -1,25 +1,39 @@
-# IPKE — Industrial Procedural Knowledge Extraction
+# IPKE - Industrial Procedural Knowledge Extraction
 
-**Target:** ECIR 2027 Resource Paper — *IPKE-Bench: A Constraint-Aware Benchmark for Procedural Knowledge Extraction from Safety-Critical Industrial Documents*
+**Research direction:** method paper on skeleton-conditioned, source-grounded constraint
+attachment for procedural graph extraction with local language models. See
+[ADR-0005](docs/adr/0005-ipke-method-paper-primary.md) and the
+[approved method design](docs/superpowers/specs/2026-07-10-ipke-method-paper-design.md).
 
-A local, privacy-preserving pipeline and benchmark for extracting structured Procedural Knowledge Graphs (PKGs) from industrial safety procedures. IPKE makes constraint attachment a first-class evaluation task — prior benchmarks measure step coverage and graph structure but leave constraint-to-step linking unmeasured. The accompanying dataset (IPKE-Bench) is the primary contribution; IPKE provides the reproducible local baseline.
+IPKE extracts Procedural Knowledge Graphs from safety-critical technical documents. Its
+central method separates the procedural step skeleton from typed constraint extraction,
+then grounds and attaches each constraint to the step or steps it governs. The corpus,
+taxonomy, validators, and metrics are supporting evaluation infrastructure, not the
+paper's primary contribution.
 
-## Primary Contributions (ECIR Resource Track)
+## Research contributions under test
 
-1. **IPKE-Bench dataset** — 12–15 publicly licensed industrial/safety-procedure documents with human-reviewed step, constraint, and attachment annotations (κ ≥ 0.61 for all IAA pairs).
-2. **Constraint Attachment Evaluation** — fuzzy semantic alignment metric (cosine ≥ 0.75) and strict exact-match for constraint-to-step edges. Not measured in PAGED, CAMB, or KEO.
-3. **Local Baselines** — P0 (zero-shot fixed), DSC+P3 (two-stage structured), reproducible across 5 seeds with 95% CIs and paired bootstrap.
-4. **Constraint-Aware Retrieval Task** — queries targeting specific constraint types (guard, parameter, precondition). Text-chunk RAG vs PKG-backed retrieval comparison.
-5. **Reproducibility Package** — dataset datasheet, annotation guidelines, one-command evaluator, loader, and re-run harness.
+1. **Skeleton-conditioned constraint attachment** - compare step-conditioned generation
+   against schema-, parser-, call-, and budget-matched alternatives.
+2. **Constraint-preserving segmentation** - test whether hierarchy-aware segmentation
+   keeps constraint-step pairs in context and improves attachment. This remains secondary
+   until the controlled result exists.
+3. **Local quality-cost analysis** - report attachment quality together with calls,
+   tokens, latency, and memory across local model families.
+4. **Evaluation infrastructure** - manually verified procedural annotations, explicit
+   relation metrics, provenance-complete runs, and reproducible component metrics.
 
 ## Method Kernel
 
 - **Dual Semantic Chunker (DSC)** — global DP objective over heading-aligned embeddings: `J(B) = Σ H(b) − λ|B|` with heading bonus β·𝟙[j is heading].
 - **P3 Two-Stage Decomposition** — decouples step extraction (Stage 1) from constraint attachment (Stage 2, with mandatory step-ID back-reference). Reduces schema drift in mid-size models.
 
-## Benchmark Status
+## Evidence status
 
-8-document seed corpus, **256 steps / 231 constraints**, full-subprocedure scope, source-verbatim constraint texts, hand-annotated step relations. All golds pass the strict paper-grade validator; human sign-off in progress. See [BENCHMARK.md](BENCHMARK.md) and the [dataset datasheet](docs/dataset/datasheet.md).
+The active evaluation corpus has 8 documents, 256 steps, and 231 constraints. It is not
+paper evidence yet: every file still awaits human sign-off, the declared JSON Schema and
+custom validator disagree, and the current full-document runner is mismatched with
+bounded gold spans. See [BENCHMARK.md](BENCHMARK.md) for the supporting-data audit.
 
 ## Reproducible Commands
 
@@ -36,9 +50,10 @@ Experiment artifacts are written under `runs/` and are intentionally ignored by 
 
 ## Direction
 
-- **[Research Vision — the North Star](docs/research-vision.md)** — the one-sentence thesis, what "elite" means concretely, the venue ladder toward a top-tier publication, and the principles to carry. Read this first.
-- [Execution direction](docs/paper/2026-07-04-execution-direction.md) — current issue board and work order.
-- [Resource-track PRD](docs/paper/ipke-bench-resource-prd.md) — requirements.
+- **[Research vision](docs/research-vision.md)** - method thesis and publication bar.
+- [Approved method design](docs/superpowers/specs/2026-07-10-ipke-method-paper-design.md) - causal protocol and evidence gates.
+- [Execution direction](docs/paper/2026-07-04-execution-direction.md) - current issue board and work order.
+- [Superseded resource PRD](docs/paper/ipke-bench-resource-prd.md) - retained as historical and supporting-infrastructure context.
 
 ## Research Reproducibility
 
