@@ -429,6 +429,15 @@ def test_makefile_eval_validate_uses_strict_mode():
     assert "scripts/validate_paper_gold.py --gold-dir $(PAPER_GOLD) --strict" in text
 
 
+def test_makefile_has_explicit_paper_evidence_gate():
+    text = Path("Makefile").read_text(encoding="utf-8")
+    assert "eval-paper-gate:" in text
+    assert (
+        "scripts/validate_paper_gold.py --gold-dir $(PAPER_GOLD) "
+        "--strict --require-human-verified"
+    ) in text
+
+
 def test_makefile_eval_iaa_depends_on_validation():
     text = Path("Makefile").read_text(encoding="utf-8")
     assert "eval-iaa: eval-validate" in text

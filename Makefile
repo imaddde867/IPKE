@@ -1,4 +1,4 @@
-.PHONY: test eval eval-full eval-thesis eval-blindness eval-validate eval-iaa smoke-extract paper-table clean-artifacts \
+.PHONY: test eval eval-full eval-thesis eval-blindness eval-validate eval-paper-gate eval-iaa smoke-extract paper-table clean-artifacts \
         gold-draft gold-adjudicate gold-pipeline iaa-setup iaa repro-blindness
 
 PYTHON := uv run python
@@ -18,6 +18,10 @@ test:
 # Paper-grade validator: enforces locked taxonomy + IAA-ready metadata.
 eval-validate:
 	$(PYTHON) scripts/validate_paper_gold.py --gold-dir $(PAPER_GOLD) --strict
+
+# Paper-evidence release gate: strict validation plus explicit human sign-off.
+eval-paper-gate:
+	$(PYTHON) scripts/validate_paper_gold.py --gold-dir $(PAPER_GOLD) --strict --require-human-verified
 
 # Constraint-blindness baseline (D1 in PRD): regenerates the §1 motivating table.
 # Uses the Tier-A protocol matcher (SBERT cos >= 0.75) plus a loose-threshold

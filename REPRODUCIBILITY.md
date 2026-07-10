@@ -1,10 +1,11 @@
 # Reproducibility
 
-This file documents the current reproducibility path for the IPKE-Bench artifact.
-At the current 8-document seed-corpus stage, `make eval` regenerates the D1
+This file documents the current reproducibility path for the IPKE method-paper evidence.
+At the current candidate-corpus stage, `make eval` regenerates the D1
 constraint-blindness reports and dry-runs the D2 sweep plan. Final ECIR table
-regeneration requires the open P0 gates: 12 reviewed documents, eligible independent
-second-pass annotations, and completed D2 model runs.
+regeneration requires the open P0 gates: an explicit inclusion manifest, 12 eligible
+human-verified procedures, eligible independent second-pass annotations, and completed
+D2 model runs.
 
 ---
 
@@ -104,9 +105,27 @@ Expected: all non-integration tests pass. No GPU or model required.
 
 ### 2. Validate gold dataset
 
+- `make eval-validate`: structural and annotation-contract validation.
+- `make eval-paper-gate`: structural validation plus explicit human verification; this
+  intentionally fails until the human sign-off issue is complete.
+
+Run structural validation during development:
+
 ```bash
-uv run python scripts/validate_paper_gold.py --gold-dir datasets/paper/gold --strict
+make eval-validate
 ```
+
+Before using the corpus as paper evidence, run the release gate:
+
+```bash
+make eval-paper-gate
+```
+
+`make eval-validate` can pass while the corpus is unsigned. The paper-evidence
+gate currently exits non-zero and names unsigned files in the current gold
+directory; that is expected until the confirmatory inclusion manifest and
+`PAPER_GOLD` agree and a human verifies every included gold. Do not sign an
+excluded artifact merely to make this directory-wide gate pass.
 
 ### 3. Check IAA eligibility
 
@@ -125,10 +144,13 @@ Expected today: non-zero exit with `IAA eligibility failed`.
 
 ### 4. Run multi-seed extraction sweep (future main results table)
 
-Requires model file. Set `LLM_MODEL_PATH` before running.
+Requires model file. Set `LLM_MODEL_PATH` before running. The commands below
+remain development templates until the runner consumes the confirmatory
+inclusion manifest; outputs over the entire current directory are not
+confirmatory paper evidence.
 
 ```bash
-# Paper configuration: DSC + P3, 5 seeds, all 8 paper docs
+# Development configuration: DSC + P3, 5 seeds, current gold directory
 uv run python scripts/eval_multiseed.py \
   --gold-dir datasets/paper/gold \
   --text-dir datasets/paper/text \
@@ -256,9 +278,10 @@ uv run python tools/iaa_check.py \
 
 ## Checklist before paper submission
 
-### Benchmark / Dataset (resource track requirement)
-- [ ] All 8 existing gold files human-reviewed (`quality.review_status == 'reviewed'`)
-- [ ] 4 additional documents annotated to reach 12 total (ECIR resource minimum)
+### Confirmatory procedure corpus (method-paper requirement)
+- [ ] Explicit confirmatory inclusion manifest committed and used by experiment commands
+- [ ] Every gold in the inclusion manifest explicitly human-verified; `make eval-paper-gate` exits 0 against the matching active gold set
+- [ ] 12 eligible procedures included; the NASA NPR 8715.3D requirements stress test does not count
 - [ ] IAA on ≥ 30% of docs (≥ 4 files), all κ ≥ 0.61 (substantial, Landis & Koch 1977)
 - [ ] OLSK re-annotated (κ = 0.531 in current draft, below threshold)
 - [ ] Dataset datasheet (metadata, license, collection process, limitations) committed
@@ -277,4 +300,4 @@ uv run python tools/iaa_check.py \
 ### Metadata
 - [ ] Model, quantization, temperature, seed, hardware listed in §4
 - [ ] Dataset released under CC-BY (or embargoed with rationale for private-source docs)
-- [ ] Artifact availability badge confirmed (ECIR resource track: Available + Functional)
+- [ ] Artifact availability requirements confirmed for the target method-paper venue
