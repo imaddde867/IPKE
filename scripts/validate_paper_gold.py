@@ -21,6 +21,7 @@ from collections.abc import Iterable
 from pathlib import Path
 
 from src.benchmark.taxonomy import LOCKED_CONSTRAINT_TYPES, LOCKED_ENFORCEMENT_LEVELS
+from src.evaluation.evidence import assess_annotation_evidence
 
 LOCKED_TYPES = LOCKED_CONSTRAINT_TYPES
 LOCKED_ENFORCEMENT = LOCKED_ENFORCEMENT_LEVELS
@@ -40,7 +41,7 @@ def _adjudicates_warning(review_notes: str, step_id: str, warning_kind: str) -> 
     return marker in review_notes
 
 
-def validate_file(path: Path) -> list[str]:
+def validate_file(path: Path, *, require_human_verified: bool = False) -> list[str]:
     errors: list[str] = []
     warnings: list[str] = []
     try:
@@ -56,6 +57,14 @@ def validate_file(path: Path) -> list[str]:
         errors.append("quality.annotator missing")
     if not quality.get("review_date"):
         errors.append("quality.review_date missing")
+    if require_human_verified:
+        evidence = assess_annotation_evidence(d)
+        if not evidence.human_verified:
+            errors.extend(
+                issue
+                for issue in evidence.issues
+                if "human" in issue or "pending human sign-off" in issue
+            )
 
     step_ids = {s.get("id") for s in d.get("steps", []) if s.get("id")}
     if not step_ids:
@@ -122,12 +131,19 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--gold-dir", type=Path, default=Path("datasets/paper/gold"))
     ap.add_argument("--strict", action="store_true", help="Treat warnings as failures.")
+    ap.add_argument(
+        "--require-human-verified",
+        action="store_true",
+        help="Require a non-pending + human-verified:<handle> marker.",
+    )
     args = ap.parse_args()
 
     any_error = False
     any_warn = False
     for f in sorted(args.gold_dir.glob("*.json")):
-        msgs = validate_file(f)
+        msgs = validate_file(
+            f, require_human_verified=args.require_human_verified
+        )
         errs = [m for m in msgs if m.startswith("ERROR")]
         warns = [m for m in msgs if m.startswith("WARN")]
         if errs:
