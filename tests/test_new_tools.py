@@ -239,6 +239,44 @@ def test_eval_multiseed_rejects_unreviewed_gold(tmp_path):
     assert rc == 1
 
 
+def test_eval_multiseed_rejects_reviewed_but_unsigned_gold(
+    tmp_path, monkeypatch
+):
+    import scripts.eval_multiseed as em
+
+    async def _fake_extract(text_path, doc_id, seed):
+        return {"steps": [], "constraints": []}
+
+    monkeypatch.setattr(em, "_extract_one", _fake_extract)
+    import src.evaluation.metrics as metrics_mod
+    monkeypatch.setattr(
+        metrics_mod, "prepare_evaluator", lambda *args, **kwargs: (None, None)
+    )
+
+    gold_dir = tmp_path / "gold"
+    text_dir = tmp_path / "text"
+    gold_dir.mkdir()
+    text_dir.mkdir()
+    (gold_dir / "doc1.json").write_text(json.dumps({
+        "procedure": {"doc_id": "doc1", "title": "t"},
+        "steps": [{"id": "S1", "label": "step"}],
+        "quality": {
+            "review_status": "reviewed",
+            "annotator": "agent-adjudicated (pending human sign-off)",
+            "review_date": "2026-07-10",
+        },
+    }))
+    (text_dir / "doc1.txt").write_text("step content")
+
+    rc = em.main([
+        "--gold-dir", str(gold_dir),
+        "--text-dir", str(text_dir),
+        "--seeds", "1",
+    ])
+
+    assert rc == 1
+
+
 def test_eval_multiseed_dry_run_skips_guard(tmp_path):
     """--dry-run bypasses the unreviewed guard."""
     from scripts.eval_multiseed import main
@@ -264,8 +302,8 @@ def test_eval_multiseed_dry_run_skips_guard(tmp_path):
     assert rc == 0
 
 
-def test_eval_multiseed_allow_unreviewed_bypasses_guard(tmp_path, monkeypatch, capsys):
-    """--allow-unreviewed must bypass the guard; test must not load real models."""
+def test_eval_multiseed_allow_unverified_bypasses_guard(tmp_path, monkeypatch, capsys):
+    """--allow-unverified must bypass the guard; test must not load real models."""
     import scripts.eval_multiseed as em
     from scripts.eval_multiseed import main
 
@@ -294,13 +332,25 @@ def test_eval_multiseed_allow_unreviewed_bypasses_guard(tmp_path, monkeypatch, c
         "--gold-dir", str(gold_dir),
         "--text-dir", str(text_dir),
         "--seeds", "1",
-        "--allow-unreviewed",
+        "--allow-unverified",
     ])
     captured = capsys.readouterr()
     assert "not reviewed" not in captured.err, (
-        "--allow-unreviewed must bypass the unreviewed-gold guard"
+        "--allow-unverified must bypass the unverified-gold guard"
     )
     assert "quality.review_status != 'reviewed'" not in captured.err
+
+
+def test_eval_multiseed_allow_unreviewed_alias_sets_allow_unverified():
+    from scripts.eval_multiseed import parse_args
+
+    args = parse_args([
+        "--gold-dir", "gold",
+        "--text-dir", "text",
+        "--allow-unreviewed",
+    ])
+
+    assert args.allow_unverified is True
 
 
 def test_eval_multiseed_rejects_malformed_gold(tmp_path):

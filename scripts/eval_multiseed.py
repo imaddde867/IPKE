@@ -61,6 +61,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
+from src.evaluation.evidence import assess_annotation_evidence
 from src.evaluation.metrics import compute_phi as phi
 
 METRIC_COLUMNS = [
@@ -290,11 +291,12 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser.add_argument("--bootstrap-n", type=int, default=10_000)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument(
+        "--allow-unverified",
         "--allow-unreviewed",
+        dest="allow_unverified",
         action="store_true",
         help=(
-            "Allow gold files with quality.review_status != 'reviewed'. "
-            "Use only for development; unreviewed files are AI drafts and "
+            "Allow gold without explicit human verification. Development only; "
             "results cannot be used as paper evidence."
         ),
     )
@@ -337,25 +339,23 @@ def main(argv: list[str] | None = None) -> int:
             print(f"ERROR: cannot read or parse gold file {gf}: {exc}", file=sys.stderr)
             return 1
 
-    # Reject unreviewed gold unless explicitly overridden.
-    # Unreviewed files are AI-assisted drafts; results cannot be used as paper evidence.
-    if not args.dry_run and not args.allow_unreviewed:
-        unreviewed = [
-            gf.stem
-            for gf, _ in pairs
-            if loaded_gold[gf.stem].get("quality", {}).get("review_status", "") != "reviewed"
-        ]
-        if unreviewed:
+    # Reject gold without explicit human verification unless explicitly overridden.
+    if not args.dry_run and not args.allow_unverified:
+        ineligible: dict[str, tuple[str, ...]] = {}
+        for gf, _ in pairs:
+            evidence = assess_annotation_evidence(loaded_gold[gf.stem])
+            if not evidence.evidence_eligible:
+                ineligible[gf.stem] = evidence.issues
+        if ineligible:
             print(
-                "ERROR: the following gold files are not reviewed "
-                "(quality.review_status != 'reviewed'):",
+                "ERROR: gold files are not eligible for paper evidence:",
                 file=sys.stderr,
             )
-            for name in unreviewed:
-                print(f"  {name}", file=sys.stderr)
+            for name, issues in ineligible.items():
+                print(f"  {name}: {'; '.join(issues)}", file=sys.stderr)
             print(
-                "Complete a human correction pass and set quality.review_status='reviewed', "
-                "or pass --allow-unreviewed for development use only.",
+                "Complete human verification, or pass --allow-unverified "
+                "for development use only.",
                 file=sys.stderr,
             )
             return 1
