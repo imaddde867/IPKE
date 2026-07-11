@@ -1,5 +1,8 @@
 # ECIR paper replaces thesis evaluation numbers entirely
 
+Status: Superseded by ADR-0005 on 2026-07-10. This document records the historical
+benchmark-first plan and must not control current experiments or paper claims.
+
 Updated 2026-06-13: primary target is ECIR 2027 Resource Paper (see ADR-0004). Document count raised from 8 to 12–15.
 
 The thesis reports Φ = 0.362 for DSC on 3 documents (3M SOP, DOA Food,

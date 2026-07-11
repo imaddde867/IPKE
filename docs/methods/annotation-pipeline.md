@@ -1,13 +1,20 @@
 # Gold Annotation Methodology
 
-*Model-assisted drafting with independent human adjudication and inter-annotator
-agreement.* This document is the paper-ready methods section for how the
-IPKE-Bench gold annotations were produced. It is written to be lifted into the
-ECIR 2027 resource paper (§ Dataset Construction) with light editing.
+> **Method-first update, 2026-07-11.** This pipeline produces model-assisted candidates
+> and review provenance for IPKE evaluation. It does not produce human-verified gold by
+> itself. The old ECIR resource-paper language and eight-file outcome below are
+> historical. Current exclusions and release criteria live in
+> `docs/annotation/SIGN_OFF_ISSUE.md` and `docs/annotation/manual-review/`.
+
+*Model-assisted drafting with explicit provenance and later human verification.* This is
+a historical methods draft, not a paper-ready section. Rewrite it after the
+confirmatory manifest, manual correction, human verification, and independent
+annotation gates are complete.
 
 ## Motivation
 
-IPKE-Bench annotates industrial procedures with **constraint attachment**: each
+The IPKE supporting corpus annotates industrial procedures with **constraint
+attachment**: each
 procedural step carries typed constraints (precondition, postcondition, guard,
 parameter, role_assignment, reference), each with an enforcement level (must,
 should, may) and an explicit attachment to the step(s) it governs. Producing
@@ -16,12 +23,9 @@ procedure of 15–40 steps with attached constraints is roughly three hours of
 focused annotator time. Annotating the full corpus by hand, twice (for
 agreement), was not feasible within the project timeline.
 
-We therefore use a **model-assisted drafting + human adjudication** pipeline.
-The design goal is explicit: obtain high-quality golds efficiently *without*
-letting the model become the silent author of the ground truth. Every design
-choice below exists to keep a human (or an independent, source-grounded
-critic pass) as the accountable authority over what enters the gold, and to
-make the resulting agreement figure honest.
+The historical pipeline used **model-assisted drafting + agent adjudication**. A
+separate named-human verification gate remains incomplete; agent review is not gold
+authorship.
 
 ## Pipeline overview
 
@@ -35,7 +39,7 @@ make the resulting agreement figure honest.
  (2) annotate_assisted.py ──► draft gold  (review_status="unreviewed")
      │        two-stage prompt, structural self-validation + repair loop
      ▼
- (3) adjudicate.py ──► reviewed gold  (accept / edit / reject, logged)
+ (3) adjudicate.py ──► agent-adjudicated candidate (accept / edit / reject, logged)
      │        independent source-grounded pass; decisions persisted for replay
      ▼
  (4) validate_paper_gold.py --strict ──► locked-taxonomy + IAA-metadata gate
@@ -75,13 +79,13 @@ not tied to one provider. The harness performs:
 - emission of a draft with `review_status="unreviewed"` and
   `annotator="model-assisted:<model>"`, plus `quality._draft_diagnostics`.
 
-A draft is explicitly **not** a gold. It fails the review gate by construction
-(`review_status != "reviewed"`) and cannot pass the validator until a human or
-adjudication pass signs off.
+A draft is explicitly **not** gold. An adjudication pass may set
+`review_status="reviewed"`, but that status is not human verification and cannot make
+the file paper eligible.
 
 ### (3) Adjudication
 
-`adjudicate.py` turns a draft into a reviewed gold through an explicit
+`adjudicate.py` turns a draft into an agent-adjudicated candidate through an explicit
 accept / edit / reject decision on every element. Two modes matter:
 
 - **`review`** — interactive, element-by-element human sign-off.
@@ -89,7 +93,7 @@ accept / edit / reject decision on every element. Two modes matter:
   (`datasets/paper/adjudication_decisions/<doc>.json`), so a gold can be
   regenerated from its draft + decisions with no interactive step.
 
-For the first release we ran an **independent source-grounded critic pass**: a
+For the historical candidate set we ran a **source-grounded agent critic pass**: a
 reviewer (distinct from the drafting step) read the source span and returned
 accept/edit/reject decisions — typically 2–4 edits and 0–2 rejects per document
 (type reclassifications, enforcement corrections, and rejection of the rare
@@ -113,12 +117,14 @@ a valid enforcement level, non-empty text, and at least one attachment that
 resolves to a real step id. Strict mode also flags steps with zero or >10
 constraints; genuine low-density steps are acknowledged with an honest
 per-step adjudication token in `review_notes` rather than by inventing
-constraints. All 8 golds pass `--strict` (exit 0).
+constraints. All eight legacy candidates pass structural `--strict` validation, which
+does not imply semantic correctness or human verification.
 
 ### (5) Inter-annotator agreement
 
-`setup_iaa_subset.py` selects a stratified **≥30% subset** (3 of 8 documents,
-one per distinct domain family) and emits **blank** second-pass scaffolds
+Historically, `setup_iaa_subset.py` selected a stratified **≥30% subset** (3 of 8
+documents, one per distinct domain family). That subset is paused because it contains
+excluded NASA. After issue #112 replaces and freezes it, the tool emits **blank** second-pass scaffolds
 carrying only `doc_id`, procedure title, and the source char span — deliberately
 **no first-pass steps or constraints**. This is the anchoring-bias control: the
 second annotator authors from the same source window *without* reading the

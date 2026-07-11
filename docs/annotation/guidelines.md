@@ -1,4 +1,4 @@
-# IPKE-Bench Annotation Guidelines
+# IPKE Evaluation Annotation Guidelines
 
 Authoritative procedure for producing a paper-grade gold file. Independent second-pass annotators MUST follow this document. Any deviation invalidates the inter-annotator agreement (IAA) computation for that file.
 
@@ -10,7 +10,10 @@ Authoritative procedure for producing a paper-grade gold file. Independent secon
 
 ## Annotation environment
 
-Open the source `.txt` file and the target `.json` file side by side. Do NOT use the rendered PDF — use the extracted text that the pipeline operates on. The whole point of the benchmark is that the extractor sees the same text the annotator does.
+Open the source `.txt` file and the target `.json` file side by side. The extracted text
+is the annotation input because it is what the extractor sees. Consult the authoritative
+PDF only to resolve page provenance, tables, symbols, or OCR ambiguity; record any such
+decision in `review_notes`.
 
 For PR reviewers: do NOT rely on the LLM-drafted gold (`unreviewed` status) as a starting point. Either start from a blank schema-valid skeleton or use a different annotator's pass — never anchor to the draft text.
 
@@ -33,7 +36,11 @@ The seed corpus used `bounded_excerpt` with a floor of "at least 4 steps and 6 c
 
 ### Edge cases
 
-- **Requirements / policy documents (e.g. NASA NPR 8715.3D).** Some sources are normative requirement lists, not executable step sequences. If no 15–40-step *executable* procedure exists, annotate the largest coherent block of requirement-bearing clauses as steps (each "shall" clause that mandates an action is a step), keep `annotation_scope = "full_subprocedure"`, and record in `review_notes` that the unit is requirement-structured rather than action-sequenced. If even that yields < 10 steps, flag the document for exclusion from the seed set in a PR rather than shipping a thin gold.
+- **Requirements / policy documents.** A normative requirements block is not an
+  executable procedure. Exclude it from confirmatory procedural evaluation rather than
+  converting clause order into steps or `NEXT` edges. It may be retained in a separately
+  labeled `requirements_stress_test` collection only after its representation and
+  evaluation protocol are defined.
 - **Very short standalone procedures (< 15 steps but genuinely complete).** Acceptable only if the procedure is truly self-contained end-to-end (e.g. a complete 12-step calibration checklist). Keep the whole thing, set `annotation_scope = "full_subprocedure"`, and note in `review_notes` that the natural unit is < 15 steps. Never split a longer procedure down to this size.
 
 ## Step identification
@@ -47,15 +54,18 @@ A **procedural step** is one ordered, actionable operation that an agent must pe
 
 ### When to split a step
 
-Split when source text introduces a logically separate phase of work, even if the source bullets them under one heading. NASA NPR 8715.3D §1.5.1 is one source paragraph but the SMA-plan-coverage activity and the milestone-review-topics activity are separate procedural steps with different deliverables.
+Split when source text introduces a logically separate phase of executable work, even if
+the source bullets actions under one heading. Do not split coordinated objects,
+qualifiers, purposes, or parts-list nouns into actions.
 
 ### When NOT to split
 
-Sub-bullets that enumerate parts of a single action (eliminate / reduce-likelihood / reduce-severity / improve-state-of-knowledge in NASA §1.7.1.1) belong in `arguments` of one parent step, not separate steps.
+Sub-bullets that enumerate objects or components of one action belong in `arguments` or
+structured parameters of one parent step, not separate steps.
 
 ## Constraint identification
 
-A **constraint** is a condition, guard, parameter, role assignment, or external reference that governs one or more steps. Constraints are the safety-and-correctness scaffolding around the procedural backbone — they are what IPKE-Bench is centrally about.
+A **constraint** is a condition, guard, parameter, role assignment, or external reference that governs one or more steps. Constraints are the safety-and-correctness scaffolding around the procedural backbone and the primary IPKE method-evaluation target.
 
 ### Source signals that indicate a constraint
 
@@ -155,11 +165,19 @@ Set the following fields in `quality` before considering the file done:
 - `review_date: "<YYYY-MM-DD>"`
 - `review_notes: "<1-3 sentence summary of changes from draft, plus any ambiguity flags>"` — to adjudicate a strict-validator warning, embed the exact token `step:{id} {kind} adjudicated` (e.g. `step:S1 zero_constraints adjudicated`) in this field; one token per warning suppressed.
 
+These fields record that a review pass occurred; they do not establish paper eligibility.
+Only a human who personally checks the final annotation may append
+`+ human-verified:<handle>`, and the file must also belong to the frozen confirmatory
+split.
+
 ## Worked examples
 
 ### Constraint typing and structure
 
-The `datasets/paper/gold/nasa_npr_8715_3d_general_safety.json` and `datasets/paper/gold/epa_guidance_preparing_sops_qag6.json` files are the canonical worked examples for constraint typing and JSON structure. Read them end-to-end before annotating your first file.
+No current gold file is a canonical worked example until manual audit and human sign-off
+are complete. Use the declared JSON Schema, taxonomy, and the examples in this guideline
+as the contract. The July 2026 source audits under `manual-review/` are counterexamples
+showing why structural validity and agent review are insufficient.
 
 ### Scope selection (the locked rule in practice)
 
