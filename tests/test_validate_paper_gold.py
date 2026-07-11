@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from scripts.validate_paper_gold import validate_file
+from scripts.validate_paper_gold import main, validate_file
 
 VALID_ANNOTATION: dict = {
     "procedure": {"doc_id": "test_doc", "title": "Test"},
@@ -42,6 +42,42 @@ def _write(tmp_path: Path, annotation: dict) -> Path:
 
 def _errors(messages: list[str]) -> list[str]:
     return [m for m in messages if m.startswith("ERROR")]
+
+
+def _manifest_entry(
+    doc_id: str,
+    *,
+    include: bool,
+    role: str = "procedure_candidate",
+    status: str = "candidate",
+) -> dict[str, object]:
+    return {
+        "doc_id": doc_id,
+        "source_family": "test",
+        "role": role,
+        "status": status,
+        "include_for_evaluation": include,
+        "reason": "Test fixture.",
+    }
+
+
+def _write_manifest(
+    path: Path,
+    *,
+    status: str,
+    documents: list[dict[str, object]],
+) -> Path:
+    path.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "manifest_status": status,
+                "documents": documents,
+            }
+        ),
+        encoding="utf-8",
+    )
+    return path
 
 
 def test_valid_annotation_passes(tmp_path: Path) -> None:
@@ -234,3 +270,84 @@ def test_human_verified_mode_accepts_signed_annotation(tmp_path: Path) -> None:
     )
 
     assert _errors(messages) == []
+
+
+def test_manifest_scoped_cli_ignores_malformed_excluded_annotation(
+    tmp_path: Path,
+) -> None:
+    gold_dir = tmp_path / "gold"
+    gold_dir.mkdir()
+    included = json.loads(json.dumps(VALID_ANNOTATION))
+    included["procedure"]["doc_id"] = "included"
+    included["quality"]["annotator"] = (
+        "model-assisted:qwen + agent-adjudicated + human-verified:imad"
+    )
+    (gold_dir / "included.json").write_text(
+        json.dumps(included),
+        encoding="utf-8",
+    )
+    (gold_dir / "excluded.json").write_text("{not-json", encoding="utf-8")
+    manifest_path = _write_manifest(
+        tmp_path / "manifest.json",
+        status="frozen",
+        documents=[
+            _manifest_entry("included", include=True),
+            _manifest_entry(
+                "excluded",
+                include=False,
+                status="excluded_pending_reannotation",
+            ),
+        ],
+    )
+
+    rc = main(
+        [
+            "--gold-dir",
+            str(gold_dir),
+            "--manifest",
+            str(manifest_path),
+            "--strict",
+            "--require-frozen-manifest",
+            "--require-human-verified",
+        ]
+    )
+
+    assert rc == 0
+
+
+def test_frozen_manifest_requirement_rejects_provisional_status(
+    tmp_path: Path,
+    capsys,
+) -> None:
+    gold_dir = tmp_path / "gold"
+    gold_dir.mkdir()
+    included = json.loads(json.dumps(VALID_ANNOTATION))
+    included["procedure"]["doc_id"] = "included"
+    included["quality"]["annotator"] = (
+        "model-assisted:qwen + agent-adjudicated + human-verified:imad"
+    )
+    (gold_dir / "included.json").write_text(
+        json.dumps(included),
+        encoding="utf-8",
+    )
+    manifest_path = _write_manifest(
+        tmp_path / "manifest.json",
+        status="provisional",
+        documents=[_manifest_entry("included", include=True)],
+    )
+
+    rc = main(
+        [
+            "--gold-dir",
+            str(gold_dir),
+            "--manifest",
+            str(manifest_path),
+            "--require-frozen-manifest",
+            "--require-human-verified",
+        ]
+    )
+
+    output = capsys.readouterr().out
+    assert rc == 1
+    assert "manifest is provisional" in output
+    assert "PASS included.json" in output

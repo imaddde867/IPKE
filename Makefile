@@ -4,6 +4,7 @@
 PYTHON := uv run python
 
 # Paper gold dirs
+PAPER_MANIFEST := datasets/paper/corpus_manifest.json
 PAPER_GOLD     := datasets/paper/gold
 PAPER_TEXT     := datasets/paper/text
 PAPER_SECOND   := datasets/paper/second_pass
@@ -21,7 +22,9 @@ eval-validate:
 
 # Paper-evidence release gate: strict validation plus explicit human sign-off.
 eval-paper-gate:
-	$(PYTHON) scripts/validate_paper_gold.py --gold-dir $(PAPER_GOLD) --strict --require-human-verified
+	$(PYTHON) scripts/validate_paper_gold.py --gold-dir $(PAPER_GOLD) \
+		--manifest $(PAPER_MANIFEST) --require-frozen-manifest \
+		--strict --require-human-verified
 
 # Constraint-blindness baseline (D1 in PRD): regenerates the §1 motivating table.
 # Uses the Tier-A protocol matcher (SBERT cos >= 0.75) plus a loose-threshold
