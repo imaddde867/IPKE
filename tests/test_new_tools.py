@@ -431,10 +431,12 @@ def test_makefile_eval_validate_uses_strict_mode():
 
 def test_makefile_has_explicit_paper_evidence_gate():
     text = Path("Makefile").read_text(encoding="utf-8")
+    assert "PAPER_MANIFEST := datasets/paper/corpus_manifest.json" in text
     assert "eval-paper-gate:" in text
     assert (
-        "scripts/validate_paper_gold.py --gold-dir $(PAPER_GOLD) "
-        "--strict --require-human-verified"
+        "scripts/validate_paper_gold.py --gold-dir $(PAPER_GOLD) \\\n"
+        "\t\t--manifest $(PAPER_MANIFEST) --require-frozen-manifest \\\n"
+        "\t\t--strict --require-human-verified"
     ) in text
 
 
@@ -451,4 +453,5 @@ def test_makefile_eval_iaa_depends_on_validation():
 def test_dataset_readme_uses_existing_validator_command():
     text = Path("datasets/paper/README.md").read_text(encoding="utf-8")
     assert "scripts/validate_gold.py" not in text
-    assert "scripts/validate_paper_gold.py --gold-dir datasets/paper/gold" in text
+    assert "make eval-validate" in text
+    assert "make eval-paper-gate" in text

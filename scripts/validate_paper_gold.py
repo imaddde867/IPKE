@@ -20,7 +20,13 @@ import sys
 from collections.abc import Iterable
 from pathlib import Path
 
+from pydantic import ValidationError
+
 from src.benchmark.taxonomy import LOCKED_CONSTRAINT_TYPES, LOCKED_ENFORCEMENT_LEVELS
+from src.evaluation.corpus_manifest import (
+    load_corpus_manifest,
+    select_manifest_gold_files,
+)
 from src.evaluation.evidence import assess_annotation_evidence
 
 LOCKED_TYPES = LOCKED_CONSTRAINT_TYPES
@@ -127,20 +133,46 @@ def validate_file(path: Path, *, require_human_verified: bool = False) -> list[s
     return [f"ERROR: {e}" for e in errors] + [f"WARN: {w}" for w in warnings]
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--gold-dir", type=Path, default=Path("datasets/paper/gold"))
+    ap.add_argument("--manifest", type=Path)
     ap.add_argument("--strict", action="store_true", help="Treat warnings as failures.")
+    ap.add_argument(
+        "--require-frozen-manifest",
+        action="store_true",
+        help="Require the supplied corpus manifest to be frozen.",
+    )
     ap.add_argument(
         "--require-human-verified",
         action="store_true",
         help="Require a non-pending + human-verified:<handle> marker.",
     )
-    args = ap.parse_args()
+    args = ap.parse_args(argv)
 
-    any_error = False
+    if args.require_frozen_manifest and args.manifest is None:
+        print("ERROR: --require-frozen-manifest requires --manifest")
+        return 1
+
+    manifest_error = False
+    gold_files = tuple(sorted(args.gold_dir.glob("*.json")))
+    if args.manifest is not None:
+        try:
+            manifest = load_corpus_manifest(args.manifest)
+            gold_files = select_manifest_gold_files(manifest, args.gold_dir)
+        except (OSError, ValueError, ValidationError) as exc:
+            print(f"ERROR: invalid corpus manifest: {exc}")
+            return 1
+        if manifest.manifest_status == "provisional":
+            if args.require_frozen_manifest:
+                print("ERROR: corpus manifest is provisional; frozen manifest required")
+                manifest_error = True
+            else:
+                print("WARN: corpus manifest is provisional")
+
+    any_error = manifest_error
     any_warn = False
-    for f in sorted(args.gold_dir.glob("*.json")):
+    for f in gold_files:
         msgs = validate_file(
             f, require_human_verified=args.require_human_verified
         )
