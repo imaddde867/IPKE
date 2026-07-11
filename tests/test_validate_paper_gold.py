@@ -315,6 +315,35 @@ def test_manifest_scoped_cli_ignores_malformed_excluded_annotation(
     assert rc == 0
 
 
+def test_frozen_manifest_cli_rejects_malformed_included_annotation(
+    tmp_path: Path,
+    capsys,
+) -> None:
+    gold_dir = tmp_path / "gold"
+    gold_dir.mkdir()
+    (gold_dir / "included.json").write_text("{not-json", encoding="utf-8")
+    manifest_path = _write_manifest(
+        tmp_path / "manifest.json",
+        status="frozen",
+        documents=[_manifest_entry("included", include=True)],
+    )
+
+    rc = main(
+        [
+            "--gold-dir",
+            str(gold_dir),
+            "--manifest",
+            str(manifest_path),
+            "--require-frozen-manifest",
+        ]
+    )
+
+    output = capsys.readouterr().out
+    assert rc == 1, output
+    assert "FAIL included.json" in output
+    assert "ERROR: JSON parse error:" in output
+
+
 def test_frozen_manifest_requirement_rejects_provisional_status(
     tmp_path: Path,
     capsys,

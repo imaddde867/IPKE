@@ -53,7 +53,7 @@ def validate_file(path: Path, *, require_human_verified: bool = False) -> list[s
     try:
         d = json.loads(path.read_text())
     except Exception as e:
-        return [f"JSON parse error: {e}"]
+        return [f"ERROR: JSON parse error: {e}"]
 
     quality = d.get("quality", {})
     review_notes = str(quality.get("review_notes") or "")
