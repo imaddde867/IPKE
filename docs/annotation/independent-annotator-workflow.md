@@ -1,14 +1,22 @@
-# Independent Annotator Workflow
+# Independent Annotator Workflow for IPKE Evaluation
 
-End-to-end procedure for an independent second-pass annotator producing IAA-eligible annotations for IPKE-Bench. **If you are an annotator who did not author the first-pass gold, this is the document you read.**
+> **Status: paused pending issue #112 and a new frozen IAA subset.** The current subset
+> includes the excluded NASA requirements block and must not be assigned or scaffolded.
+
+End-to-end procedure for an independent second-pass annotator producing IAA-eligible
+annotations for the IPKE method evaluation. Use it only after the confirmatory manifest
+and replacement subset are committed.
 
 ## What you are signing up for
 
 - **Per document**: ~3 hours of focused work, blind to the first-pass gold.
-- **Total commitment**: the IAA subset is **3 of the 8 documents** (≥30% of the corpus — see `datasets/paper/iaa_subset.json`). Two annotators splitting the subset, or one annotator taking all three, both satisfy the protocol.
+- **Total commitment**: at least 25% of the final eligible corpus, selected by source
+  family after the confirmatory manifest is frozen.
 - **Output**: one JSON file per assigned doc in `datasets/paper/second_pass/<doc_id>.json`, committed via PR.
-- **Authorship**: ≥ 2 documents annotated qualifies for co-authorship on the ECIR 2027 Resource Paper. Single-document contributors are acknowledged.
-- **Deadline**: committed annotations by **2026-08-08** (allows time for IAA computation, baseline runs, and the ECIR abstract due 2026-10-12).
+- **Credit and authorship**: recorded transparently under institutional and venue policy;
+  annotation count alone does not guarantee authorship.
+- **Deadline**: set during recruitment after scope, compensation, consent, and the target
+  venue are confirmed.
 
 ## The non-negotiable rule
 
@@ -30,8 +38,8 @@ uv run python -m spacy download en_core_web_sm
 Verify the environment:
 
 ```bash
-uv run python scripts/validate_paper_gold.py --gold-dir datasets/paper/gold
-# Should output PASS on all 8 reviewed files.
+make eval-validate
+# Structural development check only; it is not human verification.
 ```
 
 Read in this order:
@@ -42,7 +50,10 @@ Read in this order:
 
 Do NOT yet open any file under `datasets/paper/gold/`.
 
-## Generate your scaffolds (one command)
+## Generate your scaffolds after the pause is lifted
+
+Do not run the commands below while `datasets/paper/iaa_subset.json` still contains
+NASA. Issue #112 must replace and freeze the subset first.
 
 Instead of hand-creating each JSON, generate the blank scaffolds for the IAA subset:
 
@@ -68,14 +79,16 @@ The IAA subset (the three documents that require a second pass) is written by `s
 |---|---|---|---|
 | `epa_field_operations_manual_filter_sampling_sop` | Field operations | MFC SOP §6.0 Calibration / Post-Calibration (6.1.1–6.1.10) | ⭐ |
 | `epa_field_sampling_measurement_procedure_validation` | Quality assurance | §3–5 General Information → Procedure Implementation (whole short doc) | ⭐ |
-| `nasa_npr_8715_3d_general_safety` | Safety requirements | §2.5.2 System Safety Technical Plan (SSTP) | ⭐ |
+| `nasa_npr_8715_3d_general_safety` | Safety requirements | §2.5.2 System Safety Technical Plan (SSTP) | Excluded under #112 |
 | `epa_guidance_preparing_sops_qag6` | Quality assurance | §2.0 SOP Process (2.1–2.6) | |
-| `olsk_small_cnc_v1_workbook` | Mechanical assembly | §01.1–01.5 Electronic Box | |
-| `niosh_nmam_5th_edition_ebook` | Analytical chemistry | Method 2005 SAMPLING / SAMPLE PREPARATION / MEASUREMENT | |
+| `olsk_small_cnc_v1_workbook` | Mechanical assembly | §01.1–01.5 Electronic Box | Excluded pending rebuild |
+| `niosh_nmam_5th_edition_ebook` | Analytical chemistry | Method 2005 | Excluded pending rebuild |
 | `usgs_groundwater_technical_procedures_tm1_a1` | Hydrology | GWPD 1 — Instructions 1–14 + Data Recording | |
 | `usgs_nfm_collection_water_samples_a4` | Hydrology | Steps for the EWI sampling method (Steps 1–6, complete) | |
 
-> First-pass golds are model-assisted drafts adjudicated by an independent source-grounded critic pass (annotator field: `model-assisted:<model> + agent-adjudicated`), pending Imad's final sign-off. Your independent human pass is what turns the reported κ into a human–human agreement figure — do not treat the first pass as human-authored when reasoning about independence.
+> First-pass candidates are model-assisted and agent-adjudicated. They do not become a
+> human first pass until a named human personally reviews and signs the final file. Do
+> not report human-human agreement before that separate gate is complete.
 
 ### Step 2 — Read source text
 

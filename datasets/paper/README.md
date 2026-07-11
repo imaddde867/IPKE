@@ -1,29 +1,35 @@
-# IPKE-Bench Dataset Workspace
+# IPKE Evaluation Corpus Workspace
 
-ECIR 2027 Resource Paper benchmark dataset. Primary contribution of the paper.
+Supporting evaluation data for the IPKE method paper. The corpus is not the primary
+contribution and the current directory is not a released benchmark or a confirmatory
+test set.
 
 ## Target
 
-12–15 publicly licensed industrial / safety-procedure documents with human-reviewed step, constraint, and **constraint attachment** annotations. All gold files must reach `quality.review_status = "reviewed"` before inclusion in any reported result.
+Twelve rights-cleared, source-family-diverse procedures with manually corrected,
+human-verified step, constraint, and **constraint attachment** annotations. A
+`quality.review_status = "reviewed"` value alone is not enough for paper evidence.
 
 ## Layout
 
-- `text/` — plain-text extracted source documents. This can include downloaded alternates that are not part of the active reviewed release.
-- `gold/` — Tier-A gold annotations (step, constraint, attachment). Schema: `schemas/ipke_annotation.schema.json`.
+- `text/` — plain-text extracted source documents, including candidates and alternates.
+- `gold/` — legacy candidate annotations (step, constraint, attachment). Directory
+  presence does not make a file confirmatory gold. Schema:
+  `schemas/ipke_annotation.schema.json`.
 - `second_pass/` — independent second annotations for IAA computation.
 - `reports/` — IAA reports and annotation statistics.
 
-Active corpus counts come from `gold/` plus `selected_for_gold=true` in
-`public_sources_manifest.csv`, not from every file present in `text/`.
-Manifest rows with `review_status=deferred_candidate` are downloaded
-alternates only; they require a reviewed gold file before inclusion in any
-paper result.
+The eight JSON files in `gold/` are legacy candidates, not the active confirmatory
+corpus. As of 2026-07-11, NASA is excluded as a requirements stress test and current
+OLSK/NIOSH golds are excluded pending manual rebuild. Issue #112 tracks the explicit
+confirmatory inclusion manifest. No result may infer membership from directory presence
+or `selected_for_gold=true` alone.
 
 ## Document Selection Criteria
 
 Priority: publicly licensable, stable URL, citable, varied procedure types and domains.
 
-1. Safety/regulatory: NASA NPR, EPA guidance, OSHA PSM examples, HSE UK
+1. Safety/regulatory procedures: EPA guidance, OSHA PSM examples, HSE UK
 2. Equipment / maintenance: OLSK CNC, USGS field sampling, public maintenance SOPs
 3. Quality / process: ISO-aligned public process guides
 
@@ -42,7 +48,14 @@ Every gold file must:
 
 1. Parse as valid JSON against `schemas/ipke_annotation.schema.json`.
 2. Contain `steps`, `constraints`, stable step IDs, stable constraint IDs.
-3. Have `quality.review_status = "reviewed"` for paper inclusion.
-4. Pass the strict paper validator, including locked taxonomy, enforcement, attachment, and reviewed quality metadata.
+3. Carry an explicit non-pending `+ human-verified:<handle>` marker for paper inclusion.
+4. Belong to the frozen confirmatory split.
+5. Pass schema, structural, grounding, attachment, and evidence-eligibility checks.
 
-Run: `uv run python scripts/validate_paper_gold.py --gold-dir datasets/paper/gold --strict`
+Development structural check:
+
+`make eval-validate`
+
+Paper-evidence check, intentionally failing until sign-off and manifest alignment:
+
+`make eval-paper-gate`
