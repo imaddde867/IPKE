@@ -1,0 +1,196 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ipke.local/schemas/ipke_review_packet.schema.json",
+  "title": "IPKE Agent Review Packet",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "packet_schema_version",
+    "artifact_role",
+    "status",
+    "doc_id",
+    "decision_semantics",
+    "source",
+    "audit",
+    "legacy_candidate",
+    "review_candidate",
+    "proposed_step_decisions",
+    "proposed_constraint_decisions",
+    "proposed_counts",
+    "human_decisions_required"
+  ],
+  "properties": {
+    "packet_schema_version": {"const": 2},
+    "artifact_role": {"const": "agent_review_packet"},
+    "status": {"const": "prepared_not_human_evidence"},
+    "doc_id": {"$ref": "#/$defs/identifier"},
+    "decision_semantics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["unit", "accept", "edit", "counts_are_human_effort_evidence"],
+      "properties": {
+        "unit": {"const": "legacy_to_review_artifact_transformation"},
+        "accept": {"type": "string", "minLength": 1},
+        "edit": {"type": "string", "minLength": 1},
+        "counts_are_human_effort_evidence": {"const": false}
+      }
+    },
+    "source": {"$ref": "#/$defs/sourceArtifact"},
+    "audit": {"$ref": "#/$defs/auditArtifact"},
+    "legacy_candidate": {"$ref": "#/$defs/countArtifact"},
+    "review_candidate": {"$ref": "#/$defs/countArtifact"},
+    "proposed_step_decisions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/decision"}
+    },
+    "proposed_constraint_decisions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/decision"}
+    },
+    "proposed_counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["steps", "constraints"],
+      "properties": {
+        "steps": {"$ref": "#/$defs/counts"},
+        "constraints": {"$ref": "#/$defs/counts"}
+      }
+    },
+    "human_decisions_required": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["decision_id", "question"],
+        "properties": {
+          "decision_id": {"$ref": "#/$defs/identifier"},
+          "question": {"type": "string", "minLength": 1}
+        }
+      }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      }
+    },
+    "auditArtifact": {
+      "allOf": [
+        {"$ref": "#/$defs/artifact"},
+        {
+          "properties": {
+            "path": {
+              "pattern": "^docs/annotation/manual-review/[A-Za-z0-9._-]+\\.md$"
+            }
+          }
+        }
+      ]
+    },
+    "countArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "step_count", "constraint_count"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^datasets/paper/(gold|review_candidates)/[A-Za-z0-9._-]+\\.json$"
+        },
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "step_count": {"type": "integer", "minimum": 1},
+        "constraint_count": {"type": "integer", "minimum": 0}
+      }
+    },
+    "sourceArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256", "span_sha256", "char_start", "char_end"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^datasets/paper/text/[A-Za-z0-9._-]+\\.txt$"
+        },
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "span_sha256": {"$ref": "#/$defs/sha256"},
+        "char_start": {"type": "integer", "minimum": 0},
+        "char_end": {"type": "integer", "minimum": 1}
+      }
+    },
+    "artifactRef": {
+      "type": "string",
+      "pattern": "^(legacy|review):[SC][0-9]+$"
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["action", "input_refs", "output_refs", "rationale"],
+      "properties": {
+        "action": {"enum": ["accept", "edit", "reject", "add"]},
+        "input_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/artifactRef"}
+        },
+        "output_refs": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/artifactRef"}
+        },
+        "rationale": {"type": "string", "minLength": 1}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"action": {"const": "add"}}},
+          "then": {
+            "properties": {
+              "input_refs": {"maxItems": 0},
+              "output_refs": {"minItems": 1}
+            }
+          },
+          "else": {"properties": {"input_refs": {"minItems": 1}}}
+        },
+        {
+          "if": {"properties": {"action": {"const": "reject"}}},
+          "then": {"properties": {"output_refs": {"maxItems": 0}}},
+          "else": {"properties": {"output_refs": {"minItems": 1}}}
+        }
+      ]
+    },
+    "counts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_count",
+        "accepted",
+        "edited",
+        "rejected",
+        "added",
+        "final_count"
+      ],
+      "properties": {
+        "candidate_count": {"type": "integer", "minimum": 0},
+        "accepted": {"type": "integer", "minimum": 0},
+        "edited": {"type": "integer", "minimum": 0},
+        "rejected": {"type": "integer", "minimum": 0},
+        "added": {"type": "integer", "minimum": 0},
+        "final_count": {"type": "integer", "minimum": 0}
+      }
+    }
+  }
+}

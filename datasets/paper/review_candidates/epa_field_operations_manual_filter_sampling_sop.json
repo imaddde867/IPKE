@@ -1,0 +1,498 @@
+{
+  "$schema": "../../../schemas/ipke_annotation.schema.json",
+  "artifact_role": "agent_review_candidate",
+  "procedure": {
+    "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+    "title": "6.0 Calibration / Post-Calibration (Mass Flow Controller)",
+    "version": "Revision No. 10 (February 2025)",
+    "domain": "field_operations",
+    "source": {
+      "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+      "section": "IV.C.3 Mass Flow Controller - 6.0 Calibration / Post-Calibration (6.1.1-6.1.10)",
+      "page": "4-6",
+      "char_start": 609373,
+      "char_end": 611246
+    }
+  },
+  "steps": [
+    {
+      "id": "S1",
+      "label": "Allow the MFM and MFC to warm up",
+      "action_verb": "allow",
+      "action_object": "MFM and MFC",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C1",
+          "type": "parameter",
+          "enforcement": "must",
+          "text": "for at least 30 minutes",
+          "attached_to": ["S1"],
+          "provenance": {
+            "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+            "page": 4,
+            "section": "6.1.1",
+            "char_start": 609451,
+            "char_end": 609474
+          }
+        },
+        {
+          "id": "C2",
+          "type": "guard",
+          "enforcement": "must",
+          "text": "without the charger\nattached to the MFM",
+          "attached_to": ["S1"],
+          "provenance": {
+            "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+            "page": 4,
+            "section": "6.1.1",
+            "char_start": 609475,
+            "char_end": 609514
+          }
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+        "page": 4,
+        "section": "6.1.1",
+        "char_start": 609408,
+        "char_end": 609516
+      }
+    },
+    {
+      "id": "S2",
+      "label": "Install a Balston filter on the Definer pressure port",
+      "action_verb": "install",
+      "action_object": "Balston filter",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+        "page": 4,
+        "section": "6.1.2",
+        "char_start": 609516,
+        "char_end": 609584
+      }
+    },
+    {
+      "id": "S3",
+      "label": "Connect the Definer suction port to the MFC inlet",
+      "action_verb": "connect",
+      "action_object": "Definer suction port to MFC inlet port",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C3",
+          "type": "parameter",
+          "enforcement": "must",
+          "text": "using latex or Teflon tubing",
+          "attached_to": ["S3"],
+          "provenance": {
+            "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+            "page": 4,
+            "section": "6.1.3",
+            "char_start": 609652,
+            "char_end": 609680
+          }
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+        "page": 4,
+        "section": "6.1.3",
+        "char_start": 609584,
+        "char_end": 609682
+      }
+    },
+    {
+      "id": "S4",
+      "label": "Connect a vacuum source to the MFC outlet",
+      "action_verb": "connect",
+      "action_object": "vacuum source to MFC outlet port",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+        "page": 4,
+        "section": "6.1.4",
+        "char_start": 609682,
+        "char_end": 609775
+      }
+    },
+    {
+      "id": "S5",
+      "label": "Record the MFC display",
+      "action_verb": "record",
+      "action_object": "MFC display",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C4",
+          "type": "guard",
+          "enforcement": "must",
+          "text": "With the vacuum pump off",
+          "attached_to": ["S5"],
+          "provenance": {
+            "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+            "page": 4,
+            "section": "6.1.5",
+            "char_start": 609781,
+            "char_end": 609805
+          }
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+        "page": 4,
+        "section": "6.1.5",
+        "char_start": 609775,
+        "char_end": 609830
+      }
+    },
+    {
+      "id": "S6",
+      "label": "Turn on the flow pump",
+      "action_verb": "turn on",
+      "action_object": "flow pump",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+        "page": 4,
+        "section": "6.1.6",
+        "char_start": 609830,
+        "char_end": 609859
+      }
+    },
+    {
+      "id": "S7",
+      "label": "Generate a flow range around the expected instrument setting",
+      "action_verb": "generate",
+      "action_object": "range of flows",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C5",
+          "type": "parameter",
+          "enforcement": "must",
+          "text": "Using the “Flow_SetPt” variable in the data logger",
+          "attached_to": ["S7"],
+          "provenance": {
+            "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+            "page": 4,
+            "section": "6.1.7",
+            "char_start": 609865,
+            "char_end": 609915
+          }
+        },
+        {
+          "id": "C6",
+          "type": "parameter",
+          "enforcement": "must",
+          "text": "around the\nexpected flow setting for that instrument",
+          "attached_to": ["S7"],
+          "provenance": {
+            "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+            "page": 4,
+            "section": "6.1.7",
+            "char_start": 609943,
+            "char_end": 609995
+          }
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+        "page": 4,
+        "section": "6.1.7",
+        "char_start": 609859,
+        "char_end": 609996
+      }
+    },
+    {
+      "id": "S8",
+      "label": "Record the MFC display, Flow_Mass, and MFM measurement at each flow level",
+      "action_verb": "record",
+      "action_object": "MFC display, Flow_Mass, and MFM measurement",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C7",
+          "type": "parameter",
+          "enforcement": "must",
+          "text": "At each level of flow",
+          "attached_to": ["S8"],
+          "provenance": {
+            "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+            "page": 4,
+            "section": "6.1.7",
+            "char_start": 610109,
+            "char_end": 610130
+          }
+        },
+        {
+          "id": "C8",
+          "type": "parameter",
+          "enforcement": "must",
+          "text": "the “Flow_Mass” (entered into the voltage column)",
+          "attached_to": ["S8"],
+          "provenance": {
+            "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+            "page": 4,
+            "section": "6.1.7",
+            "char_start": 610156,
+            "char_end": 610205
+          }
+        },
+        {
+          "id": "C9",
+          "type": "parameter",
+          "enforcement": "must",
+          "text": "average of ten good runs, entered into the STP column",
+          "attached_to": ["S8"],
+          "provenance": {
+            "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+            "page": 4,
+            "section": "6.1.7",
+            "char_start": 610232,
+            "char_end": 610285
+          }
+        },
+        {
+          "id": "C10",
+          "type": "parameter",
+          "enforcement": "must",
+          "text": "Mass Flow Data Form in the As Left section",
+          "attached_to": ["S8"],
+          "provenance": {
+            "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+            "page": 4,
+            "section": "6.1.7",
+            "char_start": 610294,
+            "char_end": 610336
+          }
+        },
+        {
+          "id": "C11",
+          "type": "postcondition",
+          "enforcement": "must",
+          "text": "Following a six point audit in the As Left section of the flow calibration form, the form will\ncompute a Full Scale and Zero value for the MFC",
+          "attached_to": ["S8"],
+          "provenance": {
+            "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+            "page": 6,
+            "section": "6.1.8",
+            "char_start": 610690,
+            "char_end": 610832
+          }
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+        "page": 4,
+        "section": "6.1.7",
+        "char_start": 610109,
+        "char_end": 610348
+      }
+    },
+    {
+      "id": "S9",
+      "label": "Enter the computed values to the data logger",
+      "action_verb": "enter",
+      "action_object": "computed values to the data logger",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+        "page": 6,
+        "section": "6.1.8",
+        "char_start": 610834,
+        "char_end": 610879
+      }
+    },
+    {
+      "id": "S10",
+      "label": "Adjust the MFC set point to the site target flow rate",
+      "action_verb": "adjust",
+      "action_object": "MFC set point",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C12",
+          "type": "parameter",
+          "enforcement": "must",
+          "text": "Using the average of ten good runs for the Definer",
+          "attached_to": ["S10"],
+          "provenance": {
+            "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+            "page": 6,
+            "section": "6.1.9",
+            "char_start": 610886,
+            "char_end": 610936
+          }
+        },
+        {
+          "id": "C13",
+          "type": "parameter",
+          "enforcement": "must",
+          "text": "a flow rate of 1.50 or 3.00 for the particular site",
+          "attached_to": ["S10"],
+          "provenance": {
+            "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+            "page": 6,
+            "section": "6.1.9",
+            "char_start": 610974,
+            "char_end": 611025
+          }
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+        "page": 6,
+        "section": "6.1.9",
+        "char_start": 610938,
+        "char_end": 611026
+      }
+    },
+    {
+      "id": "S11",
+      "label": "Record the post-calibration result on the flow calibration form",
+      "action_verb": "record",
+      "action_object": "post-calibration result",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [
+        {
+          "id": "C14",
+          "type": "parameter",
+          "enforcement": "must",
+          "text": "in the Post Calibration row of the As Left section",
+          "attached_to": ["S11"],
+          "provenance": {
+            "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+            "page": 6,
+            "section": "6.1.9",
+            "char_start": 611074,
+            "char_end": 611124
+          }
+        }
+      ],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+        "page": 6,
+        "section": "6.1.9",
+        "char_start": 611027,
+        "char_end": 611125
+      }
+    },
+    {
+      "id": "S12",
+      "label": "Tag the MFC",
+      "action_verb": "tag",
+      "action_object": "MFC",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+        "page": 6,
+        "section": "6.1.10",
+        "char_start": 611167,
+        "char_end": 611178
+      }
+    },
+    {
+      "id": "S13",
+      "label": "Place it in a plastic bag",
+      "action_verb": "place",
+      "action_object": "it in a plastic bag",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+        "page": 6,
+        "section": "6.1.10",
+        "char_start": 611180,
+        "char_end": 611205
+      }
+    },
+    {
+      "id": "S14",
+      "label": "Put it on the ready-to-ship shelf",
+      "action_verb": "put",
+      "action_object": "it on the ready-to-ship shelf",
+      "arguments": [],
+      "parameters": [],
+      "constraints": [],
+      "flags": {},
+      "provenance": {
+        "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+        "page": 6,
+        "section": "6.1.10",
+        "char_start": 611210,
+        "char_end": 611245
+      }
+    }
+  ],
+  "constraints": [
+    {
+      "id": "C15",
+      "type": "precondition",
+      "enforcement": "must",
+      "text": "After completing the calibration",
+      "applies_to": ["S12", "S13", "S14"],
+      "provenance": {
+        "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+        "page": 6,
+        "section": "6.1.10",
+        "char_start": 611133,
+        "char_end": 611165
+      }
+    }
+  ],
+  "relations": [
+    {"source": "S1", "target": "S2", "type": "NEXT"},
+    {"source": "S2", "target": "S3", "type": "NEXT"},
+    {"source": "S3", "target": "S4", "type": "NEXT"},
+    {"source": "S4", "target": "S5", "type": "NEXT"},
+    {"source": "S5", "target": "S6", "type": "NEXT"},
+    {"source": "S6", "target": "S7", "type": "NEXT"},
+    {"source": "S7", "target": "S8", "type": "NEXT"},
+    {"source": "S8", "target": "S9", "type": "NEXT"},
+    {"source": "S9", "target": "S10", "type": "NEXT"},
+    {"source": "S10", "target": "S11", "type": "NEXT"},
+    {"source": "S11", "target": "S12", "type": "NEXT"},
+    {"source": "S12", "target": "S13", "type": "NEXT"},
+    {"source": "S13", "target": "S14", "type": "NEXT"}
+  ],
+  "quality": {
+    "annotation_scope": "full_subprocedure",
+    "review_status": "unreviewed",
+    "annotator": "agent-prepared (not human evidence)",
+    "review_date": "2026-07-13",
+    "review_notes": "Prepared from the complete frozen 6.0 source span and the July 13 audit packet. Recommended 14-step structure, exact item offsets, 16 source-grounded constraints, and repaired NEXT chain. A human must resolve the seven listed scientific decisions and complete an independent source pass before this can move to primary_pass/."
+  }
+}

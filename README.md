@@ -30,10 +30,14 @@ paper's primary contribution.
 
 ## Evidence status
 
-The active evaluation corpus has 8 documents, 256 steps, and 231 constraints. It is not
-paper evidence yet: every file still awaits human sign-off, the declared JSON Schema and
-custom validator disagree, and the current full-document runner is mismatched with
-bounded gold spans. See [BENCHMARK.md](BENCHMARK.md) for the supporting-data audit.
+The workspace retains 8 legacy candidates with 256 steps and 231 constraints; the
+provisional manifest selects 5 for development. It has 0 production annotations. The
+candidate schema is aligned, and the paper gate now rejects marker-only sign-off by
+requiring exact item anchors, canonical artifact paths, verified hashes, complete item
+decisions, and frozen evidence packages. The first agent-prepared EPA packet removes
+most transcription but still leaves eight decisions to a primary human. Human primary
+passes, a frozen manifest, blind coverage, and exact-span experiment inputs remain open. See
+[BENCHMARK.md](BENCHMARK.md) for the supporting-data audit.
 
 ## Reproducible Commands
 

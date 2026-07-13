@@ -58,7 +58,7 @@ Per-instance statistics for the seed corpus (after the 2026-07 full-subprocedure
 | `nasa_npr_8715_3d_general_safety` | Aerospace requirements | 39 | 26 | Excluded: requirements stress test (#112) |
 | `epa_guidance_preparing_sops_qag6` | SOP governance | 36 | 33 | Candidate; manual audit pending |
 | `olsk_small_cnc_v1_workbook` | Mechanical assembly | 24 | 9 | Excluded pending manual rebuild |
-| `epa_field_operations_manual_filter_sampling_sop` | Field calibration SOP (MFC) | 18 | 12 | Candidate; manual audit pending |
+| `epa_field_operations_manual_filter_sampling_sop` | Field calibration SOP (MFC) | 18 | 12 | Legacy candidate; agent packet prepared (14/15), primary-human pass pending |
 | `epa_field_sampling_measurement_procedure_validation` | Procedure validation | 35 | 44 | Agent correction complete; human adjudication pending |
 | `niosh_nmam_5th_edition_ebook` | Industrial hygiene chemistry | 34 | 24 | Excluded pending manual rebuild |
 | `usgs_groundwater_technical_procedures_tm1_a1` | Field measurement | 29 | 20 | Candidate; manual audit pending |
@@ -76,7 +76,10 @@ The annotation IS the label. Tier-A evaluation metrics (`StepF1`, `ConstraintCov
 
 ### 2.5 Is any information missing?
 
-- **Independent second-pass annotations**: `second_pass/` currently holds three blank, anchoring-safe IAA scaffolds (`epa_field_operations_manual_filter_sampling_sop`, `epa_field_sampling_measurement_procedure_validation`, `nasa_npr_8715_3d_general_safety`) plus one legacy `llm_draft` file (`olsk_small_cnc_v1_workbook`). No independent human second pass exists yet; the paper's κ ≥ 0.61 claim is open pending recruitment.
+- **Independent second-pass annotations**: `second_pass/` currently holds three blank,
+  anchoring-safe IAA scaffolds plus one legacy `llm_draft` file. No independent human
+  second pass exists yet. At least 25% of eligible procedures must receive a frozen
+  source-only pass; attachment-edge F1 ≥ 0.70 is the G0 gate and kappa is diagnostic.
 - **Per-document license attribution inside the JSON**: currently consolidated in `datasets/paper/public_sources_manifest.csv`; will be denormalised into each gold's `procedure.source.license` field in the next manifest update.
 
 ### 2.6 Are there explicit relationships between individual instances?
@@ -146,7 +149,7 @@ commands are incomplete; the named download/extraction scripts no longer exist. 
 - Full-subprocedure re-annotation (model-assisted + agent adjudication): 4-5 July 2026.
 - Source-verbatim grounding + completion pass: 6 July 2026.
 - Manual source audit started: 10 July 2026; three current golds excluded by 11 July.
-- Human sign-off: not started; 0 files verified.
+- Production-human evidence collection: not started; 0 frozen packages or final files.
 - Planned independent IAA pass: July-August 2026.
 - Corpus expansion to 12 documents: July-September 2026.
 
