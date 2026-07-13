@@ -152,7 +152,7 @@ rg -n ">=30%|≥30%|Imad performs|sign_off_gold.py|all κ|κ >=|κ ≥|draft gol
 Expected: any match is explicitly historical or diagnostic, never a production
 eligibility rule.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add docs/methods/annotation-pipeline.md \
@@ -174,18 +174,18 @@ git commit -m "Align annotation workflow with human review"
 - Consumes: exact source range `609373:611246` and the current candidate annotation.
 - Produces: a source-grounded proposed correction set and a compact human decision packet. It does not produce gold.
 
-- [ ] **Step 1: Verify the frozen span**
+- [x] **Step 1: Verify the frozen span**
 
 Confirm that the Unicode substring and blind-source file are identical and record SHA-256
 `6c14cfbdf5c380067a83528013f68182204ec0418db8ccb6de13e04204a5bf70`.
 
-- [ ] **Step 2: Record the source action spine**
+- [x] **Step 2: Record the source action spine**
 
 Record source items 6.1.1 through 6.1.10 and the proposed 14-step source-faithful spine.
 Propose merging candidate S8-S11, deleting unsupported S12, preserving S13-S18 subject
 to the terminal-action decision, and rebuilding the NEXT chain.
 
-- [ ] **Step 3: Record constraint corrections**
+- [x] **Step 3: Record constraint corrections**
 
 Separate action restatements from genuine parameters, guards, preconditions, and
 postconditions. Record high-confidence proposals and isolate these human decisions:
@@ -198,13 +198,13 @@ postconditions. Record high-confidence proposals and isolate these human decisio
 - accept the 14-step short-procedure exception;
 - finalize IDs only after semantic decisions.
 
-- [ ] **Step 4: Record provenance defects**
+- [x] **Step 4: Record provenance defects**
 
 Record actual version `Revision No. 10 (February 2025)`, source pages 4 to 6 of 6,
 missing item-level offsets, stale adjudication metadata, stale zero-constraint notes, and
 the current declared-schema failure caused by null page fields.
 
-- [ ] **Step 5: Validate without editing gold**
+- [x] **Step 5: Validate without editing gold**
 
 Run declared JSON Schema validation, the custom strict validator, and the human-evidence
 gate. Expected: structural validation passes; declared schema and human-evidence gates
