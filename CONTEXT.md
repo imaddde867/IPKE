@@ -6,7 +6,9 @@ constraint attachment for procedural graph extraction with local language models
 IPKE is the primary contribution. The corpus, taxonomy, validators, and metrics are
 supporting evaluation infrastructure. ADR-0005 and
 `docs/superpowers/specs/2026-07-10-ipke-method-paper-design.md` control the research
-direction. ADR-0004's ECIR Resource Paper decision is superseded.
+direction. `docs/superpowers/specs/2026-07-13-human-evidence-recovery-design.md`
+controls how annotation candidates become paper evidence. ADR-0004's ECIR Resource
+Paper decision is superseded.
 
 The central causal question is whether an explicit step skeleton improves fine-grained
 constraint attachment after matching schema information, parser behavior, calls, token
@@ -84,11 +86,21 @@ Graph-structure evaluation using SMatch: GraphPrecision, GraphRecall, GraphF1, N
 _Avoid_: graph evaluation, advanced evaluation
 
 **Gold Annotation**:
-A source-grounded reference annotation. `quality.review_status = "reviewed"` is not
-sufficient for paper evidence. Paper eligibility also requires a non-placeholder
-`+ human-verified:<handle>` marker, no pending-sign-off marker, structural and grounding
-validation, and membership in the frozen experiment split. Agent review is never human
-verification.
+A source-grounded production reference annotation. Models and agents may create and
+audit immutable candidates, but cannot create human evidence. Paper eligibility requires
+all of the following:
+
+- a named independent human completed a full pass over the bounded source procedure;
+- every accepted step and constraint resolves to exact committed-source offsets;
+- primary-pass timing and candidate accept, edit, reject, and add decisions are logged;
+- any preregistered blind pass was frozen and scored before independent adjudication;
+- principal-investigator decisions are limited to unresolved taxonomy, implicit-evidence,
+  or safety-critical cases and are logged;
+- schema, structure, grounding, provenance, agreement, adjudication, manifest, and split
+  gates pass.
+
+`quality.review_status = "reviewed"` and a `+ human-verified:<handle>` provenance marker
+are not sufficient by themselves. Agent review is never human verification.
 _Avoid_: ground truth, reference annotation, gold standard (unless qualifying)
 
 **review_status values** (locked vocabulary):
@@ -104,5 +116,13 @@ _Avoid_: ground truth, reference annotation, gold standard (unless qualifying)
 `must`, `should`, `may`. Maps to source-text modal verbs ("shall"/"will" → must, "should"/"recommended" → should, "may"/"can" → may).
 
 **Inter-Annotator Agreement (IAA)**:
-Agreement between two independent annotators on the same document, measured as Cohen's κ. Minimum acceptable for a paper IAA claim: κ ≥ 0.61 (substantial, Landis & Koch 1977). **Independence rule**: second annotators MUST NOT view gold or any other annotator's pass before committing their own. Drift-correcting a second pass against gold invalidates κ.
+Pre-adjudication agreement between independently produced annotations of the same frozen
+source span. At least 25% of experiment-eligible procedures receive a source-only blind
+second pass selected before results are inspected. Both passes are frozen and every
+selected pair is reported before a third independent human adjudicates disagreements.
+Attachment-edge F1 of at least 0.70 is the method design's current G0 gate; Cohen's κ and
+other agreement measures are diagnostics, not reasons to discard a selected pair.
+Accidental exposure to another pass invalidates that assignment and requires
+reassignment. Principal-investigator escalation is limited to unresolved taxonomy,
+implicit-evidence, or safety-critical decisions.
 _Avoid_: annotation agreement, kappa score
