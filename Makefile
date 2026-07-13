@@ -131,18 +131,20 @@ eval: eval-validate eval-blindness
 	$(PYTHON) scripts/eval_multiseed.py \
 		--gold-dir $(PAPER_GOLD) \
 		--text-dir $(PAPER_TEXT) \
+		--manifest $(PAPER_MANIFEST) \
 		--seeds 5 \
 		--phi-weights 0.5:0.3:0.2 \
 		--phi-weights 0.4:0.4:0.2 \
 		--phi-weights 0.6:0.2:0.2 \
 		--dry-run
 
-# Historical 5x8 development sweep from the superseded D2 design. It is not the
+# Historical five-candidate development sweep from the superseded D2 design. It is not the
 # current confirmatory design and cannot start until the paper-evidence gate passes.
 eval-full: eval-paper-gate
 	$(PYTHON) scripts/eval_multiseed.py \
 		--gold-dir $(PAPER_GOLD) \
 		--text-dir $(PAPER_TEXT) \
+		--manifest $(PAPER_MANIFEST) \
 		--seeds 5 \
 		--phi-weights 0.5:0.3:0.2 \
 		--phi-weights 0.4:0.4:0.2 \

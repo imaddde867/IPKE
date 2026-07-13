@@ -9,6 +9,8 @@ test set.
 Twelve rights-cleared, source-family-diverse procedures with manually corrected,
 human-verified step, constraint, and **constraint attachment** annotations. A
 `quality.review_status = "reviewed"` value alone is not enough for paper evidence.
+Corpus expansion follows, rather than precedes, a successful annotation-protocol and
+two-document method pilot.
 
 ## Layout
 
@@ -16,14 +18,16 @@ human-verified step, constraint, and **constraint attachment** annotations. A
 - `gold/` — legacy candidate annotations (step, constraint, attachment). Directory
   presence does not make a file confirmatory gold. Schema:
   `schemas/ipke_annotation.schema.json`.
+- `corpus_manifest.json` — typed evaluation membership contract. Its current
+  `provisional` status permits development only.
 - `second_pass/` — independent second annotations for IAA computation.
 - `reports/` — IAA reports and annotation statistics.
 
 The eight JSON files in `gold/` are legacy candidates, not the active confirmatory
 corpus. As of 2026-07-11, NASA is excluded as a requirements stress test and current
-OLSK/NIOSH golds are excluded pending manual rebuild. Issue #112 tracks the explicit
-confirmatory inclusion manifest. No result may infer membership from directory presence
-or `selected_for_gold=true` alone.
+OLSK/NIOSH golds are excluded pending manual rebuild. The provisional manifest selects
+the other five candidates for development; none is human verified. No result may infer
+membership from directory presence or `selected_for_gold=true` alone.
 
 ## Document Selection Criteria
 
@@ -52,10 +56,11 @@ Every gold file must:
 4. Belong to the frozen confirmatory split.
 5. Pass schema, structural, grounding, attachment, and evidence-eligibility checks.
 
-Development structural check:
+Development structural check of all eight retained candidates:
 
 `make eval-validate`
 
-Paper-evidence check, intentionally failing until sign-off and manifest alignment:
+Paper-evidence check, intentionally failing until the manifest is frozen and every
+included candidate is human verified:
 
 `make eval-paper-gate`
