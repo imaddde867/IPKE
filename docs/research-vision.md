@@ -60,8 +60,9 @@ adversarial review.
 
 1. **Causal controls**: schema information, parser behavior, calls, token budget,
    decoding, and filtering are separated instead of bundled into P3 versus P0.
-2. **Human evidence**: agent-reviewed annotations remain explicitly unsigned until a
-   human checks them against the source. Independent agreement is blind and measured.
+2. **Human evidence**: agent-prepared candidates remain ineligible until a human completes
+   the full source pass, exact anchors, item decisions, timing record, and frozen
+   hash-bound evidence package. Independent agreement is blind and measured.
 3. **Correct statistical units**: documents and source families support generalization;
    seeds estimate stochastic variation and are nested within documents.
 4. **Grounding**: annotations and predictions can be traced to source evidence. Unsupported
@@ -78,7 +79,7 @@ adversarial review.
 
 No confirmatory sweep begins until:
 
-- active test gold is human verified and structurally valid;
+- active production annotations have complete, schema-valid primary-human evidence;
 - blind second-pass coverage and agreement meet the frozen protocol;
 - exact annotated spans are used for the attachment experiment;
 - explicit relations are evaluated instead of synthesizing every graph as a linear chain;
@@ -86,8 +87,9 @@ No confirmatory sweep begins until:
 - a two-document pilot proves that every condition produces auditable, non-empty output;
 - cached predictions reproduce the pilot metrics with one command.
 
-The current eight-document corpus does not meet these gates. `review_status="reviewed"`
-does not substitute for a human-verification marker.
+The current eight-document legacy-candidate inventory does not meet these gates.
+`review_status="reviewed"` and `+ human-verified:<handle>` are both insufficient without
+the complete primary-pass evidence package.
 
 ## Experiment order
 
@@ -128,8 +130,9 @@ partner manuals to cloud services as part of the paper workflow.
 
 - One falsifiable method claim defended completely beats several bundled claims.
 - Honest negative evidence is more valuable than a confounded positive result.
-- Human verification cannot be automated or delegated to a marker script.
-- Gold corrections are manual; automation checks structure and provenance only.
+- Production-human decisions cannot be automated or delegated to a marker script.
+- Agents may prepare candidates and reconcile source evidence; humans own production
+  decisions. Automation verifies structure, provenance, identity, and artifact hashes.
 - Full-context is a required control for any chunking claim.
 - Component metrics outrank an unvalidated composite score.
 - Preserve historical decisions by superseding them, not rewriting them silently.

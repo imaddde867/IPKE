@@ -4,8 +4,25 @@ Status: agent-audited candidate, pending complete primary-human source pass
 
 Document: `epa_field_operations_manual_filter_sampling_sop`
 
-This audit proposes source-grounded corrections and a compact reviewer decision packet.
-It does not modify annotation JSON and does not establish human verification.
+This audit records source-grounded proposals and a compact reviewer decision packet.
+It preserves the immutable legacy candidate and does not establish human verification.
+
+## Prepared review candidate
+
+The mechanical rewrite is complete at
+`datasets/paper/review_candidates/epa_field_operations_manual_filter_sampling_sop.json`.
+It contains 14 proposed steps, 15 constraints, a linear 13-edge NEXT chain, and exact
+source offsets for every item. It remains `unreviewed` and cannot enter evaluation.
+
+- Authoritative full-text SHA-256:
+  `4e84e4f1d7eb07c46c9daefd1f4d0f75025729430ecf5bfdc8f4c69254e0ae66`
+- Immutable legacy-candidate SHA-256:
+  `4a44250fbfeb491e8194e8d8c493a462692f8ee736cf1796998d853fc796de03`
+- Prepared review-candidate SHA-256:
+  `01ef7c94882d613b024a557eee7cfcac0ba29e1e4ed40b59e5633415abd6f612`
+
+The primary reviewer now reviews and edits this file rather than transcribing the
+procedure. The semantic checkboxes below remain human decisions.
 
 ## Scope verification
 
@@ -76,7 +93,7 @@ relation vocabulary has no loop edge.
 |---|---|---|
 | C1 | Split the action restatement into parameter `for at least 30 minutes` and guard `without the charger attached to the MFM`. | S1 |
 | C10 | Keep as `parameter/must`: use latex or Teflon tubing. | S3 |
-| C11 | Keep as `precondition/must`: the vacuum pump is off. | S5 |
+| C11 | Retype provisionally as `guard/must`: the vacuum pump remains off while the display is recorded. Human taxonomy confirmation is required. | S5 |
 | New | Add the missing `Flow_SetPt` control-variable and expected-setting parameter. | S7 |
 | C2 | Recommended: drop as a nonbinding example. If retained, use `parameter/must`, not `guard`. | S7 or merged-S8 |
 | C3 and C4 | Remove overlap. Keep narrow parameters for each flow level, voltage destination, ten-run average/STP destination, and the Mass Flow Data Form `As Left` destination. | merged-S8 |
@@ -102,6 +119,8 @@ a human completes the source pass:
 - remove C3/C4 overlap;
 - merge C5/C6;
 - narrow and retype C7 and C9;
+- keep source pronouns in S9, S13, and S14 where the item anchor does not include the
+  antecedent;
 - rebuild affected NEXT edges;
 - replace null procedure and step pages with verified source pages;
 - record the actual revision and item-level evidence offsets.
@@ -111,10 +130,10 @@ a human completes the source pass:
 - [ ] Approve the proposed 14-step spine and short-procedure exception.
 - [ ] Drop C2 as an illustrative example, or record why it is binding.
 - [ ] Approve the narrow 6.1.7 parameter clauses and merged recording attachment.
-- [ ] Approve merged C5/C6 as the six-point-audit postcondition.
+- [ ] Approve merged C5/C6 as one complete six-point-audit postcondition on S8.
+- [ ] Classify `With the vacuum pump off` as a guard, or document why it is a precondition.
 - [ ] Keep S16-S18 atomic, or merge the terminal handling sequence.
 - [ ] Treat Figure 4 only as provenance, or add a source-supported reference constraint.
-- [ ] Decide whether the form-computation postcondition also governs S13.
 - [ ] Finalize and renumber IDs only after these semantic decisions.
 - [ ] Verify the PDF pages and source version without adding content absent from the
       authoritative committed text.
@@ -125,8 +144,8 @@ It is not evidence within this procedure window.
 
 ## Schema and provenance gaps
 
-- The declared JSON Schema rejects `procedure.source.page: null`; every candidate step
-  also has `page: null`.
+- The legacy file uses null page values. The candidate-compatible schema now permits
+  them, while the prepared review candidate records verified pages and exact offsets.
 - Procedure version `CASTNET FOM` omits Revision No. 10 and February 2025.
 - Step provenance repeats a broad section but has no exact offsets. Constraint objects
   have no independent evidence anchors.
@@ -144,8 +163,11 @@ It is not evidence within this procedure window.
 
 - Exact declared substring and blind source: identical.
 - Custom strict structural validator: passes the retained candidate.
-- Declared JSON Schema: fails because null page values are not allowed.
-- Human-evidence gate: fails because the file remains pending human sign-off and lacks
-  the complete primary-pass evidence contract.
+- Candidate-compatible JSON Schema: passes both the immutable legacy candidate and the
+  prepared review candidate.
+- Exact-grounding regression: passes for all 14 proposed steps and 15 constraints.
+- Human-evidence gate: fails because the file is unreviewed and lacks the complete
+  primary-pass evidence package.
 - Corpus manifest: provisional development inclusion only.
-- Candidate JSON changed by this audit: no.
+- Immutable legacy candidate changed by this audit: no. The repaired artifact is a
+  separate, explicitly unreviewed review candidate.

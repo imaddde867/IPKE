@@ -29,9 +29,14 @@ constraint-flow edges, or Dual Semantic Chunking.
 
 ## Current evidence state
 
-- 8 active documents, 256 steps, 231 constraints.
-- 0 human-verified gold files; every file still awaits human sign-off.
-- Custom validator passes, but the JSON Schema currently rejects null page values.
+- 8 retained legacy candidates, 256 steps, and 231 constraints; 5 are selected for
+  provisional development.
+- 0 production annotations and 0 frozen human evidence packages.
+- Candidate schema and custom validation pass. Production eligibility separately
+  requires exact item anchors, canonical paths, verified artifact-chain hashes, and a
+  frozen evidence sidecar.
+- The EPA MFC review candidate now has 14 proposed steps, 15 constraints, and exact
+  anchors; eight scientific decisions remain for a primary human reviewer.
 - Full-document extraction is mismatched with mostly bounded gold spans.
 - Explicit gold relations are ignored by parts of the evaluator.
 - Existing model-result headlines must not be reused until the controlled protocol is
@@ -54,9 +59,10 @@ Before committing:
 
 ## Gold rules
 
-- Gold corrections are manual source-to-gold judgments.
-- Automation may check schema, spans, hashes, identifiers, provenance, splits, and
-  placeholders only.
+- Production corrections are human source-to-gold judgments. Agents may prepare
+  explicitly ineligible review candidates and namespaced packets.
+- Automation may verify schema, spans, hashes, identifiers, provenance, paths, roles,
+  splits, and placeholders; it may not assert human decisions.
 - Agent review cannot apply `+ human-verified:<handle>`.
 - Never align an independent second pass to gold before agreement is computed.
 - Never mutate audited files under `datasets/archive/`.
@@ -65,10 +71,10 @@ Before committing:
 ## Active critical path
 
 1. #107 method-first repository alignment.
-2. Evidence-eligibility gate for paper runs.
-3. #108 human gold sign-off.
+2. #108 primary-human evidence collection and production artifact migration.
+3. Frozen blind-subset assignments and coordinator-controlled actor separation.
 4. #109 explicit relation evaluation.
-5. Two-document C0-C4 pilot.
+5. Two-document exact-span C0-C4 pilot.
 6. #87 source-family-diverse corpus expansion and frozen split.
 7. #55 full controlled method sweep.
 

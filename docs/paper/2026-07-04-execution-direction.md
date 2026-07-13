@@ -1,6 +1,6 @@
 # IPKE Execution Direction
 
-Updated: 2026-07-10
+Updated: 2026-07-13
 
 This file originally described the ECIR Resource Paper push. ADR-0005 superseded that
 direction. It is retained at the existing path because issues and repository entry points
@@ -21,10 +21,14 @@ Controlling design:
 
 ## Current ground truth
 
-- The active corpus has 8 documents, 256 steps, and 231 constraints.
-- No active gold is human verified. Every annotation still carries pending sign-off.
-- The custom strict validator passes, but all active files currently fail the declared
-  JSON Schema because null page values are disallowed.
+- The retained legacy-candidate inventory has 8 documents, 256 steps, and 231
+  constraints. The provisional manifest selects five procedure candidates.
+- No production annotation or frozen human-evidence package exists yet.
+- All eight retained candidates pass the candidate-compatible JSON Schema and strict
+  structural validator. That does not make them production gold.
+- The production gate now requires exact source anchors, canonical artifact paths,
+  verified hashes across the candidate/primary/blind/adjudication chain, and a complete
+  primary-human decision log. A status or marker cannot pass it.
 - Most annotations cover a bounded subprocedure while the current multi-seed runner reads
   complete documents. Existing full-document results are not valid method evidence.
 - P3 versus P0 bundles conditioning, prompt detail, calls, filtering, and parser effects.
@@ -33,13 +37,13 @@ Controlling design:
 
 ## Active critical path
 
-| Issue | Owner | Purpose |
+| Issue | Owner | Branch state / purpose |
 |---|---|---|
-| #107 | agent | Align durable repository direction with ADR-0005. |
-| #108 | human | Complete manual human sign-off for active gold. |
-| #109 | agent | Make explicit gold relations authoritative in evaluation. |
-| #110 | human | Decide redistribution rights for historical Git blobs. |
-| #111 | agent | Align JSON Schema and the strict gold-validation contract. |
+| #107 | agent | Direction alignment implemented in draft PR #113. |
+| #108 | human | Open: complete independent production-human annotation evidence. |
+| #109 | agent | Open: make explicit gold relations authoritative in evaluation. |
+| #110 | human | Open: decide redistribution rights for historical Git blobs. |
+| #111 | agent | Schema and production-evidence boundary implemented in draft PR #113. |
 | #55 | blocked agent | Run the controlled IPKE method sweep after evidence gates. |
 | #87 | human | Expand the supporting evaluation corpus with rights-cleared diversity. |
 | #90 | human | Recruit independent blind annotators. |
@@ -49,33 +53,37 @@ signed-data, and evaluation-validity work.
 
 ## Immediate work order
 
-1. Finish #107 and keep every active entry point consistent with ADR-0005.
-2. Add an explicit evidence-eligibility gate so `review_status="reviewed"` cannot enter a
-   paper run without human verification.
-3. Fix #111 so schema-valid and strict-validator-valid mean the same thing.
-4. Correct active gold manually, one source at a time. Do not apply a human marker.
-5. Have the human owner complete #108 after personally reviewing the corrections.
-6. Implement #109 before reporting graph-structure metrics.
-7. Build one canonical experiment module and prove C0-C4 on two corrected documents.
-8. Freeze development and source-family-held-out splits before confirmatory evaluation.
-9. Expand compute only after the pilot, parser, truncation, provenance, and cached
+1. Complete the EPA MFC primary-human source pass from the agent-prepared candidate and
+   namespaced review packet. Eight scientific decisions remain human-owned.
+2. Freeze the primary output and evidence package, then prove the production gate on
+   that one document.
+3. Prepare the next manifest-selected source packet without mutating legacy candidates.
+4. Recruit and assign the source-only blind subset and independent adjudicators.
+5. Implement #109 before reporting graph-structure metrics.
+6. Build one canonical experiment module and prove C0-C4 on two eligible documents.
+7. Freeze development and source-family-held-out splits before confirmatory evaluation.
+8. Expand compute only after the pilot, parser, truncation, provenance, and cached
    re-scoring gates pass.
 
 ## Manual gold order
 
-1. EPA procedure validation: repair high-confidence step, type, enforcement, attachment,
+1. EPA MFC calibration: complete the primary-human pass from
+   `datasets/paper/review_candidates/epa_field_operations_manual_filter_sampling_sop.json`.
+2. EPA procedure validation: repair high-confidence step, type, enforcement, attachment,
    and branching defects; record scope ambiguities for human adjudication.
-2. OLSK: exclude from method evidence until pipeline-visible text contains the assembly
+3. OLSK: exclude from method evidence until pipeline-visible text contains the assembly
    instructions represented in gold.
-3. NASA: represent normative requirements without manufacturing temporal order.
-4. NIOSH: include the omitted SPECIAL PRECAUTIONS safety content and calculation formula.
-5. USGS groundwater and surface-water procedures: restore omitted assumptions,
+4. NASA: retain as a separately labelled requirements stress test without manufacturing
+   temporal order.
+5. NIOSH: include the omitted SPECIAL PRECAUTIONS safety content and calculation formula.
+6. USGS groundwater and surface-water procedures: restore omitted assumptions,
    applicability guards, calculations, and branches.
-6. Remaining EPA documents: remove illustrative or descriptive content promoted to
+7. Remaining EPA documents: remove illustrative or descriptive content promoted to
    mandatory actions or constraints.
 
-Annotation decisions are manual. Scripts may check schema, spans, identifiers, hashes,
-provenance, splits, and placeholders only.
+Agents may prepare source-grounded candidates and decision packets. Production decisions
+remain human. Validators check schema, spans, identifiers, hashes, provenance, roles,
+splits, and artifact identity.
 
 ## Experiment sequence
 

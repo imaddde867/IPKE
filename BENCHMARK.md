@@ -42,7 +42,7 @@ documents. The later full-subprocedure, agent-reviewed pass contains 256 steps a
 constraints. These counts describe different annotation regimes. They are not an
 extractor-quality result and are not the method-paper headline.
 
-**Cross-regime illustration (labelled).** The fixed thin-era LLM draft holds 32 constraints vs the 231 reviewed (**7.22× expansion**); at the Tier-A matcher (SBERT cos ≥ 0.75) it recovers 6.1%, at cos ≥ 0.50 it recovers 37.7%. Draft and gold come from different annotation regimes — annotation-economics evidence, not an extractor-quality claim. The apples-to-apples number is the D2 P0 zero-shot baseline's ConstraintCoverage on the signed-off benchmark.
+**Cross-regime illustration (labelled).** The fixed thin-era LLM draft holds 32 constraints vs the 231 reviewed (**7.22× expansion**); at the Tier-A matcher (SBERT cos ≥ 0.75) it recovers 6.1%, at cos ≥ 0.50 it recovers 37.7%. Draft and gold come from different annotation regimes — annotation-economics evidence, not an extractor-quality claim. The apples-to-apples number will be the controlled P0 baseline's ConstraintCoverage on the production-eligible supporting corpus.
 
 Regenerate (informational) with:
 
@@ -73,10 +73,12 @@ Target additions for genre diversity (tracked in PRD):
 A custom-validator pass is necessary but not sufficient for paper evidence. Gates include:
 
 - JSON Schema and structural validation pass
-- `quality.review_status == "reviewed"`
-- `quality.annotator` contains a non-placeholder `+ human-verified:<handle>` marker
-- no pending-human-sign-off marker remains
-- source grounding and experiment-split checks pass
+- frozen manifest membership and a final artifact under `datasets/paper/production/`
+- complete primary-human source pass recorded in a frozen evidence sidecar
+- exact source, bounded-span, and final-annotation byte hashes
+- exact Unicode source offsets for every accepted step and constraint
+- no unresolved primary decisions or pending-human-sign-off marker
+- source grounding and exact-span experiment-input checks pass
 - Every constraint has `type` ∈ the locked 6-type vocabulary
 - Every constraint has `enforcement` ∈ {must, should, may}
 - Every constraint has `attached_to` (step-embedded) or `applies_to` (procedure-level) referencing a valid step ID
@@ -84,8 +86,12 @@ A custom-validator pass is necessary but not sufficient for paper evidence. Gate
 
 IAA gate (open, requires recruited annotators):
 
-- ≥ 4 documents (≥ 30% of the 12-doc target) have independent second-pass annotation by a human blind to gold.
-- Every IAA pair has Cohen's κ ≥ 0.61 (substantial, Landis & Koch).
+- At least 25% of experiment-eligible procedures are selected before model results and
+  receive a frozen source-only blind pass.
+- Every preregistered raw pair is preserved and reported before adjudication.
+- A third human who created neither pass adjudicates disagreements.
+- Attachment-edge F1 ≥ 0.70 is the G0 protocol gate; kappa remains diagnostic and low
+  pairs are not discarded.
 
 ## Licensing
 
@@ -102,13 +108,15 @@ Pre-publication, cite the PRD and the GitHub repository. A formal BibTeX entry w
 | Locked constraint taxonomy | ✅ shipped (PR #85) |
 | Annotation guidelines | ✅ shipped (PR #85) |
 | Paper-grade validator + 12 unit tests | ✅ shipped (PR #85) |
-| Seed corpus (8 docs) agent-reviewed | 🟡 human verification open in #108 |
+| Legacy candidates (8 docs) | 🟡 0 production eligible; human evidence open in #108 |
+| Exact-anchor evidence boundary | ✅ schema and fail-closed runtime gate implemented |
+| First agent-prepared EPA review candidate | ✅ 14 steps, 15 constraints, exact anchors; 8 human decisions open |
 | Historical D1 annotation comparison | ⚪ supporting context only |
 | Datasheet (Gebru format) | ✅ shipped (PR #85) |
 | Independent annotator workflow | ✅ shipped (PR #85) |
 | Recruited independent annotators | 🟡 outreach pending |
 | Corpus expansion to 12 docs | 🟡 candidate sources identified |
-| Controlled C0-C4 pilot | ⏳ blocked by evidence eligibility and signed gold |
+| Controlled C0-C4 pilot | ⏳ blocked by production evidence and exact-span inputs |
 | Explicit relation evaluation | ⏳ open in #109 |
 | Full method sweep | ⏳ blocked in #55 |
 | Constraint-aware retrieval | ⚪ optional follow-up |

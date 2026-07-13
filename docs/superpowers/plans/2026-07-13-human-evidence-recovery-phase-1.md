@@ -2,9 +2,9 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Replace stamp-only sign-off with the approved tiered human-evidence protocol and deliver the first source-to-candidate audit without changing annotation gold.
+**Goal:** Replace stamp-only sign-off with the approved tiered human-evidence protocol and deliver the first source-to-candidate audit plus a separate agent-prepared review artifact without mutating legacy annotation gold.
 
-**Architecture:** The method-paper design remains the research authority. A separate human-evidence design defines roles, evidence states, and gates; active context and annotation workflow documents consume that design. Manual-review records contain source-grounded correction proposals and compact human decisions while immutable candidate JSON remains unchanged.
+**Architecture:** The method-paper design remains the research authority. A separate human-evidence design defines roles, evidence states, and gates; active context and annotation workflow documents consume that design. Manual-review records and namespaced packets contain source-grounded proposals. Agent-prepared candidates live outside immutable legacy gold and cannot enter evaluation.
 
 **Tech Stack:** Markdown, JSON source inspection, SHA-256, JSON Schema, existing IPKE validators, GitHub Issues.
 
@@ -166,6 +166,10 @@ git commit -m "Align annotation workflow with human review"
 
 **Files:**
 - Create: `docs/annotation/manual-review/2026-07-13-epa-mfc-calibration.md`
+- Create: `datasets/paper/review_candidates/epa_field_operations_manual_filter_sampling_sop.json`
+- Create: `datasets/paper/review_packets/epa_field_operations_manual_filter_sampling_sop.json`
+- Create: `schemas/ipke_review_packet.schema.json`
+- Create: `tests/test_epa_review_candidate.py`
 - Inspect only: `datasets/paper/gold/epa_field_operations_manual_filter_sampling_sop.json`
 - Inspect only: `datasets/paper/text/epa_field_operations_manual_filter_sampling_sop.txt`
 - Inspect only: `datasets/paper/second_pass/_source/epa_field_operations_manual_filter_sampling_sop.txt`
@@ -202,20 +206,69 @@ postconditions. Record high-confidence proposals and isolate these human decisio
 
 Record actual version `Revision No. 10 (February 2025)`, source pages 4 to 6 of 6,
 missing item-level offsets, stale adjudication metadata, stale zero-constraint notes, and
-the current declared-schema failure caused by null page fields.
+legacy null page fields now tolerated only by the candidate-compatible schema.
 
 - [x] **Step 5: Validate without editing gold**
 
-Run declared JSON Schema validation, the custom strict validator, and the human-evidence
-gate. Expected: structural validation passes; declared schema and human-evidence gates
-fail for documented reasons. Confirm `git diff -- datasets/paper/gold` is empty.
+Run declared JSON Schema validation, the custom strict validator, exact-grounding and
+packet-reconciliation tests, and the human-evidence gate. Expected: candidate validation
+passes; the human-evidence gate fails because no primary-human output exists. Confirm
+`git diff -- datasets/paper/gold` is empty.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add docs/annotation/manual-review/2026-07-13-epa-mfc-calibration.md
 git commit -m "Audit EPA MFC calibration candidate"
 ```
+
+### Task 4: Enforce the exact-anchor evidence boundary
+
+**Files:**
+- Create: `schemas/ipke_annotation_evidence.schema.json`
+- Create: `src/evaluation/evidence.py` production assessor
+- Create: `datasets/paper/evidence/README.md`
+- Modify: `schemas/ipke_annotation.schema.json`
+- Modify: `scripts/validate_paper_gold.py`
+- Modify: `scripts/eval_multiseed.py`
+- Modify: `Makefile` and active evidence documentation
+
+- [x] **Step 1: Repair candidate-schema compatibility**
+
+Allow `page: null`, apply the constraint definition to embedded constraint arrays, and
+prove all eight retained candidates validate without making exact item offsets optional
+for production.
+
+- [x] **Step 2: Add the evidence sidecar schema**
+
+Bind source, bounded span, candidate use, primary pass, decisions, optional blind and
+adjudication records, and final annotation by SHA-256. Keep participant identifiers
+pseudonymous and require selected blind assignments to include agreement and independent
+adjudication records.
+
+- [x] **Step 3: Add the production assessor**
+
+Leave the high-blast-radius marker assessor unchanged. Add a separate boundary that
+checks raw-byte hashes, Unicode code-point offsets, procedure containment, item decision
+coverage against the loaded candidate, duplicate identifiers, link integrity, decision
+spans, timestamps, canonical artifact paths, every referenced artifact hash, unresolved
+decisions, and actor separation.
+
+- [x] **Step 4: Wire both execution gates**
+
+Make the paper validator and direct multiseed runner require matching sidecars unless an
+explicit development-only override is used. Keep candidate structural validation and
+dry-run behavior backward-compatible.
+
+- [x] **Step 5: Verify and commit**
+
+Run targeted tests, the full non-integration suite, Ruff, the expected failing paper
+gate, GitNexus change detection, and confirm no candidate or archive annotation changed.
+
+Verified on 2026-07-13: 328 tests passed with 13 integration tests deselected; Ruff and
+candidate validation passed; the paper gate failed closed on the five absent production
+files; GitNexus reported medium scope across the two expected evidence-validation flows;
+legacy gold, archives, and blind-pass files had no diff.
 
 ## Self-review
 

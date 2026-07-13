@@ -54,9 +54,10 @@ primary reviewer and does not perform routine transcription.
 Before review, record the source URL, retrieval date, version, checksum, page range,
 section, exact Unicode procedure offsets, candidate checksum, reviewer, and role.
 
-Do not begin production review while the declared schema cannot represent item-level
-evidence offsets or the annotation-log contract. Candidate audits may continue in
-`docs/annotation/manual-review/` while that boundary is repaired.
+The exact-anchor and evidence-package boundary is implemented. Begin a production pass
+only after the coordinator freezes the assignment, source span, candidate hash, reviewer
+pseudonym, and output location. Candidate audits may continue independently under
+`docs/annotation/manual-review/` and `datasets/paper/review_candidates/`.
 
 ### 2. Audit the candidate mechanically
 
@@ -69,6 +70,9 @@ An agent may prepare a source-to-candidate audit containing:
 - a compact list of human decisions.
 
 This audit is advisory. Preserve the candidate and audit history unchanged.
+Structured packets validate against `schemas/ipke_review_packet.schema.json`; their
+`legacy:` and `review:` references prevent same-ID collisions across artifact versions.
+Packet transformation counts are not human-effort evidence.
 
 ### 3. Complete the primary human pass
 
@@ -94,6 +98,13 @@ The annotation log records:
 - accepted, edited, rejected, and added steps;
 - accepted, edited, rejected, and added constraints;
 - unresolved decisions and their evidence.
+
+Persist the package as `datasets/paper/evidence/<doc_id>.json` under
+`schemas/ipke_annotation_evidence.schema.json`. Store only the reviewer's stable
+pseudonymous handle in git; the coordinator retains the private identity mapping.
+The package must reference the canonical `review_candidates/`, `primary_pass/`,
+`second_pass/`, `reports/`, and `production/` paths applicable to that assignment; the
+gate loads and verifies every referenced hash.
 
 ### 5. Freeze and validate the primary pass
 
