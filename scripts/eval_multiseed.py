@@ -11,8 +11,9 @@ Tier-A metrics, and writes two CSVs:
 
 Usage:
     uv run python scripts/eval_multiseed.py \\
-        --gold-dir datasets/paper/gold \\
+        --gold-dir datasets/paper/production \\
         --text-dir datasets/paper/text \\
+        --evidence-dir datasets/paper/evidence \\
         --seeds 5 \\
         --out-dir results/
 
@@ -29,6 +30,7 @@ Usage:
 Options:
     --gold-dir         Directory of gold JSON files (required).
     --text-dir         Directory of source text files — stem must match gold stem.
+    --evidence-dir     Directory of frozen production-evidence sidecars.
     --manifest         Corpus manifest that selects evaluation gold files.
     --seeds            Number of random seeds (default: 5). Seeds used: seed-start..(start+N-1).
     --seed-start       First seed value (default: 0).
@@ -63,10 +65,11 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from src.evaluation.evidence import assess_annotation_evidence
+from src.evaluation.evidence import assess_production_evidence
 from src.evaluation.corpus_manifest import (
     load_corpus_manifest,
     select_manifest_gold_files,
+    select_manifest_production_files,
 )
 from src.evaluation.metrics import compute_phi as phi
 
@@ -283,6 +286,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--gold-dir", required=True, type=Path)
     parser.add_argument("--text-dir", required=True, type=Path)
+    parser.add_argument("--evidence-dir", type=Path)
     parser.add_argument("--manifest", type=Path)
     parser.add_argument("--seeds", type=int, default=5)
     parser.add_argument("--seed-start", type=int, default=0)
@@ -303,7 +307,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         dest="allow_unverified",
         action="store_true",
         help=(
-            "Allow gold without explicit human verification. Development only; "
+            "Allow gold without complete production evidence. Development only; "
             "results cannot be used as paper evidence."
         ),
     )
@@ -314,17 +318,36 @@ def main(argv: list[str] | None = None) -> int:
     args = parse_args(argv)
     gold_dir = args.gold_dir.resolve()
     text_dir = args.text_dir.resolve()
+    evidence_dir = (
+        args.evidence_dir.resolve() if args.evidence_dir is not None else None
+    )
 
     for d in (gold_dir, text_dir):
         if not d.exists():
             print(f"ERROR: directory not found: {d}", file=sys.stderr)
+            return 1
+    if not args.dry_run and not args.allow_unverified:
+        if evidence_dir is None:
+            print(
+                "ERROR: --evidence-dir is required for paper-evidence runs. "
+                "Use --allow-unverified only for development.",
+                file=sys.stderr,
+            )
+            return 1
+        if not evidence_dir.is_dir():
+            print(f"ERROR: directory not found: {evidence_dir}", file=sys.stderr)
             return 1
 
     gold_files = tuple(sorted(gold_dir.glob("*.json")))
     if args.manifest is not None:
         try:
             manifest = load_corpus_manifest(args.manifest)
-            gold_files = select_manifest_gold_files(manifest, gold_dir)
+            selector = (
+                select_manifest_production_files
+                if not args.dry_run and not args.allow_unverified
+                else select_manifest_gold_files
+            )
+            gold_files = selector(manifest, gold_dir)
         except (OSError, ValueError, ValidationError) as exc:
             print(f"ERROR: invalid corpus manifest: {exc}", file=sys.stderr)
             return 1
@@ -362,18 +385,43 @@ def main(argv: list[str] | None = None) -> int:
 
     # Always parse gold JSON — malformed files must fail closed regardless of flags.
     loaded_gold: dict[str, dict] = {}
+    loaded_gold_bytes: dict[str, bytes] = {}
     for gf, _ in pairs:
         try:
-            loaded_gold[gf.stem] = json.loads(gf.read_text(encoding="utf-8"))
+            annotation_bytes = gf.read_bytes()
+            loaded_gold[gf.stem] = json.loads(annotation_bytes)
+            loaded_gold_bytes[gf.stem] = annotation_bytes
         except (json.JSONDecodeError, OSError) as exc:
             print(f"ERROR: cannot read or parse gold file {gf}: {exc}", file=sys.stderr)
             return 1
 
-    # Reject gold without explicit human verification unless explicitly overridden.
+    # Reject annotations without a complete, source-bound human evidence package.
     if not args.dry_run and not args.allow_unverified:
         ineligible: dict[str, tuple[str, ...]] = {}
-        for gf, _ in pairs:
-            evidence = assess_annotation_evidence(loaded_gold[gf.stem])
+        assert evidence_dir is not None
+        for gf, tf in pairs:
+            evidence_path = evidence_dir / f"{gf.stem}.json"
+            if not evidence_path.is_file():
+                ineligible[gf.stem] = (
+                    f"production evidence log missing: {evidence_path}",
+                )
+                continue
+            try:
+                evidence_log = json.loads(evidence_path.read_bytes())
+                source_bytes = tf.read_bytes()
+            except (json.JSONDecodeError, OSError) as exc:
+                ineligible[gf.stem] = (
+                    f"cannot read production evidence package: {exc}",
+                )
+                continue
+            evidence = assess_production_evidence(
+                loaded_gold[gf.stem],
+                annotation_bytes=loaded_gold_bytes[gf.stem],
+                source_bytes=source_bytes,
+                evidence_log=evidence_log,
+                expected_doc_id=gf.stem,
+                artifact_loader=lambda path: (REPO_ROOT / path).read_bytes(),
+            )
             if not evidence.evidence_eligible:
                 ineligible[gf.stem] = evidence.issues
         if ineligible:
@@ -384,7 +432,7 @@ def main(argv: list[str] | None = None) -> int:
             for name, issues in ineligible.items():
                 print(f"  {name}: {'; '.join(issues)}", file=sys.stderr)
             print(
-                "Complete human verification, or pass --allow-unverified "
+                "Complete the production evidence package, or pass --allow-unverified "
                 "for development use only.",
                 file=sys.stderr,
             )

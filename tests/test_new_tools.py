@@ -277,6 +277,149 @@ def test_eval_multiseed_rejects_reviewed_but_unsigned_gold(
     assert rc == 1
 
 
+def test_eval_multiseed_rejects_marker_without_evidence_sidecar(
+    tmp_path, monkeypatch, capsys
+):
+    import scripts.eval_multiseed as em
+
+    async def _fake_extract(text_path, doc_id, seed):
+        return {"steps": [], "constraints": []}
+
+    monkeypatch.setattr(em, "_extract_one", _fake_extract)
+    gold_dir = tmp_path / "gold"
+    text_dir = tmp_path / "text"
+    gold_dir.mkdir()
+    text_dir.mkdir()
+    (gold_dir / "doc1.json").write_text(
+        json.dumps(
+            {
+                "procedure": {"doc_id": "doc1", "title": "t"},
+                "steps": [{"id": "S1", "label": "step"}],
+                "quality": {
+                    "review_status": "reviewed",
+                    "annotator": "manual review + human-verified:P-001",
+                    "review_date": "2026-07-13",
+                },
+            }
+        )
+    )
+    (text_dir / "doc1.txt").write_text("step content")
+
+    rc = em.main(
+        [
+            "--gold-dir",
+            str(gold_dir),
+            "--text-dir",
+            str(text_dir),
+            "--seeds",
+            "1",
+        ]
+    )
+
+    assert rc == 1
+    assert "evidence" in capsys.readouterr().err.lower()
+
+
+def test_eval_multiseed_uses_production_evidence_assessor(
+    tmp_path, monkeypatch
+):
+    import scripts.eval_multiseed as em
+    from src.evaluation.evidence import ProductionEvidence
+
+    calls = []
+
+    def _fake_assess(annotation, **kwargs):
+        calls.append((annotation, kwargs))
+        return ProductionEvidence(True, True, True, True, ())
+
+    async def _fake_extract(text_path, doc_id, seed):
+        return {"steps": [], "constraints": []}
+
+    monkeypatch.setattr(em, "assess_production_evidence", _fake_assess)
+    monkeypatch.setattr(em, "_extract_one", _fake_extract)
+    monkeypatch.setattr(
+        em,
+        "_score",
+        lambda *args, **kwargs: {metric: 0.0 for metric in METRIC_COLUMNS},
+    )
+    import src.evaluation.metrics as metrics_mod
+    monkeypatch.setattr(
+        metrics_mod, "prepare_evaluator", lambda *args, **kwargs: (None, None)
+    )
+
+    gold_dir = tmp_path / "gold"
+    text_dir = tmp_path / "text"
+    evidence_dir = tmp_path / "evidence"
+    gold_dir.mkdir()
+    text_dir.mkdir()
+    evidence_dir.mkdir()
+    (gold_dir / "doc1.json").write_text(
+        json.dumps(
+            {
+                "procedure": {"doc_id": "doc1", "title": "t"},
+                "steps": [{"id": "S1", "label": "step"}],
+                "quality": {
+                    "review_status": "reviewed",
+                    "annotator": "P-001",
+                    "review_date": "2026-07-13",
+                },
+            }
+        )
+    )
+    (text_dir / "doc1.txt").write_text("step content")
+    (evidence_dir / "doc1.json").write_text("{}")
+    manifest_path = tmp_path / "manifest.json"
+    manifest_path.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "manifest_status": "frozen",
+                "documents": [
+                    {
+                        "doc_id": "doc1",
+                        "source_family": "test",
+                        "role": "procedure_candidate",
+                        "status": "candidate",
+                        "include_for_evaluation": True,
+                        "reason": "Test fixture.",
+                    },
+                    {
+                        "doc_id": "excluded_doc",
+                        "source_family": "test",
+                        "role": "procedure_candidate",
+                        "status": "excluded_pending_reannotation",
+                        "include_for_evaluation": False,
+                        "reason": "Test fixture.",
+                    },
+                ],
+            }
+        )
+    )
+
+    rc = em.main(
+        [
+            "--gold-dir",
+            str(gold_dir),
+            "--text-dir",
+            str(text_dir),
+            "--evidence-dir",
+            str(evidence_dir),
+            "--manifest",
+            str(manifest_path),
+            "--out-dir",
+            str(tmp_path / "results"),
+            "--seeds",
+            "1",
+        ]
+    )
+
+    assert rc == 0
+    assert len(calls) == 1
+    assert calls[0][1]["evidence_log"] == {}
+    assert calls[0][1]["expected_doc_id"] == "doc1"
+    assert callable(calls[0][1]["artifact_loader"])
+
+
 def test_eval_multiseed_dry_run_skips_guard(tmp_path):
     """--dry-run bypasses the unreviewed guard."""
     from scripts.eval_multiseed import main
@@ -432,17 +575,23 @@ def test_makefile_eval_validate_uses_strict_mode():
 def test_makefile_has_explicit_paper_evidence_gate():
     text = Path("Makefile").read_text(encoding="utf-8")
     assert "PAPER_MANIFEST := datasets/paper/corpus_manifest.json" in text
+    assert "PAPER_PRODUCTION := datasets/paper/production" in text
+    assert "PAPER_EVIDENCE := datasets/paper/evidence" in text
     assert "eval-paper-gate:" in text
     assert (
-        "scripts/validate_paper_gold.py --gold-dir $(PAPER_GOLD) \\\n"
+        "scripts/validate_paper_gold.py --gold-dir $(PAPER_PRODUCTION) \\\n"
         "\t\t--manifest $(PAPER_MANIFEST) --require-frozen-manifest \\\n"
-        "\t\t--strict --require-human-verified"
+        "\t\t--text-dir $(PAPER_TEXT) --evidence-dir $(PAPER_EVIDENCE) \\\n"
+        "\t\t--strict --require-production-evidence"
     ) in text
 
 
 def test_makefile_eval_full_requires_paper_evidence_gate():
     text = Path("Makefile").read_text(encoding="utf-8")
     assert "eval-full: eval-paper-gate" in text
+    target_body = text.split("\neval-full:", maxsplit=1)[1].split("\n\n", maxsplit=1)[0]
+    assert "--gold-dir $(PAPER_PRODUCTION)" in target_body
+    assert "--evidence-dir $(PAPER_EVIDENCE)" in target_body
 
 
 def test_makefile_evaluation_targets_use_corpus_manifest():

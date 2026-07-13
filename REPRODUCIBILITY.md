@@ -4,12 +4,13 @@ This file separates historical/development diagnostics from confirmatory IPKE
 method-paper evidence. `make eval` and `make gold-pipeline` reproduce the legacy D1
 diagnostics and dry-run the superseded D2 sweep plan; neither establishes paper
 eligibility. Before a confirmatory sweep begins, the open P0 gates are an explicit
-and frozen inclusion manifest, eligible human-verified procedures, eligible independent
+and frozen inclusion manifest, eligible human-reviewed procedures, eligible independent
 second-pass annotations, corrected and frozen causal controls, and completed runs of the
 eventual canonical experiment design. The provisional manifest currently selects five
 candidates and excludes NASA, OLSK, and NIOSH. `make eval-paper-gate` exposes the current
-manifest and signature checks, but the exact-anchor, primary-pass-log, blind-coverage,
-and adjudication contracts must be implemented before it can establish full eligibility.
+manifest, exact-anchor, byte-hash, primary-pass-log, canonical-path, and referenced
+artifact-chain checks. Corpus-level blind coverage and coordinator identity controls
+remain open.
 
 ---
 
@@ -117,11 +118,13 @@ Expected: all non-integration tests pass. No GPU or model required.
 
 - `make eval-validate`: structural and annotation-contract validation of all eight
   legacy candidate files, including excluded artifacts retained for audit history.
-- `make eval-paper-gate`: current manifest and signature boundary. It consumes
-  `datasets/paper/corpus_manifest.json` and intentionally fails while the manifest is
-  provisional and included candidates are unsigned. Passing this command will not be
-  sufficient until exact anchors, primary-pass logs, blind coverage, raw agreement, and
-  independent adjudication are validated too.
+- `make eval-paper-gate`: fail-closed manifest and production-evidence boundary. It
+  consumes `datasets/paper/corpus_manifest.json`, exact source text, and sidecars from
+  `datasets/paper/evidence/`. It intentionally fails while the manifest is provisional,
+  production files and primary-human records do not exist. Referenced candidate,
+  primary, blind, agreement, adjudication, and final artifacts are path- and hash-checked.
+  Corpus-level blind coverage and coordinator-controlled identity checks remain
+  additional release gates.
 
 Run structural validation during development:
 
@@ -135,10 +138,10 @@ Before using the corpus as paper evidence, run the release gate:
 make eval-paper-gate
 ```
 
-`make eval-validate` can pass while the corpus is unsigned. The paper-evidence gate
-currently exits non-zero because the manifest is provisional and its five included
-candidates are unsigned. It does not require signatures for excluded NASA, OLSK, or
-NIOSH artifacts.
+`make eval-validate` can pass while the corpus is ineligible. The paper-evidence gate
+currently exits non-zero because the manifest is provisional and the five included IDs
+have no final files under `datasets/paper/production/` or frozen evidence sidecars.
+Excluded NASA, OLSK, and NIOSH artifacts are outside that manifest-scoped gate.
 
 ### 3. Check IAA eligibility
 
@@ -163,7 +166,7 @@ Requires a model file. Set `LLM_MODEL_PATH` before running. These legacy command
 the provisional manifest, so they select five development candidates and ignore the
 three excluded artifacts. They do not implement the corrected causal controls.
 `make eval-full` depends on `eval-paper-gate`, so it cannot begin while the manifest is
-provisional or an included candidate is unsigned. Even after human verification, this
+provisional or an included candidate lacks production evidence. Even after human review, this
 legacy configuration does not become confirmatory until the causal-control design is
 implemented and frozen.
 
@@ -173,6 +176,7 @@ uv run python scripts/eval_multiseed.py \
   --gold-dir datasets/paper/gold \
   --text-dir datasets/paper/text \
   --manifest datasets/paper/corpus_manifest.json \
+  --allow-unverified \
   --seeds 5 \
   --phi-weights 0.5:0.3:0.2 \
   --phi-weights 0.4:0.4:0.2 \
@@ -184,6 +188,7 @@ uv run python scripts/eval_multiseed.py \
   --gold-dir datasets/paper/gold \
   --text-dir datasets/paper/text \
   --manifest datasets/paper/corpus_manifest.json \
+  --allow-unverified \
   --seeds 5 \
   --chunker fixed \
   --prompter P3 \
@@ -194,6 +199,7 @@ uv run python scripts/eval_multiseed.py \
   --gold-dir datasets/paper/gold \
   --text-dir datasets/paper/text \
   --manifest datasets/paper/corpus_manifest.json \
+  --allow-unverified \
   --seeds 5 \
   --chunker dsc \
   --prompter P0 \
@@ -204,6 +210,7 @@ uv run python scripts/eval_multiseed.py \
   --gold-dir datasets/paper/gold \
   --text-dir datasets/paper/text \
   --manifest datasets/paper/corpus_manifest.json \
+  --allow-unverified \
   --seeds 5 \
   --chunker fixed \
   --prompter P0 \
@@ -220,6 +227,7 @@ uv run python scripts/eval_multiseed.py \
   --gold-dir datasets/paper/gold \
   --text-dir datasets/paper/text \
   --manifest datasets/paper/corpus_manifest.json \
+  --allow-unverified \
   --seeds 5 \
   --out-dir results/paper_run_compare/ \
   --compare-against results/ablation_baseline/results_detail_<timestamp>.csv \
@@ -306,7 +314,7 @@ uv run python tools/iaa_check.py \
 - [ ] Every included procedure has a complete independent primary-human source pass
 - [ ] Every accepted step and constraint resolves to exact committed-source offsets
 - [ ] Every primary pass has a source/candidate/final hash plus time and edit log
-- [ ] `make eval-paper-gate` exits 0 after the complete evidence contract is implemented
+- [ ] `make eval-paper-gate` exits 0 on frozen exact-anchor evidence packages
 - [ ] 12 eligible procedures included; the NASA NPR 8715.3D requirements stress test does not count
 - [ ] At least 25% receives a source-only blind pass selected before results are inspected
 - [ ] Every selected raw pair and pre-adjudication agreement report is preserved

@@ -105,8 +105,15 @@ omission_rate = added / final_items
 These measurements describe the assistance workflow. They are not a human-effort or
 automation-bias claim until the study design is frozen and sufficiently powered.
 
-The exact sidecar schema and validator are part of the evidence-contract work. Until
-they are implemented, a candidate cannot pass the paper-evidence gate.
+The sidecar contract is now
+`schemas/ipke_annotation_evidence.schema.json`; packages live under
+`datasets/paper/evidence/`. `assess_production_evidence` verifies exact source and
+annotation byte hashes, the bounded-span hash, Unicode item offsets, primary decision
+coverage against the loaded candidate, unresolved decisions, role records, canonical
+artifact paths, and hashes for primary, blind, agreement, adjudication, and final
+artifacts. It also rejects duplicate IDs, broken links, invalid decision spans, and
+invalid timing. Candidate validation remains backward-compatible and does not imply
+production eligibility.
 
 ## 5. Collect the blind second pass
 
