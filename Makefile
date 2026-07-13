@@ -77,9 +77,9 @@ eval-iaa: eval-validate
 		--out $(PAPER_REPORTS)/iaa_latest.json
 
 # ---------------------------------------------------------------------------
-# Gold-annotation pipeline (model-assisted draft -> human/critic adjudication).
-# The committed golds under datasets/paper/gold/ are the source of truth;
-# these targets document and re-run the process that produced them.
+# Historical candidate pipeline (model-assisted draft -> agent decision replay).
+# The committed files under datasets/paper/gold/ are legacy candidates, not
+# production gold or human evidence.
 # See docs/methods/annotation-pipeline.md.
 # ---------------------------------------------------------------------------
 
@@ -96,8 +96,8 @@ gold-draft:
 		--text $(PAPER_TEXT)/$(DOC).txt \
 		--out datasets/paper/draft/$(DOC).json
 
-# Deterministically re-apply a persisted adjudication decision log to a draft,
-# producing a reviewed gold. Requires the draft on disk (make gold-draft first).
+# Deterministically re-apply a persisted agent decision log to a draft,
+# reproducing a historical candidate. Requires the draft on disk first.
 #   make gold-adjudicate DOC=<doc_id>
 gold-adjudicate:
 	@test -n "$(DOC)" || { echo "usage: make gold-adjudicate DOC=<doc_id>"; exit 2; }
@@ -114,7 +114,7 @@ gold-pipeline: eval-validate eval-blindness
 	@echo "OK: development structural validation and D1 diagnostics completed."
 	@echo "Paper eligibility requires: make eval-paper-gate"
 
-# Prepare the >=30% IAA double-annotation subset + blank (anchoring-safe) scaffolds.
+# Prepare the frozen >=25% blind-annotation subset and source-only scaffolds.
 iaa-setup:
 	$(PYTHON) scripts/setup_iaa_subset.py select
 	$(PYTHON) scripts/setup_iaa_subset.py scaffold

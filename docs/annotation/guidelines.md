@@ -1,6 +1,8 @@
 # IPKE Evaluation Annotation Guidelines
 
-Authoritative procedure for producing a paper-grade gold file. Independent second-pass annotators MUST follow this document. Any deviation invalidates the inter-annotator agreement (IAA) computation for that file.
+Authoritative decision procedure for production annotations. Primary reviewers, blind
+annotators, and adjudicators must follow it. Role and evidence requirements live in
+`../methods/annotation-pipeline.md`.
 
 ## Read first
 
@@ -15,7 +17,10 @@ is the annotation input because it is what the extractor sees. Consult the autho
 PDF only to resolve page provenance, tables, symbols, or OCR ambiguity; record any such
 decision in `review_notes`.
 
-For PR reviewers: do NOT rely on the LLM-drafted gold (`unreviewed` status) as a starting point. Either start from a blank schema-valid skeleton or use a different annotator's pass — never anchor to the draft text.
+Primary human reviewers may use a frozen candidate for assistance, but must inspect the
+complete source span and add omissions. Source-only blind annotators must start from a
+blank `unreviewed` scaffold and may not view any candidate or another pass. Adjudicators
+work only after both passes and raw agreement are frozen.
 
 ## Annotation scope (LOCKED 2026-07-04 — supersedes the seed-corpus bounded_excerpt rule)
 
@@ -94,7 +99,10 @@ Read the modal verb in the source.
 - "should" / "recommended" / "preferred" → `should`.
 - "may" / "can" / "is acceptable" / "is permitted" → `may`.
 
-When the source is ambiguous, default to `must` and add a note to `quality.review_notes` flagging the ambiguity. Independent second annotators will diverge most on `should` vs `must` calls — be conservative.
+When the source is ambiguous, choose the best evidence-supported value and flag the exact
+source span and alternatives. Do not default automatically to `must`. Routine
+disagreement is resolved after both passes are frozen; only unresolved scientific cases
+are escalated to the principal investigator.
 
 ### Attachment
 
@@ -140,7 +148,10 @@ Exception: an annotator may keep a definition or purpose as a `reference` constr
 
 ## Independence rule (CRITICAL for IAA)
 
-A second-pass annotator MUST NOT look at any other annotator's gold file for the same document until their own annotation is complete and committed. Looking at the gold breaks IAA — κ becomes meaningless.
+A blind annotator must not view a candidate, primary pass, audit packet, adjudication
+record, or another annotator's pass for the same procedure until their own annotation is
+complete, frozen, and committed. Accidental exposure invalidates the assignment and
+requires reassignment.
 
 If you need clarification on annotation procedure, ask via these guidelines or post a question on the relevant issue. Do NOT email another annotator to ask "how did you do this section."
 
@@ -170,14 +181,20 @@ Only a human who personally checks the final annotation may append
 `+ human-verified:<handle>`, and the file must also belong to the frozen confirmatory
 split.
 
+Every accepted step and constraint also requires exact end-exclusive Unicode
+`char_start` and `char_end` offsets into the authoritative committed source. The primary
+pass needs source, candidate, and final hashes; active minutes; and separate accepted,
+edited, rejected, and added counts for steps and constraints. A marker without these
+records is not evidence.
+
 ## Worked examples
 
 ### Constraint typing and structure
 
-No current gold file is a canonical worked example until manual audit and human sign-off
-are complete. Use the declared JSON Schema, taxonomy, and the examples in this guideline
-as the contract. The July 2026 source audits under `manual-review/` are counterexamples
-showing why structural validity and agent review are insufficient.
+No current candidate is a canonical worked example until the full production-human
+protocol is complete. Use the declared JSON Schema, taxonomy, and examples in this
+guideline as the decision contract. The July 2026 source audits under `manual-review/`
+show why structural validity and agent review are insufficient.
 
 ### Scope selection (the locked rule in practice)
 
@@ -197,4 +214,5 @@ When the seed corpus was migrated from the original 20 ad-hoc constraint types t
 ## Change log
 
 - 2026-06-13 — initial guidelines drafted from the seed corpus annotation pass (PR #85).
-- 2026-07-04 — **scope rule locked.** Replaced the seed-corpus `bounded_excerpt` floor ("≥ 4 steps / 6 constraints") with the full-subprocedure rule (one coherent complete procedure, 15–40 steps, `annotation_scope = "full_subprocedure"`). Added scope-selection procedure, edge cases (requirements/policy docs, short standalone procedures), and a scope worked example. Rationale and measured "before" state in `audit_summary.md`. All 8 seed golds are re-annotated under this rule via the model-assisted harness (`scripts/annotate_assisted.py`) + human adjudication (`scripts/adjudicate.py`).
+- 2026-07-04 - **scope rule locked.** Replaced the seed-corpus `bounded_excerpt` floor ("≥ 4 steps / 6 constraints") with the full-subprocedure rule (one coherent complete procedure, 15–40 steps, `annotation_scope = "full_subprocedure"`). The model-assisted harness and agent decision replay produced eight historical candidates, not human-adjudicated gold.
+- 2026-07-13 - Added the complete primary-human pass, source-only blind subset, independent adjudication, exact-anchor, annotation-log, and limited PI-escalation requirements.

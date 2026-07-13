@@ -7,8 +7,9 @@ eligibility. Before a confirmatory sweep begins, the open P0 gates are an explic
 and frozen inclusion manifest, eligible human-verified procedures, eligible independent
 second-pass annotations, corrected and frozen causal controls, and completed runs of the
 eventual canonical experiment design. The provisional manifest currently selects five
-candidates and excludes NASA, OLSK, and NIOSH. The human-verification criterion is
-exposed as `make eval-paper-gate`.
+candidates and excludes NASA, OLSK, and NIOSH. `make eval-paper-gate` exposes the current
+manifest and signature checks, but the exact-anchor, primary-pass-log, blind-coverage,
+and adjudication contracts must be implemented before it can establish full eligibility.
 
 ---
 
@@ -116,9 +117,11 @@ Expected: all non-integration tests pass. No GPU or model required.
 
 - `make eval-validate`: structural and annotation-contract validation of all eight
   legacy candidate files, including excluded artifacts retained for audit history.
-- `make eval-paper-gate`: structural validation plus explicit human verification; this
-  consumes `datasets/paper/corpus_manifest.json` and intentionally fails until the
-  manifest is frozen and every included candidate is human verified.
+- `make eval-paper-gate`: current manifest and signature boundary. It consumes
+  `datasets/paper/corpus_manifest.json` and intentionally fails while the manifest is
+  provisional and included candidates are unsigned. Passing this command will not be
+  sufficient until exact anchors, primary-pass logs, blind coverage, raw agreement, and
+  independent adjudication are validated too.
 
 Run structural validation during development:
 
@@ -139,9 +142,11 @@ NIOSH artifacts.
 
 ### 3. Check IAA eligibility
 
-The current `datasets/paper/second_pass` files are draft placeholders and are not
-eligible for reported IAA. The command below should fail closed until independent,
-reviewed second-pass annotations replace them.
+The current `datasets/paper/second_pass` files are placeholders and are not eligible for
+reported IAA. At least 25% of the frozen experiment-eligible corpus must receive a
+source-only blind pass. Both passes and their hashes are frozen before reveal; every
+selected pre-adjudication pair is reported and preserved before a third human
+adjudicates disagreements.
 
 ```bash
 uv run python scripts/compute_iaa.py \
@@ -254,15 +259,15 @@ weights is not a substitute for the corrected confirmatory causal-control design
 
 ---
 
-## Single-document annotation draft
+## Single-document annotation candidate
 
-To draft a new gold file for a text document (requires configured model):
+To draft a new annotation candidate for a text document (requires configured model):
 
 ```bash
 uv run python tools/annotate_gold.py datasets/paper/text/<doc>.txt \
   --doc-id <doc_id> \
   --domain <domain>
-# Output: datasets/paper/gold_drafts/<doc_id>.json
+# Output: datasets/paper/gold_drafts/<doc_id>.json (candidate only)
 # Validate only (no extraction):
 uv run python tools/annotate_gold.py datasets/paper/gold/<doc>.json --skip-model
 ```
@@ -275,7 +280,7 @@ uv run python tools/annotate_gold.py datasets/paper/gold/<doc>.json --skip-model
 uv run python tools/iaa_check.py \
   datasets/paper/gold/<doc>.json \
   datasets/paper/second_pass/<doc>.json
-# Exit 0 = PASS (token kappa >= 0.7), Exit 1 = FAIL
+# The current CLI threshold is a diagnostic. Preserve and report every selected pair.
 ```
 
 ---
@@ -298,10 +303,16 @@ uv run python tools/iaa_check.py \
 
 ### Confirmatory procedure corpus (method-paper requirement)
 - [ ] Explicit confirmatory inclusion manifest committed and used by experiment commands
-- [ ] Every gold in the inclusion manifest explicitly human-verified; `make eval-paper-gate` exits 0 against the matching active gold set
+- [ ] Every included procedure has a complete independent primary-human source pass
+- [ ] Every accepted step and constraint resolves to exact committed-source offsets
+- [ ] Every primary pass has a source/candidate/final hash plus time and edit log
+- [ ] `make eval-paper-gate` exits 0 after the complete evidence contract is implemented
 - [ ] 12 eligible procedures included; the NASA NPR 8715.3D requirements stress test does not count
-- [ ] IAA on ≥ 30% of docs (≥ 4 files), all κ ≥ 0.61 (substantial, Landis & Koch 1977)
-- [ ] OLSK re-annotated (κ = 0.531 in current draft, below threshold)
+- [ ] At least 25% receives a source-only blind pass selected before results are inspected
+- [ ] Every selected raw pair and pre-adjudication agreement report is preserved
+- [ ] A different human adjudicates every selected pair; PI escalations are limited and logged
+- [ ] Attachment-edge agreement F1 reaches the preregistered 0.70 G0 gate without dropping low pairs
+- [ ] OLSK is rebuilt from source before reconsideration for inclusion
 - [ ] Dataset datasheet (metadata, license, collection process, limitations) committed
 - [ ] Annotation guidelines committed as `docs/annotation/guidelines.md`
 - [ ] JSON-LD / schema.org export example included for IR community
