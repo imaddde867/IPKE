@@ -9,6 +9,7 @@ from pydantic import ValidationError
 from src.evaluation.corpus_manifest import (
     load_corpus_manifest,
     select_manifest_gold_files,
+    select_manifest_production_files,
 )
 
 
@@ -65,6 +66,54 @@ def test_manifest_selects_only_included_gold(tmp_path: Path) -> None:
     selected = select_manifest_gold_files(manifest, gold_dir)
 
     assert [item.stem for item in selected] == ["include"]
+
+
+def test_production_selection_allows_excluded_artifacts_to_be_absent(
+    tmp_path: Path,
+) -> None:
+    production_dir = tmp_path / "production"
+    production_dir.mkdir()
+    (production_dir / "include.json").write_text("{}", encoding="utf-8")
+    path = _write_manifest(
+        tmp_path / "manifest.json",
+        [
+            _entry("include", include=True),
+            _entry(
+                "exclude",
+                include=False,
+                status="excluded_pending_reannotation",
+            ),
+        ],
+    )
+
+    selected = select_manifest_production_files(
+        load_corpus_manifest(path), production_dir
+    )
+
+    assert [item.stem for item in selected] == ["include"]
+
+
+def test_production_selection_rejects_missing_included_artifact(
+    tmp_path: Path,
+) -> None:
+    production_dir = tmp_path / "production"
+    production_dir.mkdir()
+    path = _write_manifest(
+        tmp_path / "manifest.json",
+        [
+            _entry("include", include=True),
+            _entry(
+                "exclude",
+                include=False,
+                status="excluded_pending_reannotation",
+            ),
+        ],
+    )
+
+    with pytest.raises(ValueError, match="missing included files: include"):
+        select_manifest_production_files(
+            load_corpus_manifest(path), production_dir
+        )
 
 
 def test_manifest_rejects_duplicate_document_ids(tmp_path: Path) -> None:

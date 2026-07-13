@@ -1,10 +1,20 @@
 # IPKE Annotation Schema
 
-IPKE gold annotations are procedure-level JSON files aligned to the existing
+IPKE annotations are procedure-level JSON files aligned to the existing
 `datasets/archive/test_data/gold/` shape. They are not standalone span annotations.
 
-New paper gold files should be stored in `datasets/paper/gold/` and validated with
-`schemas/ipke_annotation.schema.json`.
+`schemas/ipke_annotation.schema.json` is the permissive, candidate-compatible structural
+schema. The current `datasets/paper/gold/` files are immutable legacy candidates.
+Primary outputs belong in `datasets/paper/primary_pass/`, final annotations in
+`datasets/paper/production/`, and frozen evidence packages in
+`datasets/paper/evidence/` under `schemas/ipke_annotation_evidence.schema.json`.
+
+Production eligibility additionally requires every step and constraint to carry exact
+end-exclusive Unicode `provenance.char_start` and `provenance.char_end` offsets inside
+`procedure.source`. The runtime evidence validator checks those offsets against the
+committed UTF-8 source. It also binds the filename, annotation ID, sidecar ID, canonical
+artifact paths, and exact-byte hashes for the candidate, primary pass, optional blind
+pass, agreement report, adjudication output, and final annotation.
 
 ## Required Top-Level Fields
 

@@ -163,29 +163,35 @@ After every edit:
 uv run python3 -c "
 import json, jsonschema
 schema = json.load(open('schemas/ipke_annotation.schema.json'))
-d = json.load(open('datasets/paper/gold/<file>.json'))
+d = json.load(open('datasets/paper/primary_pass/<doc_id>.json'))
 jsonschema.validate(d, schema)
 print('PASS')
 "
 ```
 
+That command checks the candidate-compatible annotation schema only. A production
+annotation also needs a matching frozen
+`datasets/paper/evidence/<doc_id>.json` package and must pass
+`make eval-paper-gate`.
+
 Set the following fields in `quality` before considering the file done:
 
 - `review_status: "reviewed"`
-- `annotator: "<your-name>"`
+- `annotator: "P-001"` (the coordinator-assigned stable pseudonym)
 - `review_date: "<YYYY-MM-DD>"`
 - `review_notes: "<1-3 sentence summary of changes from draft, plus any ambiguity flags>"` — to adjudicate a strict-validator warning, embed the exact token `step:{id} {kind} adjudicated` (e.g. `step:S1 zero_constraints adjudicated`) in this field; one token per warning suppressed.
 
 These fields record that a review pass occurred; they do not establish paper eligibility.
-Only a human who personally checks the final annotation may append
-`+ human-verified:<handle>`, and the file must also belong to the frozen confirmatory
-split.
+The legacy `+ human-verified:<handle>` marker is optional provenance only. It does not
+replace the primary-pass record, frozen evidence package, or confirmatory split.
 
 Every accepted step and constraint also requires exact end-exclusive Unicode
 `char_start` and `char_end` offsets into the authoritative committed source. The primary
 pass needs source, candidate, and final hashes; active minutes; and separate accepted,
 edited, rejected, and added counts for steps and constraints. A marker without these
-records is not evidence.
+records is not evidence. The persisted contract is
+`schemas/ipke_annotation_evidence.schema.json`. Use only stable participant pseudonyms
+in committed packages; the coordinator keeps identity and consent records separately.
 
 ## Worked examples
 

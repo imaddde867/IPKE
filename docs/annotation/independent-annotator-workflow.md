@@ -1,6 +1,6 @@
 # Source-Only Blind Annotation Workflow
 
-Status: paused until the exact-anchor schema and frozen IAA subset are ready
+Status: paused until the manifest, IAA subset, and coordinator assignments are frozen
 
 This workflow produces the independent blind pass required by the Human Evidence
 Recovery Design. It is not candidate correction and it does not begin from
@@ -44,7 +44,6 @@ Do not begin a production assignment until:
 
 - `datasets/paper/corpus_manifest.json` is frozen;
 - `datasets/paper/iaa_subset.json` contains only eligible assigned procedures;
-- the item-level exact-anchor schema and validator are implemented;
 - the coordinator supplies a frozen source span and blank scaffold.
 
 The assignment is resolved from the frozen files. This document intentionally contains

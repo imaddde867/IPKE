@@ -81,3 +81,35 @@ def select_manifest_gold_files(
             "manifest does not match gold directory; " + "; ".join(details)
         )
     return tuple(actual[doc_id] for doc_id in manifest.included_doc_ids)
+
+
+def select_manifest_production_files(
+    manifest: CorpusManifest,
+    annotation_dir: Path,
+) -> tuple[Path, ...]:
+    """Select only included production artifacts.
+
+    Unlike the legacy-candidate resolver, excluded manifest entries do not need a file
+    in the production directory. Extra files still fail closed so directory presence
+    cannot silently change the evaluation corpus.
+    """
+    actual = {
+        path.stem: path for path in sorted(annotation_dir.glob("*.json"))
+    }
+    included = set(manifest.included_doc_ids)
+    missing = included - actual.keys()
+    unclassified = actual.keys() - included
+    if missing or unclassified:
+        details: list[str] = []
+        if missing:
+            details.append(
+                f"missing included files: {', '.join(sorted(missing))}"
+            )
+        if unclassified:
+            details.append(
+                f"unclassified production files: {', '.join(sorted(unclassified))}"
+            )
+        raise ValueError(
+            "manifest does not match production directory; " + "; ".join(details)
+        )
+    return tuple(actual[doc_id] for doc_id in manifest.included_doc_ids)

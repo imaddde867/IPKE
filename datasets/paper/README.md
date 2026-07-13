@@ -20,15 +20,20 @@ two-document method pilot.
 - `gold/` — immutable legacy model-assisted, agent-audited candidates. Directory
   presence does not make a file production gold. Schema:
   `schemas/ipke_annotation.schema.json`.
+- `primary_pass/` — future frozen outputs of complete primary-human source passes.
+- `production/` — future final annotations consumed by confirmatory evaluation.
+- `evidence/` — frozen evidence packages governed by
+  `schemas/ipke_annotation_evidence.schema.json`.
 - `corpus_manifest.json` — typed evaluation membership contract. Its current
   `provisional` status permits development only.
 - `second_pass/` — current placeholders and future source-only blind annotations.
 - `reports/` — IAA reports and annotation statistics.
 
 The required logical artifact roles are candidate, primary human pass, blind pass,
-annotation log, adjudication record, and final production annotation. Their durable
-physical layout and schemas must be implemented before production review begins. Do not
-collapse these roles by editing a candidate in place.
+annotation log, adjudication record, and final production annotation. The primary
+sidecar, exact-anchor, and cross-artifact hash boundary are now implemented.
+Corpus-level blind-subset coverage and coordinator identity controls remain open. Do
+not collapse roles by editing a candidate in place.
 
 The eight JSON files in `gold/` are legacy candidates, not the active confirmatory
 corpus. As of 2026-07-11, NASA is excluded as a requirements stress test and current
@@ -51,7 +56,8 @@ Avoid: partner-private SOPs (index separately under `datasets/private/` with acc
 - Do not mutate `datasets/archive/` gold annotations.
 - Do not commit partner-private SOPs to this directory.
 - Keep document IDs stable once annotation starts.
-- Record source URL, access date, license, and conversion command in the gold file's `metadata.source` field.
+- Record source URL, access date, license, conversion command, and exact procedure span
+  under `procedure.source` or its linked source manifest record.
 - Preserve model or agent candidates and raw human passes as separate artifacts.
 - Never establish evidence by changing only `review_status` or an annotator marker.
 
@@ -74,7 +80,8 @@ Development structural check of all eight retained candidates:
 
 `make eval-validate`
 
-Paper-evidence check, intentionally failing today. The current implementation checks
-manifest status and signature markers but does not yet establish the complete protocol:
+Paper-evidence check, intentionally failing today. It rejects marker-only sign-off and
+requires exact item anchors plus frozen evidence sidecars. Corpus-level blind coverage
+and coordinator assignment checks remain additional gates:
 
 `make eval-paper-gate`

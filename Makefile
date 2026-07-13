@@ -7,6 +7,8 @@ PYTHON := uv run python
 PAPER_MANIFEST := datasets/paper/corpus_manifest.json
 PAPER_GOLD     := datasets/paper/gold
 PAPER_TEXT     := datasets/paper/text
+PAPER_PRODUCTION := datasets/paper/production
+PAPER_EVIDENCE := datasets/paper/evidence
 PAPER_SECOND   := datasets/paper/second_pass
 PAPER_REPORTS  := datasets/paper/reports
 THESIS_GOLD    := datasets/archive/gold_human
@@ -20,11 +22,12 @@ test:
 eval-validate:
 	$(PYTHON) scripts/validate_paper_gold.py --gold-dir $(PAPER_GOLD) --strict
 
-# Paper-evidence release gate: strict validation plus explicit human sign-off.
+# Paper-evidence release gate: exact anchors plus frozen human evidence.
 eval-paper-gate:
-	$(PYTHON) scripts/validate_paper_gold.py --gold-dir $(PAPER_GOLD) \
+	$(PYTHON) scripts/validate_paper_gold.py --gold-dir $(PAPER_PRODUCTION) \
 		--manifest $(PAPER_MANIFEST) --require-frozen-manifest \
-		--strict --require-human-verified
+		--text-dir $(PAPER_TEXT) --evidence-dir $(PAPER_EVIDENCE) \
+		--strict --require-production-evidence
 
 # Constraint-blindness baseline (D1 in PRD): regenerates the §1 motivating table.
 # Uses the Tier-A protocol matcher (SBERT cos >= 0.75) plus a loose-threshold
@@ -142,8 +145,9 @@ eval: eval-validate eval-blindness
 # current confirmatory design and cannot start until the paper-evidence gate passes.
 eval-full: eval-paper-gate
 	$(PYTHON) scripts/eval_multiseed.py \
-		--gold-dir $(PAPER_GOLD) \
+		--gold-dir $(PAPER_PRODUCTION) \
 		--text-dir $(PAPER_TEXT) \
+		--evidence-dir $(PAPER_EVIDENCE) \
 		--manifest $(PAPER_MANIFEST) \
 		--seeds 5 \
 		--phi-weights 0.5:0.3:0.2 \

@@ -54,3 +54,28 @@ def test_annotation_link_helper_rejects_missing_relation_endpoint() -> None:
 
     with pytest.raises(ValueError, match="unknown step"):
         validate_annotation_links(invalid, "sample_procedure")
+
+
+def test_all_retained_candidates_validate_against_candidate_schema() -> None:
+    schema = _load_json(SCHEMA_PATH)
+    validator = jsonschema.Draft202012Validator(schema)
+    failures: dict[str, list[str]] = {}
+
+    for path in sorted(Path("datasets/paper/gold").glob("*.json")):
+        errors = sorted(validator.iter_errors(_load_json(path)), key=lambda e: list(e.path))
+        if errors:
+            failures[path.name] = [error.message for error in errors]
+
+    assert failures == {}
+
+
+def test_embedded_constraint_uses_constraint_schema() -> None:
+    schema = _load_json(SCHEMA_PATH)
+    annotation = _load_json(FIXTURE_DIR / "annotator_a_sample.json")
+    invalid = copy.deepcopy(annotation)
+    constraint = copy.deepcopy(invalid["constraints"][0])
+    constraint["enforcement"] = "never"
+    invalid["steps"][0]["constraints"] = [constraint]
+
+    with pytest.raises(jsonschema.ValidationError):
+        jsonschema.Draft202012Validator(schema).validate(invalid)
