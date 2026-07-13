@@ -4,10 +4,11 @@ This file separates historical/development diagnostics from confirmatory IPKE
 method-paper evidence. `make eval` and `make gold-pipeline` reproduce the legacy D1
 diagnostics and dry-run the superseded D2 sweep plan; neither establishes paper
 eligibility. Before a confirmatory sweep begins, the open P0 gates are an explicit
-inclusion manifest, 12 eligible human-verified procedures, eligible independent
-second-pass annotations, corrected and frozen causal controls, and completed runs of
-the eventual canonical experiment design. The human-verification criterion is exposed
-as `make eval-paper-gate`.
+and frozen inclusion manifest, eligible human-verified procedures, eligible independent
+second-pass annotations, corrected and frozen causal controls, and completed runs of the
+eventual canonical experiment design. The provisional manifest currently selects five
+candidates and excludes NASA, OLSK, and NIOSH. The human-verification criterion is
+exposed as `make eval-paper-gate`.
 
 ---
 
@@ -91,7 +92,7 @@ export LLM_MODEL_PATH=models/mistral-7b-instruct-v0.2.Q4_K_M.gguf
 | DSC + P3 (Metal, Q4_K_M) | ~2-4 min |
 | DSC + P3 (CPU-only, Q4_K_M) | ~15-30 min |
 | Metric evaluation (CPU) | < 5 sec per doc |
-| Historical development sweep (5 seeds x 8 candidate files) | ~3-4 hours (Metal) |
+| Historical development sweep (5 seeds x 5 manifest-selected candidates) | ~2-3 hours (Metal) |
 
 ---
 
@@ -113,9 +114,11 @@ Expected: all non-integration tests pass. No GPU or model required.
 
 ### 2. Validate gold dataset
 
-- `make eval-validate`: structural and annotation-contract validation.
+- `make eval-validate`: structural and annotation-contract validation of all eight
+  legacy candidate files, including excluded artifacts retained for audit history.
 - `make eval-paper-gate`: structural validation plus explicit human verification; this
-  intentionally fails until the human sign-off issue is complete.
+  consumes `datasets/paper/corpus_manifest.json` and intentionally fails until the
+  manifest is frozen and every included candidate is human verified.
 
 Run structural validation during development:
 
@@ -129,11 +132,10 @@ Before using the corpus as paper evidence, run the release gate:
 make eval-paper-gate
 ```
 
-`make eval-validate` can pass while the corpus is unsigned. The paper-evidence
-gate currently exits non-zero and names unsigned files in the current gold
-directory; that is expected until the confirmatory inclusion manifest and
-`PAPER_GOLD` agree and a human verifies every included gold. Do not sign an
-excluded artifact merely to make this directory-wide gate pass.
+`make eval-validate` can pass while the corpus is unsigned. The paper-evidence gate
+currently exits non-zero because the manifest is provisional and its five included
+candidates are unsigned. It does not require signatures for excluded NASA, OLSK, or
+NIOSH artifacts.
 
 ### 3. Check IAA eligibility
 
@@ -150,21 +152,22 @@ uv run python scripts/compute_iaa.py \
 
 Expected today: non-zero exit with `IAA eligibility failed`.
 
-### 4. Historical 5x8 development sweep template (not confirmatory)
+### 4. Historical five-candidate development sweep template (not confirmatory)
 
-Requires a model file. Set `LLM_MODEL_PATH` before running. These legacy commands
-process the entire current candidate directory, including excluded artifacts, and do
-not implement the corrected causal controls. `make eval-full` now depends on
-`eval-paper-gate`, so it cannot begin while the directory is unsigned. Even after
-human sign-off, this 5x8 configuration does not become confirmatory: issue #112 must
-define the inclusion manifest and the causal-control design must be corrected and
-frozen first.
+Requires a model file. Set `LLM_MODEL_PATH` before running. These legacy commands use
+the provisional manifest, so they select five development candidates and ignore the
+three excluded artifacts. They do not implement the corrected causal controls.
+`make eval-full` depends on `eval-paper-gate`, so it cannot begin while the manifest is
+provisional or an included candidate is unsigned. Even after human verification, this
+legacy configuration does not become confirmatory until the causal-control design is
+implemented and frozen.
 
 ```bash
 # Development configuration: DSC + P3, 5 seeds, current gold directory
 uv run python scripts/eval_multiseed.py \
   --gold-dir datasets/paper/gold \
   --text-dir datasets/paper/text \
+  --manifest datasets/paper/corpus_manifest.json \
   --seeds 5 \
   --phi-weights 0.5:0.3:0.2 \
   --phi-weights 0.4:0.4:0.2 \
@@ -175,6 +178,7 @@ uv run python scripts/eval_multiseed.py \
 uv run python scripts/eval_multiseed.py \
   --gold-dir datasets/paper/gold \
   --text-dir datasets/paper/text \
+  --manifest datasets/paper/corpus_manifest.json \
   --seeds 5 \
   --chunker fixed \
   --prompter P3 \
@@ -184,6 +188,7 @@ uv run python scripts/eval_multiseed.py \
 uv run python scripts/eval_multiseed.py \
   --gold-dir datasets/paper/gold \
   --text-dir datasets/paper/text \
+  --manifest datasets/paper/corpus_manifest.json \
   --seeds 5 \
   --chunker dsc \
   --prompter P0 \
@@ -193,6 +198,7 @@ uv run python scripts/eval_multiseed.py \
 uv run python scripts/eval_multiseed.py \
   --gold-dir datasets/paper/gold \
   --text-dir datasets/paper/text \
+  --manifest datasets/paper/corpus_manifest.json \
   --seeds 5 \
   --chunker fixed \
   --prompter P0 \
@@ -208,6 +214,7 @@ baseline outputs:
 uv run python scripts/eval_multiseed.py \
   --gold-dir datasets/paper/gold \
   --text-dir datasets/paper/text \
+  --manifest datasets/paper/corpus_manifest.json \
   --seeds 5 \
   --out-dir results/paper_run_compare/ \
   --compare-against results/ablation_baseline/results_detail_<timestamp>.csv \

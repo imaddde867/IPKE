@@ -29,6 +29,7 @@ Usage:
 Options:
     --gold-dir         Directory of gold JSON files (required).
     --text-dir         Directory of source text files — stem must match gold stem.
+    --manifest         Corpus manifest that selects evaluation gold files.
     --seeds            Number of random seeds (default: 5). Seeds used: seed-start..(start+N-1).
     --seed-start       First seed value (default: 0).
     --out-dir          Directory for result CSVs (default: results/).
@@ -56,12 +57,17 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+from pydantic import ValidationError
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
 from src.evaluation.evidence import assess_annotation_evidence
+from src.evaluation.corpus_manifest import (
+    load_corpus_manifest,
+    select_manifest_gold_files,
+)
 from src.evaluation.metrics import compute_phi as phi
 
 METRIC_COLUMNS = [
@@ -277,6 +283,7 @@ def parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--gold-dir", required=True, type=Path)
     parser.add_argument("--text-dir", required=True, type=Path)
+    parser.add_argument("--manifest", type=Path)
     parser.add_argument("--seeds", type=int, default=5)
     parser.add_argument("--seed-start", type=int, default=0)
     parser.add_argument("--out-dir", type=Path, default=REPO_ROOT / "results")
@@ -313,18 +320,41 @@ def main(argv: list[str] | None = None) -> int:
             print(f"ERROR: directory not found: {d}", file=sys.stderr)
             return 1
 
-    gold_files = sorted(gold_dir.glob("*.json"))
+    gold_files = tuple(sorted(gold_dir.glob("*.json")))
+    if args.manifest is not None:
+        try:
+            manifest = load_corpus_manifest(args.manifest)
+            gold_files = select_manifest_gold_files(manifest, gold_dir)
+        except (OSError, ValueError, ValidationError) as exc:
+            print(f"ERROR: invalid corpus manifest: {exc}", file=sys.stderr)
+            return 1
+        if manifest.manifest_status == "provisional":
+            print(
+                "WARNING: corpus manifest is provisional; outputs are development-only.",
+                file=sys.stderr,
+            )
     if not gold_files:
         print(f"ERROR: no JSON files in {gold_dir}", file=sys.stderr)
         return 1
 
     pairs: list[tuple[Path, Path]] = []
+    missing_text: list[str] = []
     for gf in gold_files:
         tf = text_dir / f"{gf.stem}.txt"
         if not tf.exists():
-            print(f"WARNING: text file missing for {gf.stem}, skipping.", file=sys.stderr)
+            missing_text.append(gf.stem)
         else:
             pairs.append((gf, tf))
+
+    if missing_text and args.manifest is not None:
+        print(
+            "ERROR: text files missing for manifest-selected gold: "
+            + ", ".join(missing_text),
+            file=sys.stderr,
+        )
+        return 1
+    for doc_id in missing_text:
+        print(f"WARNING: text file missing for {doc_id}, skipping.", file=sys.stderr)
 
     if not pairs:
         print("ERROR: no (gold, text) pairs found.", file=sys.stderr)

@@ -445,6 +445,16 @@ def test_makefile_eval_full_requires_paper_evidence_gate():
     assert "eval-full: eval-paper-gate" in text
 
 
+def test_makefile_evaluation_targets_use_corpus_manifest():
+    text = Path("Makefile").read_text(encoding="utf-8")
+
+    for target in ("eval", "eval-full"):
+        target_body = text.split(f"\n{target}:", maxsplit=1)[1].split(
+            "\n\n", maxsplit=1
+        )[0]
+        assert "--manifest $(PAPER_MANIFEST)" in target_body
+
+
 def test_makefile_eval_iaa_depends_on_validation():
     text = Path("Makefile").read_text(encoding="utf-8")
     assert "eval-iaa: eval-validate" in text
