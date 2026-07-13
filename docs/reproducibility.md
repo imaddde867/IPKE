@@ -33,31 +33,29 @@ The run directory contains:
 make eval
 ```
 
-This runs a dry-run multi-seed sweep against `datasets/paper/gold` (paper Tier-A documents).
-No model is required. At the current five-candidate development stage, `make eval` runs strict
-gold validation, regenerates the D1 constraint-blindness reports, and dry-runs the
-D2 sweep plan. Final ECIR table regeneration still requires 12 reviewed documents,
-eligible independent second-pass annotations, and completed D2 model runs. For the
-full sweep see `make eval-full` and `REPRODUCIBILITY.md`.
+This runs a dry-run multi-seed sweep against the five candidates selected by
+`datasets/paper/corpus_manifest.json`. No model is required. The command structurally
+validates all retained candidates, regenerates the historical D1 diagnostics, and
+dry-runs the legacy sweep. It is not a confirmatory method-paper command. See
+`REPRODUCIBILITY.md` for the human-evidence and C0-C4 requirements.
 
 ## Gold Annotation Pipeline
 
-The gold annotations are produced by a model-assisted-draft + human-adjudication
-pipeline documented in full at `docs/methods/annotation-pipeline.md`. One-command
-targets:
+Model tools and agents produce annotation candidates only. Independent humans create
+production annotations under `docs/methods/annotation-pipeline.md`. Current development
+targets are:
 
 ```bash
-make gold-pipeline    # deterministic gate: strict-validate the 8 golds + regenerate D1 numbers (no model)
+make gold-pipeline    # validate retained candidates and regenerate historical D1 diagnostics
 make repro-blindness  # assert the pinned D1 cross-regime numbers (32 vs 231, 7.22x); non-gate
-make gold-draft DOC=<doc_id> SEG=<segments.json> CAND=<candidate_id>   # draft one procedure (needs model backend)
-make gold-adjudicate DOC=<doc_id>                                     # replay a persisted adjudication log -> reviewed gold
-make iaa-setup        # select >=30% subset + emit blank (anchoring-safe) second-pass scaffolds
-make iaa              # score step/constraint/relation F1 + Cohen's kappa over completed second passes
+make gold-draft DOC=<doc_id> SEG=<segments.json> CAND=<candidate_id>   # create a candidate
+make gold-adjudicate DOC=<doc_id>                                     # replay historical candidate decisions
+make iaa-setup        # prepare the frozen >=25% blind subset after protocol gates pass
+make iaa              # preserve pre-adjudication agreement for every selected pair
 ```
 
-The committed golds under `datasets/paper/gold/` are the source of truth;
-`make gold-pipeline` is the target a reviewer runs on a fresh clone to confirm
-the release numbers regenerate.
+The committed files under `datasets/paper/gold/` are legacy candidates, not production
+gold. `make gold-pipeline` confirms development diagnostics only.
 
 ## Required Metadata
 
@@ -78,6 +76,6 @@ Each final experiment run must record:
 ## Known Limits
 
 - Thesis archive results cover three documents.
-- ECIR paper experiments require `datasets/paper/` expansion to 12 documents plus completed D2 model runs.
+- Confirmatory method-paper experiments require frozen exact-span C0-C4 controls and the complete human-evidence protocol.
 - Constraint matching reports both the fuzzy Tier-A protocol matcher (SBERT cos ≥ 0.75, `src/evaluation/alignment.py`) and strict exact-match; per-type recall at small n is brittle and is always reported threshold-attached.
 - Gold `relations` (NEXT / ALTERNATIVE_TO) are annotated but Tier-B currently synthesizes its NEXT chain from steps-array order; wiring the scorers to gold relations is an open design choice.

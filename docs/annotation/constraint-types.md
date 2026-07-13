@@ -1,12 +1,19 @@
-# IPKE-Bench Constraint Type Taxonomy
+# IPKE Constraint Type Taxonomy
 
 Locked vocabulary for `constraint.type` and `constraint.enforcement` in `datasets/paper/gold/*.json`. All annotators must use these values; any deviation invalidates the annotation for paper-grade evaluation.
 
 ## Design rationale
 
-The taxonomy is intentionally tight. Six types cover every constraint observed across the IPKE-Bench seed corpus (8 documents, 231 constraints after the deep full-subprocedure re-annotation and 2026-07-06 verbatim-grounding pass, spanning safety regulations, lab SOPs, assembly workbooks, and field-sampling protocols). The 6-type closure is comparable to procedural-knowledge conventions in PAGED (sequential / conditional / parallel / optional) and Carriero & Celino 2024 (steps / actions / objects / equipment / temporal), but specialised to *constraint-on-step* edges rather than step-to-step or step-to-entity edges. The split into a type axis and an orthogonal `enforcement` axis (must / should / may) absorbs the requirement/recommendation/permission distinction that natural-language SOPs make explicitly via modal verbs ("shall" / "should" / "may").
+The taxonomy is intentionally tight. Six types cover every constraint observed across the
+eight-file legacy candidate corpus. This is empirical coverage, not proof that the
+taxonomy is closed. The split into a type axis and an orthogonal enforcement axis
+captures the requirement, recommendation, and permission distinctions expressed through
+modal verbs.
 
-If an annotator encounters a constraint that does not fit one of the six types, the constraint is either (a) not actually a constraint and should be dropped, or (b) flags a genuine gap in the taxonomy that must be raised in a PR before being added — drift is forbidden.
+If an item does not fit one of the six types, flag it rather than forcing a label. The
+independent adjudicator decides whether it is not a constraint or exposes a taxonomy gap.
+Only an unresolved gap is escalated to the principal investigator before any vocabulary
+change. Silent drift is forbidden.
 
 ## Type axis
 
@@ -27,11 +34,13 @@ If an annotator encounters a constraint that does not fit one of the six types, 
 | `should` | "should", "recommended", "preferred", "best practice", non-mandatory imperative. | "SOPs **should be** written with sufficient detail …" — `parameter` / should. |
 | `may` | "may", "can", "is acceptable", "is permitted", optional clause. | "use of electronic signatures … is **an acceptable substitution** for paper" — `guard` / may. |
 
-Default when source verb is ambiguous: `must`. Annotators must justify any `should` or `may` classification in `review_notes`.
+When the source verb is ambiguous, choose the best supported enforcement value and record
+the evidence, uncertainty, and alternatives. Do not default automatically to `must`.
 
 ## Mapping from the seed-corpus ad-hoc types
 
-This is the canonical migration table for the 8 reviewed gold files. Apply mechanically except where marked `MANUAL`.
+This is the historical migration table for the eight legacy candidates. It does not
+replace source review in a production annotation.
 
 | Ad-hoc type used in draft/review | Locked type | Locked enforcement | Notes |
 |---|---|---|---|
@@ -63,6 +72,7 @@ This is the canonical migration table for the 8 reviewed gold files. Apply mecha
 - Every constraint MUST have `enforcement` ∈ {must, should, may}.
 - Every constraint MUST have `attached_to` listing at least one step ID (or `applies_to` for procedure-level constraints).
 - Every constraint text MUST be drawn from the source verbatim or near-verbatim (annotator may correct OCR artifacts, normalise whitespace, expand contractions; may NOT paraphrase or summarise).
+- Every accepted constraint and governed step MUST have exact end-exclusive Unicode source offsets.
 
 ## Relationship to PAGED and Carriero & Celino
 

@@ -67,7 +67,7 @@ rg -n "stamp-only|>=30%|≥30%|all κ|Imad performs|human-verified:<handle>" \
 Expected: no active-context text treats a marker or agreement threshold as sufficient
 evidence.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add -f docs/superpowers/specs/2026-07-13-human-evidence-recovery-design.md \
@@ -84,12 +84,17 @@ git commit -m "Define human evidence recovery protocol"
 - Modify: `docs/annotation/independent-annotator-workflow.md`
 - Modify: `datasets/paper/README.md`
 - Modify: `REPRODUCIBILITY.md`
+- Modify: `docs/reproducibility.md`
+- Modify: `Makefile` comments for candidate and blind-pass terminology
+- Modify: `docs/annotation/guidelines.md`
+- Modify: `docs/annotation/constraint-types.md`
+- Modify: `CLAUDE.md`
 
 **Interfaces:**
 - Consumes: Human Evidence Recovery Design roles and gates.
 - Produces: instructions usable by candidate auditors, primary reviewers, blind annotators, adjudicators, and the principal investigator.
 
-- [ ] **Step 1: Replace the pipeline diagram**
+- [x] **Step 1: Replace the pipeline diagram**
 
 Use this normative sequence:
 
@@ -108,7 +113,7 @@ frozen source and bounded procedure
 Retitle the 256-step and 231-constraint inventory as a dated legacy-candidate snapshot.
 Do not call `adjudicate.py replay` a route to production gold.
 
-- [ ] **Step 2: Replace stamp-only sign-off instructions**
+- [x] **Step 2: Replace stamp-only sign-off instructions**
 
 Keep `docs/annotation/SIGN_OFF_ISSUE.md` at the same path for incoming links, but change
 its purpose to independent production annotation. Remove the instruction that
@@ -116,14 +121,14 @@ its purpose to independent production annotation. Remove the instruction that
 anchor, logging, blind-subset, agreement-freeze, adjudication, and escalation completion
 criteria.
 
-- [ ] **Step 3: Correct blind-annotation instructions**
+- [x] **Step 3: Correct blind-annotation instructions**
 
 Make accidental candidate exposure invalidate and reassign that document. Resolve the
 assignment list from the frozen manifest and IAA subset instead of a hard-coded table.
 Start scaffolds as `unreviewed`, require item-level offsets, remove automatic `must`,
 record active minutes, preserve every preregistered raw pair, and adjudicate after scoring.
 
-- [ ] **Step 4: Align corpus and reproduction documentation**
+- [x] **Step 4: Align corpus and reproduction documentation**
 
 Distinguish the artifact roles without inventing directories: agent candidate, primary
 human pass, blind pass, adjudication record, and final production annotation. State that
@@ -131,7 +136,7 @@ the current five manifest-selected files are development candidates and that val
 must eventually check primary-pass provenance, anchors, logs, blind coverage, raw
 agreement, adjudication, and frozen membership.
 
-- [ ] **Step 5: Check contradictions**
+- [x] **Step 5: Check contradictions**
 
 Run:
 
@@ -140,7 +145,8 @@ rg -n ">=30%|≥30%|Imad performs|sign_off_gold.py|all κ|κ >=|κ ≥|draft gol
   docs/methods/annotation-pipeline.md \
   docs/annotation/SIGN_OFF_ISSUE.md \
   docs/annotation/independent-annotator-workflow.md \
-  datasets/paper/README.md REPRODUCIBILITY.md
+  docs/annotation/guidelines.md docs/annotation/constraint-types.md \
+  datasets/paper/README.md REPRODUCIBILITY.md docs/reproducibility.md Makefile CLAUDE.md
 ```
 
 Expected: any match is explicitly historical or diagnostic, never a production

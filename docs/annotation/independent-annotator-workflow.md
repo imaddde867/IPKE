@@ -1,221 +1,178 @@
-# Independent Annotator Workflow for IPKE Evaluation
+# Source-Only Blind Annotation Workflow
 
-> **Status: paused pending issue #112 and a new frozen IAA subset.** The current subset
-> includes the excluded NASA requirements block and must not be assigned or scaffolded.
+Status: paused until the exact-anchor schema and frozen IAA subset are ready
 
-End-to-end procedure for an independent second-pass annotator producing IAA-eligible
-annotations for the IPKE method evaluation. Use it only after the confirmatory manifest
-and replacement subset are committed.
+This workflow produces the independent blind pass required by the Human Evidence
+Recovery Design. It is not candidate correction and it does not begin from
+`datasets/paper/gold/`.
 
-## What you are signing up for
+## Assignment
 
-- **Per document**: ~3 hours of focused work, blind to the first-pass gold.
-- **Total commitment**: at least 25% of the final eligible corpus, selected by source
-  family after the confirmatory manifest is frozen.
-- **Output**: one JSON file per assigned doc in `datasets/paper/second_pass/<doc_id>.json`, committed via PR.
-- **Credit and authorship**: recorded transparently under institutional and venue policy;
-  annotation count alone does not guarantee authorship.
-- **Deadline**: set during recruitment after scope, compensation, consent, and the target
-  venue are confirmed.
+- Expect about three active hours per bounded procedure. Record actual active minutes.
+- Work only on documents assigned through the frozen manifest and IAA subset.
+- At least 25% of experiment-eligible procedures receive a blind pass.
+- Annotation count alone does not guarantee authorship. Credit follows institutional and
+  venue policy.
+- Use GitHub issue #90 for assignments, compensation, consent, and scheduling.
 
-## The non-negotiable rule
+## Non-negotiable blindness
 
-> You MUST NOT view the first-pass gold file (`datasets/paper/gold/<doc>.json`) or any other annotator's pass on the same document until your annotation is committed.
+Do not view any of the following for your assigned procedure before committing and
+freezing your pass:
 
-This rule gives κ statistical meaning. Drift correction toward gold invalidates the inter-annotator agreement claim — see `docs/annotation/guidelines.md` IAA Independence Rule.
+- `datasets/paper/gold/<doc_id>.json`;
+- model or agent candidates;
+- source-to-candidate audit packets;
+- primary human annotations;
+- adjudication records;
+- another annotator's work on that procedure.
 
-If you accidentally see the gold (e.g. typo in a filename, autocomplete in your editor), close the file immediately, note it in your `quality.review_notes`, and continue from your current pass. Do not start over from the gold.
+Accidental exposure invalidates the assignment. Close the material, report the exposure,
+and have the coordinator reassign the document to another annotator. Continuing after
+exposure cannot produce a source-only blind pass.
 
-## Setup (one-time)
+## Before annotation
 
-```bash
-git clone https://github.com/imaddde867/IPKE.git
-cd IPKE
-uv sync --extra extras
-uv run python -m spacy download en_core_web_sm
-```
+Read:
 
-Verify the environment:
+1. `CONTEXT.md` for active terminology and evidence rules;
+2. `docs/annotation/guidelines.md` for annotation decisions;
+3. `docs/annotation/constraint-types.md` for the locked vocabulary;
+4. `docs/dataset/datasheet.md` for corpus limitations.
 
-```bash
-make eval-validate
-# Structural development check only; it is not human verification.
-```
+Do not begin a production assignment until:
 
-Read in this order:
+- `datasets/paper/corpus_manifest.json` is frozen;
+- `datasets/paper/iaa_subset.json` contains only eligible assigned procedures;
+- the item-level exact-anchor schema and validator are implemented;
+- the coordinator supplies a frozen source span and blank scaffold.
 
-1. `docs/annotation/constraint-types.md` — locked 6-type × 3-enforcement vocabulary.
-2. `docs/annotation/guidelines.md` — annotation decision procedure.
-3. `docs/dataset/datasheet.md` — corpus context.
+The assignment is resolved from the frozen files. This document intentionally contains
+no hard-coded document table.
 
-Do NOT yet open any file under `datasets/paper/gold/`.
+## Provided artifacts
 
-## Generate your scaffolds after the pause is lifted
+For each assigned procedure the coordinator supplies:
 
-Do not run the commands below while `datasets/paper/iaa_subset.json` still contains
-NASA. Issue #112 must replace and freeze the subset first.
+- an authoritative source-only text file containing the exact bounded procedure;
+- source URL, version, checksum, page range, section, and original-text offsets;
+- a blank scaffold with `review_status = "unreviewed"` and no first-pass items;
+- an assignment ID and your role;
+- the locked annotation schema and validation command.
 
-Instead of hand-creating each JSON, generate the blank scaffolds for the IAA subset:
+The source text, not a candidate annotation, is the authority. The original PDF may be
+consulted for table layout and typography, but annotate only content represented by the
+authoritative committed text unless the coordinator records a source correction.
 
-```bash
-uv run python scripts/setup_iaa_subset.py select    # writes datasets/paper/iaa_subset.json (the 3 ⭐ docs)
-uv run python scripts/setup_iaa_subset.py scaffold  # writes blank second_pass/<doc>.json + _source/<doc>.txt
-```
+## Per-document procedure
 
-For each subset document this creates:
+### 1. Start the effort record
 
-- `datasets/paper/second_pass/<doc_id>.json` — a **blank** scaffold carrying only `doc_id`, procedure title, and the exact source `char_start:char_end` span. It contains **no first-pass steps or constraints** — that is the anchoring-bias control. Fill in `steps[]`, `constraints[]`, `relations[]` yourself.
-- `datasets/paper/second_pass/_source/<doc_id>.txt` — the exact source span the first pass annotated. **Read this, not the gold.** It is the same text window, so your annotation and the first pass cover identical scope (a prerequisite for a meaningful F1/κ).
+Record the assignment ID, annotator handle, source checksum, start time, and active
+minutes. Exclude breaks and unrelated setup time.
 
-Do not open `datasets/paper/gold/` at any point before you commit.
+### 2. Read the full source span
 
-## Per-document workflow
+Read the entire bounded procedure once before finalizing labels. Identify procedural
+actions, constraints, explanatory material, examples, definitions, and references.
 
-### Step 1 — Pick a document
+### 3. Annotate from source only
 
-The IAA subset (the three documents that require a second pass) is written by `scripts/setup_iaa_subset.py select` to `datasets/paper/iaa_subset.json`. **⭐ marks the current subset.** The bounded scope below is the section each first-pass gold actually annotates under the locked `full_subprocedure` rule (`docs/annotation/guidelines.md`). All 8 documents are listed for reference; you only need the ⭐ rows unless coordinating extra coverage with Imad.
+For every step:
 
-| Document | Domain | Bounded scope (locked) | IAA |
-|---|---|---|---|
-| `epa_field_operations_manual_filter_sampling_sop` | Field operations | MFC SOP §6.0 Calibration / Post-Calibration (6.1.1–6.1.10) | ⭐ |
-| `epa_field_sampling_measurement_procedure_validation` | Quality assurance | §3–5 General Information → Procedure Implementation (whole short doc) | ⭐ |
-| `nasa_npr_8715_3d_general_safety` | Safety requirements | §2.5.2 System Safety Technical Plan (SSTP) | Excluded under #112 |
-| `epa_guidance_preparing_sops_qag6` | Quality assurance | §2.0 SOP Process (2.1–2.6) | |
-| `olsk_small_cnc_v1_workbook` | Mechanical assembly | §01.1–01.5 Electronic Box | Excluded pending rebuild |
-| `niosh_nmam_5th_edition_ebook` | Analytical chemistry | Method 2005 | Excluded pending rebuild |
-| `usgs_groundwater_technical_procedures_tm1_a1` | Hydrology | GWPD 1 — Instructions 1–14 + Data Recording | |
-| `usgs_nfm_collection_water_samples_a4` | Hydrology | Steps for the EWI sampling method (Steps 1–6, complete) | |
+- use one source-faithful atomic operation;
+- record stable local ID, label, verb, object, order, and relations;
+- record exact end-exclusive Unicode `char_start` and `char_end`;
+- do not infer an operation absent from the text.
 
-> First-pass candidates are model-assisted and agent-adjudicated. They do not become a
-> human first pass until a named human personally reviews and signs the final file. Do
-> not report human-human agreement before that separate gate is complete.
+For every constraint:
 
-### Step 2 — Read source text
+- record verbatim or minimally normalized text;
+- select one locked type and one evidence-supported enforcement value;
+- attach it to every governed step and no unknown step;
+- record exact end-exclusive Unicode `char_start` and `char_end`;
+- flag uncertainty instead of defaulting an ambiguous modal to `must`.
 
-Open `datasets/paper/second_pass/_source/<doc_id>.txt` (created by the `scaffold` command above). This is the exact bounded span the first pass annotated — no need to hunt for section boundaries in the full `datasets/paper/text/<doc_id>.txt`. The bounded section names are in the table above for orientation.
+Definitions and nonbinding examples are not constraints. If an example appears binding in
+context, flag that decision for post-freeze adjudication.
 
-You may also consult the original PDF via the `direct_url` recorded in `datasets/paper/public_sources_manifest.csv` for typographic clarity (table cells, etc.), but the `.txt` is authoritative — that's what the extractor sees.
+### 4. Inspect negative regions
 
-### Step 3 — Annotate from scratch
+Re-read source paragraphs containing no annotation. Check modal verbs, prohibitions,
+warnings, emergency headings, quantities, timing, role language, and cross-sentence
+dependencies. This reduces omissions that two annotators might otherwise share.
 
-Create a new file at `datasets/paper/second_pass/<doc_id>.json` containing your annotation. Do NOT copy from `datasets/paper/gold/<doc_id>.json`.
+### 5. Validate
 
-Schema skeleton:
+Run the assignment's declared-schema, structural, grounding, identifier, attachment,
+relation, and provenance checks. A blank or partial scaffold remains `unreviewed`.
 
-```json
-{
-  "procedure": {
-    "doc_id": "<doc_id>",
-    "title": "<short title>",
-    "version": "<source version>",
-    "domain": "<short domain tag>",
-    "source": {
-      "doc_id": "<doc_id>",
-      "page": "<page range>",
-      "section": "<source section identifier>"
-    }
-  },
-  "steps": [
-    {
-      "id": "S1",
-      "label": "<imperative description of the step>",
-      "action_verb": "<verb>",
-      "action_object": "<object>",
-      "arguments": [],
-      "parameters": [],
-      "constraints": [
-        {
-          "id": "C1",
-          "type": "<one of: precondition, postcondition, guard, parameter, role_assignment, reference>",
-          "enforcement": "<one of: must, should, may>",
-          "text": "<verbatim or near-verbatim source text>",
-          "attached_to": ["S1"]
-        }
-      ],
-      "flags": {"safety_critical": true},
-      "provenance": {"doc_id": "<doc_id>", "page": "...", "section": "..."}
-    }
-  ],
-  "constraints": [],
-  "relations": [],
-  "quality": {
-    "annotation_scope": "full_subprocedure",
-    "review_status": "reviewed",
-    "annotator": "<your-handle>",
-    "review_date": "<YYYY-MM-DD>",
-    "review_notes": "<1-3 sentence summary, plus any flags or ambiguities>"
-  }
-}
-```
+Set `review_status = "reviewed"` only after the complete source pass, exact anchors,
+uncertainty record, effort log, and all deterministic checks are complete.
 
-Follow the decision sequence in `docs/annotation/guidelines.md` for type and enforcement assignment.
+### 6. Freeze and commit
 
-### Step 4 — Validate
+Record the final annotation checksum and active minutes. Commit the annotation and its
+log on a branch named `annotation/blind-<doc_id>-<handle>` with a concise project-format
+commit message. Link issue #90 and declare that no candidate or other pass was viewed.
 
-```bash
-uv run python scripts/validate_paper_gold.py \
-  --gold-dir datasets/paper/second_pass
-```
+Do not amend semantic labels after reveal. Any later changes belong to a separate
+adjudication artifact.
 
-You should see `PASS <doc_id>.json`. Address any ERROR before continuing. WARN messages about empty steps are acceptable if a step is a genuinely simple single action — document the choice in `review_notes`.
+## Reveal and agreement
 
-### Step 5 — Commit
+After both passes are frozen, the coordinator:
 
-Create a branch:
+1. verifies the source, schema, annotation, and log hashes;
+2. computes step, constraint, attachment-edge, relation, type, enforcement,
+   evidence-span, and token-label agreement;
+3. stores the full pre-adjudication report for every preregistered pair;
+4. reports low and high agreement without selecting pairs by outcome;
+5. assigns a third human adjudicator who did not create either pass.
 
-```bash
-git checkout -b annotation/second-pass-<doc_id>-<yourhandle>
-git add datasets/paper/second_pass/<doc_id>.json
-git commit -m "dataset: independent second-pass annotation of <doc_id> (#60)"
-git push -u origin annotation/second-pass-<doc_id>-<yourhandle>
-gh pr create --title "..." --body "..." --base main
-```
+Attachment-edge F1 of at least 0.70 is the current G0 gate. A pair below the gate remains
+part of the reported aggregate and triggers protocol investigation. Cohen's kappa is a
+diagnostic, not an admission rule.
 
-Use the PR template (link the recruitment memo / Issue #60 / declare independence from gold).
+Omission and candidate-survival metrics are computed only after reveal. The blind
+annotator must not receive candidate-derived counts during annotation.
 
-### Step 6 — IAA reveal
+## Independent adjudication
 
-Once the PR is merged, Imad will:
+The adjudicator reviews every disagreement against the source and records the chosen
+label, evidence, and rationale. They also audit rare classes, prohibitions, emergency
+actions, implicit attachments, a seeded sample of agreements, and a seeded sample of
+unannotated source regions.
 
-1. Run `python scripts/setup_iaa_subset.py report` (or `make iaa`), which scores only the completed subset docs and computes step F1, constraint F1, relation F1, and token-label Cohen's κ between your pass and the first-pass gold.
-2. Post the IAA result in the PR thread.
-3. If κ ≥ 0.61 — congratulations, your annotation enters the paper's IAA aggregate.
-4. If κ < 0.61 — open a discussion thread on the disagreements. **Do not** unilaterally update your pass to match gold; the protocol is to discuss and (if needed) update *both* the gold and your pass through a documented adjudication round.
+Routine disagreements are adjudicated without the principal investigator. Escalate only
+unresolved taxonomy, implicit-evidence, scope, or safety-critical decisions. Preserve the
+two original passes, raw agreement, adjudication record, and final production annotation
+separately.
 
-## What to do if you get stuck
+## When uncertain
 
-- **Step boundary unclear**: leave a question in your `review_notes` and pick the boundary closest to a source sentence break. Adjudication happens after the IAA reveal.
-- **Constraint type unclear**: use the decision sequence in `docs/annotation/guidelines.md`. When the source modal verb is ambiguous, default to `must` and document the choice.
-- **Step has zero constraints**: re-read the source. If the step is genuinely a single action (e.g. "Open the well"), keep it empty and note "deliberate empty: single-action step" in `review_notes`.
-- **Source contains a definition or example**: drop it. Definitions and examples are not constraints. See `docs/annotation/guidelines.md` §"What to drop".
+- Step boundary: choose the most source-faithful atomic boundary and flag uncertainty.
+- Constraint type or enforcement: choose the best supported value and flag uncertainty;
+  never default automatically to `must`.
+- Zero-constraint step: retain it if it is genuinely unconstrained and record why.
+- Example or definition: exclude it unless the surrounding text makes it binding, then
+  flag it.
+- Source extraction defect: stop that item and report the exact source location rather
+  than silently correcting the authoritative text.
 
-## What success looks like
+## Completion criteria
 
-A committed PR adding 1-2 files under `datasets/paper/second_pass/` with:
+- The assignment remained source-only and blind.
+- The complete bounded procedure was reviewed.
+- Every item has exact source offsets.
+- The annotation and effort log are complete and frozen.
+- Deterministic validation passes.
+- The pass and raw agreement remain preserved regardless of score.
+- A different human adjudicates after reveal.
 
-- `review_status: "reviewed"`
-- Your handle in `annotator`
-- Constraints typed from the locked 6-type vocabulary, enforced from the source modal verb
-- Verbatim source text (no paraphrasing)
-- `make eval-iaa` reports κ ≥ 0.61 against the first-pass gold
+See also:
 
-## Open questions to flag at the IAA reveal
-
-- Disagreements about constraint type (especially precondition vs guard, or parameter vs guard).
-- Disagreements about step boundaries.
-- Disagreements about which paragraphs count as procedural vs explanatory.
-
-These become §"Annotation Disagreements" content in the paper — even unresolved disagreement is valuable evidence about the difficulty of constraint-attachment annotation.
-
-## Contact
-
-- Imad: `imadeddine200507@gmail.com` (corpus owner, IAA computation)
-- Issue tracker: https://github.com/imaddde867/IPKE/issues/60
-
-## See also
-
-- `docs/annotation/constraint-types.md`
-- `docs/annotation/guidelines.md`
-- `docs/dataset/datasheet.md`
-- `docs/paper/ipke-bench-resource-prd.md`
-- `~/Documents/2ndBrain/Projects/IPKE Paper - Thesis to Congress/07-annotator-recruitment-memo.md` (Imad's local vault — not public)
+- `docs/superpowers/specs/2026-07-13-human-evidence-recovery-design.md`
+- `docs/annotation/SIGN_OFF_ISSUE.md`
+- `docs/methods/annotation-pipeline.md`
+- GitHub issue #90
