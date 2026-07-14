@@ -2,7 +2,11 @@ from __future__ import annotations
 
 import pytest
 
-from src.evaluation.evidence import assess_annotation_evidence, assess_corpus_evidence
+from src.evaluation.evidence import (
+    artifact_loader_for_source,
+    assess_annotation_evidence,
+    assess_corpus_evidence,
+)
 
 
 def _annotation(annotator: str, *, status: str = "reviewed") -> dict:
@@ -134,3 +138,16 @@ def test_corpus_evidence_recomputes_and_rejects_low_attachment_agreement() -> No
     assert assess_corpus_evidence(logs, agreement_reports=reports) == (
         "attachment-edge agreement F1 0.500 is below 0.700",
     )
+
+
+def test_artifact_loader_uses_isolated_corpus_root(tmp_path) -> None:
+    source_path = tmp_path / "datasets/paper/text/doc.txt"
+    report_path = tmp_path / "datasets/paper/reports/doc_agreement.json"
+    source_path.parent.mkdir(parents=True)
+    report_path.parent.mkdir(parents=True)
+    source_path.write_text("source", encoding="utf-8")
+    report_path.write_bytes(b"report")
+
+    loader = artifact_loader_for_source(source_path)
+
+    assert loader("datasets/paper/reports/doc_agreement.json") == b"report"

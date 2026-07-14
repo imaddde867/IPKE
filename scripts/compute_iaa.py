@@ -12,6 +12,7 @@ from pathlib import Path
 from typing import Any
 
 from src.benchmark.taxonomy import LOCKED_CONSTRAINT_TYPES, LOCKED_ENFORCEMENT_LEVELS
+from src.evaluation.agreement import attachment_edge_set
 
 
 TOKEN_RE = re.compile(r"\b\w+\b")
@@ -120,18 +121,7 @@ def _coerce_refs(value: Any) -> list[str]:
 
 
 def relation_set(annotation: dict[str, Any]) -> set[tuple[str, str]]:
-    relations: set[tuple[str, str]] = set()
-    for constraint, containing_step_id in _iter_constraint_dicts(annotation):
-        text = normalize_text(constraint_text(constraint))
-        if not text:
-            continue
-        refs: list[str] = []
-        for field in ("steps", "attached_to", "applies_to", "targets"):
-            refs.extend(_coerce_refs(constraint.get(field)))
-        if not refs and containing_step_id:
-            refs.append(containing_step_id)
-        relations.update((text, ref) for ref in refs)
-    return relations
+    return attachment_edge_set(annotation)
 
 
 def _quality_issues(annotation: dict[str, Any], role: str) -> list[str]:

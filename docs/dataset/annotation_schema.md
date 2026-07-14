@@ -24,6 +24,8 @@ Blind-pair reports bind raw attachment TP/FP/FN and adjudication review-item IDs
 validator recomputes the pair counts from frozen artifacts, aggregates them across the
 blind subset for the 0.70 G0 gate, and requires typed adjudication decisions to cover the
 report items exactly.
+Disagreement item IDs are deterministically derived from the frozen primary/blind
+attachment-edge symmetric difference; report authors cannot choose or omit them.
 
 ## Required Top-Level Fields
 

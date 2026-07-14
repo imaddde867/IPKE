@@ -65,7 +65,11 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from src.evaluation.evidence import assess_corpus_evidence, assess_production_evidence
+from src.evaluation.evidence import (
+    artifact_loader_for_source,
+    assess_corpus_evidence,
+    assess_production_evidence,
+)
 from src.evaluation.corpus_manifest import (
     load_corpus_manifest,
     select_manifest_gold_files,
@@ -433,15 +437,14 @@ def main(argv: list[str] | None = None) -> int:
             if isinstance(evidence_log, dict):
                 evidence_logs[gf.stem] = evidence_log
                 if evidence_log.get("blind_subset_selected") is True:
-                    report_path = (
-                        REPO_ROOT
-                        / "datasets"
-                        / "paper"
-                        / "reports"
-                        / f"{gf.stem}_agreement.json"
-                    )
+                    artifact_loader = artifact_loader_for_source(tf)
                     try:
-                        loaded_report = json.loads(report_path.read_bytes())
+                        loaded_report = json.loads(
+                            artifact_loader(
+                                f"datasets/paper/reports/"
+                                f"{gf.stem}_agreement.json"
+                            )
+                        )
                     except (json.JSONDecodeError, OSError):
                         pass
                     else:
@@ -453,7 +456,7 @@ def main(argv: list[str] | None = None) -> int:
                 source_bytes=source_bytes,
                 evidence_log=evidence_log,
                 expected_doc_id=gf.stem,
-                artifact_loader=lambda path: (REPO_ROOT / path).read_bytes(),
+                artifact_loader=artifact_loader_for_source(tf),
             )
             if not evidence.evidence_eligible:
                 ineligible[gf.stem] = evidence.issues

@@ -4,7 +4,7 @@ import hashlib
 import json
 from collections.abc import Callable
 
-from src.evaluation.evidence import assess_production_evidence
+from src.evaluation.evidence import _agreement_report_issues, assess_production_evidence
 
 
 SOURCE_TEXT = "Préparer l’échantillon.\nWear gloves.\n"
@@ -861,6 +861,110 @@ def test_production_evidence_requires_adjudication_decision_coverage() -> None:
 
     assert result.evidence_eligible is False
     assert "adjudication decisions do not cover agreement review items" in result.issues
+
+
+def test_production_evidence_derives_disagreements_from_frozen_passes() -> None:
+    annotation = _annotation()
+    annotation_bytes = _encoded(annotation)
+    evidence_log, artifacts = _blind_evidence_log(annotation_bytes)
+    blind_annotation = _annotation()
+    blind_annotation["steps"][0]["constraints"] = []
+    blind_bytes = _encoded(blind_annotation)
+    blind_path = "datasets/paper/second_pass/sample_procedure.json"
+    artifacts[blind_path] = blind_bytes
+    evidence_log["blind_pass"]["output"]["sha256"] = hashlib.sha256(
+        blind_bytes
+    ).hexdigest()
+    report_path = "datasets/paper/reports/sample_procedure_agreement.json"
+    report = json.loads(artifacts[report_path])
+    report["aggregate"]["relation_exact"] = {
+        "true_positive": 0,
+        "false_positive": 0,
+        "false_negative": 1,
+        "f1": 0.0,
+    }
+    report_bytes = _encoded(report)
+    artifacts[report_path] = report_bytes
+    evidence_log["agreement_report"]["sha256"] = hashlib.sha256(
+        report_bytes
+    ).hexdigest()
+
+    result = assess_production_evidence(
+        annotation,
+        annotation_bytes=annotation_bytes,
+        source_bytes=SOURCE_TEXT.encode("utf-8"),
+        evidence_log=evidence_log,
+        expected_doc_id="sample_procedure",
+        artifact_loader=_artifact_loader(annotation_bytes, artifacts),
+    )
+
+    assert result.evidence_eligible is False
+    assert "agreement report does not enumerate frozen-pass disagreements" in result.issues
+
+
+def test_production_evidence_rejects_adjudication_span_outside_source() -> None:
+    annotation = _annotation()
+    annotation_bytes = _encoded(annotation)
+    evidence_log, artifacts = _blind_evidence_log(annotation_bytes)
+    evidence_log["adjudication"]["decisions"][0]["evidence_spans"] = [
+        {"char_start": 0, "char_end": len(SOURCE_TEXT) + 1}
+    ]
+
+    result = assess_production_evidence(
+        annotation,
+        annotation_bytes=annotation_bytes,
+        source_bytes=SOURCE_TEXT.encode("utf-8"),
+        evidence_log=evidence_log,
+        expected_doc_id="sample_procedure",
+        artifact_loader=_artifact_loader(annotation_bytes, artifacts),
+    )
+
+    assert result.evidence_eligible is False
+    assert "adjudication decision A-SEED-1 span is outside source text" in result.issues
+
+
+def test_agreement_report_allows_equivalent_serialized_f1() -> None:
+    primary = {
+        "steps": [
+            {
+                "id": "S1",
+                "constraints": [
+                    {"text": f"constraint {index}", "attached_to": ["S1"]}
+                    for index in range(5)
+                ],
+            }
+        ]
+    }
+    blind = {
+        "steps": [
+            {
+                "id": "S1",
+                "constraints": [
+                    {"text": "constraint 0", "attached_to": ["S1"]}
+                ],
+            }
+        ]
+    }
+    report_bytes = _encoded(
+        {
+            "aggregate": {
+                "relation_exact": {
+                    "true_positive": 1,
+                    "false_positive": 0,
+                    "false_negative": 4,
+                    "f1": 2 * 1.0 * 0.2 / (1.0 + 0.2),
+                }
+            }
+        }
+    )
+
+    issues = _agreement_report_issues(
+        report_bytes,
+        primary_annotation=primary,
+        blind_annotation=blind,
+    )
+
+    assert "agreement report relation_exact F1 does not match its counts" not in issues
 
 
 def test_production_evidence_fails_closed_for_non_object_evidence_log() -> None:
