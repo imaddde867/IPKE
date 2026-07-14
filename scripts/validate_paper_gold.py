@@ -32,6 +32,7 @@ from src.evaluation.corpus_manifest import (
 )
 from src.evaluation.evidence import (
     ArtifactLoader,
+    artifact_loader_for_source,
     assess_annotation_evidence,
     assess_corpus_evidence,
     assess_production_evidence,
@@ -63,18 +64,7 @@ def _annotation_schema_errors(annotation: dict) -> list[str]:
 
 
 def _artifact_loader_for_source(source_path: Path) -> ArtifactLoader:
-    resolved_source = source_path.resolve()
-    relative_source = Path("datasets/paper/text") / source_path.name
-    artifact_root = REPO_ROOT
-    for parent in resolved_source.parents:
-        if (parent / relative_source).resolve() == resolved_source:
-            artifact_root = parent
-            break
-
-    def load(path: str) -> bytes:
-        return (artifact_root / path).read_bytes()
-
-    return load
+    return artifact_loader_for_source(source_path)
 
 
 def iter_constraints(annotation: dict) -> Iterable[tuple[str, str, dict]]:
@@ -306,15 +296,17 @@ def main(argv: list[str] | None = None) -> int:
                 if isinstance(loaded_evidence, dict):
                     production_logs[f.stem] = loaded_evidence
                     if loaded_evidence.get("blind_subset_selected") is True:
-                        report_path = (
-                            REPO_ROOT
-                            / "datasets"
-                            / "paper"
-                            / "reports"
-                            / f"{f.stem}_agreement.json"
+                        assert args.text_dir is not None
+                        loader = _artifact_loader_for_source(
+                            args.text_dir / f"{f.stem}.txt"
                         )
                         try:
-                            loaded_report = json.loads(report_path.read_bytes())
+                            loaded_report = json.loads(
+                                loader(
+                                    f"datasets/paper/reports/"
+                                    f"{f.stem}_agreement.json"
+                                )
+                            )
                         except (json.JSONDecodeError, OSError):
                             pass
                         else:

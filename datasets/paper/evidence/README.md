@@ -49,5 +49,12 @@ counts aggregated across the complete preregistered blind subset, not to individ
 pairs. Typed adjudication decisions must exactly cover the report's disagreement and
 seeded-audit IDs and name the adjudicator as decision maker.
 
+Disagreement IDs are derived from the normalized attachment edge and the side on which
+it appears: `DIS:<primary|blind>:<16-hex-digest>`, where the digest is the first 16
+hexadecimal characters of SHA-256 over compact UTF-8 JSON
+`[side, normalized_constraint_text, step_id]`. The validator derives this set from the
+frozen pair rather than trusting the report declaration. Adjudication evidence spans
+must remain inside the frozen procedure source span.
+
 Run the candidate-compatible structural check with `make eval-validate`. Run the
 fail-closed production boundary with `make eval-paper-gate`.
