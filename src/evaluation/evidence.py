@@ -561,6 +561,7 @@ def _timing_issues(evidence_log: Mapping[str, Any]) -> list[str]:
 def _annotation_item_ids(annotation: Mapping[str, Any]) -> dict[str, set[str]]:
     step_ids: set[str] = set()
     constraint_ids: set[str] = set()
+    relation_ids: set[str] = set()
     raw_steps = annotation.get("steps")
     if isinstance(raw_steps, list):
         for step in raw_steps:
@@ -584,7 +585,19 @@ def _annotation_item_ids(annotation: Mapping[str, Any]) -> dict[str, set[str]]:
             if isinstance(constraint, Mapping)
             and isinstance(constraint.get("id"), str)
         )
-    return {"step": step_ids, "constraint": constraint_ids}
+    relations = annotation.get("relations")
+    if isinstance(relations, list):
+        relation_ids.update(
+            relation["id"]
+            for relation in relations
+            if isinstance(relation, Mapping)
+            and isinstance(relation.get("id"), str)
+        )
+    return {
+        "step": step_ids,
+        "constraint": constraint_ids,
+        "relation": relation_ids,
+    }
 
 
 def _decision_issues(
@@ -610,7 +623,11 @@ def _decision_issues(
     if duplicate_decisions:
         issues.append(duplicate_decisions)
 
-    for item_kind, count_key in (("step", "steps"), ("constraint", "constraints")):
+    for item_kind, count_key in (
+        ("step", "steps"),
+        ("constraint", "constraints"),
+        ("relation", "relations"),
+    ):
         kind_decisions = [
             decision
             for decision in decisions
@@ -792,7 +809,11 @@ def assess_production_evidence(
         if logged_source.get("span_sha256") != span_digest:
             hash_issues.append("source span SHA-256 does not match evidence log")
 
-    candidate_ids: Mapping[str, set[str]] = {"step": set(), "constraint": set()}
+    candidate_ids: Mapping[str, set[str]] = {
+        "step": set(),
+        "constraint": set(),
+        "relation": set(),
+    }
     raw_assistance = primary.get("assistance")
     assistance = raw_assistance if isinstance(raw_assistance, Mapping) else {}
     if assistance.get("candidate_used") is True:

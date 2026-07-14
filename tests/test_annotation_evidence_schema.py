@@ -21,6 +21,12 @@ def _valid_log() -> dict:
         "doc_id": "sample_procedure",
         "source": {
             "path": "datasets/paper/text/sample_procedure.txt",
+            "url": "https://example.org/sample-procedure",
+            "retrieval_date": "2026-07-13",
+            "version": "test-v1",
+            "page_range": "1",
+            "section": "Procedure",
+            "redistribution_status": "public-domain test fixture",
             "sha256": hashlib.sha256(b"source").hexdigest(),
             "span_sha256": hashlib.sha256(b"source").hexdigest(),
             "char_start": 0,
@@ -58,6 +64,14 @@ def _valid_log() -> dict:
                     "added": 1,
                     "final_count": 1,
                 },
+                "relations": {
+                    "candidate_count": 0,
+                    "accepted": 0,
+                    "edited": 0,
+                    "rejected": 0,
+                    "added": 1,
+                    "final_count": 1,
+                },
             },
             "decisions": [
                 {
@@ -77,6 +91,15 @@ def _valid_log() -> dict:
                     "output_ids": ["C1"],
                     "evidence_spans": [{"char_start": 0, "char_end": 6}],
                     "rationale": "Source-only annotation.",
+                },
+                {
+                    "decision_id": "D-R1",
+                    "item_kind": "relation",
+                    "action": "add",
+                    "input_ids": [],
+                    "output_ids": ["R1"],
+                    "evidence_spans": [{"char_start": 0, "char_end": 6}],
+                    "rationale": "Source order.",
                 },
             ],
             "unresolved_decisions": [],
@@ -105,6 +128,23 @@ def test_annotation_evidence_schema_is_valid() -> None:
 def test_annotation_evidence_schema_accepts_minimal_frozen_primary_pass() -> None:
     schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
     jsonschema.Draft202012Validator(schema).validate(_valid_log())
+
+
+def test_annotation_evidence_schema_requires_complete_source_identity() -> None:
+    schema = json.loads(SCHEMA_PATH.read_text(encoding="utf-8"))
+    evidence_log = copy.deepcopy(_valid_log())
+    for field in (
+        "url",
+        "retrieval_date",
+        "version",
+        "page_range",
+        "section",
+        "redistribution_status",
+    ):
+        evidence_log["source"].pop(field)
+
+    with pytest.raises(jsonschema.ValidationError):
+        jsonschema.Draft202012Validator(schema).validate(evidence_log)
 
 
 def test_candidate_assistance_requires_candidate_artifact() -> None:

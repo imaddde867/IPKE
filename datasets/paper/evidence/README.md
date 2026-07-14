@@ -7,8 +7,9 @@ datasets/paper/evidence/<doc_id>.json
 ```
 
 The contract is `schemas/ipke_annotation_evidence.schema.json`. A sidecar binds the
-authoritative UTF-8 source bytes, bounded Unicode character span, primary pass,
-optional blind/adjudication artifacts, and final annotation bytes by SHA-256.
+source URL, retrieval date, version, page range, section, redistribution status,
+authoritative UTF-8 bytes, bounded Unicode character span, primary pass, optional
+blind/adjudication artifacts, and final annotation bytes by SHA-256.
 
 Do not create placeholder sidecars. In particular, do not copy historical records from
 `datasets/paper/adjudication_decisions/`: those are agent decision records and cannot
@@ -35,6 +36,10 @@ its exact on-disk bytes. Offsets are end-exclusive indices into the UTF-8-decode
 string, so they count Unicode code points rather than encoded bytes. Every production
 step and constraint must carry its own `provenance.char_start` and
 `provenance.char_end` inside `procedure.source`.
+
+The primary decision ledger covers steps, constraints, and relations. Relation decisions
+include order edges, branches, alternatives, and other explicit graph relations; a file
+cannot become production evidence while those decisions are absent.
 
 Run the candidate-compatible structural check with `make eval-validate`. Run the
 fail-closed production boundary with `make eval-paper-gate`.

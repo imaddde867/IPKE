@@ -76,6 +76,12 @@ def _evidence_log(annotation_bytes: bytes) -> dict:
         "doc_id": "sample_procedure",
         "source": {
             "path": "datasets/paper/text/sample_procedure.txt",
+            "url": "https://example.org/sample-procedure",
+            "retrieval_date": "2026-07-13",
+            "version": "test-v1",
+            "page_range": "1",
+            "section": "Procedure",
+            "redistribution_status": "public-domain test fixture",
             "sha256": hashlib.sha256(source_bytes).hexdigest(),
             "span_sha256": hashlib.sha256(source_bytes).hexdigest(),
             "char_start": 0,
@@ -112,6 +118,14 @@ def _evidence_log(annotation_bytes: bytes) -> dict:
                     "rejected": 0,
                     "added": 1,
                     "final_count": 1,
+                },
+                "relations": {
+                    "candidate_count": 0,
+                    "accepted": 0,
+                    "edited": 0,
+                    "rejected": 0,
+                    "added": 0,
+                    "final_count": 0,
                 },
             },
             "decisions": [
@@ -579,7 +593,8 @@ def test_production_evidence_verifies_candidate_and_decision_input_ids() -> None
         "sha256": hashlib.sha256(candidate_bytes).hexdigest(),
     }
     evidence_log["primary_pass"]["assistance"]["candidate_used"] = True
-    for counts in evidence_log["primary_pass"]["decision_counts"].values():
+    for item_kind in ("steps", "constraints"):
+        counts = evidence_log["primary_pass"]["decision_counts"][item_kind]
         counts.update(
             {
                 "candidate_count": 1,
@@ -725,3 +740,23 @@ def test_production_evidence_rejects_low_attachment_agreement() -> None:
 
     assert result.evidence_eligible is False
     assert "attachment-edge agreement F1 0.500 is below 0.700" in result.issues
+
+
+def test_production_evidence_requires_relation_decision_coverage() -> None:
+    annotation = _annotation()
+    annotation["relations"] = [
+        {"id": "R1", "source": "S1", "target": "S1", "type": "NEXT"}
+    ]
+    annotation_bytes = _encoded(annotation)
+
+    result = assess_production_evidence(
+        annotation,
+        annotation_bytes=annotation_bytes,
+        source_bytes=SOURCE_TEXT.encode("utf-8"),
+        evidence_log=_evidence_log(annotation_bytes),
+        expected_doc_id="sample_procedure",
+        artifact_loader=_artifact_loader(annotation_bytes),
+    )
+
+    assert result.evidence_eligible is False
+    assert "primary relation decisions do not cover final annotation IDs" in result.issues
