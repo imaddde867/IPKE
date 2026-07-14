@@ -87,6 +87,12 @@ def _production_package(tmp_path: Path) -> tuple[Path, Path, Path]:
         "doc_id": "test_doc",
         "source": {
             "path": "datasets/paper/text/test_doc.txt",
+            "url": "https://example.org/test-doc",
+            "retrieval_date": "2026-07-13",
+            "version": "test-v1",
+            "page_range": "1",
+            "section": "Test",
+            "redistribution_status": "public-domain test fixture",
             "sha256": hashlib.sha256(source_bytes).hexdigest(),
             "span_sha256": hashlib.sha256(source_bytes).hexdigest(),
             "char_start": 0,
@@ -123,6 +129,14 @@ def _production_package(tmp_path: Path) -> tuple[Path, Path, Path]:
                     "rejected": 0,
                     "added": 1,
                     "final_count": 1,
+                },
+                "relations": {
+                    "candidate_count": 0,
+                    "accepted": 0,
+                    "edited": 0,
+                    "rejected": 0,
+                    "added": 0,
+                    "final_count": 0,
                 },
             },
             "decisions": [

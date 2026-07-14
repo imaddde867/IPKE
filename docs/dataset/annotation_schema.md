@@ -14,7 +14,9 @@ end-exclusive Unicode `provenance.char_start` and `provenance.char_end` offsets 
 `procedure.source`. The runtime evidence validator checks those offsets against the
 committed UTF-8 source. It also binds the filename, annotation ID, sidecar ID, canonical
 artifact paths, and exact-byte hashes for the candidate, primary pass, optional blind
-pass, agreement report, adjudication output, and final annotation.
+pass, agreement report, adjudication output, and final annotation. The sidecar also
+records source URL, retrieval date, version, page range, section identity, and
+redistribution status, plus complete step, constraint, and relation decision ledgers.
 
 ## Required Top-Level Fields
 

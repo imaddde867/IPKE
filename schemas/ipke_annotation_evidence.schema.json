@@ -225,11 +225,45 @@
     "sourceArtifact": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["path", "sha256", "span_sha256", "char_start", "char_end"],
+      "required": [
+        "path",
+        "url",
+        "retrieval_date",
+        "version",
+        "page_range",
+        "section",
+        "redistribution_status",
+        "sha256",
+        "span_sha256",
+        "char_start",
+        "char_end"
+      ],
       "properties": {
         "path": {
           "type": "string",
           "pattern": "^datasets/paper/text/[A-Za-z0-9._-]+\\.txt$"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "retrieval_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "version": {
+          "type": ["string", "null"]
+        },
+        "page_range": {
+          "type": ["string", "null"]
+        },
+        "section": {
+          "type": "string",
+          "minLength": 1
+        },
+        "redistribution_status": {
+          "type": "string",
+          "minLength": 1
         },
         "sha256": {
           "$ref": "#/$defs/sha256"
@@ -306,7 +340,7 @@
       ],
       "properties": {
         "decision_id": {"$ref": "#/$defs/identifier"},
-        "item_kind": {"enum": ["step", "constraint"]},
+        "item_kind": {"enum": ["step", "constraint", "relation"]},
         "action": {"enum": ["accept", "edit", "reject", "add"]},
         "input_ids": {
           "type": "array",
@@ -415,10 +449,11 @@
             "decision_counts": {
               "type": "object",
               "additionalProperties": false,
-              "required": ["steps", "constraints"],
+              "required": ["steps", "constraints", "relations"],
               "properties": {
                 "steps": {"$ref": "#/$defs/decisionCounts"},
-                "constraints": {"$ref": "#/$defs/decisionCounts"}
+                "constraints": {"$ref": "#/$defs/decisionCounts"},
+                "relations": {"$ref": "#/$defs/decisionCounts"}
               }
             },
             "decisions": {

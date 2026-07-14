@@ -92,10 +92,11 @@ Every primary pass records:
 - active review minutes, excluding breaks;
 - candidate steps accepted, edited, rejected, and added;
 - candidate constraints accepted, edited, rejected, and added;
+- candidate relations accepted, edited, rejected, and added;
 - unresolved decisions and evidence locations;
 - final annotation SHA-256.
 
-Use separate step and constraint counts. For each item class:
+Use separate step, constraint, and relation counts. For each item class:
 
 ```text
 edit_rate = (edited + rejected) / candidate_items
@@ -111,9 +112,10 @@ The sidecar contract is now
 annotation byte hashes, the bounded-span hash, Unicode item offsets, primary decision
 coverage against the loaded candidate, unresolved decisions, role records, canonical
 artifact paths, and hashes for primary, blind, agreement, adjudication, and final
-artifacts. It also rejects duplicate IDs, broken links, invalid decision spans, and
-invalid timing. Candidate validation remains backward-compatible and does not imply
-production eligibility.
+artifacts. It also requires complete source identity, rejects duplicate IDs, broken
+links, incomplete relation decisions, invalid decision spans, and invalid timing.
+Candidate validation remains backward-compatible and does not imply production
+eligibility.
 
 ## 5. Collect the blind second pass
 
