@@ -19,7 +19,7 @@ are not framed as a benchmark-paper contribution.
 Controlling design:
 `docs/superpowers/specs/2026-07-10-ipke-method-paper-design.md`.
 
-## Current ground truth
+## Current evidence state
 
 - The retained legacy-candidate inventory has 8 documents, 256 steps, and 231
   constraints. The provisional manifest selects five procedure candidates.

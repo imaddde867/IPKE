@@ -74,7 +74,7 @@ def assess_annotation_evidence(annotation: Mapping[str, Any]) -> AnnotationEvide
     return AnnotationEvidence(
         declared_reviewed=declared_reviewed,
         human_verified=human_verified,
-        evidence_eligible=not issues,
+        evidence_eligible=False,
         issues=tuple(issues),
     )
 

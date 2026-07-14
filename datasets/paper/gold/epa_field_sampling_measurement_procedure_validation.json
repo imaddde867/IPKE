@@ -183,7 +183,7 @@
         {
           "id": "C9",
           "type": "parameter",
-          "text": "to the extent necessary to ensure the result provided is equivalent to a currently used procedure or consistent results are achieved",
+          "text": "New standard procedures will be evaluated to the extent necessary to ensure the result provided is equivalent to a currently used procedure or consistent results are achieved",
           "attached_to": [
             "S7"
           ],
@@ -225,8 +225,8 @@
       "constraints": [
         {
           "id": "C11",
-          "type": "parameter",
-          "text": "in writing (email or memo)",
+          "type": "postcondition",
+          "text": "Inform the customer in writing (email or memo) that a non-standard procedure will be used",
           "attached_to": [
             "S8"
           ],
@@ -276,8 +276,8 @@
       "constraints": [
         {
           "id": "C13",
-          "type": "parameter",
-          "text": "in the project file the customer’s request and the need for using a non-standard procedure (i.e., description of the project request and why it required the use of a non-standard procedure)",
+          "type": "postcondition",
+          "text": "Document in the project file the customer’s request and the need for using a non-standard procedure (i.e., description of the project request and why it required the use of a non-standard procedure)",
           "attached_to": [
             "S10"
           ],
@@ -301,8 +301,8 @@
       "constraints": [
         {
           "id": "C14",
-          "type": "reference",
-          "text": "according to Section 4 of this procedure",
+          "type": "postcondition",
+          "text": "Non-standard procedures will be fully validated according to Section 4 of this procedure",
           "attached_to": [
             "S11"
           ],
@@ -652,8 +652,8 @@
       "constraints": [
         {
           "id": "C27",
-          "type": "guard",
-          "text": "as necessary, during the validation process",
+          "type": "postcondition",
+          "text": "The team will update the validation plan, as necessary, during the validation process",
           "attached_to": [
             "S24"
           ],
@@ -677,7 +677,7 @@
       "constraints": [
         {
           "id": "C28",
-          "type": "role_assignment",
+          "type": "postcondition",
           "text": "The validation team will develop an appropriate field test or evaluation for the operating procedure",
           "attached_to": [
             "S25"
@@ -705,8 +705,7 @@
           "type": "role_assignment",
           "text": "A member or members of the validation team will be present during the field test or evaluation",
           "attached_to": [
-            "S26",
-            "S27"
+            "S26"
           ],
           "enforcement": "must"
         }
@@ -744,7 +743,7 @@
         {
           "id": "C31",
           "type": "parameter",
-          "text": "using the acceptance criteria established by the team in the validation plan",
+          "text": "assess the results using the acceptance criteria established by the team in the validation plan",
           "attached_to": [
             "S28"
           ],
@@ -777,7 +776,7 @@
       "constraints": [
         {
           "id": "C32",
-          "type": "guard",
+          "type": "postcondition",
           "text": "If the assessment indicates that the operating procedure meets the acceptance criteria, the validation team will finalize the operating procedure as written, or with modifications",
           "attached_to": [
             "S29"
@@ -827,7 +826,7 @@
       "constraints": [
         {
           "id": "C34",
-          "type": "role_assignment",
+          "type": "postcondition",
           "text": "The validation team will document all decisions and actions",
           "attached_to": [
             "S31"
@@ -878,16 +877,16 @@
     },
     {
       "id": "S33",
-      "label": "Maintain validation records after validation completes",
-      "action_verb": "maintain",
-      "action_object": "validation records",
+      "label": "Transfer records to Quality Assurance Manager",
+      "action_verb": "transfer",
+      "action_object": "records to Quality Assurance Manager",
       "arguments": [],
       "parameters": [],
       "constraints": [
         {
           "id": "C37",
-          "type": "role_assignment",
-          "text": "the records will be maintained by the Quality Assurance Manager",
+          "type": "postcondition",
+          "text": "Upon completion of the validation, the records will be maintained by the Quality Assurance Manager",
           "attached_to": [
             "S33"
           ],
@@ -937,7 +936,7 @@
     },
     {
       "id": "S35",
-      "label": "Document competency for each assigned staff member",
+      "label": "Document staff competency in training and competency procedure",
       "action_verb": "document",
       "action_object": "staff competency",
       "arguments": [],
@@ -945,8 +944,8 @@
       "constraints": [
         {
           "id": "C40",
-          "type": "parameter",
-          "text": "for each staff member who will be assigned to implement the operating procedure",
+          "type": "postcondition",
+          "text": "Competency will be documented, in accordance with LSASD Operating Procedure for Training and Competency (LSASDPROC-1003, most recent version) for each staff member who will be assigned to implement the operating procedure",
           "attached_to": [
             "S35"
           ],
@@ -955,7 +954,7 @@
         {
           "id": "C41",
           "type": "reference",
-          "text": "in accordance with LSASD Operating Procedure for Training and Competency (LSASDPROC-1003, most recent version)",
+          "text": "LSASD Operating Procedure for Training and Competency (LSASDPROC-1003, most recent version)",
           "attached_to": [
             "S35"
           ],
@@ -1163,14 +1162,6 @@
     "review_status": "reviewed",
     "annotator": "model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off)",
     "review_date": "2026-07-05",
-    "last_agent_review_date": "2026-07-10",
-    "manual_correction_summary": "Source-to-gold review corrected C9, C11, C13, C14, C27-C29, C31-C34, C37, C40-C41, S33, and S35 without applying human sign-off. Scope, general validation attachment, and graph relations remain open for human adjudication.",
-    "open_questions": [
-      "Human adjudication required: the declared span includes sections 1-5 although procedure.source.section says sections 3-5; decide whether S1-S3 belong in this procedure.",
-      "Human adjudication required: S1 and C1 describe past document preparation rather than an executable action.",
-      "Human adjudication required: rebuild relations for three alternative procedure categories and the validation retry path before using graph metrics.",
-      "Human adjudication required: decide the full attachment set for C46, which governs validation extent generally rather than only S11."
-    ],
     "review_notes": "Adjudicated 2026-07-05 by model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off) via scripts/adjudicate.py from model-assisted draft. Decisions: 73 accept, 3 edit, 0 reject, 0 add.\nstep:S1 ACCEPT\nstep:S2 ACCEPT\nstep:S3 ACCEPT\nstep:S4 ACCEPT\nstep:S5 ACCEPT\nstep:S6 ACCEPT\nstep:S7 ACCEPT\nstep:S8 ACCEPT\nstep:S9 ACCEPT\nstep:S10 ACCEPT\nstep:S11 ACCEPT\nstep:S12 ACCEPT\nstep:S13 ACCEPT\nstep:S14 ACCEPT\nstep:S15 ACCEPT\nstep:S16 ACCEPT\nstep:S17 ACCEPT\nstep:S18 ACCEPT\nstep:S19 ACCEPT\nstep:S20 ACCEPT\nstep:S21 ACCEPT\nstep:S22 ACCEPT\nstep:S23 ACCEPT\nstep:S24 ACCEPT\nstep:S25 ACCEPT\nstep:S26 ACCEPT\nstep:S27 ACCEPT\nstep:S28 ACCEPT\nstep:S29 ACCEPT\nstep:S30 ACCEPT\nstep:S31 ACCEPT\nstep:S32 ACCEPT\nstep:S33 ACCEPT\nstep:S34 ACCEPT\nstep:S35 ACCEPT\nconstraint:C1 ACCEPT\nconstraint:C2 ACCEPT\nconstraint:C3 ACCEPT\nconstraint:C4 ACCEPT\nconstraint:C5 ACCEPT\nconstraint:C6 ACCEPT\nconstraint:C8 EDIT ['type'] -- Guard describes a condition that prevents validation, not a condition that must exist before steps S5/S6 occur. It applies to S11 (validation step), not to periodic review steps.\nconstraint:C7 ACCEPT\nconstraint:C9 ACCEPT\nconstraint:C10 ACCEPT\nconstraint:C11 ACCEPT\nconstraint:C12 ACCEPT\nconstraint:C13 ACCEPT\nconstraint:C14 EDIT ['type'] -- Section 3.2.2 states 'Non-standard procedures will be fully validated' as a requirement for S11, not a precondition to it. The validation process itself produces this state.\nconstraint:C15 ACCEPT\nconstraint:C16 ACCEPT\nconstraint:C17 ACCEPT\nconstraint:C18 ACCEPT\nconstraint:C19 ACCEPT\nconstraint:C20 ACCEPT\nconstraint:C21 ACCEPT\nconstraint:C22 ACCEPT\nconstraint:C23 ACCEPT\nconstraint:C24 ACCEPT\nconstraint:C25 ACCEPT\nconstraint:C26 ACCEPT\nconstraint:C27 EDIT ['enforcement'] -- Text states 'The team will update the validation plan, as necessary' — this is a directive, not optional guidance. Should enforce as must.\nconstraint:C28 ACCEPT\nconstraint:C29 ACCEPT\nconstraint:C30 ACCEPT\nconstraint:C31 ACCEPT\nconstraint:C32 ACCEPT\nconstraint:C33 ACCEPT\nconstraint:C34 ACCEPT\nconstraint:C35 ACCEPT\nconstraint:C36 ACCEPT\nconstraint:C37 ACCEPT\nconstraint:C38 ACCEPT\nconstraint:C39 ACCEPT\nconstraint:C40 ACCEPT\nconstraint:C41 ACCEPT\nEDGE CASE (short standalone): full document is a single complete process (<2k words); annotated end-to-end per guidelines short-standalone rule.\n[verbatim-grounding pass 2026-07-06, agent, pending human sign-off] Eight constraint texts re-grounded to contiguous verbatim source spans (C6, C7, C19, C24, C26, C31, C35, C13 extended with its i.e.-parenthetical; C41 narrowed to the referenced document title to remove full containment inside C40). Dropped C5 (Section 2.1 definition — guidelines 'What to drop: Definitions'), C12, C22, C30 (zero-information restatements of their own steps). Retyped per the guidelines decision sequence: C7 -> guard/may ('where necessary, may be revised'), C8 and C17 -> guard (exemption/when-trigger conditions), C29 -> role_assignment (team-member presence), C35 -> postcondition (generated records). Added missed constraints: C42 'After completion of the field test or evaluation' (precondition, S28), C43 facilitator responsibility (role_assignment, S17), C44 team composition (parameter/may, S20), C45 team-leader point of contact (role_assignment, S22), C46 'Validation will be as extensive as is necessary...' (parameter, S11), C47 'the project leader will' 3.2.1 role intro (role_assignment, S8-S10), C48 'New standard procedures may be adopted...' (guard/may, S7). 41 -> 44 constraints.\nstep:S4 zero_constraints adjudicated (definition dropped; usage step carries no separate condition); step:S9 zero_constraints adjudicated (covered via C47 attachment); step:S19 zero_constraints adjudicated; step:S27 zero_constraints adjudicated\n[relations pass 2026-07-06, agent, pending human sign-off] Step-graph relations annotated by hand: NEXT = document-order procedural succession; fork NEXT edges plus ALTERNATIVE_TO only where the source states mutually exclusive branches (S12 outside-quality-system vs S13 adopt-into-quality-system per 3.2.2/3.2.3; S29 finalize vs S30 return-to-earlier-steps per 4.5.1; both rejoin at S31). Conditional in-step behaviour stays encoded as guard constraints. Loops (check-measurement repeat, per-vertical sampling) not modeled to keep the graph acyclic. NOTE: current Tier-B eval synthesizes a linear NEXT chain from steps-array order and does not read this field; relations are provided as explicit gold ordering/branching for graph consumers and export."
   }
 }
