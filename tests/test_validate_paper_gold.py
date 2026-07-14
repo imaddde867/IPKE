@@ -449,7 +449,10 @@ def test_production_evidence_mode_rejects_marker_without_sidecar(
     assert any("evidence log file missing" in error for error in _errors(messages))
 
 
-def test_production_evidence_cli_loads_matching_sidecars(tmp_path: Path) -> None:
+def test_production_evidence_cli_rejects_insufficient_blind_coverage(
+    tmp_path: Path,
+    capsys,
+) -> None:
     gold_path, source_path, evidence_path = _production_package(tmp_path)
 
     rc = main(
@@ -465,12 +468,19 @@ def test_production_evidence_cli_loads_matching_sidecars(tmp_path: Path) -> None
         ]
     )
 
-    assert rc == 0
+    output = capsys.readouterr().out
+    assert rc == 1
+    assert "blind second-pass coverage is 0/1; at least 1/1 required" in output
 
 
 def test_production_cli_does_not_require_excluded_candidate_files(
     tmp_path: Path,
+    monkeypatch,
 ) -> None:
+    monkeypatch.setattr(
+        "scripts.validate_paper_gold.assess_corpus_evidence",
+        lambda _logs: (),
+    )
     gold_path, source_path, evidence_path = _production_package(tmp_path)
     manifest_path = _write_manifest(
         tmp_path / "manifest.json",

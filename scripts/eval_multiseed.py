@@ -65,7 +65,7 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from src.evaluation.evidence import assess_production_evidence
+from src.evaluation.evidence import assess_corpus_evidence, assess_production_evidence
 from src.evaluation.corpus_manifest import (
     load_corpus_manifest,
     select_manifest_gold_files,
@@ -327,6 +327,13 @@ def main(argv: list[str] | None = None) -> int:
             print(f"ERROR: directory not found: {d}", file=sys.stderr)
             return 1
     if not args.dry_run and not args.allow_unverified:
+        if args.manifest is None:
+            print(
+                "ERROR: --manifest is required for paper-evidence runs. "
+                "Use --allow-unverified only for development.",
+                file=sys.stderr,
+            )
+            return 1
         if evidence_dir is None:
             print(
                 "ERROR: --evidence-dir is required for paper-evidence runs. "
@@ -352,6 +359,13 @@ def main(argv: list[str] | None = None) -> int:
             print(f"ERROR: invalid corpus manifest: {exc}", file=sys.stderr)
             return 1
         if manifest.manifest_status == "provisional":
+            if not args.dry_run and not args.allow_unverified:
+                print(
+                    "ERROR: corpus manifest is provisional; frozen manifest required "
+                    "for paper-evidence runs.",
+                    file=sys.stderr,
+                )
+                return 1
             print(
                 "WARNING: corpus manifest is provisional; outputs are development-only.",
                 file=sys.stderr,
@@ -398,6 +412,7 @@ def main(argv: list[str] | None = None) -> int:
     # Reject annotations without a complete, source-bound human evidence package.
     if not args.dry_run and not args.allow_unverified:
         ineligible: dict[str, tuple[str, ...]] = {}
+        evidence_logs: dict[str, dict[str, Any]] = {}
         assert evidence_dir is not None
         for gf, tf in pairs:
             evidence_path = evidence_dir / f"{gf.stem}.json"
@@ -414,6 +429,8 @@ def main(argv: list[str] | None = None) -> int:
                     f"cannot read production evidence package: {exc}",
                 )
                 continue
+            if isinstance(evidence_log, dict):
+                evidence_logs[gf.stem] = evidence_log
             evidence = assess_production_evidence(
                 loaded_gold[gf.stem],
                 annotation_bytes=loaded_gold_bytes[gf.stem],
@@ -436,6 +453,15 @@ def main(argv: list[str] | None = None) -> int:
                 "for development use only.",
                 file=sys.stderr,
             )
+            return 1
+        corpus_issues = assess_corpus_evidence(evidence_logs)
+        if corpus_issues:
+            print(
+                "ERROR: corpus is not eligible for paper evidence:",
+                file=sys.stderr,
+            )
+            for issue in corpus_issues:
+                print(f"  {issue}", file=sys.stderr)
             return 1
 
     seeds = list(range(args.seed_start, args.seed_start + args.seeds))

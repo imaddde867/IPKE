@@ -179,7 +179,18 @@ def _artifact_loader(
 
 def _blind_evidence_log(annotation_bytes: bytes) -> tuple[dict, dict[str, bytes]]:
     evidence_log = _evidence_log(annotation_bytes)
-    report_bytes = b'{"attachment_f1": 0.8}'
+    report_bytes = _encoded(
+        {
+            "aggregate": {
+                "relation_exact": {
+                    "true_positive": 8,
+                    "false_positive": 1,
+                    "false_negative": 1,
+                    "f1": 0.8,
+                }
+            }
+        }
+    )
     evidence_log.update(
         {
             "blind_subset_selected": True,
@@ -679,3 +690,38 @@ def test_production_evidence_verifies_complete_blind_artifact_chain() -> None:
     )
 
     assert "agreement report artifact SHA-256 does not match evidence log" in result.issues
+
+
+def test_production_evidence_rejects_low_attachment_agreement() -> None:
+    annotation = _annotation()
+    annotation_bytes = _encoded(annotation)
+    evidence_log, artifacts = _blind_evidence_log(annotation_bytes)
+    report_path = "datasets/paper/reports/sample_procedure_agreement.json"
+    report_bytes = _encoded(
+        {
+            "aggregate": {
+                "relation_exact": {
+                    "true_positive": 1,
+                    "false_positive": 1,
+                    "false_negative": 1,
+                    "f1": 0.5,
+                }
+            }
+        }
+    )
+    artifacts[report_path] = report_bytes
+    evidence_log["agreement_report"]["sha256"] = hashlib.sha256(
+        report_bytes
+    ).hexdigest()
+
+    result = assess_production_evidence(
+        annotation,
+        annotation_bytes=annotation_bytes,
+        source_bytes=SOURCE_TEXT.encode("utf-8"),
+        evidence_log=evidence_log,
+        expected_doc_id="sample_procedure",
+        artifact_loader=_artifact_loader(annotation_bytes, artifacts),
+    )
+
+    assert result.evidence_eligible is False
+    assert "attachment-edge agreement F1 0.500 is below 0.700" in result.issues

@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import re
 from collections import Counter
 from collections.abc import Callable, Mapping
@@ -28,6 +29,7 @@ ANNOTATION_SCHEMA_PATH = (
 )
 
 ArtifactLoader = Callable[[str], bytes]
+MIN_ATTACHMENT_AGREEMENT_F1 = 0.70
 
 
 @dataclass(frozen=True, slots=True)
@@ -75,6 +77,23 @@ def assess_annotation_evidence(annotation: Mapping[str, Any]) -> AnnotationEvide
         evidence_eligible=not issues,
         issues=tuple(issues),
     )
+
+
+def assess_corpus_evidence(
+    evidence_logs: Mapping[str, Mapping[str, Any]],
+) -> tuple[str, ...]:
+    total = len(evidence_logs)
+    required = math.ceil(total * 0.25)
+    selected = sum(
+        log.get("blind_subset_selected") is True
+        for log in evidence_logs.values()
+    )
+    if selected < required:
+        return (
+            f"blind second-pass coverage is {selected}/{total}; "
+            f"at least {required}/{total} required",
+        )
+    return ()
 
 
 @lru_cache(maxsize=1)
@@ -402,6 +421,34 @@ def _parse_annotation_artifact(
             expected_doc_id=expected_doc_id,
         )
     ]
+
+
+def _agreement_report_issues(content: bytes | None) -> list[str]:
+    if content is None:
+        return []
+    try:
+        report = json.loads(content)
+    except (json.JSONDecodeError, UnicodeDecodeError) as exc:
+        return [f"agreement report is not valid JSON: {exc}"]
+    if not isinstance(report, Mapping):
+        return ["agreement report must contain a JSON object"]
+    aggregate = report.get("aggregate")
+    relation_exact = (
+        aggregate.get("relation_exact")
+        if isinstance(aggregate, Mapping)
+        else None
+    )
+    score = relation_exact.get("f1") if isinstance(relation_exact, Mapping) else None
+    if not isinstance(score, (int, float)) or isinstance(score, bool):
+        return ["agreement report aggregate.relation_exact.f1 missing"]
+    if not 0.0 <= score <= 1.0:
+        return ["agreement report aggregate.relation_exact.f1 is outside [0, 1]"]
+    if score < MIN_ATTACHMENT_AGREEMENT_F1:
+        return [
+            f"attachment-edge agreement F1 {score:.3f} is below "
+            f"{MIN_ATTACHMENT_AGREEMENT_F1:.3f}"
+        ]
+    return []
 
 
 def _decision_span_issues(
@@ -879,13 +926,14 @@ def assess_production_evidence(
         expected_report_path = (
             f"datasets/paper/reports/{selected_doc_id}_agreement.json"
         )
-        _, agreement_artifact_issues = _load_and_verify_artifact(
+        agreement_bytes, agreement_artifact_issues = _load_and_verify_artifact(
             evidence_log.get("agreement_report"),
             expected_path=expected_report_path,
             label="agreement report",
             artifact_loader=artifact_loader,
         )
         hash_issues.extend(agreement_artifact_issues)
+        hash_issues.extend(_agreement_report_issues(agreement_bytes))
 
         adjudication_bytes, adjudication_artifact_issues = (
             _load_and_verify_artifact(

@@ -320,8 +320,8 @@ def test_eval_multiseed_rejects_marker_without_evidence_sidecar(
     assert "evidence" in capsys.readouterr().err.lower()
 
 
-def test_eval_multiseed_uses_production_evidence_assessor(
-    tmp_path, monkeypatch
+def test_eval_multiseed_rejects_insufficient_blind_coverage(
+    tmp_path, monkeypatch, capsys
 ):
     import scripts.eval_multiseed as em
     from src.evaluation.evidence import ProductionEvidence
@@ -413,11 +413,12 @@ def test_eval_multiseed_uses_production_evidence_assessor(
         ]
     )
 
-    assert rc == 0
+    assert rc == 1
     assert len(calls) == 1
     assert calls[0][1]["evidence_log"] == {}
     assert calls[0][1]["expected_doc_id"] == "doc1"
     assert callable(calls[0][1]["artifact_loader"])
+    assert "blind second-pass coverage is 0/1" in capsys.readouterr().err
 
 
 def test_eval_multiseed_dry_run_skips_guard(tmp_path):
