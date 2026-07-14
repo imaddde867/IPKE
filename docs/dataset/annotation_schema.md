@@ -17,6 +17,13 @@ artifact paths, and exact-byte hashes for the candidate, primary pass, optional 
 pass, agreement report, adjudication output, and final annotation. The sidecar also
 records source URL, retrieval date, version, page range, section identity, and
 redistribution status, plus complete step, constraint, and relation decision ledgers.
+Constraints require stable IDs. ID-less relations use
+`REL:<source>:<type>:<target>` as their canonical ledger identity.
+
+Blind-pair reports bind raw attachment TP/FP/FN and adjudication review-item IDs. The
+validator recomputes the pair counts from frozen artifacts, aggregates them across the
+blind subset for the 0.70 G0 gate, and requires typed adjudication decisions to cover the
+report items exactly.
 
 ## Required Top-Level Fields
 

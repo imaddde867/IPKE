@@ -197,12 +197,16 @@ def _blind_evidence_log(annotation_bytes: bytes) -> tuple[dict, dict[str, bytes]
         {
             "aggregate": {
                 "relation_exact": {
-                    "true_positive": 8,
-                    "false_positive": 1,
-                    "false_negative": 1,
-                    "f1": 0.8,
+                    "true_positive": 1,
+                    "false_positive": 0,
+                    "false_negative": 0,
+                    "f1": 1.0,
                 }
-            }
+            },
+            "adjudication_items": [
+                {"decision_id": "A-SEED-1", "review_kind": "seeded_agreement"},
+                {"decision_id": "A-SEED-2", "review_kind": "seeded_empty_region"},
+            ],
         }
     )
     evidence_log.update(
@@ -239,6 +243,32 @@ def _blind_evidence_log(annotation_bytes: bytes) -> tuple[dict, dict[str, bytes]
                 "started_at": "2026-07-13T10:00:00Z",
                 "completed_at": "2026-07-13T10:10:00Z",
                 "active_minutes": 10,
+                "decisions": [
+                    {
+                        "decision_id": "A-SEED-1",
+                        "review_kind": "seeded_agreement",
+                        "item_kind": "step",
+                        "evidence_spans": [
+                            {"char_start": 0, "char_end": len(STEP_TEXT)}
+                        ],
+                        "alternatives": ["retain S1"],
+                        "recommendation": "Retain the agreed source-grounded step.",
+                        "final_decision": "retain S1",
+                        "decision_maker": "P-003",
+                    },
+                    {
+                        "decision_id": "A-SEED-2",
+                        "review_kind": "seeded_empty_region",
+                        "item_kind": "empty_region",
+                        "evidence_spans": [
+                            {"char_start": 0, "char_end": len(STEP_TEXT)}
+                        ],
+                        "alternatives": ["no additional item"],
+                        "recommendation": "No omitted item is present.",
+                        "final_decision": "no additional item",
+                        "decision_maker": "P-003",
+                    },
+                ],
                 "unresolved_decisions": [],
                 "output": {
                     "path": "datasets/paper/production/sample_procedure.json",
@@ -707,7 +737,7 @@ def test_production_evidence_verifies_complete_blind_artifact_chain() -> None:
     assert "agreement report artifact SHA-256 does not match evidence log" in result.issues
 
 
-def test_production_evidence_rejects_low_attachment_agreement() -> None:
+def test_production_evidence_rejects_inconsistent_attachment_agreement() -> None:
     annotation = _annotation()
     annotation_bytes = _encoded(annotation)
     evidence_log, artifacts = _blind_evidence_log(annotation_bytes)
@@ -719,7 +749,7 @@ def test_production_evidence_rejects_low_attachment_agreement() -> None:
                     "true_positive": 1,
                     "false_positive": 1,
                     "false_negative": 1,
-                    "f1": 0.5,
+                    "f1": 0.99,
                 }
             }
         }
@@ -739,13 +769,13 @@ def test_production_evidence_rejects_low_attachment_agreement() -> None:
     )
 
     assert result.evidence_eligible is False
-    assert "attachment-edge agreement F1 0.500 is below 0.700" in result.issues
+    assert "agreement report relation_exact counts do not match frozen passes" in result.issues
 
 
 def test_production_evidence_requires_relation_decision_coverage() -> None:
     annotation = _annotation()
     annotation["relations"] = [
-        {"id": "R1", "source": "S1", "target": "S1", "type": "NEXT"}
+        {"source": "S1", "target": "S1", "type": "NEXT"}
     ]
     annotation_bytes = _encoded(annotation)
 
@@ -760,3 +790,90 @@ def test_production_evidence_requires_relation_decision_coverage() -> None:
 
     assert result.evidence_eligible is False
     assert "primary relation decisions do not cover final annotation IDs" in result.issues
+
+
+def test_production_evidence_accepts_canonical_id_for_idless_relation() -> None:
+    annotation = _annotation()
+    annotation["relations"] = [
+        {"source": "S1", "target": "S1", "type": "NEXT"}
+    ]
+    annotation_bytes = _encoded(annotation)
+    evidence_log = _evidence_log(annotation_bytes)
+    evidence_log["primary_pass"]["decision_counts"]["relations"].update(
+        {"added": 1, "final_count": 1}
+    )
+    evidence_log["primary_pass"]["decisions"].append(
+        {
+            "decision_id": "D-R1",
+            "item_kind": "relation",
+            "action": "add",
+            "input_ids": [],
+            "output_ids": ["REL:S1:NEXT:S1"],
+            "evidence_spans": [{"char_start": 0, "char_end": len(STEP_TEXT)}],
+            "rationale": "Source order.",
+        }
+    )
+
+    result = assess_production_evidence(
+        annotation,
+        annotation_bytes=annotation_bytes,
+        source_bytes=SOURCE_TEXT.encode("utf-8"),
+        evidence_log=evidence_log,
+        expected_doc_id="sample_procedure",
+        artifact_loader=_artifact_loader(annotation_bytes),
+    )
+
+    assert result.evidence_eligible is True
+
+
+def test_production_evidence_rejects_constraint_without_stable_id() -> None:
+    annotation = _annotation()
+    annotation["steps"][0]["constraints"][0].pop("id")
+    annotation_bytes = _encoded(annotation)
+
+    result = assess_production_evidence(
+        annotation,
+        annotation_bytes=annotation_bytes,
+        source_bytes=SOURCE_TEXT.encode("utf-8"),
+        evidence_log=_evidence_log(annotation_bytes),
+        expected_doc_id="sample_procedure",
+        artifact_loader=_artifact_loader(annotation_bytes),
+    )
+
+    assert result.evidence_eligible is False
+    assert "production constraint requires a stable ID" in result.issues
+
+
+def test_production_evidence_requires_adjudication_decision_coverage() -> None:
+    annotation = _annotation()
+    annotation_bytes = _encoded(annotation)
+    evidence_log, artifacts = _blind_evidence_log(annotation_bytes)
+    evidence_log["adjudication"].pop("decisions")
+
+    result = assess_production_evidence(
+        annotation,
+        annotation_bytes=annotation_bytes,
+        source_bytes=SOURCE_TEXT.encode("utf-8"),
+        evidence_log=evidence_log,
+        expected_doc_id="sample_procedure",
+        artifact_loader=_artifact_loader(annotation_bytes, artifacts),
+    )
+
+    assert result.evidence_eligible is False
+    assert "adjudication decisions do not cover agreement review items" in result.issues
+
+
+def test_production_evidence_fails_closed_for_non_object_evidence_log() -> None:
+    annotation = _annotation()
+    annotation_bytes = _encoded(annotation)
+
+    result = assess_production_evidence(
+        annotation,
+        annotation_bytes=annotation_bytes,
+        source_bytes=SOURCE_TEXT.encode("utf-8"),
+        evidence_log=[],  # type: ignore[arg-type]
+        expected_doc_id="sample_procedure",
+    )
+
+    assert result.evidence_eligible is False
+    assert result.issues[-1] == "production evidence log must contain a JSON object"

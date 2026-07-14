@@ -30,6 +30,7 @@ ANNOTATION_SCHEMA_PATH = (
 
 ArtifactLoader = Callable[[str], bytes]
 MIN_ATTACHMENT_AGREEMENT_F1 = 0.70
+IDENTIFIER_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]*$")
 
 
 @dataclass(frozen=True, slots=True)
@@ -81,6 +82,8 @@ def assess_annotation_evidence(annotation: Mapping[str, Any]) -> AnnotationEvide
 
 def assess_corpus_evidence(
     evidence_logs: Mapping[str, Mapping[str, Any]],
+    *,
+    agreement_reports: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> tuple[str, ...]:
     total = len(evidence_logs)
     required = math.ceil(total * 0.25)
@@ -92,6 +95,31 @@ def assess_corpus_evidence(
         return (
             f"blind second-pass coverage is {selected}/{total}; "
             f"at least {required}/{total} required",
+        )
+
+    issues: list[str] = []
+    reports = agreement_reports or {}
+    totals = {"true_positive": 0, "false_positive": 0, "false_negative": 0}
+    for doc_id, log in evidence_logs.items():
+        if log.get("blind_subset_selected") is not True:
+            continue
+        report = reports.get(doc_id)
+        counts = _relation_exact_counts(report)
+        if counts is None:
+            issues.append(f"agreement report counts missing for {doc_id}")
+            continue
+        for key in totals:
+            totals[key] += counts[key]
+    if issues:
+        return tuple(issues)
+
+    score = _f1_from_counts(**totals)
+    if score is None:
+        return ("attachment-edge agreement F1 is unavailable for empty relation sets",)
+    if score < MIN_ATTACHMENT_AGREEMENT_F1:
+        return (
+            f"attachment-edge agreement F1 {score:.3f} is below "
+            f"{MIN_ATTACHMENT_AGREEMENT_F1:.3f}",
         )
     return ()
 
@@ -423,15 +451,62 @@ def _parse_annotation_artifact(
     ]
 
 
-def _agreement_report_issues(content: bytes | None) -> list[str]:
+def _f1_from_counts(
+    *,
+    true_positive: int,
+    false_positive: int,
+    false_negative: int,
+) -> float | None:
+    denominator = 2 * true_positive + false_positive + false_negative
+    return 2 * true_positive / denominator if denominator else None
+
+
+def _relation_exact_counts(
+    report: Mapping[str, Any] | None,
+) -> dict[str, int] | None:
+    aggregate = report.get("aggregate") if isinstance(report, Mapping) else None
+    relation_exact = (
+        aggregate.get("relation_exact")
+        if isinstance(aggregate, Mapping)
+        else None
+    )
+    if not isinstance(relation_exact, Mapping):
+        return None
+    counts: dict[str, int] = {}
+    for key in ("true_positive", "false_positive", "false_negative"):
+        value = relation_exact.get(key)
+        if not isinstance(value, int) or isinstance(value, bool) or value < 0:
+            return None
+        counts[key] = value
+    return counts
+
+
+def _parse_agreement_report(
+    content: bytes | None,
+) -> tuple[Mapping[str, Any] | None, list[str]]:
     if content is None:
-        return []
+        return None, []
     try:
         report = json.loads(content)
     except (json.JSONDecodeError, UnicodeDecodeError) as exc:
-        return [f"agreement report is not valid JSON: {exc}"]
+        return None, [f"agreement report is not valid JSON: {exc}"]
     if not isinstance(report, Mapping):
-        return ["agreement report must contain a JSON object"]
+        return None, ["agreement report must contain a JSON object"]
+    return report, []
+
+
+def _agreement_report_issues(
+    content: bytes | None,
+    *,
+    primary_annotation: Mapping[str, Any] | None,
+    blind_annotation: Mapping[str, Any] | None,
+) -> list[str]:
+    report, issues = _parse_agreement_report(content)
+    if report is None:
+        return issues
+    counts = _relation_exact_counts(report)
+    if counts is None:
+        return ["agreement report aggregate.relation_exact counts missing"]
     aggregate = report.get("aggregate")
     relation_exact = (
         aggregate.get("relation_exact")
@@ -439,16 +514,70 @@ def _agreement_report_issues(content: bytes | None) -> list[str]:
         else None
     )
     score = relation_exact.get("f1") if isinstance(relation_exact, Mapping) else None
-    if not isinstance(score, (int, float)) or isinstance(score, bool):
-        return ["agreement report aggregate.relation_exact.f1 missing"]
-    if not 0.0 <= score <= 1.0:
-        return ["agreement report aggregate.relation_exact.f1 is outside [0, 1]"]
-    if score < MIN_ATTACHMENT_AGREEMENT_F1:
-        return [
-            f"attachment-edge agreement F1 {score:.3f} is below "
-            f"{MIN_ATTACHMENT_AGREEMENT_F1:.3f}"
-        ]
-    return []
+    expected_score = _f1_from_counts(**counts)
+    if score is not None and (
+        not isinstance(score, (int, float))
+        or isinstance(score, bool)
+        or not 0.0 <= score <= 1.0
+    ):
+        issues.append("agreement report aggregate.relation_exact.f1 is invalid")
+    elif score != expected_score:
+        issues.append("agreement report relation_exact F1 does not match its counts")
+
+    if primary_annotation is not None and blind_annotation is not None:
+        primary_relations = _attachment_edges(primary_annotation)
+        blind_relations = _attachment_edges(blind_annotation)
+        actual = {
+            "true_positive": len(primary_relations & blind_relations),
+            "false_positive": len(blind_relations - primary_relations),
+            "false_negative": len(primary_relations - blind_relations),
+        }
+        if counts != actual:
+            issues.append(
+                "agreement report relation_exact counts do not match frozen passes"
+            )
+    return issues
+
+
+def _adjudication_issues(
+    agreement_content: bytes | None,
+    adjudication: Mapping[str, Any],
+) -> list[str]:
+    report, parse_issues = _parse_agreement_report(agreement_content)
+    if report is None:
+        return parse_issues
+    raw_items = report.get("adjudication_items")
+    items = raw_items if isinstance(raw_items, list) else []
+    report_records = {
+        item.get("decision_id"): item.get("review_kind")
+        for item in items
+        if isinstance(item, Mapping) and isinstance(item.get("decision_id"), str)
+    }
+    raw_decisions = adjudication.get("decisions")
+    decisions = raw_decisions if isinstance(raw_decisions, list) else []
+    decision_records = {
+        decision.get("decision_id"): decision.get("review_kind")
+        for decision in decisions
+        if isinstance(decision, Mapping)
+        and isinstance(decision.get("decision_id"), str)
+    }
+    issues: list[str] = []
+    if not items or len(report_records) != len(items):
+        issues.append("agreement report adjudication review items are missing or duplicated")
+    review_kinds = set(report_records.values())
+    if not {"seeded_agreement", "seeded_empty_region"} <= review_kinds:
+        issues.append("agreement report lacks required seeded adjudication audits")
+    if report_records != decision_records or len(decision_records) != len(decisions):
+        issues.append("adjudication decisions do not cover agreement review items")
+    reviewer = adjudication.get("reviewer")
+    handle = reviewer.get("handle") if isinstance(reviewer, Mapping) else None
+    if any(
+        decision.get("decision_maker") != handle
+        for decision in decisions
+        if isinstance(decision, Mapping)
+    ):
+        issues.append("adjudication decision maker does not match adjudicator")
+    return issues
 
 
 def _decision_span_issues(
@@ -587,17 +716,128 @@ def _annotation_item_ids(annotation: Mapping[str, Any]) -> dict[str, set[str]]:
         )
     relations = annotation.get("relations")
     if isinstance(relations, list):
-        relation_ids.update(
-            relation["id"]
-            for relation in relations
-            if isinstance(relation, Mapping)
-            and isinstance(relation.get("id"), str)
-        )
+        for relation in relations:
+            if not isinstance(relation, Mapping):
+                continue
+            explicit_id = relation.get("id")
+            if isinstance(explicit_id, str) and explicit_id:
+                relation_ids.add(explicit_id)
+                continue
+            parts = tuple(relation.get(key) for key in ("source", "type", "target"))
+            if all(isinstance(part, str) and IDENTIFIER_RE.fullmatch(part) for part in parts):
+                relation_ids.add(f"REL:{parts[0]}:{parts[1]}:{parts[2]}")
     return {
         "step": step_ids,
         "constraint": constraint_ids,
         "relation": relation_ids,
     }
+
+
+def _annotation_item_identity_issues(
+    annotation: Mapping[str, Any],
+    *,
+    label: str,
+) -> list[str]:
+    issues: list[str] = []
+    constraint_ids: list[str] = []
+    raw_steps = annotation.get("steps")
+    steps = raw_steps if isinstance(raw_steps, list) else []
+    constraint_groups = [
+        step.get("constraints")
+        for step in steps
+        if isinstance(step, Mapping)
+    ]
+    constraint_groups.append(annotation.get("constraints"))
+    for group in constraint_groups:
+        if not isinstance(group, list):
+            continue
+        for constraint in group:
+            constraint_id = constraint.get("id") if isinstance(constraint, Mapping) else None
+            if not isinstance(constraint_id, str) or not constraint_id:
+                issues.append(f"{label} constraint requires a stable ID")
+            else:
+                constraint_ids.append(constraint_id)
+    duplicate_constraints = _duplicate_issue(f"{label} constraint", constraint_ids)
+    if duplicate_constraints:
+        issues.append(duplicate_constraints)
+
+    raw_relations = annotation.get("relations")
+    relations = raw_relations if isinstance(raw_relations, list) else []
+    relation_ids = _annotation_item_ids(annotation)["relation"]
+    if len(relation_ids) != len(relations):
+        issues.append(
+            f"{label} relations require unique IDs or canonical source/type/target identities"
+        )
+    return issues
+
+
+def _attachment_edges(annotation: Mapping[str, Any]) -> set[tuple[str, str]]:
+    constraints: list[tuple[Mapping[str, Any], str | None]] = []
+    raw_top_constraints = annotation.get("constraints")
+    if isinstance(raw_top_constraints, list):
+        constraints.extend(
+            (constraint, None)
+            for constraint in raw_top_constraints
+            if isinstance(constraint, Mapping)
+        )
+    raw_steps = annotation.get("steps")
+    if isinstance(raw_steps, list):
+        for step in raw_steps:
+            if not isinstance(step, Mapping):
+                continue
+            step_id = step.get("id") if isinstance(step.get("id"), str) else None
+            nested = step.get("constraints")
+            if isinstance(nested, list):
+                constraints.extend(
+                    (constraint, step_id)
+                    for constraint in nested
+                    if isinstance(constraint, Mapping)
+                )
+            elif isinstance(nested, Mapping):
+                for value in nested.values():
+                    if isinstance(value, list):
+                        constraints.extend(
+                            (constraint, step_id)
+                            for constraint in value
+                            if isinstance(constraint, Mapping)
+                        )
+                    elif isinstance(value, str) and value.strip():
+                        constraints.append(({"text": value}, step_id))
+
+    edges: set[tuple[str, str]] = set()
+    for constraint, containing_step_id in constraints:
+        text = next(
+            (
+                value
+                for field in ("text", "expression", "condition", "statement")
+                if isinstance((value := constraint.get(field)), str) and value.strip()
+            ),
+            "",
+        )
+        normalized_text = " ".join(text.lower().split())
+        if not normalized_text:
+            continue
+        refs: list[str] = []
+        for field in ("steps", "attached_to", "applies_to", "targets"):
+            raw_refs = constraint.get(field)
+            if isinstance(raw_refs, str):
+                refs.append(raw_refs)
+            elif isinstance(raw_refs, list):
+                refs.extend(
+                    item if isinstance(item, str) else item["id"]
+                    for item in raw_refs
+                    if isinstance(item, str)
+                    or (
+                        isinstance(item, Mapping)
+                        and isinstance(item.get("id"), str)
+                    )
+                )
+            elif isinstance(raw_refs, Mapping) and isinstance(raw_refs.get("id"), str):
+                refs.append(raw_refs["id"])
+        if not refs and containing_step_id:
+            refs.append(containing_step_id)
+        edges.update((normalized_text, ref) for ref in refs)
+    return edges
 
 
 def _decision_issues(
@@ -722,9 +962,19 @@ def assess_production_evidence(
 
     anchor_issues = _annotation_anchor_issues(annotation, source_text)
     issues.extend(anchor_issues)
+    issues.extend(_annotation_item_identity_issues(annotation, label="production"))
 
     if evidence_log is None:
         issues.append("production evidence log missing")
+        return ProductionEvidence(
+            human_pass_recorded=False,
+            anchors_complete=not anchor_issues,
+            hashes_match=False,
+            evidence_eligible=False,
+            issues=tuple(issues),
+        )
+    if not isinstance(evidence_log, Mapping):
+        issues.append("production evidence log must contain a JSON object")
         return ProductionEvidence(
             human_pass_recorded=False,
             anchors_complete=not anchor_issues,
@@ -838,6 +1088,9 @@ def assess_production_evidence(
                 f"candidate {issue}"
                 for issue in _annotation_anchor_issues(candidate, source_text)
             )
+            hash_issues.extend(
+                _annotation_item_identity_issues(candidate, label="candidate")
+            )
             candidate_ids = _annotation_item_ids(candidate)
 
     expected_primary_path = (
@@ -863,6 +1116,9 @@ def assess_production_evidence(
                 primary_annotation,
                 source_text,
             )
+        )
+        hash_issues.extend(
+            _annotation_item_identity_issues(primary_annotation, label="primary output")
         )
     blind_selected = evidence_log.get("blind_subset_selected") is True
     if (
@@ -943,6 +1199,9 @@ def assess_production_evidence(
                     source_text,
                 )
             )
+            hash_issues.extend(
+                _annotation_item_identity_issues(blind_annotation, label="blind output")
+            )
 
         expected_report_path = (
             f"datasets/paper/reports/{selected_doc_id}_agreement.json"
@@ -954,7 +1213,14 @@ def assess_production_evidence(
             artifact_loader=artifact_loader,
         )
         hash_issues.extend(agreement_artifact_issues)
-        hash_issues.extend(_agreement_report_issues(agreement_bytes))
+        hash_issues.extend(
+            _agreement_report_issues(
+                agreement_bytes,
+                primary_annotation=primary_annotation,
+                blind_annotation=blind_annotation,
+            )
+        )
+        issues.extend(_adjudication_issues(agreement_bytes, adjudication))
 
         adjudication_bytes, adjudication_artifact_issues = (
             _load_and_verify_artifact(

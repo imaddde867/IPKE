@@ -501,6 +501,42 @@
         "output": {"$ref": "#/$defs/blindArtifact"}
       }
     },
+    "adjudicationDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision_id",
+        "review_kind",
+        "item_kind",
+        "evidence_spans",
+        "alternatives",
+        "recommendation",
+        "final_decision",
+        "decision_maker"
+      ],
+      "properties": {
+        "decision_id": {"$ref": "#/$defs/identifier"},
+        "review_kind": {
+          "enum": ["disagreement", "seeded_agreement", "seeded_empty_region"]
+        },
+        "item_kind": {
+          "enum": ["step", "constraint", "relation", "evidence_span", "empty_region"]
+        },
+        "evidence_spans": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/span"}
+        },
+        "alternatives": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "recommendation": {"type": "string", "minLength": 1},
+        "final_decision": {"type": "string", "minLength": 1},
+        "decision_maker": {"$ref": "#/$defs/identifier"}
+      }
+    },
     "adjudication": {
       "type": "object",
       "additionalProperties": false,
@@ -509,6 +545,7 @@
         "started_at",
         "completed_at",
         "active_minutes",
+        "decisions",
         "unresolved_decisions",
         "output"
       ],
@@ -522,6 +559,11 @@
         "started_at": {"type": "string", "format": "date-time"},
         "completed_at": {"type": "string", "format": "date-time"},
         "active_minutes": {"type": "integer", "minimum": 1},
+        "decisions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/adjudicationDecision"}
+        },
         "unresolved_decisions": {
           "type": "array",
           "maxItems": 0
