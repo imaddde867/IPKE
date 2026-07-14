@@ -104,6 +104,66 @@ def test_dry_run_succeeds_on_valid_gold(tmp_path):
     assert result == 0, "--dry-run must return zero when gold is valid"
 
 
+def test_paper_evidence_run_requires_manifest(tmp_path, capsys):
+    gold_dir = tmp_path / "gold"
+    text_dir = tmp_path / "text"
+    evidence_dir = tmp_path / "evidence"
+    gold_dir.mkdir()
+    text_dir.mkdir()
+    evidence_dir.mkdir()
+    _write_pair(gold_dir, text_dir, "doc1", json.dumps({"steps": []}))
+    (evidence_dir / "doc1.json").write_text("{}", encoding="utf-8")
+
+    result = _run_main(
+        [
+            "--gold-dir",
+            str(gold_dir),
+            "--text-dir",
+            str(text_dir),
+            "--evidence-dir",
+            str(evidence_dir),
+            "--seeds",
+            "1",
+        ]
+    )
+
+    assert result == 1
+    assert "--manifest is required for paper-evidence runs" in capsys.readouterr().err
+
+
+def test_paper_evidence_run_rejects_provisional_manifest(tmp_path, capsys):
+    gold_dir = tmp_path / "gold"
+    text_dir = tmp_path / "text"
+    evidence_dir = tmp_path / "evidence"
+    gold_dir.mkdir()
+    text_dir.mkdir()
+    evidence_dir.mkdir()
+    _write_pair(gold_dir, text_dir, "doc1", json.dumps({"steps": []}))
+    (evidence_dir / "doc1.json").write_text("{}", encoding="utf-8")
+    manifest_path = _write_manifest(
+        tmp_path / "manifest.json",
+        [_manifest_entry("doc1", include=True)],
+    )
+
+    result = _run_main(
+        [
+            "--gold-dir",
+            str(gold_dir),
+            "--text-dir",
+            str(text_dir),
+            "--evidence-dir",
+            str(evidence_dir),
+            "--manifest",
+            str(manifest_path),
+            "--seeds",
+            "1",
+        ]
+    )
+
+    assert result == 1
+    assert "frozen manifest required" in capsys.readouterr().err
+
+
 def test_manifest_dry_run_ignores_malformed_excluded_gold(tmp_path, capsys):
     gold_dir = tmp_path / "gold"
     text_dir = tmp_path / "text"

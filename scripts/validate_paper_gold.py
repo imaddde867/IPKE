@@ -33,6 +33,7 @@ from src.evaluation.corpus_manifest import (
 from src.evaluation.evidence import (
     ArtifactLoader,
     assess_annotation_evidence,
+    assess_corpus_evidence,
     assess_production_evidence,
 )
 
@@ -292,7 +293,17 @@ def main(argv: list[str] | None = None) -> int:
 
     any_error = manifest_error
     any_warn = False
+    production_logs: dict[str, dict] = {}
     for f in gold_files:
+        if args.require_production_evidence and args.evidence_dir is not None:
+            evidence_file = args.evidence_dir / f"{f.stem}.json"
+            try:
+                loaded_evidence = json.loads(evidence_file.read_bytes())
+            except (json.JSONDecodeError, OSError):
+                pass
+            else:
+                if isinstance(loaded_evidence, dict):
+                    production_logs[f.stem] = loaded_evidence
         msgs = validate_file(
             f,
             require_human_verified=args.require_human_verified,
@@ -319,6 +330,12 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"  {f.name}: {m}")
         if not errs and not warns:
             print(f"PASS {f.name}")
+    if args.require_production_evidence and len(production_logs) == len(gold_files):
+        corpus_issues = assess_corpus_evidence(production_logs)
+        if corpus_issues:
+            any_error = True
+            for issue in corpus_issues:
+                print(f"ERROR: {issue}")
     if any_error:
         return 1
     if any_warn and args.strict:

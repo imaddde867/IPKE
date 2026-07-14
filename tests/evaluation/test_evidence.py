@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import pytest
 
-from src.evaluation.evidence import assess_annotation_evidence
+from src.evaluation.evidence import assess_annotation_evidence, assess_corpus_evidence
 
 
 def _annotation(annotator: str, *, status: str = "reviewed") -> dict:
@@ -70,3 +70,16 @@ def test_assess_annotation_evidence_classifies_review_provenance(
         result.evidence_eligible,
         result.issues,
     ) == expected
+
+
+def test_corpus_evidence_requires_blind_coverage_for_at_least_25_percent() -> None:
+    logs = {
+        f"doc_{index}": {"blind_subset_selected": index == 0}
+        for index in range(5)
+    }
+
+    issues = assess_corpus_evidence(logs)
+
+    assert issues == (
+        "blind second-pass coverage is 1/5; at least 2/5 required",
+    )
