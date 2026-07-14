@@ -17,6 +17,8 @@ artifact paths, and exact-byte hashes for the candidate, primary pass, optional 
 pass, agreement report, adjudication output, and final annotation. The sidecar also
 records source URL, retrieval date, version, page range, section identity, and
 redistribution status, plus complete step, constraint, and relation decision ledgers.
+Primary and blind outputs must use the exact frozen procedure document ID and character
+window recorded by that sidecar.
 Constraints require stable IDs. ID-less relations use
 `REL:<source>:<type>:<target>` as their canonical ledger identity.
 

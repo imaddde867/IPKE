@@ -35,7 +35,9 @@ The validator enforces these logical paths, loads every referenced artifact, and
 its exact on-disk bytes. Offsets are end-exclusive indices into the UTF-8-decoded Python
 string, so they count Unicode code points rather than encoded bytes. Every production
 step and constraint must carry its own `provenance.char_start` and
-`provenance.char_end` inside `procedure.source`.
+`provenance.char_end` inside `procedure.source`. The primary and blind artifacts must
+declare the same `procedure.source.doc_id`, `char_start`, and `char_end` as the frozen
+sidecar source span.
 
 The primary decision ledger covers steps, constraints, and relations. Relation decisions
 include order edges, branches, alternatives, and other explicit graph relations; a file
