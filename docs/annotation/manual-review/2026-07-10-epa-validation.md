@@ -6,17 +6,18 @@ Gold: `datasets/paper/gold/epa_field_sampling_measurement_procedure_validation.j
 
 Source: `datasets/paper/text/epa_field_sampling_measurement_procedure_validation.txt`
 
-Status: agent source-to-gold correction complete for the high-confidence items below;
-human sign-off pending.
+Status: agent source audit complete; proposed corrections remain outside the immutable
+legacy candidate and human sign-off is pending.
 
 ## Review method
 
 The source was read directly from lines 70-238 alongside every active step, nested
-constraint, attachment, and relation. Annotation decisions were applied manually. No
-script or model generated, classified, or attached labels in this pass. Commands were
-used only to display JSON and verify syntax or source-string grounding.
+constraint, attachment, and relation. Proposed decisions were recorded here without
+mutating the retained candidate. No script or model generated, classified, or attached
+labels in this pass. Commands were used only to display JSON and verify syntax or
+source-string grounding.
 
-## Applied corrections
+## Proposed corrections
 
 | Item | Source | Correction |
 |---|---|---|
@@ -33,8 +34,9 @@ used only to display JSON and verify syntax or source-string grounding.
 | S33/C37 | lines 218-220 | Replaced the unsupported transfer action with post-validation record maintenance; C37 now captures the Quality Assurance Manager role. |
 | S35/C40/C41 | lines 232-236 | Corrected the step wording, staff-scope parameter, and external training-procedure reference. |
 
-No human-verification marker was added. Step and constraint counts are unchanged by this
-pass.
+No human-verification marker was added and no production annotation was created. Apply
+accepted proposals only through a separate primary-pass artifact after complete human
+review.
 
 ## Human adjudication required
 
@@ -56,6 +58,6 @@ pass.
 
 - JSON syntax must pass.
 - The custom strict validator must pass after the evidence-gate implementation settles.
-- The declared JSON Schema is currently expected to fail on `page: null`; fix the schema
-  contract separately rather than rewriting source provenance to a false page value.
+- The candidate-compatible JSON Schema and strict validator must pass without rewriting
+  source provenance to a false page value.
 - `make eval-paper-gate` must continue to fail until a human performs sign-off.

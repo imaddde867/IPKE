@@ -33,7 +33,7 @@ def _annotation(annotator: str, *, status: str = "reviewed") -> dict:
             _annotation(
                 "model-assisted:qwen + agent-adjudicated + human-verified:imad"
             ),
-            (True, True, True, ()),
+            (True, True, False, ()),
         ),
         (
             _annotation("agent-adjudicated"),
