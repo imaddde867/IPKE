@@ -128,6 +128,10 @@ The second annotator receives only:
 - the locked taxonomy and annotation guidelines;
 - a blank, `unreviewed` scaffold with no first-pass items.
 
+Both primary and blind outputs must retain the frozen procedure document ID and exact
+source-window offsets. A different source window invalidates the evidence package even
+when every item anchor remains in bounds.
+
 The second annotator must not view the candidate, primary pass, audit packet, or another
 annotator's work. Accidental exposure invalidates the assignment and requires a different
 annotator. Both passes are frozen before reveal.

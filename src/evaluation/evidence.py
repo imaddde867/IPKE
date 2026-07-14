@@ -304,6 +304,31 @@ def _annotation_anchor_issues(
     return issues
 
 
+def _frozen_procedure_source_issues(
+    annotation: Mapping[str, Any],
+    *,
+    expected_doc_id: str,
+    expected_start: Any,
+    expected_end: Any,
+    label: str,
+) -> list[str]:
+    raw_procedure = annotation.get("procedure")
+    procedure = raw_procedure if isinstance(raw_procedure, Mapping) else {}
+    raw_source = procedure.get("source")
+    source = raw_source if isinstance(raw_source, Mapping) else {}
+    issues: list[str] = []
+    if source.get("doc_id") != expected_doc_id:
+        issues.append(f"{label} procedure source doc_id does not match frozen evidence")
+    if (
+        source.get("char_start") != expected_start
+        or source.get("char_end") != expected_end
+    ):
+        issues.append(
+            f"{label} procedure source span does not match frozen evidence source"
+        )
+    return issues
+
+
 def _coerce_refs(value: Any) -> list[str]:
     if isinstance(value, str):
         return [value]
@@ -1139,6 +1164,15 @@ def assess_production_evidence(
         hash_issues.extend(
             _annotation_item_identity_issues(primary_annotation, label="primary output")
         )
+        hash_issues.extend(
+            _frozen_procedure_source_issues(
+                primary_annotation,
+                expected_doc_id=selected_doc_id,
+                expected_start=logged_source.get("char_start"),
+                expected_end=logged_source.get("char_end"),
+                label="primary output",
+            )
+        )
     blind_selected = evidence_log.get("blind_subset_selected") is True
     if (
         not blind_selected
@@ -1220,6 +1254,15 @@ def assess_production_evidence(
             )
             hash_issues.extend(
                 _annotation_item_identity_issues(blind_annotation, label="blind output")
+            )
+            hash_issues.extend(
+                _frozen_procedure_source_issues(
+                    blind_annotation,
+                    expected_doc_id=selected_doc_id,
+                    expected_start=logged_source.get("char_start"),
+                    expected_end=logged_source.get("char_end"),
+                    label="blind output",
+                )
             )
 
         expected_report_path = (

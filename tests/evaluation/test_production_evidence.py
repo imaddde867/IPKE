@@ -959,6 +959,66 @@ def test_production_evidence_accepts_exact_derived_disagreement_coverage() -> No
     assert result.evidence_eligible is True
 
 
+def test_production_evidence_binds_primary_to_frozen_procedure_span() -> None:
+    annotation = _annotation()
+    annotation_bytes = _encoded(annotation)
+    evidence_log = _evidence_log(annotation_bytes)
+    primary_annotation = _annotation()
+    primary_annotation["procedure"]["source"]["char_start"] = 1
+    primary_bytes = _encoded(primary_annotation)
+    primary_path = "datasets/paper/primary_pass/sample_procedure.json"
+    evidence_log["primary_pass"]["output"]["sha256"] = hashlib.sha256(
+        primary_bytes
+    ).hexdigest()
+
+    result = assess_production_evidence(
+        annotation,
+        annotation_bytes=annotation_bytes,
+        source_bytes=SOURCE_TEXT.encode("utf-8"),
+        evidence_log=evidence_log,
+        expected_doc_id="sample_procedure",
+        artifact_loader=_artifact_loader(
+            annotation_bytes,
+            {primary_path: primary_bytes},
+        ),
+    )
+
+    assert result.evidence_eligible is False
+    assert (
+        "primary output procedure source span does not match frozen evidence source"
+        in result.issues
+    )
+
+
+def test_production_evidence_binds_blind_to_frozen_procedure_span() -> None:
+    annotation = _annotation()
+    annotation_bytes = _encoded(annotation)
+    evidence_log, artifacts = _blind_evidence_log(annotation_bytes)
+    blind_annotation = _annotation()
+    blind_annotation["procedure"]["source"]["char_end"] -= 1
+    blind_bytes = _encoded(blind_annotation)
+    blind_path = "datasets/paper/second_pass/sample_procedure.json"
+    artifacts[blind_path] = blind_bytes
+    evidence_log["blind_pass"]["output"]["sha256"] = hashlib.sha256(
+        blind_bytes
+    ).hexdigest()
+
+    result = assess_production_evidence(
+        annotation,
+        annotation_bytes=annotation_bytes,
+        source_bytes=SOURCE_TEXT.encode("utf-8"),
+        evidence_log=evidence_log,
+        expected_doc_id="sample_procedure",
+        artifact_loader=_artifact_loader(annotation_bytes, artifacts),
+    )
+
+    assert result.evidence_eligible is False
+    assert (
+        "blind output procedure source span does not match frozen evidence source"
+        in result.issues
+    )
+
+
 def test_production_evidence_rejects_adjudication_span_outside_source() -> None:
     annotation = _annotation()
     annotation_bytes = _encoded(annotation)
