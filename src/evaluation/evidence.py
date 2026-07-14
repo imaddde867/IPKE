@@ -15,7 +15,7 @@ from typing import Any
 
 import jsonschema
 
-from src.evaluation.agreement import attachment_edge_set
+from src.evaluation.agreement import annotation_review_items, attachment_edge_set
 
 PENDING_HUMAN_SIGN_OFF = "(pending human sign-off)"
 HUMAN_VERIFIED_RE = re.compile(
@@ -597,15 +597,10 @@ def _adjudication_issues(
     if not {"seeded_agreement", "seeded_empty_region"} <= review_kinds:
         issues.append("agreement report lacks required seeded adjudication audits")
     if primary_annotation is not None and blind_annotation is not None:
-        primary_edges = attachment_edge_set(primary_annotation)
-        blind_edges = attachment_edge_set(blind_annotation)
-        required_disagreements = {
-            _attachment_disagreement_id("primary", edge)
-            for edge in primary_edges - blind_edges
-        } | {
-            _attachment_disagreement_id("blind", edge)
-            for edge in blind_edges - primary_edges
-        }
+        required_disagreements = _annotation_disagreement_ids(
+            primary_annotation,
+            blind_annotation,
+        )
         reported_disagreements = {
             decision_id
             for decision_id, review_kind in report_records.items()
@@ -651,13 +646,26 @@ def _adjudication_issues(
     return issues
 
 
-def _attachment_disagreement_id(
-    side: str,
-    edge: tuple[str, str],
-) -> str:
-    payload = json.dumps((side, *edge), ensure_ascii=False, separators=(",", ":"))
-    digest = hashlib.sha256(payload.encode("utf-8")).hexdigest()[:16]
-    return f"DIS:{side}:{digest}"
+def _annotation_disagreement_ids(
+    primary_annotation: Mapping[str, Any],
+    blind_annotation: Mapping[str, Any],
+) -> set[str]:
+    primary_items = annotation_review_items(primary_annotation)
+    blind_items = annotation_review_items(blind_annotation)
+    disagreements: set[str] = set()
+    for side, items in (
+        ("primary", primary_items - blind_items),
+        ("blind", blind_items - primary_items),
+    ):
+        for kind, payload in items:
+            digest_input = json.dumps(
+                (side, kind, payload),
+                ensure_ascii=False,
+                separators=(",", ":"),
+            )
+            digest = hashlib.sha256(digest_input.encode("utf-8")).hexdigest()[:16]
+            disagreements.add(f"DIS:{side}:{kind}:{digest}")
+    return disagreements
 
 
 def _decision_span_issues(

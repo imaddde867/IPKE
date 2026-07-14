@@ -4,7 +4,13 @@ import hashlib
 import json
 from collections.abc import Callable
 
-from src.evaluation.evidence import _agreement_report_issues, assess_production_evidence
+import pytest
+
+from src.evaluation.evidence import (
+    _agreement_report_issues,
+    _annotation_disagreement_ids,
+    assess_production_evidence,
+)
 
 
 SOURCE_TEXT = "Préparer l’échantillon.\nWear gloves.\n"
@@ -902,6 +908,57 @@ def test_production_evidence_derives_disagreements_from_frozen_passes() -> None:
     assert "agreement report does not enumerate frozen-pass disagreements" in result.issues
 
 
+def test_production_evidence_accepts_exact_derived_disagreement_coverage() -> None:
+    annotation = _annotation()
+    annotation_bytes = _encoded(annotation)
+    evidence_log, artifacts = _blind_evidence_log(annotation_bytes)
+    blind_annotation = _annotation()
+    blind_annotation["steps"][0]["label"] = "Different step wording"
+    blind_bytes = _encoded(blind_annotation)
+    blind_path = "datasets/paper/second_pass/sample_procedure.json"
+    artifacts[blind_path] = blind_bytes
+    evidence_log["blind_pass"]["output"]["sha256"] = hashlib.sha256(
+        blind_bytes
+    ).hexdigest()
+
+    disagreement_ids = _annotation_disagreement_ids(annotation, blind_annotation)
+    report_path = "datasets/paper/reports/sample_procedure_agreement.json"
+    report = json.loads(artifacts[report_path])
+    report["adjudication_items"].extend(
+        {"decision_id": decision_id, "review_kind": "disagreement"}
+        for decision_id in sorted(disagreement_ids)
+    )
+    evidence_log["adjudication"]["decisions"].extend(
+        {
+            "decision_id": decision_id,
+            "review_kind": "disagreement",
+            "item_kind": "step",
+            "evidence_spans": [{"char_start": 0, "char_end": len(STEP_TEXT)}],
+            "alternatives": ["primary wording", "blind wording"],
+            "recommendation": "Use the exact source wording.",
+            "final_decision": "primary wording",
+            "decision_maker": "P-003",
+        }
+        for decision_id in sorted(disagreement_ids)
+    )
+    report_bytes = _encoded(report)
+    artifacts[report_path] = report_bytes
+    evidence_log["agreement_report"]["sha256"] = hashlib.sha256(
+        report_bytes
+    ).hexdigest()
+
+    result = assess_production_evidence(
+        annotation,
+        annotation_bytes=annotation_bytes,
+        source_bytes=SOURCE_TEXT.encode("utf-8"),
+        evidence_log=evidence_log,
+        expected_doc_id="sample_procedure",
+        artifact_loader=_artifact_loader(annotation_bytes, artifacts),
+    )
+
+    assert result.evidence_eligible is True
+
+
 def test_production_evidence_rejects_adjudication_span_outside_source() -> None:
     annotation = _annotation()
     annotation_bytes = _encoded(annotation)
@@ -965,6 +1022,53 @@ def test_agreement_report_allows_equivalent_serialized_f1() -> None:
     )
 
     assert "agreement report relation_exact F1 does not match its counts" not in issues
+
+
+@pytest.mark.parametrize(
+    ("mutation", "expected_kind"),
+    [
+        (lambda value: value["steps"][0].update(label="Changed step"), "step"),
+        (
+            lambda value: value["steps"][0]["constraints"][0].update(
+                text="Changed constraint"
+            ),
+            "constraint",
+        ),
+        (
+            lambda value: value["steps"][0]["constraints"][0].update(
+                type="postcondition"
+            ),
+            "constraint",
+        ),
+        (
+            lambda value: value["steps"][0]["constraints"][0].update(
+                enforcement="should"
+            ),
+            "constraint",
+        ),
+        (
+            lambda value: value["steps"][0]["provenance"].update(char_end=1),
+            "step",
+        ),
+        (
+            lambda value: value["relations"].append(
+                {"source": "S1", "target": "S1", "type": "NEXT"}
+            ),
+            "relation",
+        ),
+    ],
+)
+def test_disagreement_ids_cover_all_annotation_dimensions(
+    mutation,
+    expected_kind: str,
+) -> None:
+    primary = _annotation()
+    blind = json.loads(json.dumps(primary))
+    mutation(blind)
+
+    disagreement_ids = _annotation_disagreement_ids(primary, blind)
+
+    assert any(f":{expected_kind}:" in value for value in disagreement_ids)
 
 
 def test_production_evidence_fails_closed_for_non_object_evidence_log() -> None:

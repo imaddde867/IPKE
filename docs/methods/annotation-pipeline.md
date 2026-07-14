@@ -165,8 +165,9 @@ decision maker.
 The agreement report assigns stable IDs to every disagreement, seeded agreement, and
 seeded empty-region audit. The evidence sidecar stores typed adjudication decisions for
 exactly those IDs; a final output hash without this decision coverage is ineligible.
-Disagreement IDs are derived from the frozen attachment-edge symmetric difference, and
-every adjudication evidence span is checked against the frozen procedure span.
+Disagreement IDs are derived from the frozen step, constraint, explicit-relation, and
+attachment symmetric differences, and every adjudication evidence span is checked
+against the frozen procedure span.
 
 ## 8. Establish experiment eligibility
 

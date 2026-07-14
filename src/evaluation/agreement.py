@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from collections.abc import Mapping
 from typing import Any
 
@@ -84,3 +85,67 @@ def attachment_edge_set(
             refs.append(containing_step_id)
         edges.update((text, ref) for ref in refs)
     return edges
+
+
+def _normalized_json(value: Any) -> Any:
+    if isinstance(value, Mapping):
+        return {
+            str(key): _normalized_json(item)
+            for key, item in sorted(value.items(), key=lambda pair: str(pair[0]))
+        }
+    if isinstance(value, list):
+        return [_normalized_json(item) for item in value]
+    if isinstance(value, str):
+        return " ".join(value.split())
+    return value
+
+
+def _review_payload(value: Any) -> str:
+    return json.dumps(
+        _normalized_json(value),
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+
+
+def annotation_review_items(
+    annotation: Mapping[str, Any],
+) -> set[tuple[str, str]]:
+    """Project all adjudication-relevant annotation dimensions to stable items."""
+    items: set[tuple[str, str]] = set()
+    raw_steps = annotation.get("steps")
+    if isinstance(raw_steps, list):
+        for step in raw_steps:
+            if not isinstance(step, Mapping):
+                continue
+            step_record = dict(step)
+            step_record.pop("constraints", None)
+            items.add(("step", _review_payload(step_record)))
+
+    for constraint, containing_step_id in _constraint_records(annotation):
+        items.add(
+            (
+                "constraint",
+                _review_payload(
+                    {
+                        "containing_step_id": containing_step_id,
+                        "constraint": constraint,
+                    }
+                ),
+            )
+        )
+
+    raw_relations = annotation.get("relations")
+    if isinstance(raw_relations, list):
+        items.update(
+            ("relation", _review_payload(relation))
+            for relation in raw_relations
+            if isinstance(relation, Mapping)
+        )
+
+    items.update(
+        ("attachment", _review_payload(edge))
+        for edge in attachment_edge_set(annotation)
+    )
+    return items

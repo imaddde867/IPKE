@@ -25,7 +25,8 @@ validator recomputes the pair counts from frozen artifacts, aggregates them acro
 blind subset for the 0.70 G0 gate, and requires typed adjudication decisions to cover the
 report items exactly.
 Disagreement item IDs are deterministically derived from the frozen primary/blind
-attachment-edge symmetric difference; report authors cannot choose or omit them.
+step, constraint, explicit-relation, and attachment projections; report authors cannot
+choose or omit them.
 
 ## Required Top-Level Fields
 
