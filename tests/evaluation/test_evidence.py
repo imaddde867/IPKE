@@ -83,3 +83,54 @@ def test_corpus_evidence_requires_blind_coverage_for_at_least_25_percent() -> No
     assert issues == (
         "blind second-pass coverage is 1/5; at least 2/5 required",
     )
+
+
+def test_corpus_evidence_applies_attachment_gate_to_aggregate_counts() -> None:
+    logs = {
+        "low_pair": {"blind_subset_selected": True},
+        "high_pair": {"blind_subset_selected": True},
+    }
+    reports = {
+        "low_pair": {
+            "aggregate": {
+                "relation_exact": {
+                    "true_positive": 1,
+                    "false_positive": 1,
+                    "false_negative": 1,
+                    "f1": 0.5,
+                }
+            }
+        },
+        "high_pair": {
+            "aggregate": {
+                "relation_exact": {
+                    "true_positive": 8,
+                    "false_positive": 0,
+                    "false_negative": 0,
+                    "f1": 1.0,
+                }
+            }
+        },
+    }
+
+    assert assess_corpus_evidence(logs, agreement_reports=reports) == ()
+
+
+def test_corpus_evidence_recomputes_and_rejects_low_attachment_agreement() -> None:
+    logs = {"pair": {"blind_subset_selected": True}}
+    reports = {
+        "pair": {
+            "aggregate": {
+                "relation_exact": {
+                    "true_positive": 1,
+                    "false_positive": 1,
+                    "false_negative": 1,
+                    "f1": 0.99,
+                }
+            }
+        }
+    }
+
+    assert assess_corpus_evidence(logs, agreement_reports=reports) == (
+        "attachment-edge agreement F1 0.500 is below 0.700",
+    )

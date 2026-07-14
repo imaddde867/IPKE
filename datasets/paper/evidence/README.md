@@ -39,7 +39,15 @@ step and constraint must carry its own `provenance.char_start` and
 
 The primary decision ledger covers steps, constraints, and relations. Relation decisions
 include order edges, branches, alternatives, and other explicit graph relations; a file
-cannot become production evidence while those decisions are absent.
+cannot become production evidence while those decisions are absent. A relation without an
+explicit `id` uses `REL:<source>:<type>:<target>` as its stable ledger identity;
+constraints require explicit, unique IDs.
+
+For blind-selected files, the validator recomputes attachment-edge TP/FP/FN from the
+hashed primary and blind annotations and checks the frozen report. G0 is applied to the
+counts aggregated across the complete preregistered blind subset, not to individual
+pairs. Typed adjudication decisions must exactly cover the report's disagreement and
+seeded-audit IDs and name the adjudicator as decision maker.
 
 Run the candidate-compatible structural check with `make eval-validate`. Run the
 fail-closed production boundary with `make eval-paper-gate`.

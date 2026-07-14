@@ -294,6 +294,7 @@ def main(argv: list[str] | None = None) -> int:
     any_error = manifest_error
     any_warn = False
     production_logs: dict[str, dict] = {}
+    agreement_reports: dict[str, dict] = {}
     for f in gold_files:
         if args.require_production_evidence and args.evidence_dir is not None:
             evidence_file = args.evidence_dir / f"{f.stem}.json"
@@ -304,6 +305,21 @@ def main(argv: list[str] | None = None) -> int:
             else:
                 if isinstance(loaded_evidence, dict):
                     production_logs[f.stem] = loaded_evidence
+                    if loaded_evidence.get("blind_subset_selected") is True:
+                        report_path = (
+                            REPO_ROOT
+                            / "datasets"
+                            / "paper"
+                            / "reports"
+                            / f"{f.stem}_agreement.json"
+                        )
+                        try:
+                            loaded_report = json.loads(report_path.read_bytes())
+                        except (json.JSONDecodeError, OSError):
+                            pass
+                        else:
+                            if isinstance(loaded_report, dict):
+                                agreement_reports[f.stem] = loaded_report
         msgs = validate_file(
             f,
             require_human_verified=args.require_human_verified,
@@ -331,7 +347,10 @@ def main(argv: list[str] | None = None) -> int:
         if not errs and not warns:
             print(f"PASS {f.name}")
     if args.require_production_evidence and len(production_logs) == len(gold_files):
-        corpus_issues = assess_corpus_evidence(production_logs)
+        corpus_issues = assess_corpus_evidence(
+            production_logs,
+            agreement_reports=agreement_reports,
+        )
         if corpus_issues:
             any_error = True
             for issue in corpus_issues:

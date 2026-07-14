@@ -142,6 +142,10 @@ Attachment-edge F1 of at least 0.70 is the current G0 protocol gate. Cohen's kap
 the other measures are diagnostics. A low-agreement pair remains in the aggregate and
 triggers investigation; it is never discarded for failing a threshold.
 
+The production validator recomputes each pair's attachment TP/FP/FN from the frozen
+primary and blind artifacts, checks those counts and F1 against the hashed report, then
+applies the threshold once to the counts aggregated across the preregistered subset.
+
 ## 7. Adjudicate independently
 
 A third named human who did not annotate the procedure resolves every disagreement
@@ -157,6 +161,10 @@ Routine disagreement belongs to the adjudicator. Escalate only unresolved taxono
 implicit-evidence, scope, or safety-critical decisions to the principal investigator.
 Record the evidence, alternatives, adjudicator recommendation, final decision, and
 decision maker.
+
+The agreement report assigns stable IDs to every disagreement, seeded agreement, and
+seeded empty-region audit. The evidence sidecar stores typed adjudication decisions for
+exactly those IDs; a final output hash without this decision coverage is ineligible.
 
 ## 8. Establish experiment eligibility
 

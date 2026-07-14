@@ -413,6 +413,7 @@ def main(argv: list[str] | None = None) -> int:
     if not args.dry_run and not args.allow_unverified:
         ineligible: dict[str, tuple[str, ...]] = {}
         evidence_logs: dict[str, dict[str, Any]] = {}
+        agreement_reports: dict[str, dict[str, Any]] = {}
         assert evidence_dir is not None
         for gf, tf in pairs:
             evidence_path = evidence_dir / f"{gf.stem}.json"
@@ -431,6 +432,21 @@ def main(argv: list[str] | None = None) -> int:
                 continue
             if isinstance(evidence_log, dict):
                 evidence_logs[gf.stem] = evidence_log
+                if evidence_log.get("blind_subset_selected") is True:
+                    report_path = (
+                        REPO_ROOT
+                        / "datasets"
+                        / "paper"
+                        / "reports"
+                        / f"{gf.stem}_agreement.json"
+                    )
+                    try:
+                        loaded_report = json.loads(report_path.read_bytes())
+                    except (json.JSONDecodeError, OSError):
+                        pass
+                    else:
+                        if isinstance(loaded_report, dict):
+                            agreement_reports[gf.stem] = loaded_report
             evidence = assess_production_evidence(
                 loaded_gold[gf.stem],
                 annotation_bytes=loaded_gold_bytes[gf.stem],
@@ -454,7 +470,10 @@ def main(argv: list[str] | None = None) -> int:
                 file=sys.stderr,
             )
             return 1
-        corpus_issues = assess_corpus_evidence(evidence_logs)
+        corpus_issues = assess_corpus_evidence(
+            evidence_logs,
+            agreement_reports=agreement_reports,
+        )
         if corpus_issues:
             print(
                 "ERROR: corpus is not eligible for paper evidence:",

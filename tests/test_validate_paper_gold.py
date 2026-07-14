@@ -493,7 +493,7 @@ def test_production_cli_does_not_require_excluded_candidate_files(
 ) -> None:
     monkeypatch.setattr(
         "scripts.validate_paper_gold.assess_corpus_evidence",
-        lambda _logs: (),
+        lambda _logs, **_kwargs: (),
     )
     gold_path, source_path, evidence_path = _production_package(tmp_path)
     manifest_path = _write_manifest(
