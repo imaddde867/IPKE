@@ -1,108 +1,124 @@
-# IPKE Execution Direction - 2026-07-04
+# IPKE Execution Direction
 
-This document is the active working direction for the ECIR 2027 IPKE-Bench paper
-push. It supersedes older roadmap language that still treats gold review as open
-or suggests creating a separate artifact repo now.
+Updated: 2026-07-13
+
+This file originally described the ECIR Resource Paper push. ADR-0005 superseded that
+direction. It is retained at the existing path because issues and repository entry points
+already link here.
 
 ## Framing
 
-The paper direction is **IPKE-Bench as the primary contribution**: a
-constraint-aware benchmark, annotation taxonomy, validator, and evaluation
-protocol for procedural knowledge extraction from safety-critical industrial
-documents.
+IPKE itself is the primary paper contribution. The method under test is
+skeleton-conditioned, source-grounded constraint attachment for procedural graph
+extraction with local language models.
 
-IPKE remains the reference local/private extraction pipeline and the strongest
-baseline. It is important, but it is not the paper's primary contribution.
+The corpus, taxonomy, annotation workflow, validators, and metrics are supporting
+evaluation infrastructure. They must be strong enough to support the method claim but
+are not framed as a benchmark-paper contribution.
 
-The CoRe link should be stated narrowly and defensibly. IPKE-Bench supports the
-family of TeoAly/ADINO pilots that turn unstructured procedural, operator, or
-document content into structured representations, or use a procedure as a
-reference for checking observed work. It does not claim to underlie unrelated
-vision or time-series pilots.
+Controlling design:
+`docs/superpowers/specs/2026-07-10-ipke-method-paper-design.md`.
 
-## Ground Truth
+## Current evidence state
 
-- 8 seed gold files are reviewed and strict-validator clean.
-- D1 constraint-blindness is the motivating result and must stay reproducible.
-- The tracker is now reduced to granular active work; stale umbrella/duplicate
-  issues are closed with comments pointing to replacements.
-- Do not create a new repo now. Keep hardening this repo and defer packaging
-  decisions until the P0 evaluation and IAA gates are under control.
+- The retained legacy-candidate inventory has 8 documents, 256 steps, and 231
+  constraints. The provisional manifest selects five procedure candidates.
+- No production annotation or frozen human-evidence package exists yet.
+- All eight retained candidates pass the candidate-compatible JSON Schema and strict
+  structural validator. That does not make them production gold.
+- The production gate now requires exact source anchors, canonical artifact paths,
+  verified hashes across the candidate/primary/blind/adjudication chain, and a complete
+  primary-human decision log. A status or marker cannot pass it.
+- Most annotations cover a bounded subprocedure while the current multi-seed runner reads
+  complete documents. Existing full-document results are not valid method evidence.
+- P3 versus P0 bundles conditioning, prompt detail, calls, filtering, and parser effects.
+- Explicit gold relations are not yet authoritative in Tier-A and Tier-B evaluation.
+- The unit suite is healthy; experiment validity is the critical path.
 
-## Active GitHub Issues
+## Active critical path
 
-### P0 - Do First
-
-| Issue | Owner mode | Why it matters |
+| Issue | Owner | Branch state / purpose |
 |---|---|---|
-| #89 Pin D1 constraint-blindness reproduction | ready-for-agent | Locks the paper's Section 1 motivating result. |
-| #55 Run multi-seed and multi-model evaluation sweep | ready-for-agent | Produces real paper numbers with CIs. |
-| #90 Recruit independent annotators for IAA gate | ready-for-human | Required for any defensible kappa claim. |
+| #107 | agent | Direction alignment implemented in draft PR #113. |
+| #108 | human | Open: complete independent production-human annotation evidence. |
+| #109 | agent | Open: make explicit gold relations authoritative in evaluation. |
+| #110 | human | Open: decide redistribution rights for historical Git blobs. |
+| #111 | agent | Schema and production-evidence boundary implemented in draft PR #113. |
+| #55 | blocked agent | Run the controlled IPKE method sweep after evidence gates. |
+| #87 | human | Expand the supporting evaluation corpus with rights-cleared diversity. |
+| #90 | human | Recruit independent blind annotators. |
 
-### P1 - Paper-Grade Artifact and Analysis
+Optional retrieval, JSON-LD, and Finnish extensions remain below the causal method,
+signed-data, and evaluation-validity work.
 
-| Issue | Owner mode | Notes |
-|---|---|---|
-| #87 Expand corpus to 12 documents | ready-for-human | Needs genre diversity, not just count. |
-| #93 Track unmatched paper text status | ready-for-human | Resolve `niosh_nmam_surface_sampling_guidance` ambiguity. |
-| #98 Finalize dataset datasheet | ready-for-human | Existing datasheet needs final license/status polish after #87. |
-| #66 Beta sensitivity for DSC | ready-for-agent | Run after DSC/DP setup is stable. |
-| #67 Phi weight sensitivity | ready-for-agent | Run from stored sweep outputs after #55. |
-| #96 PAGED metric comparison | ready-for-agent | One benchmark-map comparison row. |
-| #97 JSON-LD export | ready-for-agent | Reusability and ESWC/Semantic-Web angle. |
+## Immediate work order
 
-### P2 - Optional Differentiators
+1. Complete the EPA MFC primary-human source pass from the agent-prepared candidate and
+   namespaced review packet. Eight scientific decisions remain human-owned.
+2. Freeze the primary output and evidence package, then prove the production gate on
+   that one document.
+3. Prepare the next manifest-selected source packet without mutating legacy candidates.
+4. Recruit and assign the source-only blind subset and independent adjudicators.
+5. Implement #109 before reporting graph-structure metrics.
+6. Build one canonical experiment module and prove C0-C4 on two eligible documents.
+7. Freeze development and source-family-held-out splits before confirmatory evaluation.
+8. Expand compute only after the pilot, parser, truncation, provenance, and cached
+   re-scoring gates pass.
 
-| Issue | Owner mode | Notes |
-|---|---|---|
-| #95 Optional D3 constraint-aware retrieval | ready-for-agent | Do only if D2 lands early; cut before D2 under time pressure. |
-| #99 Expert human study | ready-for-human | Nice-to-have, not a Resource Track blocker. |
-| #100 Finnish-language extension | ready-for-human | Only if suitable Finnish SOPs are cleared. |
+## Manual gold order
 
-## What Is Not Active
+1. EPA MFC calibration: complete the primary-human pass from
+   `datasets/paper/review_candidates/epa_field_operations_manual_filter_sampling_sop.json`.
+2. EPA procedure validation: repair high-confidence step, type, enforcement, attachment,
+   and branching defects; record scope ambiguities for human adjudication.
+3. OLSK: exclude from method evidence until pipeline-visible text contains the assembly
+   instructions represented in gold.
+4. NASA: retain as a separately labelled requirements stress test without manufacturing
+   temporal order.
+5. NIOSH: include the omitted SPECIAL PRECAUTIONS safety content and calculation formula.
+6. USGS groundwater and surface-water procedures: restore omitted assumptions,
+   applicability guards, calculations, and branches.
+7. Remaining EPA documents: remove illustrative or descriptive content promoted to
+   mandatory actions or constraints.
 
-- Old umbrella issue #60 is closed. It contained stale gold-review blockers.
-- Duplicate annotator issue #86 is closed in favor of #90.
-- Separate artifact-repo planning #54 is closed. Package later, after P0.
-- Pipeline cleanup #78 is closed/deferred. It is not in the paper critical path.
-- #91, #92, and #94 are closed/deferred to keep the board focused on the paper
-  direction.
-- `create_ipke_issues.sh` is no longer part of the workflow. It can be deleted.
+Agents may prepare source-grounded candidates and decision packets. Production decisions
+remain human. Validators check schema, spans, identifiers, hashes, provenance, roles,
+splits, and artifact identity.
 
-## Immediate Work Order
+## Experiment sequence
 
-1. Start #89 and keep it small: make `make eval-blindness` reproduce the pinned
-   8-document D1 result and fail if counts drift.
-2. Start #55 only after #89 is pinned enough that the result source is stable.
-   The first milestone is one real-model, non-empty metrics row. Do not start
-   with the full grid.
-3. In parallel, push #90 with humans: confirmed annotators, assignment list,
-   and blind second-pass process.
-4. Only then expand to #87 and #93. Corpus growth without IAA discipline weakens
-   the paper.
+### Attachment first
 
-## Local Hygiene
+Run C0 Joint/raw, C1 Joint/filtered, C2 Self-refine/raw, C3 Skeleton/raw, and C4 Full
+IPKE on the exact annotated spans. The primary contrast is C3 minus C2. Report filter
+effects separately through C1 minus C0 and C4 minus C3.
 
-Work on a branch. Do not work directly on `main`. Do not rewrite reviewed gold
-or report JSONs by hand. If a result is wrong, fix the script and regenerate it.
+### Segmentation second
 
----
+Compare full context, fixed windows, heading-only, semantic breakpoints, and
+hierarchy-aware segmentation using manually supported boundaries and constraint-step
+co-location. Generic cohesion scores are diagnostics, not paper evidence.
 
-## Status update — 2026-07-07
+### Full system last
 
-Supersessions since this board was written:
+Only after component gates pass, run the full model and source-family matrix. Preserve
+raw predictions and complete run metadata. Treat documents or source families as the
+independent units and seeds as nested repeated measurements.
 
-- **#89-equivalent D1 pinning: done.** The D1 scope decision is resolved
-  (option 2, `docs/paper/D1_SCOPE_DECISION.md`); the cross-regime numbers are
-  pinned in the non-gate `make repro-blindness` target. `make eval-blindness`
-  stays informational.
-- **Gold quality pass: done (2026-07-06).** All 8 golds re-read against source,
-  verbatim-grounded, completed, and hand-annotated with step relations —
-  256 steps / 231 constraints. Per-file log in each gold's `review_notes`;
-  summary in `docs/annotation/SIGN_OFF_ISSUE.md`.
-- **Next gate: human sign-off** (`scripts/sign_off_gold.py`, SIGN_OFF_ISSUE.md).
-  #55 (D2 sweep) starts after sign-off; #90 (IAA recruitment) unchanged.
-- The gold hand-editing prohibition below predates the 2026-07-06 annotation
-  pass: annotation *content* is human/agent judgment applied to the data files
-  directly (with the strict validator as the gate); report JSONs remain
-  script-generated only.
+## Git and release hygiene
+
+- Work on branches and merge through PRs. Only Imad merges.
+- Do not push directly to `main`.
+- Do not rewrite Git history until #110 has a recorded rights decision and explicit
+  approval.
+- Do not delete active or archived gold to simplify the corpus.
+- Do not edit generated result JSON manually.
+- Do not stamp human verification on behalf of the human reviewer.
+
+## Superseded work
+
+- ADR-0004 and the ECIR Resource Paper direction are historical.
+- Issue #105 is closed as superseded by #107.
+- D1 cross-regime counts are historical annotation-process evidence, not an extractor
+  result and not the method-paper headline.
+- D3 retrieval, JSON-LD, and cross-lingual extensions are optional follow-up work.

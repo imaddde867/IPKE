@@ -1,86 +1,93 @@
-# IPKE-Bench Context for Agents
+# IPKE Method Context for Agents
 
-Tracked entry point for any AI agent (Claude Code, Codex, Cursor, ChatGPT) working in this repo. The personal `AGENTS.md` and `CLAUDE.md` at the repo root are gitignored — this file is the committed source of truth on framing and current state.
+This tracked file keeps its historical filename so existing links continue to resolve.
+It is the committed source of truth for agents because the root `AGENTS.md` and
+`CLAUDE.md` are personal, gitignored files.
 
 ## What this repository delivers
 
-**Primary contribution**: IPKE-Bench, a constraint-aware benchmark for procedural knowledge extraction from safety-critical industrial documents. Target venue: ECIR 2027 Resource Paper Track.
+**Primary research contribution:** IPKE, a method for skeleton-conditioned,
+source-grounded constraint attachment in procedural graph extraction with local language
+models.
 
-**Secondary**: IPKE, a local/private extraction pipeline that demonstrates the benchmark can be cleared. IPKE is the strong baseline, NOT the paper's contribution.
+**Supporting infrastructure:** the active corpus, annotation taxonomy, schemas,
+validators, metrics, and reproducibility tooling.
 
-If you are reframing or summarising the project, lead with the benchmark, not the pipeline. The previous "Mistral-7B beats Llama-70B" narrative is supporting evidence at best, not the headline.
+ADR-0005 supersedes the benchmark-first ECIR Resource Paper direction. Read
+`docs/superpowers/specs/2026-07-10-ipke-method-paper-design.md` before changing research
+behavior.
 
-## §1 motivating result (live, regenerable)
+## Active causal claim
 
-§1 framing **decided 2026-07-06** (`docs/paper/D1_SCOPE_DECISION.md`, option 2): the headline is **corpus depth** — the thin bounded-excerpt pass held 43 steps / 117 constraints across the 8 documents; the full-subprocedure re-annotation plus 2026-07-06 verbatim-grounding pass yields **256 steps / 231 constraints**. The thin-era LLM draft vs the current golds (32 vs 231, **7.22× expansion**) is a labelled *cross-regime* annotation-economics illustration, not an extractor-quality claim; the apples-to-apples motivator is the D2 P0 baseline's ConstraintCoverage on signed-off gold.
+Test whether step-skeleton-conditioned raw extraction beats call- and budget-matched
+self-refinement on document-macro ConstraintAttachmentF1. Filtering is a separate effect.
+Segmentation is a separate secondary experiment based on constraint-step co-location and
+downstream attachment.
 
-Reproduce with:
+Do not claim novelty for generic two-stage prompting, constraint representation,
+constraint-flow edges, or Dual Semantic Chunking.
 
-```bash
-make eval-blindness    # regenerates + prints (informational)
-make repro-blindness   # asserts the pinned numbers (32 vs 231, 7.22x)
-```
+## Current evidence state
 
-Reports land in `datasets/paper/reports/constraint_blindness_v2_sbert{050,075}.json`. If you change the seed corpus, re-run and update `BENCHMARK.md`, `docs/dataset/datasheet.md`, and `docs/paper/ipke-bench-resource-prd.md` headline numbers.
+- 8 retained legacy candidates, 256 steps, and 231 constraints; 5 are selected for
+  provisional development.
+- 0 production annotations and 0 frozen human evidence packages.
+- Candidate schema and custom validation pass. Production eligibility separately
+  requires exact item anchors, canonical paths, verified artifact-chain hashes, and a
+  frozen evidence sidecar.
+- The EPA MFC review candidate now has 14 proposed steps, 15 constraints, and exact
+  anchors; eight scientific decisions remain for a primary human reviewer.
+- Full-document extraction is mismatched with mostly bounded gold spans.
+- Explicit gold relations are ignored by parts of the evaluator.
+- Existing model-result headlines must not be reused until the controlled protocol is
+  rerun.
 
 ## Mandatory workflow guards
 
 Before editing any function, class, or method:
 
-1. Run `gitnexus_impact({target: "symbolName", direction: "upstream"})`.
-2. Report the blast radius to the user.
-3. If HIGH or CRITICAL, warn explicitly before proceeding.
+1. Run upstream GitNexus impact analysis.
+2. Report the blast radius.
+3. Warn explicitly before proceeding on HIGH or CRITICAL impact.
 
 Before committing:
 
-1. Run `gitnexus_detect_changes()` to confirm the changes only affect expected symbols.
-2. Run `uv run python scripts/validate_paper_gold.py` if any `datasets/paper/gold/*.json` changed.
-3. Run `uv run pytest -q --ignore=tests/test_api.py --ignore=tests/test_integration.py`.
+1. Run GitNexus change detection.
+2. Run the narrowest relevant tests.
+3. Run the full non-integration suite before claiming the branch is complete.
+4. Run structural and grounding validation after any gold change.
 
-Before claiming any work is complete:
+## Gold rules
 
-1. Read the verification command output. Do not extrapolate.
-2. State the result with evidence.
+- Production corrections are human source-to-gold judgments. Agents may prepare
+  explicitly ineligible review candidates and namespaced packets.
+- Automation may verify schema, spans, hashes, identifiers, provenance, paths, roles,
+  splits, and placeholders; it may not assert human decisions.
+- Agent review cannot apply `+ human-verified:<handle>`.
+- Never align an independent second pass to gold before agreement is computed.
+- Never mutate audited files under `datasets/archive/`.
+- Do not change the locked constraint type or enforcement vocabularies ad hoc.
 
-## Locked vocabularies (do not drift)
+## Active critical path
 
-Defined in `CONTEXT.md` and `docs/annotation/constraint-types.md`:
+1. #107 method-first repository alignment.
+2. #108 primary-human evidence collection and production artifact migration.
+3. Frozen blind-subset assignments and coordinator-controlled actor separation.
+4. #109 explicit relation evaluation.
+5. Two-document exact-span C0-C4 pilot.
+6. #87 source-family-diverse corpus expansion and frozen split.
+7. #55 full controlled method sweep.
 
-- **review_status**: `unreviewed`, `reviewed`, `llm_draft`.
-- **constraint.type**: `precondition`, `postcondition`, `guard`, `parameter`, `role_assignment`, `reference`.
-- **constraint.enforcement**: `must`, `should`, `may`.
-
-Any new value invalidates the paper-grade validator and the κ-grade IAA. If you encounter source content that doesn't fit, open a discussion in the corresponding issue and do NOT silently extend the vocabulary.
-
-## Current open gates (in critical-path order)
-
-1. **Recruit 4 independent annotators** for blind second-pass IAA. Memo drafted in the user's Obsidian vault. Lead time weeks.
-2. **Corpus expansion** from 8 to 12 documents (genre-diverse: FAA AC 43.13-1B, FDA Food Code, NIST SP 800-61 Rev. 2, OEM service manual).
-3. **D2 baseline sweep** once corpus and IAA close.
-4. **D3 constraint-aware retrieval task** (optional).
-5. **JSON-LD export** (for an ESWC fallback).
-
-The user's manual action list is in `BENCHMARK.md` §Status. Don't recreate it.
-
-## Don't do these without asking
-
-- Reframe the contributions list — already singular (one artifact + ranked demonstrations). Don't re-expand.
-- Re-annotate `datasets/paper/second_pass/*.json` to match gold — methodologically invalid, forbidden by `docs/annotation/guidelines.md`.
-- Add ad-hoc constraint types — the taxonomy is locked.
-- Touch `AGENTS.md` or `CLAUDE.md` and claim it persisted — they are gitignored.
-- Edit the constraint-blindness headline numbers without regenerating the report first.
+Optional retrieval, JSON-LD, UI, and Finnish extensions follow the causal and evidence
+gates.
 
 ## See also
 
-- `BENCHMARK.md` — top-level benchmark entry point.
-- `CONTEXT.md` — domain glossary.
-- `docs/paper/ipke-bench-resource-prd.md` — resource paper PRD.
-- `docs/dataset/datasheet.md` — Gebru-format datasheet.
-- `docs/annotation/constraint-types.md` — locked taxonomy.
-- `docs/annotation/guidelines.md` — annotation procedure.
-- `docs/annotation/independent-annotator-workflow.md` — recruited-annotator workflow.
-- `docs/plans/2026-06-13-ipke-bench-taxonomy-and-review.md` — most recent sprint plan.
-- `docs/adr/0004-ecir-resource-paper-primary.md` — venue decision.
-- `docs/agents/domain.md` — how to consume domain docs.
-- `docs/agents/issue-tracker.md` — issue conventions.
-- `docs/agents/triage-labels.md` — label scheme.
+- `docs/adr/0005-ipke-method-paper-primary.md`
+- `docs/superpowers/specs/2026-07-10-ipke-method-paper-design.md`
+- `docs/research-vision.md`
+- `docs/paper/2026-07-04-execution-direction.md`
+- `CONTEXT.md`
+- `REPRODUCIBILITY.md`
+- `docs/annotation/guidelines.md`
+- `docs/agents/issue-tracker.md`

@@ -1,144 +1,165 @@
-# Human sign-off: verify and stamp the 8 IPKE-Bench golds
+# Complete independent production annotations
 
-**Type:** gold-quality / release-gate
-**Blocks:** ECIR 2027 Resource-track submission (dataset must be human-verified, not just model-assisted)
-**Assignee:** @imaddde867
-**Estimate:** 3–5 h focused review (≈25–40 min/doc)
+**Type:** gold quality and evidence gate
 
----
+**Blocks:** confirmatory method-paper evaluation
 
-## Why this exists
+**Owners:** assigned primary reviewers, blind annotators, and adjudicators
+**Estimate:** about three active hours for a full primary pass, measured rather than assumed
 
-All 8 golds currently carry the annotator string
-`model-assisted:claude-opus-4-8 + agent-adjudicated (pending human sign-off)`.
-They pass the strict validator, but **no human has verified the labels yet.**
-For a resource paper, the annotator-of-record must be a person. This issue is
-the single gate that converts the corpus from *model-assisted draft* to
-*human-verified gold*. Do not submit, and do not cite IAA numbers, until this
-is closed.
+This path is retained because existing documentation and issues link to it. It replaces
+the former instruction to verify an agent candidate briefly and append a human marker.
+A marker-only sign-off is not paper evidence.
 
-The provenance is deliberately additive: sign-off **appends**
-`+ human-verified:imad` rather than erasing the model-assisted lineage, so the
-datasheet still tells the truth about how each label was produced.
+## Current state
 
----
+The directory `datasets/paper/gold/` contains eight model-assisted, agent-audited
+candidates with 256 steps and 231 constraints. None has completed the production-human
+protocol.
 
-## What you're signing off on
+The provisional manifest selects these five development candidates:
 
-256 steps / 231 constraints across 8 documents (locked `full_subprocedure`
-scope, 6-type taxonomy: precondition, postcondition, guard, parameter,
-role_assignment, reference; enforcement ∈ must/should/may).
+- `epa_field_operations_manual_filter_sampling_sop`
+- `epa_field_sampling_measurement_procedure_validation`
+- `epa_guidance_preparing_sops_qag6`
+- `usgs_groundwater_technical_procedures_tm1_a1`
+- `usgs_nfm_collection_water_samples_a4`
 
-> **2026-07-06 agent verbatim-grounding + completion pass.** Every gold was
-> re-read against its source `.txt` span before this sign-off: all constraint
-> texts re-grounded to contiguous verbatim source wording (guidelines Verbatim
-> wording rule), definitional/restatement constraints dropped, missed
-> constraints added, enforcement realigned to the modal-verb mapping, and two
-> mis-located spans corrected (epa_filter was annotating the MFC SOP §6.0, not
-> "5.14 Repair"; usgs_groundwater was annotating the Figure-2 field form, its
-> Instructions were re-authored; usgs_nfm's span cut off Steps 4d–6, now
-> annotated). Details in each gold's `review_notes`. Counts below are current.
+It excludes:
 
-| Document | Section signed off | Steps | Constraints |
-|---|---|--:|--:|
-| epa_field_operations_manual_filter_sampling_sop | MFC SOP — 6.0 Calibration / Post-Calibration (6.1.1–6.1.10) | 18 | 12 |
-| epa_field_sampling_measurement_procedure_validation | Procedure Development, Validation & Approval | 35 | 44 |
-| epa_guidance_preparing_sops_qag6 | 2.0 SOP Process (2.1–2.6) | 36 | 33 |
-| nasa_npr_8715_3d_general_safety | 2.5.2 System Safety Technical Plan | 39 | 26 |
-| niosh_nmam_5th_edition_ebook | Method 2005 (Nitroaromatic compounds) | 34 | 24 |
-| olsk_small_cnc_v1_workbook | 01 Electronic Box assembly | 24 | 9 |
-| usgs_groundwater_technical_procedures_tm1_a1 | GWPD 1 — Instructions 1–14 + Data Recording | 29 | 20 |
-| usgs_nfm_collection_water_samples_a4 | EWI sampling steps (1–6, complete) | 41 | 63 |
-| **TOTAL** | | **256** | **231** |
+- NASA NPR 8715.3D as a requirements stress test, not an executable procedure;
+- OLSK Small CNC pending a source-faithful rebuild;
+- NIOSH Method 2005 pending a source-faithful rebuild.
 
----
+Inclusion in the provisional manifest does not make a candidate human verified or
+experiment eligible.
 
-## Do this, in order
+## Required roles
 
-### 1. Review each gold against its source text (the actual work)
+For each production procedure assign:
 
-For each doc, open the gold beside its source section and read for **label
-correctness**, not existence — the validator already guarantees structure.
-Ask, per document:
+1. one primary human reviewer who completes the source pass;
+2. one source-only blind annotator if the procedure is in the preregistered blind subset;
+3. one adjudicator who did not annotate that procedure;
+4. the principal investigator only for unresolved taxonomy, implicit-evidence, scope, or
+   safety-critical decisions.
 
-- **Step boundaries** — is each step one atomic action? No merged/split steps?
-- **Constraint TYPE** — is each constraint the right one of the 6? The common
-  confusions to catch: precondition (before) vs guard (conditional/if-then) vs
-  postcondition (verify-after); parameter (a value/setting) vs reference
-  (points to another doc/section).
-- **Enforcement** — `must` (mandatory), `should` (recommended), `may`
-  (optional). Skim for MUST/SHALL vs SHOULD vs MAY in the source.
-- **Attachment** — does each constraint's `attached_to`/`applies_to` point at
-  the step it actually governs? Mis-attachment is the headline metric of the
-  paper; this is the highest-value thing to check.
-- **Coverage** — did we miss an obvious constraint, or invent one not in the text?
+Reviewers may be recruited or paid. The principal investigator is not the default
+primary reviewer and does not perform routine transcription.
 
-Open a gold + source side by side:
-```bash
-# gold
-$EDITOR datasets/paper/gold/olsk_small_cnc_v1_workbook.json
-# source span that was annotated
-$EDITOR datasets/paper/second_pass/_source/<doc>.txt   # for the 3 IAA docs
-# or the full source
-$EDITOR datasets/paper/text/<doc>.txt
-```
+## Per-procedure work
 
-Fix anything wrong **directly in the gold JSON**. If you change type/enforcement/
-attachment, keep the edit minimal and re-run the validator (step 3) after.
+### 1. Freeze the assignment
 
-> Watch-items flagged during adjudication (spend extra time here):
-> - **nasa** is a requirements document, not a linear procedure — steps are
->   requirement clauses; confirm that reads correctly as "procedure."
-> - **olsk** is constraint-light (8 across 24 steps) by nature — confirm we
->   didn't under-annotate, but don't manufacture constraints.
-> - **niosh** carries numeric flow-rate/volume parameters — check the numbers.
+Before review, record the source URL, retrieval date, version, checksum, page range,
+section, exact Unicode procedure offsets, candidate checksum, reviewer, and role.
 
-### 2. Stamp your sign-off (mechanical — one command)
+The exact-anchor and evidence-package boundary is implemented. Begin a production pass
+only after the coordinator freezes the assignment, source span, candidate hash, reviewer
+pseudonym, and output location. Candidate audits may continue independently under
+`docs/annotation/manual-review/` and `datasets/paper/review_candidates/`.
 
-Dry-run first (writes nothing, shows before/after):
-```bash
-python3 scripts/sign_off_gold.py --annotator imad
-```
-Then apply to all 8 and auto-validate:
-```bash
-python3 scripts/sign_off_gold.py --annotator imad --apply
-```
-This appends `+ human-verified:imad`, sets `review_status=reviewed`,
-`review_date=<today>`, and runs the strict validator. It is idempotent and
-refuses to leave you in a failing state (non-zero exit if any gold breaks).
+### 2. Audit the candidate mechanically
 
-_Sign one doc at a time if you review over multiple sessions:_
-```bash
-python3 scripts/sign_off_gold.py --annotator imad --doc niosh_nmam_5th_edition_ebook --apply
-```
+An agent may prepare a source-to-candidate audit containing:
 
-### 3. Confirm the release gate is green
-```bash
-make gold-pipeline      # = validate --strict + label-blindness check
-# or directly:
-PYTHONPATH=. python3 scripts/validate_paper_gold.py --gold-dir datasets/paper/gold --strict
-```
-Expect: `PASS` for all 8, exit 0. The annotator string on every gold should now
-read `... + human-verified:imad`.
+- proposed high-confidence corrections;
+- suspected omissions, duplicates, and unsupported items;
+- exact evidence offsets;
+- provenance defects;
+- a compact list of human decisions.
 
-### 4. Commit + push
-```bash
-git add datasets/paper/gold/ scripts/sign_off_gold.py docs/annotation/SIGN_OFF_ISSUE.md
-git commit -m "gold: human sign-off (imad) on all 8 golds — corpus is now human-verified"
-git push origin main
-```
+This audit is advisory. Preserve the candidate and audit history unchanged.
+Structured packets validate against `schemas/ipke_review_packet.schema.json`; their
+`legacy:` and `review:` references prevent same-ID collisions across artifact versions.
+Packet transformation counts are not human-effort evidence.
 
----
+### 3. Complete the primary human pass
+
+The named reviewer reads the entire frozen source span, including regions with no model
+suggestion. Candidate assistance is allowed, but the reviewer personally decides every
+step, constraint, type, enforcement value, attachment, relation, and evidence span.
+
+The production pass must be separately attributable to the human. Directly changing
+`review_status` or appending `+ human-verified:<handle>` to an agent candidate does not
+establish this pass.
+
+### 4. Record exact anchors and effort
+
+Every accepted step and constraint needs end-exclusive Unicode `char_start` and
+`char_end` values into the authoritative committed text, plus page and section where
+available.
+
+The annotation log records:
+
+- source, candidate, and final annotation hashes;
+- reviewer and role;
+- active minutes excluding breaks;
+- accepted, edited, rejected, and added steps;
+- accepted, edited, rejected, and added constraints;
+- unresolved decisions and their evidence.
+
+Persist the package as `datasets/paper/evidence/<doc_id>.json` under
+`schemas/ipke_annotation_evidence.schema.json`. Store only the reviewer's stable
+pseudonymous handle in git; the coordinator retains the private identity mapping.
+The package must reference the canonical `review_candidates/`, `primary_pass/`,
+`second_pass/`, `reports/`, and `production/` paths applicable to that assignment; the
+gate loads and verifies every referenced hash.
+
+### 5. Freeze and validate the primary pass
+
+Run declared-schema, structural, grounding, provenance, attachment, and relation checks.
+Freeze the pass and its log before any comparison with a blind annotation.
+
+### 6. Complete the blind subset
+
+At least 25% of experiment-eligible procedures are selected before results are inspected.
+The blind annotator works from the same source span and a blank `unreviewed` scaffold.
+They must not see the candidate, primary pass, audit packet, or another pass.
+
+Accidental exposure invalidates that assignment and requires reassignment.
+
+### 7. Preserve raw agreement
+
+Score and preserve every preregistered pair before adjudication. Report low-agreement
+pairs rather than excluding them. Attachment-edge F1 of at least 0.70 is the current G0
+gate; Cohen's kappa and other agreement metrics remain diagnostics.
+
+### 8. Adjudicate independently
+
+A third human resolves every disagreement against source evidence and audits rare,
+implicit, prohibited, emergency, and negative-region cases. Escalate only the remaining
+scientific decisions to the principal investigator. Record every escalation and outcome.
+
+## First review order
+
+1. EPA MFC calibration: use
+   `docs/annotation/manual-review/2026-07-13-epa-mfc-calibration.md` after it is committed.
+2. EPA procedure validation: resolve the four decisions already listed in
+   `docs/annotation/manual-review/2026-07-10-epa-validation.md`.
+3. NIOSH Method 2005: rebuild the bounded 542-word procedure from the July 11 audit.
+4. Remaining manifest-selected candidates: audit one bounded source at a time.
+
+This order creates one small end-to-end reviewer packet before scaling recruitment.
 
 ## Definition of done
 
-- [ ] All 8 golds read against source; label errors fixed
-- [ ] `scripts/sign_off_gold.py --annotator imad --apply` run; annotator string on all 8 ends with `+ human-verified:imad`
-- [ ] `make gold-pipeline` exits 0 (8× PASS)
-- [ ] Committed and pushed
-- [ ] (separate, after this) IAA second pass on the 3-doc subset — that closes the *agreement* claim; this issue closes the *human-verified* claim
+- [ ] The manifest is frozen and assigns each experiment-eligible procedure.
+- [ ] Every included procedure has a complete primary human source pass.
+- [ ] Every accepted step and constraint has exact source offsets.
+- [ ] Every primary pass has a complete time and edit log.
+- [ ] At least 25% has a source-only blind second pass selected in advance.
+- [ ] Every selected raw pair and pre-adjudication report is preserved.
+- [ ] A different human adjudicated every disagreement.
+- [ ] Principal-investigator escalations are limited and logged.
+- [ ] Candidate, primary, blind, adjudication, and final artifacts remain distinguishable.
+- [ ] Declared schema, grounding, evidence, manifest, and experiment gates pass.
 
-## Explicitly NOT in scope here
-- The IAA double-annotation (that's the `iaa-setup` / `iaa` workflow and its own issue)
-- The 9th document (niosh_nmam_surface_sampling_guidance) — out of corpus scope
-- Any change to taxonomy or validator contract
+## Explicitly insufficient
+
+- Running `scripts/sign_off_gold.py` only to append a marker.
+- Treating `review_status = "reviewed"` as semantic verification.
+- Treating agent audit as a human first pass.
+- Correcting a blind pass after viewing the primary pass and then reporting agreement.
+- Discarding a selected pair because its agreement is low.
+- Expanding the corpus before the two-document protocol and method pilot work.

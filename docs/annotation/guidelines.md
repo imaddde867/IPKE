@@ -1,6 +1,8 @@
-# IPKE-Bench Annotation Guidelines
+# IPKE Evaluation Annotation Guidelines
 
-Authoritative procedure for producing a paper-grade gold file. Independent second-pass annotators MUST follow this document. Any deviation invalidates the inter-annotator agreement (IAA) computation for that file.
+Authoritative decision procedure for production annotations. Primary reviewers, blind
+annotators, and adjudicators must follow it. Role and evidence requirements live in
+`../methods/annotation-pipeline.md`.
 
 ## Read first
 
@@ -10,9 +12,15 @@ Authoritative procedure for producing a paper-grade gold file. Independent secon
 
 ## Annotation environment
 
-Open the source `.txt` file and the target `.json` file side by side. Do NOT use the rendered PDF — use the extracted text that the pipeline operates on. The whole point of the benchmark is that the extractor sees the same text the annotator does.
+Open the source `.txt` file and the target `.json` file side by side. The extracted text
+is the annotation input because it is what the extractor sees. Consult the authoritative
+PDF only to resolve page provenance, tables, symbols, or OCR ambiguity; record any such
+decision in `review_notes`.
 
-For PR reviewers: do NOT rely on the LLM-drafted gold (`unreviewed` status) as a starting point. Either start from a blank schema-valid skeleton or use a different annotator's pass — never anchor to the draft text.
+Primary human reviewers may use a frozen candidate for assistance, but must inspect the
+complete source span and add omissions. Source-only blind annotators must start from a
+blank `unreviewed` scaffold and may not view any candidate or another pass. Adjudicators
+work only after both passes and raw agreement are frozen.
 
 ## Annotation scope (LOCKED 2026-07-04 — supersedes the seed-corpus bounded_excerpt rule)
 
@@ -33,7 +41,11 @@ The seed corpus used `bounded_excerpt` with a floor of "at least 4 steps and 6 c
 
 ### Edge cases
 
-- **Requirements / policy documents (e.g. NASA NPR 8715.3D).** Some sources are normative requirement lists, not executable step sequences. If no 15–40-step *executable* procedure exists, annotate the largest coherent block of requirement-bearing clauses as steps (each "shall" clause that mandates an action is a step), keep `annotation_scope = "full_subprocedure"`, and record in `review_notes` that the unit is requirement-structured rather than action-sequenced. If even that yields < 10 steps, flag the document for exclusion from the seed set in a PR rather than shipping a thin gold.
+- **Requirements / policy documents.** A normative requirements block is not an
+  executable procedure. Exclude it from confirmatory procedural evaluation rather than
+  converting clause order into steps or `NEXT` edges. It may be retained in a separately
+  labeled `requirements_stress_test` collection only after its representation and
+  evaluation protocol are defined.
 - **Very short standalone procedures (< 15 steps but genuinely complete).** Acceptable only if the procedure is truly self-contained end-to-end (e.g. a complete 12-step calibration checklist). Keep the whole thing, set `annotation_scope = "full_subprocedure"`, and note in `review_notes` that the natural unit is < 15 steps. Never split a longer procedure down to this size.
 
 ## Step identification
@@ -47,15 +59,18 @@ A **procedural step** is one ordered, actionable operation that an agent must pe
 
 ### When to split a step
 
-Split when source text introduces a logically separate phase of work, even if the source bullets them under one heading. NASA NPR 8715.3D §1.5.1 is one source paragraph but the SMA-plan-coverage activity and the milestone-review-topics activity are separate procedural steps with different deliverables.
+Split when source text introduces a logically separate phase of executable work, even if
+the source bullets actions under one heading. Do not split coordinated objects,
+qualifiers, purposes, or parts-list nouns into actions.
 
 ### When NOT to split
 
-Sub-bullets that enumerate parts of a single action (eliminate / reduce-likelihood / reduce-severity / improve-state-of-knowledge in NASA §1.7.1.1) belong in `arguments` of one parent step, not separate steps.
+Sub-bullets that enumerate objects or components of one action belong in `arguments` or
+structured parameters of one parent step, not separate steps.
 
 ## Constraint identification
 
-A **constraint** is a condition, guard, parameter, role assignment, or external reference that governs one or more steps. Constraints are the safety-and-correctness scaffolding around the procedural backbone — they are what IPKE-Bench is centrally about.
+A **constraint** is a condition, guard, parameter, role assignment, or external reference that governs one or more steps. Constraints are the safety-and-correctness scaffolding around the procedural backbone and the primary IPKE method-evaluation target.
 
 ### Source signals that indicate a constraint
 
@@ -84,7 +99,10 @@ Read the modal verb in the source.
 - "should" / "recommended" / "preferred" → `should`.
 - "may" / "can" / "is acceptable" / "is permitted" → `may`.
 
-When the source is ambiguous, default to `must` and add a note to `quality.review_notes` flagging the ambiguity. Independent second annotators will diverge most on `should` vs `must` calls — be conservative.
+When the source is ambiguous, choose the best evidence-supported value and flag the exact
+source span and alternatives. Do not default automatically to `must`. Routine
+disagreement is resolved after both passes are frozen; only unresolved scientific cases
+are escalated to the principal investigator.
 
 ### Attachment
 
@@ -130,7 +148,10 @@ Exception: an annotator may keep a definition or purpose as a `reference` constr
 
 ## Independence rule (CRITICAL for IAA)
 
-A second-pass annotator MUST NOT look at any other annotator's gold file for the same document until their own annotation is complete and committed. Looking at the gold breaks IAA — κ becomes meaningless.
+A blind annotator must not view a candidate, primary pass, audit packet, adjudication
+record, or another annotator's pass for the same procedure until their own annotation is
+complete, frozen, and committed. Accidental exposure invalidates the assignment and
+requires reassignment.
 
 If you need clarification on annotation procedure, ask via these guidelines or post a question on the relevant issue. Do NOT email another annotator to ask "how did you do this section."
 
@@ -142,24 +163,44 @@ After every edit:
 uv run python3 -c "
 import json, jsonschema
 schema = json.load(open('schemas/ipke_annotation.schema.json'))
-d = json.load(open('datasets/paper/gold/<file>.json'))
+d = json.load(open('datasets/paper/primary_pass/<doc_id>.json'))
 jsonschema.validate(d, schema)
 print('PASS')
 "
 ```
 
+That command checks the candidate-compatible annotation schema only. A production
+annotation also needs a matching frozen
+`datasets/paper/evidence/<doc_id>.json` package and must pass
+`make eval-paper-gate`.
+
 Set the following fields in `quality` before considering the file done:
 
 - `review_status: "reviewed"`
-- `annotator: "<your-name>"`
+- `annotator: "P-001"` (the coordinator-assigned stable pseudonym)
 - `review_date: "<YYYY-MM-DD>"`
 - `review_notes: "<1-3 sentence summary of changes from draft, plus any ambiguity flags>"` — to adjudicate a strict-validator warning, embed the exact token `step:{id} {kind} adjudicated` (e.g. `step:S1 zero_constraints adjudicated`) in this field; one token per warning suppressed.
+
+These fields record that a review pass occurred; they do not establish paper eligibility.
+The legacy `+ human-verified:<handle>` marker is optional provenance only. It does not
+replace the primary-pass record, frozen evidence package, or confirmatory split.
+
+Every accepted step and constraint also requires exact end-exclusive Unicode
+`char_start` and `char_end` offsets into the authoritative committed source. The primary
+pass needs source, candidate, and final hashes; active minutes; and separate accepted,
+edited, rejected, and added counts for steps and constraints. A marker without these
+records is not evidence. The persisted contract is
+`schemas/ipke_annotation_evidence.schema.json`. Use only stable participant pseudonyms
+in committed packages; the coordinator keeps identity and consent records separately.
 
 ## Worked examples
 
 ### Constraint typing and structure
 
-The `datasets/paper/gold/nasa_npr_8715_3d_general_safety.json` and `datasets/paper/gold/epa_guidance_preparing_sops_qag6.json` files are the canonical worked examples for constraint typing and JSON structure. Read them end-to-end before annotating your first file.
+No current candidate is a canonical worked example until the full production-human
+protocol is complete. Use the declared JSON Schema, taxonomy, and examples in this
+guideline as the decision contract. The July 2026 source audits under `manual-review/`
+show why structural validity and agent review are insufficient.
 
 ### Scope selection (the locked rule in practice)
 
@@ -179,4 +220,5 @@ When the seed corpus was migrated from the original 20 ad-hoc constraint types t
 ## Change log
 
 - 2026-06-13 — initial guidelines drafted from the seed corpus annotation pass (PR #85).
-- 2026-07-04 — **scope rule locked.** Replaced the seed-corpus `bounded_excerpt` floor ("≥ 4 steps / 6 constraints") with the full-subprocedure rule (one coherent complete procedure, 15–40 steps, `annotation_scope = "full_subprocedure"`). Added scope-selection procedure, edge cases (requirements/policy docs, short standalone procedures), and a scope worked example. Rationale and measured "before" state in `audit_summary.md`. All 8 seed golds are re-annotated under this rule via the model-assisted harness (`scripts/annotate_assisted.py`) + human adjudication (`scripts/adjudicate.py`).
+- 2026-07-04 - **scope rule locked.** Replaced the seed-corpus `bounded_excerpt` floor ("≥ 4 steps / 6 constraints") with the full-subprocedure rule (one coherent complete procedure, 15–40 steps, `annotation_scope = "full_subprocedure"`). The model-assisted harness and agent decision replay produced eight historical candidates, not human-adjudicated gold.
+- 2026-07-13 - Added the complete primary-human pass, source-only blind subset, independent adjudication, exact-anchor, annotation-log, and limited PI-escalation requirements.

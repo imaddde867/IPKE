@@ -1,215 +1,230 @@
-# Gold Annotation Methodology
+# Annotation Evidence Pipeline
 
-*Model-assisted drafting with independent human adjudication and inter-annotator
-agreement.* This document is the paper-ready methods section for how the
-IPKE-Bench gold annotations were produced. It is written to be lifted into the
-ECIR 2027 resource paper (§ Dataset Construction) with light editing.
+Status: active protocol from 2026-07-13
 
-## Motivation
+This document operationalizes the Human Evidence Recovery Design for the supporting
+IPKE evaluation corpus. The method-paper design remains the authority for experimental
+gates and claims.
 
-IPKE-Bench annotates industrial procedures with **constraint attachment**: each
-procedural step carries typed constraints (precondition, postcondition, guard,
-parameter, role_assignment, reference), each with an enforcement level (must,
-should, may) and an explicit attachment to the step(s) it governs. Producing
-this by hand across long technical documents is expensive — a single bounded
-procedure of 15–40 steps with attached constraints is roughly three hours of
-focused annotator time. Annotating the full corpus by hand, twice (for
-agreement), was not feasible within the project timeline.
+The current `datasets/paper/gold/` files are model-assisted, agent-audited candidates.
+They are not production gold and cannot become paper evidence through a status change or
+signature marker alone.
 
-We therefore use a **model-assisted drafting + human adjudication** pipeline.
-The design goal is explicit: obtain high-quality golds efficiently *without*
-letting the model become the silent author of the ground truth. Every design
-choice below exists to keep a human (or an independent, source-grounded
-critic pass) as the accountable authority over what enters the gold, and to
-make the resulting agreement figure honest.
+## Normative pipeline
 
-## Pipeline overview
-
-```
- source .txt
-     │
-     ▼
- (1) segment_procedures.py ──► candidate procedure spans (char ranges, step estimates)
-     │        human selects ONE bounded 15–40 step procedure per document
-     ▼
- (2) annotate_assisted.py ──► draft gold  (review_status="unreviewed")
-     │        two-stage prompt, structural self-validation + repair loop
-     ▼
- (3) adjudicate.py ──► reviewed gold  (accept / edit / reject, logged)
-     │        independent source-grounded pass; decisions persisted for replay
-     ▼
- (4) validate_paper_gold.py --strict ──► locked-taxonomy + IAA-metadata gate
-     │
-     ▼
- (5) setup_iaa_subset.py + compute_iaa.py ──► ≥30% double annotation, F1 + κ
+```text
+frozen source and bounded procedure
+  -> immutable model or agent candidate
+  -> agent source-to-candidate audit and decision packet
+  -> independent human complete source pass
+  -> exact item anchors and annotation log
+  -> source-only blind second pass for at least 25%
+  -> frozen pre-adjudication agreement
+  -> independent human adjudication
+  -> PI escalation only for unresolved scientific decisions
+  -> production annotation and paper-evidence gate
 ```
 
-Each stage is a committed script under `scripts/`; the committed golds under
-`datasets/paper/gold/` are the source of truth, and `make gold-pipeline`
-re-runs the deterministic validation + motivating-numbers gate on a fresh clone.
+The roles are deliberately separate. Models and agents reduce mechanical work. Humans
+make production annotation decisions. A person who annotated a procedure cannot
+adjudicate that procedure.
 
-### (1) Segmentation
+## 1. Freeze source and scope
 
-`segment_procedures.py` scans a document for procedure boundaries (numbered
-headings, method markers, step lists) and emits candidate spans with a
-char-range and an *upper-bound* step estimate. The estimate is an upper bound
-because spans bleed into adjacent narrative — one candidate labelled "Leak Test"
-absorbed an entire appendix of stacked SOPs (~80 apparent steps). **Final
-procedure boundary selection is a human judgment call**, anchored on where a
-genuine, coherent, end-to-end procedure lives and capped to a window
-(~9,000–11,000 chars) so the drafting model sees exactly one procedure. The
-selected section per document is recorded in the gold's `procedure.source`.
+Before drafting or reviewing, record:
 
-### (2) Model-assisted drafting
+- stable source URL and retrieval date;
+- source version or revision;
+- SHA-256 of the authoritative committed text;
+- redistribution status and any third-party-content exception;
+- page range and section identifier;
+- exact Unicode `char_start` and end-exclusive `char_end` for one complete procedure.
 
-`annotate_assisted.py` runs a two-stage prompt (P3: structure extraction, then
-constraint attachment) over the selected span. The model backend is injectable —
-`host.llm` in-session, or any OpenAI-compatible endpoint via
-`IPKE_LLM_BASE_URL` / `IPKE_LLM_MODEL` / `IPKE_LLM_API_KEY` — so the pipeline is
-not tied to one provider. The harness performs:
+The normal scope is one coherent procedure with roughly 15 to 40 atomic steps. A shorter
+complete procedure may be accepted through a logged human scope decision. Do not expand
+the boundary merely to meet a target count.
 
-- **hyphenation repair** on born-digital text extraction artifacts;
-- **structural self-validation** against the locked taxonomy (types,
-  enforcement levels, attachment resolvability) with a bounded repair loop
-  (`--max-retries`, default 3);
-- emission of a draft with `review_status="unreviewed"` and
-  `annotator="model-assisted:<model>"`, plus `quality._draft_diagnostics`.
+## 2. Produce and preserve a candidate
 
-A draft is explicitly **not** a gold. It fails the review gate by construction
-(`review_status != "reviewed"`) and cannot pass the validator until a human or
-adjudication pass signs off.
+`annotate_assisted.py` and other model tools may propose steps, constraints, attachments,
+relations, and metadata. Their outputs remain candidates with complete model, prompt,
+seed, temperature, and source provenance.
 
-### (3) Adjudication
+An agent audit may:
 
-`adjudicate.py` turns a draft into a reviewed gold through an explicit
-accept / edit / reject decision on every element. Two modes matter:
+- compare every proposed item with the frozen source;
+- identify omissions, duplicates, unsupported actions, type errors, and bad attachments;
+- calculate candidate and source hashes;
+- propose exact evidence offsets;
+- create an uncertainty ledger and compact human decision packet.
 
-- **`review`** — interactive, element-by-element human sign-off.
-- **`replay`** — deterministic re-application of a persisted decision log
-  (`datasets/paper/adjudication_decisions/<doc>.json`), so a gold can be
-  regenerated from its draft + decisions with no interactive step.
+An agent audit may not sign, adjudicate as a human, or promote the candidate. Candidate
+JSON and agent decision history remain immutable evidence of how assistance behaved.
+`adjudicate.py replay` reproduces a historical candidate transformation only. It is not a
+route to production gold.
 
-For the first release we ran an **independent source-grounded critic pass**: a
-reviewer (distinct from the drafting step) read the source span and returned
-accept/edit/reject decisions — typically 2–4 edits and 0–2 rejects per document
-(type reclassifications, enforcement corrections, and rejection of the rare
-hallucinated or duplicated constraint). Rejects drop; edits overwrite named
-fields; surviving constraints are re-embedded under the first surviving attached
-step (orphans move to top-level and are logged). The engine strips
-`_draft_diagnostics`, sets `review_status="reviewed"`, and writes the full
-decision log plus a tally into `quality.review_notes`.
+## 3. Complete the primary human pass
 
-The resulting `annotator` field is stamped honestly:
-`model-assisted:<model> + agent-adjudicated (pending human sign-off)`. This is
-not claimed as independent human authorship. The genuine human–human agreement
-figure comes from the second-pass workflow (§5), and Imad performs a final
-human sign-off before submission.
+One named human reviews the entire frozen source span. Candidate assistance is allowed,
+but the reviewer must inspect source regions with and without suggestions and add omitted
+content. Accepting or rejecting a prefilled list without a complete source pass is not
+eligible.
 
-### (4) Validation gate
+The reviewer decides:
 
-`validate_paper_gold.py --strict` enforces the contract: `review_status ==
-"reviewed"`, annotator and review_date set; every constraint has a locked type,
-a valid enforcement level, non-empty text, and at least one attachment that
-resolves to a real step id. Strict mode also flags steps with zero or >10
-constraints; genuine low-density steps are acknowledged with an honest
-per-step adjudication token in `review_notes` rather than by inventing
-constraints. All 8 golds pass `--strict` (exit 0).
+- procedure scope;
+- step identity, granularity, order, and relations;
+- constraint identity, text, type, and enforcement;
+- every constraint-to-step attachment;
+- exact evidence offsets for every accepted step and constraint;
+- whether uncertain or implicit content needs escalation.
 
-### (5) Inter-annotator agreement
+The primary pass is separately attributable to that human. A provenance marker may
+record completion, but the marker is not evidence without the primary-pass record and
+annotation log.
 
-`setup_iaa_subset.py` selects a stratified **≥30% subset** (3 of 8 documents,
-one per distinct domain family) and emits **blank** second-pass scaffolds
-carrying only `doc_id`, procedure title, and the source char span — deliberately
-**no first-pass steps or constraints**. This is the anchoring-bias control: the
-second annotator authors from the same source window *without* reading the
-first-pass gold, which is what gives the reported κ statistical meaning. It also
-writes the exact source span to `second_pass/_source/<doc>.txt` so both passes
-cover identical scope. `compute_iaa.py` then scores step F1, constraint F1,
-relation F1, and token-label Cohen's κ; `setup_iaa_subset.py report` wraps it
-and scores only completed subset docs so stale files cannot pollute the run.
+## 4. Record the annotation log
 
-## Corpus statistics (current release)
+Every primary pass records:
 
-Eight bounded procedures under the locked `full_subprocedure` scope
-(15–40 steps each):
+- candidate SHA-256 and frozen-source SHA-256;
+- reviewer handle and role;
+- active review minutes, excluding breaks;
+- candidate steps accepted, edited, rejected, and added;
+- candidate constraints accepted, edited, rejected, and added;
+- candidate relations accepted, edited, rejected, and added;
+- unresolved decisions and evidence locations;
+- final annotation SHA-256.
 
-| Document | Domain | Steps | Constraints |
-|---|---|---:|---:|
-| epa_field_operations_manual_filter_sampling_sop | field_operations | 18 | 9 |
-| epa_field_sampling_measurement_procedure_validation | quality_assurance | 35 | 41 |
-| epa_guidance_preparing_sops_qag6 | quality_assurance | 36 | 34 |
-| nasa_npr_8715_3d_general_safety | safety_requirements | 39 | 29 |
-| niosh_nmam_5th_edition_ebook | analytical_chemistry | 34 | 21 |
-| usgs_groundwater_technical_procedures_tm1_a1 | hydrology | 29 | 12 |
-| usgs_nfm_collection_water_samples_a4 | hydrology | 36 | 45 |
-| olsk_small_cnc_v1_workbook | mechanical_assembly | 24 | 8 |
-| **Total** | **8 domains** | **251** | **199** |
+Use separate step, constraint, and relation counts. For each item class:
 
-**Constraint type distribution:** postcondition 60, parameter 42, guard 38,
-precondition 29, reference 16, role_assignment 14.
-**Enforcement distribution:** must 172, should 42, may 17 (after the 2026-07-06
-verbatim-grounding pass realigned enforcement to the guidelines' modal-verb
-mapping).
+```text
+edit_rate = (edited + rejected) / candidate_items
+omission_rate = added / final_items
+```
 
-Constraint density is genuinely source-dependent, not a defect: calibration and
-assembly procedures (MFC calibration 12, OLSK electronic-box 9) carry far
-fewer constraints than QA-governance and field-sampling procedures (EPA
-validation 44, USGS NFM 63). This variance is recorded in `review_notes`, not
-smoothed away.
+These measurements describe the assistance workflow. They are not a human-effort or
+automation-bias claim until the study design is frozen and sufficiently powered.
 
-For continuity: the pre-release thin golds covered the same 8 documents at 43
-steps / 117 constraints total; the re-annotation under the locked scope, after
-the 2026-07-06 source-verbatim grounding and completion pass (mis-located spans
-corrected, missed constraints added, restatements dropped — per-file log in
-each gold's `review_notes`), reaches **256 steps / 231 constraints** — a 6.0×
-increase in step depth — while the old bounded-excerpt golds are preserved
-under `datasets/paper/gold_v1_bounded_excerpt_archive/` and the before/after
-counts in `datasets/paper/gold_depth_comparison.json`.
+The sidecar contract is now
+`schemas/ipke_annotation_evidence.schema.json`; packages live under
+`datasets/paper/evidence/`. `assess_production_evidence` verifies exact source and
+annotation byte hashes, the bounded-span hash, Unicode item offsets, primary decision
+coverage against the loaded candidate, unresolved decisions, role records, canonical
+artifact paths, and hashes for primary, blind, agreement, adjudication, and final
+artifacts. It also requires complete source identity, rejects duplicate IDs, broken
+links, incomplete relation decisions, invalid decision spans, and invalid timing.
+Candidate validation remains backward-compatible and does not imply production
+eligibility.
 
-## Edge cases and how they were handled
+## 5. Collect the blind second pass
 
-- **NASA NPR 8715.3D (requirements/policy doc)** — not temporally ordered like
-  an SOP; each *shall/should* requirement is treated as a step. Noted in
-  `review_notes` so the structure is not mistaken for a defect.
-- **EPA procedure-validation (short standalone, <2k words)** — annotated
-  end-to-end as a single procedure rather than a sub-section.
-- **OLSK CNC workbook (mechanical assembly)** — intrinsically constraint-light;
-  low density is expected and documented, not corrected upward.
-- **9th document (niosh_nmam_surface_sampling_guidance)** — deliberately **out
-  of scope**: it is guidance/background with no bounded 15–40 step procedure.
-  The deliverable is 8 documents.
+At least 25% of experiment-eligible procedures are selected before model results are
+inspected. Selection is source-family aware and stored in the frozen IAA subset.
 
-## Threats to validity
+The second annotator receives only:
 
-- **Model-authorship of golds.** Mitigated by the unreviewed-until-adjudicated
-  gate, the honest `annotator` stamp, independent human sign-off, and the
-  independent second pass for agreement. The κ figure is the check that the
-  golds are reproducible rather than one process's opinion.
-- **Anchoring bias in the second pass.** Mitigated by blank scaffolds and the
-  source-span-only working set; the workflow forbids opening the gold before
-  commit (`docs/annotation/independent-annotator-workflow.md`).
-- **Scope-selection subjectivity.** The bounded-procedure boundary is a human
-  choice; it is made explicit and reproducible via the recorded
-  `procedure.source` char range and section label.
+- the frozen source span;
+- the locked taxonomy and annotation guidelines;
+- a blank, `unreviewed` scaffold with no first-pass items.
 
-## Reproducing this
+Both primary and blind outputs must retain the frozen procedure document ID and exact
+source-window offsets. A different source window invalidates the evidence package even
+when every item anchor remains in bounds.
+
+The second annotator must not view the candidate, primary pass, audit packet, or another
+annotator's work. Accidental exposure invalidates the assignment and requires a different
+annotator. Both passes are frozen before reveal.
+
+## 6. Measure before adjudication
+
+Compute step, constraint, attachment-edge, relation, type, enforcement, evidence-span,
+and token-label agreement on every preregistered pair. Preserve the raw annotations,
+hashes, and complete pre-adjudication report.
+
+Attachment-edge F1 of at least 0.70 is the current G0 protocol gate. Cohen's kappa and
+the other measures are diagnostics. A low-agreement pair remains in the aggregate and
+triggers investigation; it is never discarded for failing a threshold.
+
+The production validator recomputes each pair's attachment TP/FP/FN from the frozen
+primary and blind artifacts, checks those counts and F1 against the hashed report, then
+applies the threshold once to the counts aggregated across the preregistered subset.
+
+## 7. Adjudicate independently
+
+A third named human who did not annotate the procedure resolves every disagreement
+against the source. The adjudicator also reviews:
+
+- prohibitions and emergency actions;
+- rare type and enforcement classes;
+- implicit and cross-sentence attachments;
+- a seeded sample of agreements;
+- a seeded sample of source regions with no annotation.
+
+Routine disagreement belongs to the adjudicator. Escalate only unresolved taxonomy,
+implicit-evidence, scope, or safety-critical decisions to the principal investigator.
+Record the evidence, alternatives, adjudicator recommendation, final decision, and
+decision maker.
+
+The agreement report assigns stable IDs to every disagreement, seeded agreement, and
+seeded empty-region audit. The evidence sidecar stores typed adjudication decisions for
+exactly those IDs; a final output hash without this decision coverage is ineligible.
+Disagreement IDs are derived from the frozen step, constraint, explicit-relation, and
+attachment symmetric differences, and every adjudication evidence span is checked
+against the frozen procedure span.
+
+## 8. Establish experiment eligibility
+
+A production annotation is experiment eligible only when all applicable evidence is
+present and passes:
+
+1. frozen source, rights, scope, and split membership;
+2. declared JSON Schema and structural validation;
+3. exact grounding for every step and constraint;
+4. complete primary-human pass and annotation log;
+5. blind-pass, raw-agreement, and independent-adjudication records for selected files;
+6. logged principal-investigator escalations, if any;
+7. frozen manifest and experiment configuration.
+
+`review_status = "reviewed"`, a non-placeholder annotator, or
+`+ human-verified:<handle>` is insufficient without these records.
+
+## Current candidate snapshot
+
+As of 2026-07-13, the retained candidate directory contains eight JSON files with 256
+steps and 231 constraints. The provisional manifest selects five development candidates:
+three EPA and two USGS. NASA is excluded as the wrong genre; OLSK and NIOSH are excluded
+pending rebuild. No file has completed the primary human protocol or an eligible blind
+second pass.
+
+The older 43-step, 117-constraint bounded-excerpt annotations are preserved under
+`datasets/paper/gold_v1_bounded_excerpt_archive/`. Historical counts and agent decision
+records are diagnostic provenance, not semantic-correctness evidence.
+
+## Development commands
 
 ```bash
-# Deterministic gate (no model needed) — validate the 8 golds + regenerate D1 numbers:
-make gold-pipeline
+# Structural checks over all retained legacy candidates. This is not paper eligibility.
+make eval-validate
 
-# Re-draft one procedure (needs a model backend):
+# Manifest, human-evidence, and release gate. Expected to fail today.
+make eval-paper-gate
+
+# Historical candidate drafting. Output remains a candidate.
 make gold-draft DOC=<doc_id> SEG=<segments.json> CAND=<candidate_id>
 
-# Deterministically re-apply a persisted adjudication log to a draft:
+# Historical deterministic candidate replay. It cannot produce human evidence.
 make gold-adjudicate DOC=<doc_id>
 
-# Prepare the ≥30% IAA subset + blank scaffolds, then score once second passes exist:
+# Blind subset preparation and agreement reporting after the subset is frozen.
 make iaa-setup
 make iaa
 ```
 
-See also: `docs/annotation/guidelines.md` (annotation decision procedure),
-`docs/annotation/constraint-types.md` (locked vocabulary),
-`docs/annotation/independent-annotator-workflow.md` (second-pass protocol),
-`docs/reproducibility.md` (environment + evaluation).
+See also:
+
+- `docs/superpowers/specs/2026-07-13-human-evidence-recovery-design.md`
+- `docs/annotation/SIGN_OFF_ISSUE.md`
+- `docs/annotation/independent-annotator-workflow.md`
+- `docs/annotation/guidelines.md`
+- `docs/annotation/constraint-types.md`

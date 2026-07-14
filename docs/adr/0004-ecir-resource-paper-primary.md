@@ -1,6 +1,6 @@
 # ADR-0004: Make ECIR Resource Paper the Primary Target
 
-Status: accepted
+Status: superseded by ADR-0005
 
 Date: 2026-06-13
 

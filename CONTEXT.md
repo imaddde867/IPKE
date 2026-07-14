@@ -1,10 +1,19 @@
 # IPKE
 
-**Primary target**: ECIR 2027 Resource Paper — *IPKE-Bench: A Constraint-Aware Benchmark for Procedural Knowledge Extraction from Safety-Critical Industrial Documents* (12 pages, single-blind). Abstract due **12 Oct 2026**, paper due **2 Nov 2026**.
+**Primary direction**: an IPKE method paper on skeleton-conditioned, source-grounded
+constraint attachment for procedural graph extraction with local language models.
 
-The paper's primary contribution is the **benchmark**, not the method. IPKE is the reproducible local baseline that demonstrates the benchmark's utility.
+IPKE is the primary contribution. The corpus, taxonomy, validators, and metrics are
+supporting evaluation infrastructure. ADR-0005 and
+`docs/superpowers/specs/2026-07-10-ipke-method-paper-design.md` control the research
+direction. `docs/superpowers/specs/2026-07-13-human-evidence-recovery-design.md`
+controls how annotation candidates become paper evidence. ADR-0004's ECIR Resource
+Paper decision is superseded.
 
-A local, privacy-preserving pipeline and benchmark for extracting structured Procedural Knowledge Graphs (PKGs) from safety-critical industrial documents. IPKE-Bench makes **constraint attachment** a first-class evaluation task — prior work (PAGED, KEO, CAMB) measures steps and graph structure but does not measure whether constraints are correctly bound to the steps they govern.
+The central causal question is whether an explicit step skeleton improves fine-grained
+constraint attachment after matching schema information, parser behavior, calls, token
+budget, context, and validation policy. Do not describe generic two-stage prompting,
+constraint edges, or semantic chunking as first-ever contributions.
 
 ## Language
 
@@ -23,13 +32,19 @@ A condition, guard, precondition, postcondition, warning, or prohibition that go
 _Avoid_: requirement, rule, annotation
 
 **Constraint Attachment**:
-The explicit link between a constraint and the step(s) it governs. The primary challenge distinguishing IPKE from generic IE: a constraint without attachment is invalid and discarded.
+The explicit link between a constraint and the step or steps it governs. It is IPKE's
+primary evaluated outcome. Unsupported predictions and attachments to unknown steps are
+reported before any deterministic filter; they are not silently discarded from the
+method comparison.
 _Avoid_: constraint linking, constraint assignment
 
 ### Chunking
 
 **Dual Semantic Chunker (DSC)**:
-IPKE's proposed chunking algorithm. Segments documents hierarchically: first into parent blocks using a global DP objective with heading bonus, then refines each block using breakpoint-based child chunking. The global objective is `J(B) = Σ H(b) − λ|B|`, solved by DP with a heading bonus term β·𝟙[j is heading position].
+The implementation name for IPKE's hierarchy-aware segmentation path. It creates parent
+blocks with a global objective and heading information, then applies semantic child
+refinement. The paper uses **constraint-preserving segmentation** for the research claim
+and retains that claim only if pair co-location and downstream attachment improve.
 _Avoid_: dual chunker, semantic chunker (ambiguous — use DSC)
 
 **Cohesion Score**:
@@ -43,7 +58,10 @@ _Avoid_: heading weight, structure penalty
 ### Prompting
 
 **Two-Stage Decomposition (P3)**:
-IPKE's proposed prompting strategy. Stage 1 extracts only procedural steps. Stage 2 extracts constraints and entities, with the constraint that every constraint must reference a step ID from Stage 1. Reduces instruction drift in smaller models.
+The implementation name for skeleton-conditioned extraction. Stage 1 extracts procedural
+steps. Stage 2 receives the source plus step identifiers and texts, then extracts typed
+constraints attached to those steps. Reduced instruction drift is a hypothesis, not an
+established mechanism.
 _Avoid_: two-stage prompting, P3 strategy (use full name on first mention)
 
 **Prompting Strategy**:
@@ -53,7 +71,10 @@ _Avoid_: prompt type, prompting mode
 ### Evaluation
 
 **Procedural Fidelity Score (Φ)**:
-A composite metric: `Φ = 0.5·ConstraintCoverage + 0.3·StepF1 + 0.2·Kendall`. Primary headline metric for comparing configurations. ConstraintCoverage is weighted highest because in safety-critical industrial procedures, a missed constraint (unchecked guard, omitted warning) is a more severe failure mode than imperfect step ordering. Weights are justified by domain risk, not by optimisation. Sensitivity across `{0.4:0.4:0.2, 0.5:0.3:0.2, 0.6:0.2:0.2}` must be reported to show rankings are stable.
+A legacy composite index: `Φ = 0.5·ConstraintCoverage + 0.3·StepF1 +
+0.2·Kendall`. It is exploratory and cannot determine a gate or headline claim because it
+does not include the primary attachment or grounding outcomes. Component metrics are
+authoritative until Phi is redesigned, justified, and sensitivity-tested.
 _Avoid_: Phi score, fidelity metric
 
 **Tier-A Evaluation**:
@@ -65,12 +86,27 @@ Graph-structure evaluation using SMatch: GraphPrecision, GraphRecall, GraphF1, N
 _Avoid_: graph evaluation, advanced evaluation
 
 **Gold Annotation**:
-A human-reviewed ground-truth JSON file for a document. Must have `quality.review_status = "reviewed"` before use in paper experiments. LLM-assisted drafts that have not been corrected are not gold annotations — they are drafts.
+A source-grounded production reference annotation. Models and agents may create and
+audit immutable candidates, but cannot create human evidence. Paper eligibility requires
+all of the following:
+
+- a named independent human completed a full pass over the bounded source procedure;
+- every accepted step and constraint resolves to exact committed-source offsets;
+- primary-pass timing and candidate accept, edit, reject, and add decisions are logged;
+- any preregistered blind pass was frozen and scored before independent adjudication;
+- principal-investigator decisions are limited to unresolved taxonomy, implicit-evidence,
+  or safety-critical cases and are logged;
+- schema, structure, grounding, provenance, agreement, adjudication, manifest, and split
+  gates pass.
+
+`quality.review_status = "reviewed"` and a `+ human-verified:<handle>` provenance marker
+are not sufficient by themselves. Agent review is never human verification.
 _Avoid_: ground truth, reference annotation, gold standard (unless qualifying)
 
 **review_status values** (locked vocabulary):
 - `unreviewed` — schema-valid scaffold, no human pass. Default for fresh LLM drafts.
-- `reviewed` — human pass complete; `annotator` + `review_date` + `review_notes` set. Eligible for paper IAA and metric computation.
+- `reviewed` — a review pass is declared complete. This status alone does not identify
+  who performed it and does not make an annotation eligible for paper evidence.
 - `llm_draft` — produced by LLM pipeline only; EXCLUDED from paper IAA per `docs/annotation/guidelines.md`. Used to mark legacy `datasets/paper/second_pass/*.json` files that are NOT independent human annotations.
 
 **Constraint Type** (locked, 6 values):
@@ -80,5 +116,13 @@ _Avoid_: ground truth, reference annotation, gold standard (unless qualifying)
 `must`, `should`, `may`. Maps to source-text modal verbs ("shall"/"will" → must, "should"/"recommended" → should, "may"/"can" → may).
 
 **Inter-Annotator Agreement (IAA)**:
-Agreement between two independent annotators on the same document, measured as Cohen's κ. Minimum acceptable for a paper IAA claim: κ ≥ 0.61 (substantial, Landis & Koch 1977). **Independence rule**: second annotators MUST NOT view gold or any other annotator's pass before committing their own. Drift-correcting a second pass against gold invalidates κ.
+Pre-adjudication agreement between independently produced annotations of the same frozen
+source span. At least 25% of experiment-eligible procedures receive a source-only blind
+second pass selected before results are inspected. Both passes are frozen and every
+selected pair is reported before a third independent human adjudicates disagreements.
+Attachment-edge F1 of at least 0.70 is the method design's current G0 gate; Cohen's κ and
+other agreement measures are diagnostics, not reasons to discard a selected pair.
+Accidental exposure to another pass invalidates that assignment and requires
+reassignment. Principal-investigator escalation is limited to unresolved taxonomy,
+implicit-evidence, or safety-critical decisions.
 _Avoid_: annotation agreement, kappa score

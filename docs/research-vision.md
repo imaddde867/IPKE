@@ -1,162 +1,149 @@
-# Research Vision — the North Star
+# Research Vision: IPKE Method First
 
-*This is the top-level direction document. It sits above the PRD
-(`docs/paper/ipke-bench-resource-prd.md`, the requirements) and the execution
-direction (`docs/paper/2026-07-04-execution-direction.md`, the current issue
-board). Those two answer "what do we build next"; this one answers "what are we
-actually trying to become, and what separates an elite contribution from a
-competent one." Read this when you lose the thread of why the small work
-matters.*
+This is the top-level research direction. ADR-0005 records the decision, and
+`docs/superpowers/specs/2026-07-10-ipke-method-paper-design.md` defines the controlling
+experiment protocol.
 
----
+## One-sentence thesis
 
-## The one-sentence thesis
+**Under matched schemas, decoding policies, context, and inference budgets, conditioning
+constraint extraction on an explicit step skeleton improves source-grounded constraint
+attachment for local language models.**
 
-**Procedural knowledge is only actionable when its constraints are bound to the
-steps they govern — and no existing benchmark measures whether an extraction
-system gets that binding right.** IPKE-Bench makes *constraint attachment* a
-first-class, separately-scored extraction target. That is the whole idea.
-Everything else — the taxonomy, the validator, the baselines, the retrieval
-task — exists to make that one claim rigorous and reusable.
+IPKE itself is the contribution under test. The corpus, taxonomy, validator, metrics,
+datasheet, and reproducibility tooling exist to make that method claim credible.
 
-If a reviewer remembers exactly one thing about this work, it must be this: we
-were the group that noticed step extraction without constraint attachment is a
-half-measured task, defined the missing half, and shipped the resource that lets
-the field measure it.
+## Why the problem matters
 
-## Why this is a hill worth taking
+Procedural extraction is incomplete when a system recovers actions but loses the guards,
+thresholds, roles, and prerequisites that govern them. A constraint that is absent,
+hallucinated, or attached to the wrong step can change the meaning of a procedure even
+when the step list appears plausible.
 
-A contribution reaches the top tier when it is **necessary, not merely novel.**
-Test the idea against that bar:
+Prior work already represents action-constraint links and uses multi-stage procedural
+graph extraction. IPKE therefore does not claim first-ever constraint attachment,
+two-stage prompting, or semantic chunking. Its narrower contribution is to isolate
+whether a step skeleton helps local models produce fine-grained, grounded attachments
+under controlled inference budgets.
 
-- **It names a real gap, not a marginal one.** The nearest benchmark, PAGED
-  (ACL 2024), *does* link constraints to actions — so the honest gap is not
-  "no one attaches constraints." It is that PAGED uses two coarse constraint
-  types, template-derived silver labels over business-process/WikiHow text, a
-  BLEU text-overlap score, and **no enforcement dimension at all**. The clause
-  that makes a procedure *safe* — "*do not* open the valve *until* pressure < 5
-  bar" (a guard), "the operator *must* wear a respirator *before* sampling" (a
-  must-graded precondition) — depends on a typed, deontically-graded, step-bound
-  edge that no benchmark currently scores. Our whitespace is the *bundle*:
-  six-way typing + must/should/may enforcement + exact step-id attachment F1 +
-  human-verified regulated SOPs. State it as that bundle, never as "first to
-  attach constraints" — the latter is false and a reviewer will know it.
-- **It is measurable.** Constraint attachment reduces to typed, enforcement-
-  graded, step-anchored edges — a structure that admits precision/recall, fuzzy
-  semantic alignment, and inter-annotator agreement. A gap you can define but not
-  score is an essay; a gap you can score is a benchmark.
-- **It generalizes past our own pipeline.** The benchmark judges any extractor.
-  IPKE is one baseline on it, not its reason to exist. A resource that only
-  measures its author's system is a leaderboard of one; a resource that any group
-  can submit to is infrastructure.
+## Contribution hierarchy
 
-Hold this line under pressure. When scope creep tempts (more documents, more
-metrics, a bigger model), the question is always: *does this sharpen the
-constraint-attachment claim, or dilute it?* Sharpen, or cut.
+1. **Skeleton-conditioned attachment**
 
-## What "elite" means here — the bar, concretely
+   Extract a step skeleton, expose its stable identifiers and text to a second call, and
+   require typed constraints to attach to those steps. Compare it with call- and
+   budget-matched self-refinement so any gain is attributable to conditioning rather than
+   a second chance to generate.
 
-The gap between a paper that is accepted and one that is *cited for a decade* is
-not cleverness. It is discipline on a small number of axes:
+2. **Constraint-preserving segmentation**
 
-1. **Reproducible to the digit.** A stranger clones the repo and one command
-   regenerates the headline numbers, or the resource is not a resource. `make
-   gold-pipeline` and `make eval` are load-bearing, not decoration. Pin every
-   motivating number (the D1 constraint-blindness result) so drift fails loudly.
-2. **Agreement that means something.** κ is only meaningful if the second pass
-   was authored blind to the first. The anchoring control in
-   `docs/annotation/independent-annotator-workflow.md` is not bureaucracy — it is
-   the thing that lets us claim the golds are reproducible rather than one
-   annotator's taste. Never let convenience erode it.
-3. **Honest provenance.** Golds are model-assisted drafts adjudicated by an
-   independent pass, stamped as exactly that until a human signs off. The moment
-   we overclaim human authorship, a sharp reviewer finds it and the whole
-   resource's credibility goes with it. Our credibility is the asset; protect it
-   above all speed.
-4. **A defensible, licensed corpus.** Every document is publicly licensed with
-   recorded provenance (`datasets/paper/public_sources_manifest.csv`). Genre
-   diversity beats raw count — eight procedures across eight domains that stress
-   different constraint shapes is worth more than twenty near-duplicates.
-5. **A datasheet, not just data.** Follow the Gebru et al. datasheet discipline:
-   motivation, composition, collection, preprocessing, uses, limits. Elite
-   resources tell you when *not* to use them.
+   Test whether hierarchy-aware segmentation keeps a constraint and its governed step in
+   the same model context. This is secondary until it beats full-context and simpler
+   chunking controls on pair co-location and downstream attachment.
 
-Elite is not a bigger model or a longer paper. It is a smaller number of claims,
-each of which survives an adversarial reviewer.
+3. **Local quality-cost frontier**
 
-## The venue ladder
+   Report quality together with actual calls, tokens, latency, peak memory, and hardware.
+   Local execution supports a reduced-data-egress argument only when runtime evidence
+   exists. It does not by itself establish privacy, compliance, or production safety.
 
-The near-term target is the **ECIR 2027 Resource Track** — the right first home
-because the contribution *is* the resource. But the ambition is a multi-year arc,
-and the resource paper is the foundation stone, not the building:
+4. **Supporting evidence infrastructure**
 
-- **Now → ECIR 2027 (Resource).** Establish IPKE-Bench: taxonomy, validator,
-  golds with IAA, baselines, the constraint-blindness motivating result.
-  Abstract 12 Oct 2026, full paper 2 Nov 2026.
-- **Next → a full research paper (SIGIR / EMNLP / *ACL).** Once the benchmark
-  exists, the *method* paper becomes possible and far stronger: constraint-aware
-  extraction architectures measured *on our own benchmark*, with the
-  constraint-aware retrieval task (PKG-backed vs text-chunk RAG) as the payoff.
-  A benchmark you created and then top the leaderboard of is a compounding asset.
-- **Then → a journal extension (JWS, TOIS, or a Semantic-Web / data venue).**
-  The expanded corpus, cross-lingual extension (Finnish SOPs via the CoRe
-  pilots), JSON-LD / knowledge-graph export, and a longitudinal study of model
-  progress on constraint attachment. This is where "highest-level journal" lives:
-  the definitive, extended treatment of the problem you defined.
-- **Landmark test.** The work becomes landmark not when it is published but when
-  *other groups report constraint-attachment F1 on IPKE-Bench without being told
-  to.* Design every decision so that outcome is possible: clean schema, permissive
-  license, frictionless loader, a metric people trust.
+   Maintain source-grounded gold, explicit graph relations, typed constraints, honest
+   provenance, and reproducible analysis. These are indispensable scientific controls,
+   but they are not positioned as a standalone benchmark contribution.
 
-Each rung must be genuinely earned. Do not skip to the journal before the
-benchmark is trusted; do not chase the landmark before the method paper tops it.
+## What elite means here
 
-## The research arc past the first paper
+An elite paper is a short chain from one important claim to evidence that can survive an
+adversarial review.
 
-Directions that extend the thesis rather than dilute it — pursue in roughly this
-order, and only when the current rung is solid:
+1. **Causal controls**: schema information, parser behavior, calls, token budget,
+   decoding, and filtering are separated instead of bundled into P3 versus P0.
+2. **Human evidence**: agent-prepared candidates remain ineligible until a human completes
+   the full source pass, exact anchors, item decisions, timing record, and frozen
+   hash-bound evidence package. Independent agreement is blind and measured.
+3. **Correct statistical units**: documents and source families support generalization;
+   seeds estimate stochastic variation and are nested within documents.
+4. **Grounding**: annotations and predictions can be traced to source evidence. Unsupported
+   output remains visible before filtering.
+5. **Reproducibility**: raw predictions, prompt and model hashes, complete configuration,
+   failures, and cached re-scoring reproduce every table.
+6. **Negative results remain publishable**: if skeleton conditioning does not beat
+   call-matched self-refinement, report that result rather than changing the test after
+   seeing it.
+7. **Scoped claims**: no privacy, safety, executability, model-scale, or downstream-value
+   claim exceeds the measurements performed.
 
-- **Constraint-aware retrieval and QA.** "Under what condition may step 7 be
-  skipped?" is a query a PKG can answer and a text-chunk index cannot. This is the
-  clearest demonstration that constraint attachment *buys* something downstream.
-- **Cross-lingual and cross-domain generalization.** Finnish industrial SOPs
-  (native to the CoRe / TeoÄly / ADINO pilots) test whether the taxonomy is a
-  property of procedures or an artifact of English regulatory prose.
-- **Procedure-as-reference verification.** Checking *observed* work against a
-  procedure — the operator-monitoring pilots — turns extraction into compliance
-  checking. This is where the research meets the funded projects most directly.
-- **Model progress as a measurement instrument.** A stable benchmark lets you
-  chart how frontier and *local* models improve on constraint attachment over
-  time — valuable precisely because it is privacy-preserving and runnable on the
-  lab's own hardware.
+## Evidence gates
 
-## The CoRe link — stated narrowly, on purpose
+No confirmatory sweep begins until:
 
-IPKE-Bench supports the family of TeoÄly / ADINO pilots that turn unstructured
-procedural or operator content into structured representations, or use a
-procedure as a reference for checking observed work (Dinolift work-instruction
-authoring, Konecranes inspection/assembly, JS-Group and TEHAA reporting). It does
-**not** claim to underlie unrelated vision or time-series pilots. Overclaiming the
-industrial link is the same failure mode as overclaiming human annotation — a
-reviewer punishes the reach and discounts the real contribution. State the link
-where it is true and defensible, and nowhere else.
+- active production annotations have complete, schema-valid primary-human evidence;
+- blind second-pass coverage and agreement meet the frozen protocol;
+- exact annotated spans are used for the attachment experiment;
+- explicit relations are evaluated instead of synthesizing every graph as a linear chain;
+- the same parser, schema, and repair policy are applied across conditions;
+- a two-document pilot proves that every condition produces auditable, non-empty output;
+- cached predictions reproduce the pilot metrics with one command.
 
-## Principles to carry
+The current eight-document legacy-candidate inventory does not meet these gates.
+`review_status="reviewed"` and `+ human-verified:<handle>` are both insufficient without
+the complete primary-pass evidence package.
 
-- **One claim, defended completely, beats three claims defended partially.**
-- **Reproducibility is a feature of the science, not the packaging.** If it does
-  not regenerate on a clean clone, it is not done.
-- **Protect credibility above speed.** Honest provenance, blind IAA, licensed
-  data. These are slow; they are also the only durable moat.
-- **Diversity over volume** in the corpus; **sharpness over surface** in the
-  claims.
-- **Build the resource others will use, not the demo that impresses once.** The
-  measure of success is adoption, not acceptance.
+## Experiment order
 
----
+1. Compare joint, self-refined, skeleton-conditioned, and filtered extraction on exact
+   annotated spans.
+2. Separate raw generation effects from deterministic filter effects.
+3. Evaluate segmentation independently with boundary and constraint-step co-location
+   evidence.
+4. Combine the components only after their individual effects are understood.
+5. Test scale within one same-release dense model family and confirm direction on a
+   second family.
+6. Run external transfer only with a mapping frozen before evaluation.
 
-*See also:* `README.md` (contributions summary),
-`docs/paper/ipke-bench-resource-prd.md` (requirements),
-`docs/paper/2026-07-04-execution-direction.md` (current issue board and work
-order), `docs/methods/annotation-pipeline.md` (how the golds are made),
-`docs/annotation/guidelines.md` (annotation decision procedure).
+ConstraintAttachmentF1 is the primary outcome. Grounded constraint recall, unsupported
+rate, type and enforcement F1, StepF1, graph relations, and quality-cost measures are
+secondary. Phi is exploratory until redesigned and validated.
+
+## Venue strategy
+
+The natural audience is NLP, information extraction, or knowledge-graph research, not a
+resource track. COLING 2027 is an October checkpoint only if the human evidence and
+controlled pilot are credible early enough. Otherwise the work moves to a later ARR
+cycle or an appropriate Semantic Web research track. A calendar never relaxes the
+evidence gates.
+
+## CoRe value
+
+IPKE supports CoRe work that turns technical procedures into auditable structured
+representations or uses procedures as references for checking work. The durable value is
+not a demo claim. It is a reusable method and evaluation discipline for local industrial
+AI: explicit constraints, traceable evidence, measurable failure modes, and controlled
+deployment costs.
+
+Do not claim that IPKE underlies unrelated vision or time-series projects. Do not expose
+partner manuals to cloud services as part of the paper workflow.
+
+## Principles
+
+- One falsifiable method claim defended completely beats several bundled claims.
+- Honest negative evidence is more valuable than a confounded positive result.
+- Production-human decisions cannot be automated or delegated to a marker script.
+- Agents may prepare candidates and reconcile source evidence; humans own production
+  decisions. Automation verifies structure, provenance, identity, and artifact hashes.
+- Full-context is a required control for any chunking claim.
+- Component metrics outrank an unvalidated composite score.
+- Preserve historical decisions by superseding them, not rewriting them silently.
+
+## Controlling documents
+
+- `docs/adr/0005-ipke-method-paper-primary.md`
+- `docs/superpowers/specs/2026-07-10-ipke-method-paper-design.md`
+- `docs/paper/2026-07-04-execution-direction.md`
+- `CONTEXT.md`
+- `REPRODUCIBILITY.md`
+
+ADR-0004 and `docs/paper/ipke-bench-resource-prd.md` remain historical records of the
+superseded resource-paper direction.

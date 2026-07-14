@@ -1,5 +1,9 @@
 # Pre-registered hypothesis and model selection for ECIR paper
 
+Status: Superseded by ADR-0005 and the method-paper design on 2026-07-10. The historical
+Phi pipeline-gap hypothesis and 320-run matrix below are not the current confirmatory
+design.
+
 ## Hypothesis (pre-registered before any model results are seen)
 
 The pipeline gap — defined as Φ(P3+DSC) − Φ(P0+fixed) — is larger at smaller

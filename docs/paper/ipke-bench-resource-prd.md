@@ -1,5 +1,11 @@
 # IPKE-Bench Resource Paper PRD
 
+> **Status: superseded as a paper direction by ADR-0005 (2026-07-10).** This
+> document is retained as historical context and as a requirements source for supporting
+> evaluation infrastructure. IPKE itself is now the primary method contribution. The
+> controlling protocol is
+> `docs/superpowers/specs/2026-07-10-ipke-method-paper-design.md`.
+
 Updated: 2026-06-13. Reframed per advisor review: the benchmark is the contribution; baselines, retrieval, and reproducibility infrastructure are *demonstration experiments* within the artifact, not parallel contributions. Constraint-blindness, measured directly on the seed corpus, is the §1 motivating result.
 
 Current execution direction: `docs/paper/2026-07-04-execution-direction.md`.

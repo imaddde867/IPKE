@@ -18,12 +18,53 @@ import argparse
 import json
 import sys
 from collections.abc import Iterable
+from functools import lru_cache
 from pathlib import Path
 
+import jsonschema
+from pydantic import ValidationError
+
 from src.benchmark.taxonomy import LOCKED_CONSTRAINT_TYPES, LOCKED_ENFORCEMENT_LEVELS
+from src.evaluation.corpus_manifest import (
+    load_corpus_manifest,
+    select_manifest_gold_files,
+    select_manifest_production_files,
+)
+from src.evaluation.evidence import (
+    ArtifactLoader,
+    artifact_loader_for_source,
+    assess_annotation_evidence,
+    assess_corpus_evidence,
+    assess_production_evidence,
+)
 
 LOCKED_TYPES = LOCKED_CONSTRAINT_TYPES
 LOCKED_ENFORCEMENT = LOCKED_ENFORCEMENT_LEVELS
+REPO_ROOT = Path(__file__).resolve().parents[1]
+ANNOTATION_SCHEMA_PATH = REPO_ROOT / "schemas" / "ipke_annotation.schema.json"
+
+
+@lru_cache(maxsize=1)
+def _annotation_validator() -> jsonschema.Draft202012Validator:
+    schema = json.loads(ANNOTATION_SCHEMA_PATH.read_text(encoding="utf-8"))
+    jsonschema.Draft202012Validator.check_schema(schema)
+    return jsonschema.Draft202012Validator(schema)
+
+
+def _annotation_schema_errors(annotation: dict) -> list[str]:
+    errors = sorted(
+        _annotation_validator().iter_errors(annotation),
+        key=lambda error: tuple(str(part) for part in error.absolute_path),
+    )
+    messages: list[str] = []
+    for error in errors:
+        location = ".".join(str(part) for part in error.absolute_path) or "<root>"
+        messages.append(f"annotation schema at {location}: {error.message}")
+    return messages
+
+
+def _artifact_loader_for_source(source_path: Path) -> ArtifactLoader:
+    return artifact_loader_for_source(source_path)
 
 
 def iter_constraints(annotation: dict) -> Iterable[tuple[str, str, dict]]:
@@ -40,13 +81,26 @@ def _adjudicates_warning(review_notes: str, step_id: str, warning_kind: str) -> 
     return marker in review_notes
 
 
-def validate_file(path: Path) -> list[str]:
+def validate_file(
+    path: Path,
+    *,
+    require_human_verified: bool = False,
+    require_production_evidence: bool = False,
+    source_path: Path | None = None,
+    evidence_path: Path | None = None,
+    artifact_loader: ArtifactLoader | None = None,
+) -> list[str]:
     errors: list[str] = []
     warnings: list[str] = []
     try:
-        d = json.loads(path.read_text())
+        annotation_bytes = path.read_bytes()
+        d = json.loads(annotation_bytes)
     except Exception as e:
-        return [f"JSON parse error: {e}"]
+        return [f"ERROR: JSON parse error: {e}"]
+
+    schema_errors = _annotation_schema_errors(d)
+    if schema_errors:
+        return [f"ERROR: {error}" for error in schema_errors]
 
     quality = d.get("quality", {})
     review_notes = str(quality.get("review_notes") or "")
@@ -56,6 +110,52 @@ def validate_file(path: Path) -> list[str]:
         errors.append("quality.annotator missing")
     if not quality.get("review_date"):
         errors.append("quality.review_date missing")
+    if require_human_verified:
+        evidence = assess_annotation_evidence(d)
+        if not evidence.human_verified:
+            errors.extend(
+                issue
+                for issue in evidence.issues
+                if "human" in issue or "pending human sign-off" in issue
+            )
+    if require_production_evidence:
+        if source_path is None:
+            errors.append("production source path missing")
+        elif not source_path.is_file():
+            errors.append(f"production source file missing: {source_path}")
+        elif source_path.stem != path.stem:
+            errors.append("production source filename does not match annotation filename")
+        if evidence_path is None:
+            errors.append("production evidence log path missing")
+        elif not evidence_path.is_file():
+            errors.append(f"production evidence log file missing: {evidence_path}")
+        elif evidence_path.stem != path.stem:
+            errors.append("production evidence filename does not match annotation filename")
+        if (
+            source_path is not None
+            and source_path.is_file()
+            and evidence_path is not None
+            and evidence_path.is_file()
+        ):
+            try:
+                source_bytes = source_path.read_bytes()
+                evidence_log = json.loads(evidence_path.read_bytes())
+            except Exception as exc:
+                errors.append(f"production evidence read error: {exc}")
+            else:
+                production = assess_production_evidence(
+                    d,
+                    annotation_bytes=annotation_bytes,
+                    source_bytes=source_bytes,
+                    evidence_log=evidence_log,
+                    expected_doc_id=path.stem,
+                    artifact_loader=(
+                        artifact_loader or _artifact_loader_for_source(source_path)
+                    ),
+                )
+                errors.extend(
+                    issue for issue in production.issues if issue not in errors
+                )
 
     step_ids = {s.get("id") for s in d.get("steps", []) if s.get("id")}
     if not step_ids:
@@ -118,16 +218,113 @@ def validate_file(path: Path) -> list[str]:
     return [f"ERROR: {e}" for e in errors] + [f"WARN: {w}" for w in warnings]
 
 
-def main() -> int:
+def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--gold-dir", type=Path, default=Path("datasets/paper/gold"))
+    ap.add_argument("--text-dir", type=Path)
+    ap.add_argument("--evidence-dir", type=Path)
+    ap.add_argument("--manifest", type=Path)
     ap.add_argument("--strict", action="store_true", help="Treat warnings as failures.")
-    args = ap.parse_args()
+    ap.add_argument(
+        "--require-frozen-manifest",
+        action="store_true",
+        help="Require the supplied corpus manifest to be frozen.",
+    )
+    ap.add_argument(
+        "--require-human-verified",
+        action="store_true",
+        help="Require the legacy non-pending + human-verified:<handle> marker.",
+    )
+    ap.add_argument(
+        "--require-production-evidence",
+        action="store_true",
+        help=(
+            "Require exact item anchors and a frozen human-evidence sidecar. "
+            "Also requires --text-dir and --evidence-dir."
+        ),
+    )
+    args = ap.parse_args(argv)
 
-    any_error = False
+    if args.require_frozen_manifest and args.manifest is None:
+        print("ERROR: --require-frozen-manifest requires --manifest")
+        return 1
+    if args.require_production_evidence:
+        if args.text_dir is None or args.evidence_dir is None:
+            print(
+                "ERROR: --require-production-evidence requires "
+                "--text-dir and --evidence-dir"
+            )
+            return 1
+        for directory in (args.text_dir, args.evidence_dir):
+            if not directory.is_dir():
+                print(f"ERROR: directory not found: {directory}")
+                return 1
+
+    manifest_error = False
+    gold_files = tuple(sorted(args.gold_dir.glob("*.json")))
+    if args.manifest is not None:
+        try:
+            manifest = load_corpus_manifest(args.manifest)
+            selector = (
+                select_manifest_production_files
+                if args.require_production_evidence
+                else select_manifest_gold_files
+            )
+            gold_files = selector(manifest, args.gold_dir)
+        except (OSError, ValueError, ValidationError) as exc:
+            print(f"ERROR: invalid corpus manifest: {exc}")
+            return 1
+        if manifest.manifest_status == "provisional":
+            if args.require_frozen_manifest:
+                print("ERROR: corpus manifest is provisional; frozen manifest required")
+                manifest_error = True
+            else:
+                print("WARN: corpus manifest is provisional")
+
+    any_error = manifest_error
     any_warn = False
-    for f in sorted(args.gold_dir.glob("*.json")):
-        msgs = validate_file(f)
+    production_logs: dict[str, dict] = {}
+    agreement_reports: dict[str, dict] = {}
+    for f in gold_files:
+        if args.require_production_evidence and args.evidence_dir is not None:
+            evidence_file = args.evidence_dir / f"{f.stem}.json"
+            try:
+                loaded_evidence = json.loads(evidence_file.read_bytes())
+            except (json.JSONDecodeError, OSError):
+                pass
+            else:
+                if isinstance(loaded_evidence, dict):
+                    production_logs[f.stem] = loaded_evidence
+                    if loaded_evidence.get("blind_subset_selected") is True:
+                        assert args.text_dir is not None
+                        loader = _artifact_loader_for_source(
+                            args.text_dir / f"{f.stem}.txt"
+                        )
+                        try:
+                            loaded_report = json.loads(
+                                loader(
+                                    f"datasets/paper/reports/"
+                                    f"{f.stem}_agreement.json"
+                                )
+                            )
+                        except (json.JSONDecodeError, OSError):
+                            pass
+                        else:
+                            if isinstance(loaded_report, dict):
+                                agreement_reports[f.stem] = loaded_report
+        msgs = validate_file(
+            f,
+            require_human_verified=args.require_human_verified,
+            require_production_evidence=args.require_production_evidence,
+            source_path=(
+                args.text_dir / f"{f.stem}.txt" if args.text_dir is not None else None
+            ),
+            evidence_path=(
+                args.evidence_dir / f"{f.stem}.json"
+                if args.evidence_dir is not None
+                else None
+            ),
+        )
         errs = [m for m in msgs if m.startswith("ERROR")]
         warns = [m for m in msgs if m.startswith("WARN")]
         if errs:
@@ -141,6 +338,15 @@ def main() -> int:
                 print(f"  {f.name}: {m}")
         if not errs and not warns:
             print(f"PASS {f.name}")
+    if args.require_production_evidence and len(production_logs) == len(gold_files):
+        corpus_issues = assess_corpus_evidence(
+            production_logs,
+            agreement_reports=agreement_reports,
+        )
+        if corpus_issues:
+            any_error = True
+            for issue in corpus_issues:
+                print(f"ERROR: {issue}")
     if any_error:
         return 1
     if any_warn and args.strict:

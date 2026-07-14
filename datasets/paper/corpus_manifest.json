@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "manifest_status": "provisional",
+  "documents": [
+    {
+      "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+      "source_family": "epa",
+      "role": "procedure_candidate",
+      "status": "candidate",
+      "include_for_evaluation": true,
+      "reason": "Legacy procedure candidate; manual source audit and human verification pending."
+    },
+    {
+      "doc_id": "epa_field_sampling_measurement_procedure_validation",
+      "source_family": "epa",
+      "role": "procedure_candidate",
+      "status": "candidate",
+      "include_for_evaluation": true,
+      "reason": "Legacy procedure candidate; human adjudication and verification pending."
+    },
+    {
+      "doc_id": "epa_guidance_preparing_sops_qag6",
+      "source_family": "epa",
+      "role": "procedure_candidate",
+      "status": "candidate",
+      "include_for_evaluation": true,
+      "reason": "Legacy procedure candidate; manual source audit and human verification pending."
+    },
+    {
+      "doc_id": "nasa_npr_8715_3d_general_safety",
+      "source_family": "nasa",
+      "role": "requirements_stress_test",
+      "status": "excluded_wrong_genre",
+      "include_for_evaluation": false,
+      "reason": "Section 2.5.2 is a requirements block; see issue #112."
+    },
+    {
+      "doc_id": "niosh_nmam_5th_edition_ebook",
+      "source_family": "niosh",
+      "role": "procedure_candidate",
+      "status": "excluded_pending_reannotation",
+      "include_for_evaluation": false,
+      "reason": "Current annotation requires a manual rebuild before evaluation; see issue #112."
+    },
+    {
+      "doc_id": "olsk_small_cnc_v1_workbook",
+      "source_family": "olsk",
+      "role": "procedure_candidate",
+      "status": "excluded_pending_reannotation",
+      "include_for_evaluation": false,
+      "reason": "Current annotation requires a manual rebuild before evaluation; see issue #112."
+    },
+    {
+      "doc_id": "usgs_groundwater_technical_procedures_tm1_a1",
+      "source_family": "usgs",
+      "role": "procedure_candidate",
+      "status": "candidate",
+      "include_for_evaluation": true,
+      "reason": "Legacy procedure candidate; manual source audit and human verification pending."
+    },
+    {
+      "doc_id": "usgs_nfm_collection_water_samples_a4",
+      "source_family": "usgs",
+      "role": "procedure_candidate",
+      "status": "candidate",
+      "include_for_evaluation": true,
+      "reason": "Legacy procedure candidate; manual source audit and human verification pending."
+    }
+  ]
+}

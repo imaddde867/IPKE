@@ -1,5 +1,9 @@
 # Dataset Notes
 
+> **Historical planning note.** Current eligibility, exclusions, and counts live in
+> `docs/dataset/datasheet.md`, `docs/annotation/SIGN_OFF_ISSUE.md`, and the July 2026
+> manual-review records. Do not infer paper eligibility from this file.
+
 This file serves as the dataset documentation for the IPKE public dataset slice (issue 53).
 It follows the datasheet format of Gebru et al. (2021) "Datasheets for Datasets" (CACM).
 It is the primary source for the dataset section of the paper.
