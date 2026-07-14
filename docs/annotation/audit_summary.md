@@ -1,5 +1,9 @@
 # IPKE-Bench Gold Audit — Pre-Reannotation Baseline
 
+> **Historical snapshot only.** This audit predates the method-first reset, human-evidence
+> gate, and July 2026 manual source audits. `review_status = "reviewed"` is structural
+> metadata, not human verification, and NASA is not a canonical example.
+
 **Date:** 2026-07-04
 **Purpose:** Establish the exact validator contract and the measured state of the 8 seed golds before the model-assisted re-annotation pass. This is the frozen "before" record for the methodology section.
 
@@ -19,7 +23,7 @@ Source of truth: `scripts/validate_paper_gold.py` + `src/benchmark/taxonomy.py`.
 
 Note the validator imports `src.benchmark.taxonomy`, so it must be run with the repo root on `PYTHONPATH` (`uv run` does this; a bare `python3 scripts/...` needs `PYTHONPATH=.`).
 
-### Required JSON shape (from canonical example `nasa_npr_8715_3d_general_safety.json`)
+### Historical JSON shape illustrated by `nasa_npr_8715_3d_general_safety.json`
 
 - Top keys: `procedure`, `steps`, `constraints`, `relations`, `quality`.
 - `procedure`: `{doc_id, title, version, domain, source:{doc_id, page, section}}`.

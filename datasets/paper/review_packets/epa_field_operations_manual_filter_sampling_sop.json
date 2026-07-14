@@ -1,0 +1,204 @@
+{
+  "packet_schema_version": 2,
+  "artifact_role": "agent_review_packet",
+  "status": "prepared_not_human_evidence",
+  "doc_id": "epa_field_operations_manual_filter_sampling_sop",
+  "decision_semantics": {
+    "unit": "legacy_to_review_artifact_transformation",
+    "accept": "The semantic item, type, and attachment survive; identifier and exact-provenance normalization may change.",
+    "edit": "The item meaning, granularity, type, attachment, or source wording changes.",
+    "counts_are_human_effort_evidence": false
+  },
+  "source": {
+    "path": "datasets/paper/text/epa_field_operations_manual_filter_sampling_sop.txt",
+    "sha256": "4e84e4f1d7eb07c46c9daefd1f4d0f75025729430ecf5bfdc8f4c69254e0ae66",
+    "span_sha256": "6c14cfbdf5c380067a83528013f68182204ec0418db8ccb6de13e04204a5bf70",
+    "char_start": 609373,
+    "char_end": 611246
+  },
+  "audit": {
+    "path": "docs/annotation/manual-review/2026-07-13-epa-mfc-calibration.md",
+    "sha256": "13b298bc38b5c50579a5f253df15dec5750b90219c35f907ddbbbcd3421b5cb5"
+  },
+  "legacy_candidate": {
+    "path": "datasets/paper/gold/epa_field_operations_manual_filter_sampling_sop.json",
+    "sha256": "4a44250fbfeb491e8194e8d8c493a462692f8ee736cf1796998d853fc796de03",
+    "step_count": 18,
+    "constraint_count": 12
+  },
+  "review_candidate": {
+    "path": "datasets/paper/review_candidates/epa_field_operations_manual_filter_sampling_sop.json",
+    "sha256": "01ef7c94882d613b024a557eee7cfcac0ba29e1e4ed40b59e5633415abd6f612",
+    "step_count": 14,
+    "constraint_count": 15
+  },
+  "proposed_step_decisions": [
+    {
+      "action": "edit",
+      "input_refs": [
+        "legacy:S1",
+        "legacy:S2",
+        "legacy:S3",
+        "legacy:S4",
+        "legacy:S5",
+        "legacy:S6",
+        "legacy:S7"
+      ],
+      "output_refs": [
+        "review:S1",
+        "review:S2",
+        "review:S3",
+        "review:S4",
+        "review:S5",
+        "review:S6",
+        "review:S7"
+      ],
+      "rationale": "Retain the seven source actions while repairing labels, objects, and exact provenance."
+    },
+    {
+      "action": "edit",
+      "input_refs": [
+        "legacy:S8",
+        "legacy:S9",
+        "legacy:S10",
+        "legacy:S11"
+      ],
+      "output_refs": ["review:S8"],
+      "rationale": "6.1.7 contains one coordinated recording action with three objects and one form destination."
+    },
+    {
+      "action": "reject",
+      "input_refs": ["legacy:S12"],
+      "output_refs": [],
+      "rationale": "The form computes Full Scale and Zero automatically; no executor computation action is stated."
+    },
+    {
+      "action": "edit",
+      "input_refs": [
+        "legacy:S13",
+        "legacy:S14",
+        "legacy:S15",
+        "legacy:S16",
+        "legacy:S17",
+        "legacy:S18"
+      ],
+      "output_refs": [
+        "review:S9",
+        "review:S10",
+        "review:S11",
+        "review:S12",
+        "review:S13",
+        "review:S14"
+      ],
+      "rationale": "Retain the six actions while renumbering, grounding labels, and preserving source pronouns where required by the exact item span."
+    }
+  ],
+  "proposed_constraint_decisions": [
+    {
+      "action": "edit",
+      "input_refs": ["legacy:C1"],
+      "output_refs": ["review:C1", "review:C2"],
+      "rationale": "Split duration and charger-state clauses into independently typed constraints."
+    },
+    {
+      "action": "accept",
+      "input_refs": ["legacy:C10"],
+      "output_refs": ["review:C3"],
+      "rationale": "Retain the tubing parameter with an exact source anchor and a normalized identifier."
+    },
+    {
+      "action": "edit",
+      "input_refs": ["legacy:C11"],
+      "output_refs": ["review:C4"],
+      "rationale": "Provisionally retype the pump-off condition as a guard; the primary reviewer must confirm the taxonomy."
+    },
+    {
+      "action": "accept",
+      "input_refs": ["legacy:C12"],
+      "output_refs": ["review:C12"],
+      "rationale": "Retain the ten-run parameter with an exact source anchor and the renumbered target step."
+    },
+    {
+      "action": "reject",
+      "input_refs": ["legacy:C2"],
+      "output_refs": [],
+      "rationale": "The six flow values are explicitly introduced as an example rather than a universal binding rule."
+    },
+    {
+      "action": "edit",
+      "input_refs": ["legacy:C3", "legacy:C4"],
+      "output_refs": ["review:C7", "review:C8", "review:C9", "review:C10"],
+      "rationale": "Replace overlapping clauses with four non-overlapping recording parameters."
+    },
+    {
+      "action": "edit",
+      "input_refs": ["legacy:C5", "legacy:C6"],
+      "output_refs": ["review:C11"],
+      "rationale": "Merge the six-point condition and automatic form output into one complete S8 postcondition."
+    },
+    {
+      "action": "edit",
+      "input_refs": ["legacy:C7", "legacy:C8", "legacy:C9"],
+      "output_refs": ["review:C13", "review:C14", "review:C15"],
+      "rationale": "Narrow the target-flow, output-location, and completion-condition clauses and remove action restatements."
+    },
+    {
+      "action": "add",
+      "input_refs": [],
+      "output_refs": ["review:C5", "review:C6"],
+      "rationale": "Add the omitted Flow_SetPt control-variable and expected-setting parameters."
+    }
+  ],
+  "proposed_counts": {
+    "steps": {
+      "candidate_count": 18,
+      "accepted": 0,
+      "edited": 17,
+      "rejected": 1,
+      "added": 0,
+      "final_count": 14
+    },
+    "constraints": {
+      "candidate_count": 12,
+      "accepted": 2,
+      "edited": 9,
+      "rejected": 1,
+      "added": 2,
+      "final_count": 15
+    }
+  },
+  "human_decisions_required": [
+    {
+      "decision_id": "H1",
+      "question": "Approve the 14-step spine and the short complete-procedure exception?"
+    },
+    {
+      "decision_id": "H2",
+      "question": "Drop the illustrative 1.5 Lpm flow example, or retain it as a binding parameter?"
+    },
+    {
+      "decision_id": "H3",
+      "question": "Approve the four non-overlapping 6.1.7 recording constraints?"
+    },
+    {
+      "decision_id": "H4",
+      "question": "Classify 'With the vacuum pump off' as a guard, or document why it is a precondition?"
+    },
+    {
+      "decision_id": "H5",
+      "question": "Approve the complete six-point-audit and form-output clause as one S8 postcondition?"
+    },
+    {
+      "decision_id": "H6",
+      "question": "Keep tag, bag, and shelf as three atomic terminal steps?"
+    },
+    {
+      "decision_id": "H7",
+      "question": "Treat Figure 4 only as provenance, or add a reference constraint?"
+    },
+    {
+      "decision_id": "H8",
+      "question": "Confirm verified page assignments and Revision No. 10 (February 2025)?"
+    }
+  ]
+}

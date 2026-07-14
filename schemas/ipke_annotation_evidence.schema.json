@@ -1,0 +1,575 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ipke.local/schemas/ipke_annotation_evidence.schema.json",
+  "title": "IPKE Human Annotation Evidence Package",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "protocol_id",
+    "status",
+    "doc_id",
+    "source",
+    "candidate",
+    "primary_pass",
+    "blind_subset_selected",
+    "blind_pass",
+    "agreement_report",
+    "adjudication",
+    "output",
+    "frozen_at"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "protocol_id": {
+      "const": "ipke-human-evidence-v1"
+    },
+    "status": {
+      "enum": ["draft", "frozen", "invalidated"]
+    },
+    "doc_id": {
+      "$ref": "#/$defs/identifier"
+    },
+    "source": {
+      "$ref": "#/$defs/sourceArtifact"
+    },
+    "candidate": {
+      "oneOf": [
+        {"$ref": "#/$defs/candidateArtifact"},
+        {"type": "null"}
+      ]
+    },
+    "primary_pass": {
+      "$ref": "#/$defs/primaryPass"
+    },
+    "blind_subset_selected": {
+      "type": "boolean"
+    },
+    "blind_pass": {
+      "oneOf": [
+        {"$ref": "#/$defs/blindPass"},
+        {"type": "null"}
+      ]
+    },
+    "agreement_report": {
+      "oneOf": [
+        {"$ref": "#/$defs/agreementArtifact"},
+        {"type": "null"}
+      ]
+    },
+    "adjudication": {
+      "oneOf": [
+        {"$ref": "#/$defs/adjudication"},
+        {"type": "null"}
+      ]
+    },
+    "output": {
+      "$ref": "#/$defs/productionArtifact"
+    },
+    "frozen_at": {
+      "type": ["string", "null"],
+      "format": "date-time"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "primary_pass": {
+            "properties": {
+              "assistance": {
+                "properties": {
+                  "candidate_used": {"const": true}
+                },
+                "required": ["candidate_used"]
+              }
+            },
+            "required": ["assistance"]
+          }
+        },
+        "required": ["primary_pass"]
+      },
+      "then": {
+        "properties": {
+          "candidate": {"$ref": "#/$defs/candidateArtifact"}
+        }
+      },
+      "else": {
+        "properties": {
+          "candidate": {"type": "null"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "blind_subset_selected": {"const": true}
+        },
+        "required": ["blind_subset_selected"]
+      },
+      "then": {
+        "properties": {
+          "blind_pass": {"$ref": "#/$defs/blindPass"},
+          "agreement_report": {"$ref": "#/$defs/agreementArtifact"},
+          "adjudication": {"$ref": "#/$defs/adjudication"}
+        }
+      },
+      "else": {
+        "properties": {
+          "blind_pass": {"type": "null"},
+          "agreement_report": {"type": "null"},
+          "adjudication": {"type": "null"}
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "status": {"const": "frozen"}
+        },
+        "required": ["status"]
+      },
+      "then": {
+        "properties": {
+          "frozen_at": {"type": "string", "format": "date-time"}
+        }
+      }
+    }
+  ],
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]*$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["path", "sha256"],
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^datasets/paper/[A-Za-z0-9._/-]+$"
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "candidateArtifact": {
+      "allOf": [
+        {"$ref": "#/$defs/artifact"},
+        {
+          "properties": {
+            "path": {
+              "pattern": "^datasets/paper/review_candidates/[A-Za-z0-9._-]+\\.json$"
+            }
+          }
+        }
+      ]
+    },
+    "primaryArtifact": {
+      "allOf": [
+        {"$ref": "#/$defs/artifact"},
+        {
+          "properties": {
+            "path": {
+              "pattern": "^datasets/paper/primary_pass/[A-Za-z0-9._-]+\\.json$"
+            }
+          }
+        }
+      ]
+    },
+    "blindArtifact": {
+      "allOf": [
+        {"$ref": "#/$defs/artifact"},
+        {
+          "properties": {
+            "path": {
+              "pattern": "^datasets/paper/second_pass/[A-Za-z0-9._-]+\\.json$"
+            }
+          }
+        }
+      ]
+    },
+    "agreementArtifact": {
+      "allOf": [
+        {"$ref": "#/$defs/artifact"},
+        {
+          "properties": {
+            "path": {
+              "pattern": "^datasets/paper/reports/[A-Za-z0-9._-]+_agreement\\.json$"
+            }
+          }
+        }
+      ]
+    },
+    "productionArtifact": {
+      "allOf": [
+        {"$ref": "#/$defs/artifact"},
+        {
+          "properties": {
+            "path": {
+              "pattern": "^datasets/paper/production/[A-Za-z0-9._-]+\\.json$"
+            }
+          }
+        }
+      ]
+    },
+    "sourceArtifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "url",
+        "retrieval_date",
+        "version",
+        "page_range",
+        "section",
+        "redistribution_status",
+        "sha256",
+        "span_sha256",
+        "char_start",
+        "char_end"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "pattern": "^datasets/paper/text/[A-Za-z0-9._-]+\\.txt$"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "retrieval_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "version": {
+          "type": ["string", "null"]
+        },
+        "page_range": {
+          "type": ["string", "null"]
+        },
+        "section": {
+          "type": "string",
+          "minLength": 1
+        },
+        "redistribution_status": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "span_sha256": {
+          "$ref": "#/$defs/sha256"
+        },
+        "char_start": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "char_end": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "reviewer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["handle", "kind", "role"],
+      "properties": {
+        "handle": {
+          "$ref": "#/$defs/identifier"
+        },
+        "kind": {
+          "const": "human"
+        },
+        "role": {
+          "enum": ["primary_reviewer", "blind_annotator", "adjudicator"]
+        }
+      }
+    },
+    "decisionCounts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidate_count",
+        "accepted",
+        "edited",
+        "rejected",
+        "added",
+        "final_count"
+      ],
+      "properties": {
+        "candidate_count": {"type": "integer", "minimum": 0},
+        "accepted": {"type": "integer", "minimum": 0},
+        "edited": {"type": "integer", "minimum": 0},
+        "rejected": {"type": "integer", "minimum": 0},
+        "added": {"type": "integer", "minimum": 0},
+        "final_count": {"type": "integer", "minimum": 0}
+      }
+    },
+    "span": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["char_start", "char_end"],
+      "properties": {
+        "char_start": {"type": "integer", "minimum": 0},
+        "char_end": {"type": "integer", "minimum": 1}
+      }
+    },
+    "decision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision_id",
+        "item_kind",
+        "action",
+        "input_ids",
+        "output_ids",
+        "evidence_spans",
+        "rationale"
+      ],
+      "properties": {
+        "decision_id": {"$ref": "#/$defs/identifier"},
+        "item_kind": {"enum": ["step", "constraint", "relation"]},
+        "action": {"enum": ["accept", "edit", "reject", "add"]},
+        "input_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/identifier"}
+        },
+        "output_ids": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {"$ref": "#/$defs/identifier"}
+        },
+        "evidence_spans": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/span"}
+        },
+        "rationale": {"type": "string", "minLength": 1}
+      },
+      "allOf": [
+        {
+          "if": {"properties": {"action": {"const": "add"}}},
+          "then": {
+            "properties": {
+              "input_ids": {"maxItems": 0},
+              "output_ids": {"minItems": 1}
+            }
+          },
+          "else": {
+            "properties": {"input_ids": {"minItems": 1}}
+          }
+        },
+        {
+          "if": {"properties": {"action": {"const": "reject"}}},
+          "then": {"properties": {"output_ids": {"maxItems": 0}}},
+          "else": {"properties": {"output_ids": {"minItems": 1}}}
+        }
+      ]
+    },
+    "unresolvedDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["decision_id", "category", "question", "evidence_spans"],
+      "properties": {
+        "decision_id": {"$ref": "#/$defs/identifier"},
+        "category": {
+          "enum": ["scope", "taxonomy", "implicit_evidence", "safety_critical"]
+        },
+        "question": {"type": "string", "minLength": 1},
+        "evidence_spans": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/span"}
+        }
+      }
+    },
+    "timedPass": {
+      "type": "object",
+      "required": ["started_at", "completed_at", "active_minutes"],
+      "properties": {
+        "started_at": {"type": "string", "format": "date-time"},
+        "completed_at": {"type": "string", "format": "date-time"},
+        "active_minutes": {"type": "integer", "minimum": 1}
+      }
+    },
+    "primaryPass": {
+      "allOf": [
+        {"$ref": "#/$defs/timedPass"},
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "reviewer",
+            "started_at",
+            "completed_at",
+            "active_minutes",
+            "assistance",
+            "decision_counts",
+            "decisions",
+            "unresolved_decisions",
+            "output"
+          ],
+          "properties": {
+            "reviewer": {
+              "allOf": [
+                {"$ref": "#/$defs/reviewer"},
+                {"properties": {"role": {"const": "primary_reviewer"}}}
+              ]
+            },
+            "started_at": {"type": "string", "format": "date-time"},
+            "completed_at": {"type": "string", "format": "date-time"},
+            "active_minutes": {"type": "integer", "minimum": 1},
+            "assistance": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "candidate_used",
+                "complete_source_pass",
+                "exact_anchors_checked"
+              ],
+              "properties": {
+                "candidate_used": {"type": "boolean"},
+                "complete_source_pass": {"const": true},
+                "exact_anchors_checked": {"const": true}
+              }
+            },
+            "decision_counts": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["steps", "constraints", "relations"],
+              "properties": {
+                "steps": {"$ref": "#/$defs/decisionCounts"},
+                "constraints": {"$ref": "#/$defs/decisionCounts"},
+                "relations": {"$ref": "#/$defs/decisionCounts"}
+              }
+            },
+            "decisions": {
+              "type": "array",
+              "minItems": 1,
+              "items": {"$ref": "#/$defs/decision"}
+            },
+            "unresolved_decisions": {
+              "type": "array",
+              "items": {"$ref": "#/$defs/unresolvedDecision"}
+            },
+            "output": {"$ref": "#/$defs/primaryArtifact"}
+          }
+        }
+      ]
+    },
+    "blindPass": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reviewer",
+        "started_at",
+        "completed_at",
+        "active_minutes",
+        "source_only",
+        "candidate_seen",
+        "primary_seen",
+        "breach_detected",
+        "output"
+      ],
+      "properties": {
+        "reviewer": {
+          "allOf": [
+            {"$ref": "#/$defs/reviewer"},
+            {"properties": {"role": {"const": "blind_annotator"}}}
+          ]
+        },
+        "started_at": {"type": "string", "format": "date-time"},
+        "completed_at": {"type": "string", "format": "date-time"},
+        "active_minutes": {"type": "integer", "minimum": 1},
+        "source_only": {"const": true},
+        "candidate_seen": {"const": false},
+        "primary_seen": {"const": false},
+        "breach_detected": {"const": false},
+        "output": {"$ref": "#/$defs/blindArtifact"}
+      }
+    },
+    "adjudicationDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "decision_id",
+        "review_kind",
+        "item_kind",
+        "evidence_spans",
+        "alternatives",
+        "recommendation",
+        "final_decision",
+        "decision_maker"
+      ],
+      "properties": {
+        "decision_id": {"$ref": "#/$defs/identifier"},
+        "review_kind": {
+          "enum": ["disagreement", "seeded_agreement", "seeded_empty_region"]
+        },
+        "item_kind": {
+          "enum": ["step", "constraint", "relation", "evidence_span", "empty_region"]
+        },
+        "evidence_spans": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/span"}
+        },
+        "alternatives": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"type": "string", "minLength": 1}
+        },
+        "recommendation": {"type": "string", "minLength": 1},
+        "final_decision": {"type": "string", "minLength": 1},
+        "decision_maker": {"$ref": "#/$defs/identifier"}
+      }
+    },
+    "adjudication": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reviewer",
+        "started_at",
+        "completed_at",
+        "active_minutes",
+        "decisions",
+        "unresolved_decisions",
+        "output"
+      ],
+      "properties": {
+        "reviewer": {
+          "allOf": [
+            {"$ref": "#/$defs/reviewer"},
+            {"properties": {"role": {"const": "adjudicator"}}}
+          ]
+        },
+        "started_at": {"type": "string", "format": "date-time"},
+        "completed_at": {"type": "string", "format": "date-time"},
+        "active_minutes": {"type": "integer", "minimum": 1},
+        "decisions": {
+          "type": "array",
+          "minItems": 1,
+          "items": {"$ref": "#/$defs/adjudicationDecision"}
+        },
+        "unresolved_decisions": {
+          "type": "array",
+          "maxItems": 0
+        },
+        "output": {"$ref": "#/$defs/productionArtifact"}
+      }
+    }
+  }
+}

@@ -1,17 +1,23 @@
-# IPKE-Bench
+# IPKE Supporting Evaluation Corpus
 
-Top-level entry point for **IPKE-Bench**, the constraint-aware benchmark for procedural knowledge extraction from safety-critical industrial documents. This file distinguishes the benchmark from `IPKE` (the local extraction pipeline) and routes you to the right docs depending on what you want to do.
+This file describes the corpus, taxonomy, and validators used to evaluate IPKE. ADR-0005
+makes the IPKE method the paper's primary contribution. The evaluation corpus remains
+scientifically necessary, but it is not positioned as a standalone benchmark paper.
 
 ## TL;DR
 
-**IPKE-Bench** is an evaluation-only dataset, a locked annotation taxonomy, and a paper-grade validator. Use it to compare procedural-extraction systems on the *constraint-attachment* axis — which existing benchmarks do not measure.
+The active artifact contains source texts, procedural annotations, a locked constraint
+taxonomy, and validation tooling. It supports controlled comparisons of
+skeleton-conditioned attachment, filtering, segmentation, and local inference cost.
 
-**IPKE** is the reference local/private extraction pipeline that demonstrates the benchmark can be cleared. The pipeline is a strong baseline but **not** the contribution of the IPKE-Bench paper.
+**IPKE is the contribution under test.** Existing work already represents and evaluates
+constraint-flow structure, so this repository must not claim that constraint attachment
+itself is absent from all prior benchmarks.
 
 | You want to … | Read this |
 |---|---|
-| Cite the benchmark | `docs/paper/ipke-bench-resource-prd.md` (PRD) and the (forthcoming) ECIR 2027 Resource Paper. |
-| Run an extractor and report on IPKE-Bench | `REPRODUCIBILITY.md`, then `make eval-validate` and `make eval-full` |
+| Understand the method paper | `docs/adr/0005-ipke-method-paper-primary.md` and the approved method design |
+| Run a controlled IPKE experiment | `REPRODUCIBILITY.md`; paper runs also require the explicit evidence gate |
 | Annotate a new document for the corpus | `docs/annotation/guidelines.md` + `docs/annotation/constraint-types.md` |
 | Be an independent second-pass annotator | `docs/annotation/independent-annotator-workflow.md` |
 | Understand the corpus composition | `docs/dataset/datasheet.md` (Gebru format) |
@@ -20,17 +26,23 @@ Top-level entry point for **IPKE-Bench**, the constraint-aware benchmark for pro
 | Understand the domain vocabulary | `CONTEXT.md` |
 | Follow the current execution direction | `docs/paper/2026-07-04-execution-direction.md` |
 
-## What makes IPKE-Bench different
+## Evaluation role
 
 Existing procedural-knowledge benchmarks (PAGED, KEO, CAMB, Carriero & Celino 2024) measure step coverage, ordering, graph topology, or entity state. They do not treat *constraint attachment* — the explicit edge that binds a safety guard, parameter, precondition, or role assignment to the step it governs — as a primary evaluation target.
 
-IPKE-Bench fills that gap. Annotations carry typed constraints (`precondition`, `postcondition`, `guard`, `parameter`, `role_assignment`, `reference`) with `enforcement` mapped from the source modal verb (`must` / `should` / `may`), each explicitly attached to one or more steps via `attached_to` (step-embedded) or `applies_to` (procedure-level).
+The annotations provide fine-grained types (`precondition`, `postcondition`, `guard`,
+`parameter`, `role_assignment`, `reference`), enforcement labels (`must`, `should`,
+`may`), and explicit attachment targets. This supports the IPKE causal protocol and
+failure analysis. It does not establish novelty by itself.
 
-## §1 motivating result (framing decided 2026-07-06 — see docs/paper/D1_SCOPE_DECISION.md)
+## Historical annotation-process result
 
-**Corpus depth (headline).** The thin bounded-excerpt seed pass held 43 steps / 117 constraints across the 8 documents. Re-annotating the *same* documents end-to-end under the locked full-subprocedure scope rule, with source-verbatim constraint grounding, yields **256 steps / 231 reviewed constraints** — the constraint scaffolding that excerpt-scale annotation leaves unmeasured.
+The thin bounded-excerpt seed pass held 43 steps and 117 constraints across the eight
+documents. The later full-subprocedure, agent-reviewed pass contains 256 steps and 231
+constraints. These counts describe different annotation regimes. They are not an
+extractor-quality result and are not the method-paper headline.
 
-**Cross-regime illustration (labelled).** The fixed thin-era LLM draft holds 32 constraints vs the 231 reviewed (**7.22× expansion**); at the Tier-A matcher (SBERT cos ≥ 0.75) it recovers 6.1%, at cos ≥ 0.50 it recovers 37.7%. Draft and gold come from different annotation regimes — annotation-economics evidence, not an extractor-quality claim. The apples-to-apples number is the D2 P0 zero-shot baseline's ConstraintCoverage on the signed-off benchmark.
+**Cross-regime illustration (labelled).** The fixed thin-era LLM draft holds 32 constraints vs the 231 reviewed (**7.22× expansion**); at the Tier-A matcher (SBERT cos ≥ 0.75) it recovers 6.1%, at cos ≥ 0.50 it recovers 37.7%. Draft and gold come from different annotation regimes — annotation-economics evidence, not an extractor-quality claim. The apples-to-apples number will be the controlled P0 baseline's ConstraintCoverage on the production-eligible supporting corpus.
 
 Regenerate (informational) with:
 
@@ -58,10 +70,15 @@ Target additions for genre diversity (tracked in PRD):
 
 ## Quality gates
 
-A gold annotation is paper-grade if and only if `uv run python scripts/validate_paper_gold.py --strict` returns no errors. Gates:
+A custom-validator pass is necessary but not sufficient for paper evidence. Gates include:
 
-- `quality.review_status == "reviewed"`
-- `quality.annotator` and `quality.review_date` set
+- JSON Schema and structural validation pass
+- frozen manifest membership and a final artifact under `datasets/paper/production/`
+- complete primary-human source pass recorded in a frozen evidence sidecar
+- exact source, bounded-span, and final-annotation byte hashes
+- exact Unicode source offsets for every accepted step and constraint
+- no unresolved primary decisions or pending-human-sign-off marker
+- source grounding and exact-span experiment-input checks pass
 - Every constraint has `type` ∈ the locked 6-type vocabulary
 - Every constraint has `enforcement` ∈ {must, should, may}
 - Every constraint has `attached_to` (step-embedded) or `applies_to` (procedure-level) referencing a valid step ID
@@ -69,8 +86,12 @@ A gold annotation is paper-grade if and only if `uv run python scripts/validate_
 
 IAA gate (open, requires recruited annotators):
 
-- ≥ 4 documents (≥ 30% of the 12-doc target) have independent second-pass annotation by a human blind to gold.
-- Every IAA pair has Cohen's κ ≥ 0.61 (substantial, Landis & Koch).
+- At least 25% of experiment-eligible procedures are selected before model results and
+  receive a frozen source-only blind pass.
+- Every preregistered raw pair is preserved and reported before adjudication.
+- A third human who created neither pass adjudicates disagreements.
+- Attachment-edge F1 ≥ 0.70 is the G0 protocol gate; kappa remains diagnostic and low
+  pairs are not discarded.
 
 ## Licensing
 
@@ -87,14 +108,19 @@ Pre-publication, cite the PRD and the GitHub repository. A formal BibTeX entry w
 | Locked constraint taxonomy | ✅ shipped (PR #85) |
 | Annotation guidelines | ✅ shipped (PR #85) |
 | Paper-grade validator + 12 unit tests | ✅ shipped (PR #85) |
-| Seed corpus (8 docs) reviewed | ✅ shipped (PR #85) |
-| §1 motivating result (D1) | ✅ shipped (PR #85) |
+| Legacy candidates (8 docs) | 🟡 0 production eligible; human evidence open in #108 |
+| Exact-anchor evidence boundary | ✅ schema and fail-closed runtime gate implemented |
+| First agent-prepared EPA review candidate | ✅ 14 steps, 15 constraints, exact anchors; 8 human decisions open |
+| Historical D1 annotation comparison | ⚪ supporting context only |
 | Datasheet (Gebru format) | ✅ shipped (PR #85) |
 | Independent annotator workflow | ✅ shipped (PR #85) |
 | Recruited independent annotators | 🟡 outreach pending |
 | Corpus expansion to 12 docs | 🟡 candidate sources identified |
-| D2 baseline sweep (4 configs × 5 seeds) | ⏳ open; first milestone is one real-model non-empty metrics row |
-| D3 constraint-aware retrieval task | ⏳ optional, post-D2 |
+| Controlled C0-C4 pilot | ⏳ blocked by production evidence and exact-span inputs |
+| Explicit relation evaluation | ⏳ open in #109 |
+| Full method sweep | ⏳ blocked in #55 |
+| Constraint-aware retrieval | ⚪ optional follow-up |
 
 See `docs/plans/2026-06-13-ipke-bench-taxonomy-and-review.md` for the sprint history that produced this state.
-See `docs/paper/2026-07-04-execution-direction.md` for the current issue order and active board state.
+See `docs/paper/2026-07-04-execution-direction.md` for the current issue order and active
+board state.

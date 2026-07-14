@@ -1,29 +1,51 @@
-# IPKE-Bench Dataset Workspace
+# IPKE Evaluation Corpus Workspace
 
-ECIR 2027 Resource Paper benchmark dataset. Primary contribution of the paper.
+Supporting evaluation data for the IPKE method paper. The corpus is not the primary
+contribution and the current directory is not a released benchmark or a confirmatory
+test set.
 
 ## Target
 
-12–15 publicly licensed industrial / safety-procedure documents with human-reviewed step, constraint, and **constraint attachment** annotations. All gold files must reach `quality.review_status = "reviewed"` before inclusion in any reported result.
+Twelve rights-cleared, source-family-diverse procedures with manually corrected,
+source-grounded step, constraint, and **constraint attachment** production annotations.
+Each procedure needs a complete independent primary-human source pass, exact item-level
+anchors, and an annotation log. At least 25% also needs a source-only blind pass and
+independent adjudication. A status or signature marker alone is not paper evidence.
+Corpus expansion follows, rather than precedes, a successful annotation-protocol and
+two-document method pilot.
 
 ## Layout
 
-- `text/` — plain-text extracted source documents. This can include downloaded alternates that are not part of the active reviewed release.
-- `gold/` — Tier-A gold annotations (step, constraint, attachment). Schema: `schemas/ipke_annotation.schema.json`.
-- `second_pass/` — independent second annotations for IAA computation.
+- `text/` — plain-text extracted source documents, including candidates and alternates.
+- `gold/` — immutable legacy model-assisted, agent-audited candidates. Directory
+  presence does not make a file production gold. Schema:
+  `schemas/ipke_annotation.schema.json`.
+- `primary_pass/` — future frozen outputs of complete primary-human source passes.
+- `production/` — future final annotations consumed by confirmatory evaluation.
+- `evidence/` — frozen evidence packages governed by
+  `schemas/ipke_annotation_evidence.schema.json`.
+- `corpus_manifest.json` — typed evaluation membership contract. Its current
+  `provisional` status permits development only.
+- `second_pass/` — current placeholders and future source-only blind annotations.
 - `reports/` — IAA reports and annotation statistics.
 
-Active corpus counts come from `gold/` plus `selected_for_gold=true` in
-`public_sources_manifest.csv`, not from every file present in `text/`.
-Manifest rows with `review_status=deferred_candidate` are downloaded
-alternates only; they require a reviewed gold file before inclusion in any
-paper result.
+The required logical artifact roles are candidate, primary human pass, blind pass,
+annotation log, adjudication record, and final production annotation. The primary
+sidecar, exact-anchor, and cross-artifact hash boundary are now implemented.
+Corpus-level blind-subset coverage and coordinator identity controls remain open. Do
+not collapse roles by editing a candidate in place.
+
+The eight JSON files in `gold/` are legacy candidates, not the active confirmatory
+corpus. As of 2026-07-11, NASA is excluded as a requirements stress test and current
+OLSK/NIOSH golds are excluded pending manual rebuild. The provisional manifest selects
+the other five candidates for development; none is human verified. No result may infer
+membership from directory presence or `selected_for_gold=true` alone.
 
 ## Document Selection Criteria
 
 Priority: publicly licensable, stable URL, citable, varied procedure types and domains.
 
-1. Safety/regulatory: NASA NPR, EPA guidance, OSHA PSM examples, HSE UK
+1. Safety/regulatory procedures: EPA guidance, OSHA PSM examples, HSE UK
 2. Equipment / maintenance: OLSK CNC, USGS field sampling, public maintenance SOPs
 3. Quality / process: ISO-aligned public process guides
 
@@ -34,15 +56,32 @@ Avoid: partner-private SOPs (index separately under `datasets/private/` with acc
 - Do not mutate `datasets/archive/` gold annotations.
 - Do not commit partner-private SOPs to this directory.
 - Keep document IDs stable once annotation starts.
-- Record source URL, access date, license, and conversion command in the gold file's `metadata.source` field.
+- Record source URL, access date, license, conversion command, and exact procedure span
+  under `procedure.source` or its linked source manifest record.
+- Preserve model or agent candidates and raw human passes as separate artifacts.
+- Never establish evidence by changing only `review_status` or an annotator marker.
 
 ## Validation
 
-Every gold file must:
+Every production annotation must:
 
 1. Parse as valid JSON against `schemas/ipke_annotation.schema.json`.
-2. Contain `steps`, `constraints`, stable step IDs, stable constraint IDs.
-3. Have `quality.review_status = "reviewed"` for paper inclusion.
-4. Pass the strict paper validator, including locked taxonomy, enforcement, attachment, and reviewed quality metadata.
+2. Contain stable step, constraint, attachment, and relation identifiers.
+3. Resolve every accepted step and constraint to exact source offsets.
+4. Carry a complete independent primary-human pass and time/edit log.
+5. Carry a frozen blind pass, raw agreement report, and independent adjudication record
+   when selected for the preregistered 25% subset.
+6. Preserve any limited principal-investigator escalation and evidence.
+7. Belong to the frozen confirmatory split.
+8. Pass declared-schema, structural, grounding, attachment, relation, provenance,
+   agreement, adjudication, and evidence-eligibility checks.
 
-Run: `uv run python scripts/validate_paper_gold.py --gold-dir datasets/paper/gold --strict`
+Development structural check of all eight retained candidates:
+
+`make eval-validate`
+
+Paper-evidence check, intentionally failing today. It rejects marker-only sign-off and
+requires exact item anchors plus frozen evidence sidecars. Corpus-level blind coverage
+and coordinator assignment checks remain additional gates:
+
+`make eval-paper-gate`

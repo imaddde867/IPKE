@@ -133,9 +133,16 @@
           }
         },
         "constraints": {
-          "type": [
-            "object",
-            "array"
+          "oneOf": [
+            {
+              "type": "object"
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/constraint"
+              }
+            }
           ]
         },
         "flags": {
@@ -225,7 +232,8 @@
         "page": {
           "type": [
             "integer",
-            "string"
+            "string",
+            "null"
           ]
         },
         "section": {
