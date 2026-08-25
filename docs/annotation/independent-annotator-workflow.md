@@ -35,10 +35,9 @@ exposure cannot produce a source-only blind pass.
 
 Read:
 
-1. `CONTEXT.md` for active terminology and evidence rules;
-2. `docs/annotation/guidelines.md` for annotation decisions;
-3. `docs/annotation/constraint-types.md` for the locked vocabulary;
-4. `docs/dataset/datasheet.md` for corpus limitations.
+1. `docs/annotation/guidelines.md` for annotation decisions;
+2. `docs/annotation/constraint-types.md` for the locked vocabulary;
+3. `docs/dataset/datasheet.md` for corpus limitations.
 
 Do not begin a production assignment until:
 
@@ -171,7 +170,4 @@ separately.
 
 See also:
 
-- `docs/superpowers/specs/2026-07-13-human-evidence-recovery-design.md`
-- `docs/annotation/SIGN_OFF_ISSUE.md`
 - `docs/methods/annotation-pipeline.md`
-- GitHub issue #90

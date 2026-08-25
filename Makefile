@@ -37,9 +37,8 @@ eval-paper-gate:
 # encoded the *thin-gold* numbers (reviewed_total 117, expansion 3.66x); after
 # the deep re-annotation the golds are 5.9x deeper, so the fixed D1 draft
 # (generated at the old scope) vs the deep golds is a CROSS-REGIME comparison.
-# D1 scope DECIDED 2026-07-06 (option 2): S1 leads with corpus depth; the
-# cross-regime ratio stays a labelled secondary illustration, pinned in
-# `make repro-blindness` (non-gate). See docs/paper/D1_SCOPE_DECISION.md.
+# The cross-regime ratio stays a labelled secondary illustration, pinned in
+# `make repro-blindness` (non-gate).
 # This target regenerates + prints; it is not a pass/fail gate.
 eval-blindness:
 	mkdir -p $(PAPER_REPORTS)

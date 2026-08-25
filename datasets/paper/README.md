@@ -1,45 +1,30 @@
-# IPKE Evaluation Corpus Workspace
+# IPKE Evaluation Corpus
 
-Supporting evaluation data for the IPKE method paper. The corpus is not the primary
-contribution and the current directory is not a released benchmark or a confirmatory
-test set.
-
-## Target
-
-Twelve rights-cleared, source-family-diverse procedures with manually corrected,
-source-grounded step, constraint, and **constraint attachment** production annotations.
-Each procedure needs a complete independent primary-human source pass, exact item-level
-anchors, and an annotation log. At least 25% also needs a source-only blind pass and
-independent adjudication. A status or signature marker alone is not paper evidence.
-Corpus expansion follows, rather than precedes, a successful annotation-protocol and
-two-document method pilot.
+Supporting evaluation data for IPKE: rights-cleared procedural source documents with
+source-grounded step, constraint, and constraint-attachment annotations under a locked
+six-type × three-enforcement taxonomy. See [BENCHMARK.md](../../BENCHMARK.md) for the
+corpus role and [docs/dataset/datasheet.md](../../docs/dataset/datasheet.md) for the
+full datasheet.
 
 ## Layout
 
-- `text/` — plain-text extracted source documents, including candidates and alternates.
-- `gold/` — immutable legacy model-assisted, agent-audited candidates. Directory
-  presence does not make a file production gold. Schema:
+- `text/` — plain-text extracted source documents.
+- `gold/` — seed-corpus annotations (model-assisted drafting, agent audit, human manual
+  review; review records in `docs/annotation/manual-review/`). Schema:
   `schemas/ipke_annotation.schema.json`.
-- `primary_pass/` — future frozen outputs of complete primary-human source passes.
-- `production/` — future final annotations consumed by confirmatory evaluation.
-- `evidence/` — frozen evidence packages governed by
-  `schemas/ipke_annotation_evidence.schema.json`.
-- `corpus_manifest.json` — typed evaluation membership contract. Its current
-  `provisional` status permits development only.
-- `second_pass/` — current placeholders and future source-only blind annotations.
-- `reports/` — IAA reports and annotation statistics.
-
-The required logical artifact roles are candidate, primary human pass, blind pass,
-annotation log, adjudication record, and final production annotation. The primary
-sidecar, exact-anchor, and cross-artifact hash boundary are now implemented.
-Corpus-level blind-subset coverage and coordinator identity controls remain open. Do
-not collapse roles by editing a candidate in place.
-
-The eight JSON files in `gold/` are legacy candidates, not the active confirmatory
-corpus. As of 2026-07-11, NASA is excluded as a requirements stress test and current
-OLSK/NIOSH golds are excluded pending manual rebuild. The provisional manifest selects
-the other five candidates for development; none is human verified. No result may infer
-membership from directory presence or `selected_for_gold=true` alone.
+- `segments/` — heading-aware segmentation of each source document.
+- `second_pass/` — source-only blind second-pass annotations with their source texts.
+- `adjudication_decisions/` — item-level adjudication records for annotation disagreements.
+- `review_candidates/`, `review_packets/` — model-assisted review candidates and the
+  reviewer packets prepared for them.
+- `gold_v1_bounded_excerpt_archive/` — archived first-pass bounded-excerpt annotations.
+- `reports/` — inter-annotator agreement reports and annotation statistics.
+- `corpus_manifest.json` — typed corpus membership manifest.
+- `public_sources_manifest.csv` — provenance for every source document: URL, title,
+  license, SHA-256 hash, size, access date, and conversion command.
+- `primary_pass/`, `production/`, `evidence/` — reserved layout for future independent
+  human annotation rounds and frozen evidence packages
+  (`schemas/ipke_annotation_evidence.schema.json`).
 
 ## Document Selection Criteria
 
@@ -49,39 +34,31 @@ Priority: publicly licensable, stable URL, citable, varied procedure types and d
 2. Equipment / maintenance: OLSK CNC, USGS field sampling, public maintenance SOPs
 3. Quality / process: ISO-aligned public process guides
 
-Avoid: partner-private SOPs (index separately under `datasets/private/` with access gating).
+All eight released sources are US federal works (public domain) or open-licensed
+(CC BY-SA). Private or partner-restricted SOPs must never be committed here.
 
 ## Rules
 
 - Do not mutate `datasets/archive/` gold annotations.
-- Do not commit partner-private SOPs to this directory.
 - Keep document IDs stable once annotation starts.
-- Record source URL, access date, license, conversion command, and exact procedure span
-  under `procedure.source` or its linked source manifest record.
-- Preserve model or agent candidates and raw human passes as separate artifacts.
-- Never establish evidence by changing only `review_status` or an annotator marker.
+- Record source URL, access date, license, and conversion command in
+  `public_sources_manifest.csv`.
+- Preserve model-assisted candidates and raw human passes as separate artifacts.
 
 ## Validation
 
-Every production annotation must:
+Every annotation must:
 
 1. Parse as valid JSON against `schemas/ipke_annotation.schema.json`.
 2. Contain stable step, constraint, attachment, and relation identifiers.
 3. Resolve every accepted step and constraint to exact source offsets.
-4. Carry a complete independent primary-human pass and time/edit log.
-5. Carry a frozen blind pass, raw agreement report, and independent adjudication record
-   when selected for the preregistered 25% subset.
-6. Preserve any limited principal-investigator escalation and evidence.
-7. Belong to the frozen confirmatory split.
-8. Pass declared-schema, structural, grounding, attachment, relation, provenance,
-   agreement, adjudication, and evidence-eligibility checks.
+4. Use constraint types from the locked vocabulary and enforcement labels in
+   {must, should, may}.
+5. Attach every constraint to a valid step (`attached_to`) or to the procedure level
+   (`applies_to`).
 
-Development structural check of all eight retained candidates:
+Structural check over all released annotations:
 
-`make eval-validate`
-
-Paper-evidence check, intentionally failing today. It rejects marker-only sign-off and
-requires exact item anchors plus frozen evidence sidecars. Corpus-level blind coverage
-and coordinator assignment checks remain additional gates:
-
-`make eval-paper-gate`
+```bash
+make eval-validate
+```

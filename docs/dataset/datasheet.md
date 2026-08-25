@@ -270,7 +270,6 @@ Pull requests against `https://github.com/imaddde867/IPKE`. New annotations must
 ## References
 
 - Gebru, T., Morgenstern, J., Vecchione, B., Vaughan, J. W., Wallach, H., Daumé III, H., & Crawford, K. (2021). Datasheets for datasets. *Communications of the ACM*, 64(12), 86-92.
-- Superseded IPKE-Bench resource PRD: `docs/paper/ipke-bench-resource-prd.md`
 - Annotation guidelines: `docs/annotation/guidelines.md`
 - Constraint taxonomy: `docs/annotation/constraint-types.md`
 - Constraint-blindness baseline: `datasets/paper/reports/constraint_blindness_v2_sbert075.json`

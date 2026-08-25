@@ -223,8 +223,6 @@ make iaa
 
 See also:
 
-- `docs/superpowers/specs/2026-07-13-human-evidence-recovery-design.md`
-- `docs/annotation/SIGN_OFF_ISSUE.md`
 - `docs/annotation/independent-annotator-workflow.md`
 - `docs/annotation/guidelines.md`
 - `docs/annotation/constraint-types.md`

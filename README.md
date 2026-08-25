@@ -1,135 +1,124 @@
-# IPKE - Industrial Procedural Knowledge Extraction
+# IPKE — Industrial Procedural Knowledge Extraction
 
-**Research direction:** method paper on skeleton-conditioned, source-grounded constraint
-attachment for procedural graph extraction with local language models. See
-[ADR-0005](docs/adr/0005-ipke-method-paper-primary.md) and the
-[approved method design](docs/superpowers/specs/2026-07-10-ipke-method-paper-design.md).
+IPKE extracts **Procedural Knowledge Graphs (PKGs)** from safety-critical industrial and
+regulatory documents using local language models. A PKG represents a procedure as ordered
+steps plus typed constraints — preconditions, guards, parameters, warnings — explicitly
+attached to the steps they govern.
 
-IPKE extracts Procedural Knowledge Graphs from safety-critical technical documents. Its
-central method separates the procedural step skeleton from typed constraint extraction,
-then grounds and attaches each constraint to the step or steps it governs. The corpus,
-taxonomy, validators, and metrics are supporting evaluation infrastructure, not the
-paper's primary contribution.
+Everything runs locally on Metal or CUDA; no cloud APIs. IPKE is built for
+privacy-preserving use in academic and regulated industrial settings.
 
-## Research contributions under test
+## Method
 
-1. **Skeleton-conditioned constraint attachment** - compare step-conditioned generation
-   against schema-, parser-, call-, and budget-matched alternatives.
-2. **Constraint-preserving segmentation** - test whether hierarchy-aware segmentation
-   keeps constraint-step pairs in context and improves attachment. This remains secondary
-   until the controlled result exists.
-3. **Local quality-cost analysis** - report attachment quality together with calls,
-   tokens, latency, and memory across local model families.
-4. **Evaluation infrastructure** - manually verified procedural annotations, explicit
-   relation metrics, provenance-complete runs, and reproducible component metrics.
+- **Dual Semantic Chunker (DSC)** — global dynamic-programming segmentation over
+  heading-aligned embeddings: `J(B) = Σ H(b) − λ|B|`, with a heading bonus
+  `β·𝟙[j is heading]`. See
+  [docs/methods/dsc-implementation.md](docs/methods/dsc-implementation.md) and
+  [docs/adr/0001-implement-dsc-global-dp.md](docs/adr/0001-implement-dsc-global-dp.md).
+- **P3 Two-Stage Prompting** — step extraction (Stage 1) is decoupled from constraint
+  attachment (Stage 2), where every constraint must carry a step-ID back-reference.
+  The decomposition reduces schema drift in mid-size models.
+- **Procedural Fidelity Score (Φ)** — composite metric:
+  `0.5·ConstraintCoverage + 0.3·StepF1 + 0.2·Kendall τ`, reported alongside AdjacencyF1.
 
-## Method Kernel
+## Evaluation Corpus
 
-- **Dual Semantic Chunker (DSC)** — global DP objective over heading-aligned embeddings: `J(B) = Σ H(b) − λ|B|` with heading bonus β·𝟙[j is heading].
-- **P3 Two-Stage Decomposition** — decouples step extraction (Stage 1) from constraint attachment (Stage 2, with mandatory step-ID back-reference). Reduces schema drift in mid-size models.
+Eight rights-cleared procedural documents across five source families (US EPA, NASA,
+NIOSH, USGS, and the open-hardware Open Lab Starter Kit): US federal public-domain works
+plus CC BY-SA material. Each document carries source-grounded annotations with exact
+offsets for steps, typed constraints, and attachments under a locked taxonomy of six
+constraint types × three enforcement levels (`must` / `should` / `may`).
 
-## Evidence status
+- Datasheet: [docs/dataset/datasheet.md](docs/dataset/datasheet.md) · Provenance:
+  `datasets/paper/public_sources_manifest.csv` (per-document license + SHA-256)
+- Annotation guidelines:
+  [docs/annotation/guidelines.md](docs/annotation/guidelines.md) · Taxonomy:
+  [docs/annotation/constraint-types.md](docs/annotation/constraint-types.md)
 
-The workspace retains 8 legacy candidates with 256 steps and 231 constraints; the
-provisional manifest selects 5 for development. It has 0 production annotations. The
-candidate schema is aligned, and the paper gate now rejects marker-only sign-off by
-requiring exact item anchors, canonical artifact paths, verified hashes, complete item
-decisions, and frozen evidence packages. The first agent-prepared EPA packet removes
-most transcription but still leaves eight decisions to a primary human. Human primary
-passes, a frozen manifest, blind coverage, and exact-span experiment inputs remain open. See
-[BENCHMARK.md](BENCHMARK.md) for the supporting-data audit.
+### Motivating result
 
-## Reproducible Commands
+Across the seed corpus, an LLM-drafted annotation pass produced **7.22× fewer
+constraints** than the reviewed gold (32 vs 231); at the Tier-A semantic matcher
+(SBERT cosine ≥ 0.75) it recovered only **6.1%** of reviewed constraints (**37.7%** at
+cosine ≥ 0.50). Draft and gold come from different annotation regimes, so this is
+annotation-economics evidence about naive LLM extraction, not an extractor-quality
+claim. Reproduce with `make eval-blindness`; see [BENCHMARK.md](BENCHMARK.md).
 
-```bash
-uv sync
-make test              # unit tests
-make gold-pipeline     # strict gold validation + D1 blindness regeneration (fresh-clone gate)
-make repro-blindness   # asserts the pinned D1 numbers (32 vs 231, 7.22x)
-make smoke-extract
-make eval              # validator + blindness + multiseed dry-run plan
-```
-
-Experiment artifacts are written under `runs/` and are intentionally ignored by git.
-
-## Direction
-
-- **[Research vision](docs/research-vision.md)** - method thesis and publication bar.
-- [Approved method design](docs/superpowers/specs/2026-07-10-ipke-method-paper-design.md) - causal protocol and evidence gates.
-- [Execution direction](docs/paper/2026-07-04-execution-direction.md) - current issue board and work order.
-- [Superseded resource PRD](docs/paper/ipke-bench-resource-prd.md) - retained as historical and supporting-infrastructure context.
-
-## Research Reproducibility
-
-- [Reproducibility guide](REPRODUCIBILITY.md)
-- [Annotation methodology](docs/methods/annotation-pipeline.md)
-- [Annotation guidelines](docs/annotation/guidelines.md) · [constraint taxonomy](docs/annotation/constraint-types.md)
-- [Implemented DSC method note](docs/methods/dsc-implementation.md)
-- [Paper dataset workspace](datasets/paper/README.md)
-
-## Run IPKE
-
-Use extras as needed:
+## Quickstart
 
 ```bash
-uv sync --extra llm
-uv sync --extra app
-uv sync --extra extras
-uv sync --extra neo4j
+uv sync --extra llm        # local LLM backend (other extras: app, extras, neo4j)
+make test                  # unit tests
+make smoke-extract         # end-to-end smoke run
+
+# Extract a PKG from a procedural document
+uv run python scripts/run_pkg_extraction.py \
+  --input-path datasets/paper/text/usgs_groundwater_technical_procedures_tm1_a1.txt \
+  --chunking-method dsc \
+  --prompting-strategy P3
 ```
 
 ```ini
 # .env
-GPU_BACKEND=metal
+GPU_BACKEND=metal            # cuda | metal | cpu (auto-detected fallback)
 CHUNKING_METHOD=dual_semantic
 PROMPTING_STRATEGY=P3
-# Deduplicate overlapping content and enforce clean constraints/steps
 ENABLE_CHUNK_DEDUP=true
 ```
 
-```bash
-# Reproduce chunking experiments
-uv run python scripts/experiments/run_all_chunking_experiments.py \
-  --documents datasets/archive/test_data/text/*.txt
+## Repository Layout
 
-# API surface (requires the `app` extra)
-uv run uvicorn src.api.app:app --host 0.0.0.0 --port 8000  # http://localhost:8000/docs
+```text
+src/
+  ai/                   # chunker -> prompting strategy -> graph orchestration, LLM backends
+  processors/chunkers/  # DSC plus fixed-size and semantic-breakpoint ablations
+  evaluation/           # Phi, StepF1, AdjacencyF1, Kendall, ConstraintCoverage, Smatch
+  graph/                # Pydantic PKG models, builder, optional Neo4j persistence
+  validation/           # schema and constraint validators
+datasets/
+  paper/                # evaluation corpus: sources, annotations, provenance manifest
+  archive/              # seed-corpus gold annotations and source texts
+schemas/                # JSON schemas for annotations and evidence packages
+scripts/                # experiment runners, validators, reporting
+tests/                  # pytest suite
 ```
 
-Research distribution for academic and regulated industrial settings. See `LICENSE`.
+## Documentation
 
----
-
-Turku University of Applied Sciences · 2025–2026
+| Document | Contents |
+|---|---|
+| [REPRODUCIBILITY.md](REPRODUCIBILITY.md) | Full reproduction guide |
+| [BENCHMARK.md](BENCHMARK.md) | Corpus, taxonomy, quality gates |
+| [docs/methods/annotation-pipeline.md](docs/methods/annotation-pipeline.md) | Annotation production pipeline |
+| [docs/annotation/independent-annotator-workflow.md](docs/annotation/independent-annotator-workflow.md) | Blind second-pass annotator workflow |
+| [docs/paper/related-work.md](docs/paper/related-work.md) | Positioning against prior benchmarks |
+| [docs/notes/hardware-validation-rtx5060-cuda132.md](docs/notes/hardware-validation-rtx5060-cuda132.md) | Blackwell / CUDA 13.2 validation note |
 
 ## Local LLM (Mistral 7B, GGUF)
 
-- Download weights (requires a Hugging Face token):
+Download weights (requires a Hugging Face token):
 
-  ```bash
-  python - <<'PY'
-  from huggingface_hub import hf_hub_download
-  hf_hub_download(
-      repo_id="TheBloke/Mistral-7B-Instruct-v0.2-GGUF",
-      filename="mistral-7b-instruct-v0.2.Q4_K_M.gguf",
-      local_dir="models/llm",
-  )
-  PY
-  ```
+```bash
+python - <<'PY'
+from huggingface_hub import hf_hub_download
+hf_hub_download(
+    repo_id="TheBloke/Mistral-7B-Instruct-v0.2-GGUF",
+    filename="mistral-7b-instruct-v0.2.Q4_K_M.gguf",
+    local_dir="models/llm",
+)
+PY
+```
 
-- Metal (Apple silicon, fastest locally):  
-  `uv sync --extra llm --index-url https://abetlen.github.io/llama-cpp-python/whl/metal`  
-  Test: `bash scripts/test_mistral_metal.sh`
+- Metal (Apple silicon, fastest locally):
+  `uv sync --extra llm --index-url https://abetlen.github.io/llama-cpp-python/whl/metal`
+- CUDA (Linux x86_64, NVIDIA):
+  `uv sync --extra llm` installs the pinned CUDA 12.4 `llama-cpp-python` wheel from
+  `pyproject.toml`.
 
-- CUDA (Linux x86_64, NVIDIA):  
-  `uv sync --extra llm` installs the pinned CUDA 12.4 `llama-cpp-python` wheel from `pyproject.toml`.  
-  Test: `bash scripts/test_mistral_cuda.sh`
-
-The app will pick up the GGUF at `models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf`; set `LLM_N_GPU_LAYERS=-1` to offload all layers to Metal/CUDA.
+The app picks up the GGUF at `models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf`; set
+`LLM_N_GPU_LAYERS=-1` to offload all layers to the GPU.
 
 ## Hardware Compatibility
-
-IPKE auto-detects your hardware and gracefully falls back to CPU if GPU acceleration is unavailable:
 
 | Hardware | Configuration | Notes |
 |----------|--------------|-------|
@@ -137,7 +126,30 @@ IPKE auto-detects your hardware and gracefully falls back to CPU if GPU accelera
 | **Apple Silicon** | `GPU_BACKEND=metal` | Auto-detected on macOS with MPS |
 | **CPU only** | `GPU_BACKEND=cpu` | Default fallback, no GPU required |
 
-The system uses `torch.cuda.is_available()` and `torch.backends.mps.is_available()` with try/except guards to ensure safe operation on any platform.
+## API
 
-See [`docs/notes/hardware-validation-rtx5060-cuda132.md`](docs/notes/hardware-validation-rtx5060-cuda132.md)
-for the 2026-05-27 Blackwell/CUDA 13.2 validation note and its evaluation caveats.
+With the `app` extra:
+
+```bash
+uv sync --extra app
+uv run uvicorn src.api.app:app --host 0.0.0.0 --port 8000   # http://localhost:8000/docs
+```
+
+## License & Citation
+
+See [LICENSE](LICENSE). Source documents retain their original licenses; per-document
+terms are tracked in `datasets/paper/public_sources_manifest.csv`. Pre-publication,
+please cite the repository:
+
+```bibtex
+@misc{elmouss2026ipke,
+  author = {Elmouss, Imad Eddine},
+  title  = {IPKE: Industrial Procedural Knowledge Extraction},
+  year   = {2026},
+  url    = {https://github.com/imaddde867/IPKE}
+}
+```
+
+---
+
+Turku University of Applied Sciences · 2025–2026

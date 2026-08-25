@@ -78,7 +78,6 @@ server.log
 .codex/
 .gitnexus/
 .mcp.json
-docs/superpowers/
 opencode.json
 prompt.md
 report.md
@@ -113,6 +112,3 @@ review.md
 details.md
 prompt.md
 report.md
-
-# transient per-session execution plans (local scratch, not durable docs)
-docs/superpowers/

@@ -7,7 +7,6 @@ annotators, and adjudicators must follow it. Role and evidence requirements live
 ## Read first
 
 - [`constraint-types.md`](constraint-types.md) — locked taxonomy. Memorise the six types and three enforcement levels before annotating.
-- [`../../CONTEXT.md`](../../CONTEXT.md) — repo vocabulary (PKG, DSC, P3, Φ).
 - [`../../schemas/ipke_annotation.schema.json`](../../schemas/ipke_annotation.schema.json) — JSON schema. Run validation after every save.
 
 ## Annotation environment
