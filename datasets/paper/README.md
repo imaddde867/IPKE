@@ -62,3 +62,11 @@ Structural check over all released annotations:
 ```bash
 make eval-validate
 ```
+
+Paper-evidence release gate over manifest-included production annotations: exact item
+anchors plus frozen evidence sidecars. Fails closed until human verification is
+complete:
+
+```bash
+make eval-paper-gate
+```
