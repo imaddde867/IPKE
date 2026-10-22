@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      name="description"
+      content="Inspect an agent-proposed procedural knowledge graph and its exact source provenance."
+    />
+    <title>IPKE · Procedure console</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <a class="brand" href="#">IPKE <span>Research console</span></a
+      ><a href="https://github.com/imaddde867/IPKE/issues/115"
+        >Specification ↗</a
+      >
+    </header>
+    <main>
+      <p class="eyebrow">
+        Industrial procedural knowledge extraction / Static demonstration
+      </p>
+      <h1>A procedure is more than a summary.</h1>
+      <p class="intro">
+        Inspect the actions, conditions, and source evidence behind a mass flow
+        controller calibration.
+      </p>
+      <div class="warning">
+        <strong>Agent-generated review candidate · Not human verified</strong>
+        <p>
+          0 of 8 corpus documents are human verified. Structural review metadata
+          is not human sign-off. This console is research material, not an
+          operational calibration instruction.
+        </p>
+      </div>
+      <div id="loading" role="status">Loading source-bound snapshot…</div>
+      <div id="console" hidden>
+        <section class="run">
+          <div>
+            <p class="eyebrow">EPA / Revision No. 10 · February 2025</p>
+            <h2 id="title"></h2>
+            <p id="counts"></p>
+          </div>
+          <a
+            class="button"
+            href="data/epa.json"
+            download="ipke-epa-snapshot.json"
+            >Export snapshot ↓</a
+          >
+        </section>
+        <nav aria-label="Console views">
+          <button data-view="graph" aria-pressed="true">
+            01 Graph & source</button
+          ><button data-view="audit" aria-pressed="false">
+            02 Annotation audit</button
+          ><button data-view="corpus" aria-pressed="false">
+            03 Corpus status
+          </button>
+        </nav>
+        <section id="graph-view">
+          <div class="toolbar">
+            <div>
+              <h2>Procedure graph</h2>
+              <p>
+                Follow the step spine; select any node to inspect its evidence.
+              </p>
+            </div>
+            <button id="summary-toggle" aria-pressed="false">
+              Show illustrative summary
+            </button>
+          </div>
+          <p id="representation" role="status" aria-live="polite"></p>
+          <div class="workspace">
+            <div>
+              <div id="summary" hidden></div>
+              <div id="graph"></div>
+            </div>
+            <aside aria-label="Source inspector">
+              <h2>Source inspector</h2>
+              <div id="inspector" aria-live="polite"></div>
+              <h3>Frozen procedure excerpt</h3>
+              <p class="muted">
+                Exact Unicode character offsets in the repository source; end
+                exclusive.
+              </p>
+              <pre id="source" tabindex="0"></pre>
+            </aside>
+          </div>
+        </section>
+        <section id="audit-view" hidden>
+          <h2>Proposed annotation transformation</h2>
+          <p id="audit-counts"></p>
+          <p class="warning">
+            Every decision below is agent proposed. “Accept” describes a
+            transformation, not human approval. No decisions are resolved or
+            saved by this console.
+          </p>
+          <div id="decisions"></div>
+          <h2>Open human decisions</h2>
+          <div id="human-decisions"></div>
+          <details>
+            <summary>Inspect complete original review packet</summary>
+            <pre id="packet"></pre>
+          </details>
+          <details>
+            <summary>Inspect legacy candidate (unverified)</summary>
+            <pre id="legacy"></pre>
+          </details>
+        </section>
+        <section id="corpus-view" hidden>
+          <h2>Corpus eligibility is not verification</h2>
+          <p>
+            Manifest status is authoritative. Candidate documents remain
+            unverified; excluded documents are not evaluation inputs.
+          </p>
+          <div id="corpus"></div>
+        </section>
+        <section class="trace">
+          <h2>Recorded inference</h2>
+          <p id="replay"></p>
+          <p class="muted">
+            No model runs in this console. No stage timings or extraction
+            performance are inferred from annotation counts.
+          </p>
+        </section>
+      </div>
+    </main>
+    <footer>
+      IPKE / Auditable procedural structure
+      <a
+        href="https://github.com/imaddde867/IPKE/blob/main/docs/dataset/datasheet.md"
+        >Dataset limitations ↗</a
+      >
+    </footer>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
