@@ -12,23 +12,27 @@ python -m http.server 8765 --directory demo
 
 The graph contains 14 proposed steps, 14 embedded constraints and one
 procedure-level constraint applying to three terminal steps. Select a node to
-inspect type, enforcement, attachment and exact source text. The summary toggle
-uses an explicitly authored illustration, not a stored model output. All 15
-omitted clauses remain inspectable; this is not a summary-quality measurement.
-The audit preserves the full review packet, all 13 transformation records, their
-rationales, the unverified legacy candidate and eight open human decisions.
-Corpus cards preserve all eight manifest statuses, exclusions and source links.
+inspect type, enforcement, attachment and exact source text; step rows distinguish
+step-local constraints from applicable procedure-level constraints. The summary
+toggle uses an explicitly authored illustration, not a stored model output. The 15
+omitted clauses sit in a collapsed disclosure; this is not a summary-quality
+measurement. The audit preserves the full review packet, all 13 transformation
+records, their rationales, the unverified legacy candidate and eight open human
+decisions. Rejected legacy items remain inspectable with their section-level
+provenance and no invented exact span. Corpus cards preserve all eight manifest
+statuses, exclusions and source links; the verification count is derived from the
+manifest.
 
 ## Data contract
 
 `scripts/export_demo_data.py` uses only the Python standard library. It binds the
 source, candidate, legacy candidate and audit document to the review packet's
-SHA-256 hashes, checks source spans and references, and writes deterministic
-`demo/data/epa.json`. The manifest is authoritative for eligibility, rather than
-`quality.review_status`. The export fails closed if this slice's candidate status
-changes. Human verification requires the repository's independent evidence
-workflow; UI interactions cannot confer it. No review edits or local acceptance
-are implemented in this slice.
+SHA-256 hashes, checks source spans, decision-reference namespaces and the corpus
+verification count, and writes deterministic `demo/data/epa.json`. The manifest is
+authoritative for eligibility, rather than `quality.review_status`. The export
+fails closed if this slice's candidate status changes. Human verification requires
+the repository's independent evidence workflow; UI interactions cannot confer it.
+No review edits or local acceptance are implemented in this slice.
 
 Offsets index Unicode code points in the frozen text, end exclusive. Only the
 1,873-character procedure excerpt is bundled; original absolute offsets and its
@@ -78,9 +82,11 @@ node --check demo/app.js
 Optional browser regression check (Playwright must be installed/resolvable in
 Node, with `npx playwright install chromium` completed): start the HTTP server
 above, then `node demo/tests/browser.cjs`. `DEMO_URL` can override the default
-localhost URL; `CHROMIUM_PATH` optionally selects an existing Chromium binary. Checks all 15 span selections, summary keyboard interaction,
-audit navigation, corpus, download, mobile overflow and runtime errors. It saves
-screenshots under `/tmp/` for visual inspection.
+localhost URL; `CHROMIUM_PATH` optionally selects an existing Chromium binary.
+Checks all 15 span selections, the collapsed summary disclosure, procedure-level
+constraint display, legacy audit inspection, corpus status, download, mobile
+overflow and runtime errors. It saves screenshots under `/tmp/` for visual
+inspection.
 
 ## Deployment boundary
 

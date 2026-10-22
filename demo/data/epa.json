@@ -915,6 +915,10 @@
       "usage": "USGS-authored material is generally U.S. Public Domain; screen embedded third-party material."
     }
   ],
+  "corpus_summary": {
+    "documents": 8,
+    "human_verified": 0
+  },
   "human_verified": false,
   "input_sha256": {
     "datasets/paper/corpus_manifest.json": "82cff3e8a725be37dabe0e9ae219a2fe5985191729c3b8185a03c8f5e93f6442",

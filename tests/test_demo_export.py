@@ -44,6 +44,7 @@ class DemoExportTests(unittest.TestCase):
         self.assertEqual(len(d["review_packet"]["human_decisions_required"]), 8)
         self.assertEqual(len(d["corpus"]), 8)
         self.assertEqual(sum(not c["include_for_evaluation"] for c in d["corpus"]), 3)
+        self.assertEqual(d["corpus_summary"], {"documents": 8, "human_verified": 0})
         self.assertFalse(d["replay"]["available"])
         packet = json.loads((ROOT / f"datasets/paper/review_packets/{d['status']['doc_id']}.json").read_text())
         self.assertEqual(d["review_packet"], packet)
@@ -56,6 +57,9 @@ class DemoExportTests(unittest.TestCase):
             ("review_candidates/", lambda a: a["steps"][0]["constraints"][0].update(attached_to=["S999"])),
             ("review_candidates/", lambda a: a["relations"][0].update(target="S999")),
             ("corpus_manifest", lambda a: a["documents"][0].update(status="human_verified")),
+            ("review_packets/", lambda p: p["proposed_step_decisions"][0]["input_refs"].append("legacy:S999")),
+            ("review_packets/", lambda p: p["proposed_constraint_decisions"][0]["output_refs"].append("review:C999")),
+            ("review_packets/", lambda p: p["proposed_constraint_decisions"][0]["input_refs"].append("review:C1")),
         ]
         for path_part, mutate in mutations:
             def changed(root, path):
@@ -66,6 +70,17 @@ class DemoExportTests(unittest.TestCase):
             with self.subTest(path=path_part), patch("scripts.export_demo_data.read_json", side_effect=changed):
                 with self.assertRaises(ValueError):
                     build_data()
+
+    def test_corpus_verification_count_is_derived(self):
+        from scripts.export_demo_data import read_json
+        def changed(root, path):
+            obj = read_json(root, path)
+            if "corpus_manifest" in path:
+                obj["documents"][1]["status"] = "human_verified"
+            return obj
+        with patch("scripts.export_demo_data.read_json", side_effect=changed):
+            data = build_data()
+        self.assertEqual(data["corpus_summary"], {"documents": 8, "human_verified": 1})
 
     def test_packet_hash_mismatch_fails_closed(self):
         from scripts.export_demo_data import read_json

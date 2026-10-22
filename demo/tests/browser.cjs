@@ -31,9 +31,34 @@ const { chromium } = require("playwright");
     await page.locator("#summary-toggle").focus();
     await page.keyboard.press("Enter");
     assert.equal(await page.locator("#graph").isVisible(), false);
-    assert.equal(await page.locator("#summary .constraint").count(), 15);
+    assert.equal(
+      await page.locator("#summary details").evaluate((node) => node.open),
+      false,
+    );
+    assert.equal(
+      await page.locator("#summary .constraint").first().isVisible(),
+      false,
+    );
+    await page.locator("#summary details summary").click();
+    assert.equal(
+      await page.locator("#summary .constraint").first().isVisible(),
+      true,
+    );
     await page.locator("#summary-toggle").click();
     assert.equal(await page.locator("#graph").isVisible(), true);
+    const s12row = page
+      .locator(".graph-row")
+      .filter({ has: page.locator('[data-item="S12"]') });
+    assert.match(await s12row.textContent(), /procedure-level C15/);
+    await page.locator('#graph [data-item="S12"]').click();
+    assert.match(
+      await page.locator("#inspector").textContent(),
+      /Procedure-level constraint: C15/,
+    );
+    assert.match(
+      await page.locator("#inspector").textContent(),
+      /After completing the calibration/,
+    );
     await page.getByRole("button", { name: "02 Annotation audit" }).click();
     assert.equal(await page.locator("#human-decisions .decision").count(), 8);
     assert.equal(await page.locator("#decisions .decision").count(), 13);
@@ -45,8 +70,34 @@ const { chromium } = require("playwright");
       await page.locator("#source mark").textContent(),
       /without the charger/,
     );
+    await page.getByRole("button", { name: "02 Annotation audit" }).click();
+    await page
+      .getByRole("button", { name: "Inspect legacy:S12 source", exact: true })
+      .click();
+    assert.equal(await page.locator("#graph").isVisible(), true);
+    assert.match(
+      await page.locator("#inspector").textContent(),
+      /section-level provenance only/,
+    );
+    assert.equal(await page.locator("#source mark").count(), 0);
+    await page.getByRole("button", { name: "02 Annotation audit" }).click();
+    await page
+      .getByRole("button", { name: "Inspect legacy:C2 source", exact: true })
+      .click();
+    assert.match(
+      await page.locator("#inspector").textContent(),
+      /Legacy candidate · unverified/,
+    );
+    assert.equal(
+      await page.locator('#graph [aria-pressed="true"]').count(),
+      0,
+    );
     await page.getByRole("button", { name: "03 Corpus status" }).click();
     assert.equal(await page.locator("#corpus .decision").count(), 8);
+    assert.match(
+      await page.locator("#corpus-status").textContent(),
+      /^0 of 8 corpus documents are human verified\.$/,
+    );
     const downloadPromise = page.waitForEvent("download");
     await page.getByRole("link", { name: "Export snapshot" }).click();
     assert.equal(

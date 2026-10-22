@@ -37,6 +37,23 @@ def build_data(root: Path = ROOT) -> dict:
     items = annotation["steps"] + constraints
     if len({i["id"] for i in items}) != len(items):
         raise ValueError("Duplicate item IDs")
+    legacy_constraints = [c for s in legacy["steps"] for c in s.get("constraints", [])]
+    legacy_constraints += legacy.get("constraints", [])
+    legacy_ids = {
+        "step": {s["id"] for s in legacy["steps"]},
+        "constraint": {c["id"] for c in legacy_constraints},
+    }
+    review_ids = {"step": steps, "constraint": {c["id"] for c in constraints}}
+    for kind in ("step", "constraint"):
+        for decision in packet[f"proposed_{kind}_decisions"]:
+            for ref in decision["input_refs"]:
+                prefix, _, item_id = ref.partition(":")
+                if prefix != "legacy" or item_id not in legacy_ids[kind]:
+                    raise ValueError(f"Unresolved decision input reference: {ref}")
+            for ref in decision["output_refs"]:
+                prefix, _, item_id = ref.partition(":")
+                if prefix != "review" or item_id not in review_ids[kind]:
+                    raise ValueError(f"Unresolved decision output reference: {ref}")
     for item in items:
         p = item["provenance"]
         if p["doc_id"] != DOC_ID or not start <= p["char_start"] < p["char_end"] <= end:
@@ -73,6 +90,7 @@ def build_data(root: Path = ROOT) -> dict:
     corpus = [{**d, "title": sources[d["doc_id"]]["title"],
                "source_url": sources[d["doc_id"]]["direct_url"],
                "usage": sources[d["doc_id"]]["license_or_usage"]} for d in manifest["documents"]]
+    verified = sum(d["status"] == "human_verified" for d in manifest["documents"])
     return {
         "schema_version": 1, "mode": "static_snapshot", "human_verified": False,
         "status": status, "input_sha256": hashes,
@@ -80,6 +98,8 @@ def build_data(root: Path = ROOT) -> dict:
                    "offset_unit": "Unicode code points; end exclusive"},
         "annotation": annotation, "legacy": legacy, "constraints": constraints,
         "review_packet": packet, "corpus": corpus,
+        "corpus_summary": {"documents": len(manifest["documents"]),
+                           "human_verified": verified},
         "summary": {"kind": "authored_illustration_not_model_output",
                     "text": "Warm up the instruments, connect the calibration equipment, and record the initial display. Generate calibration flows and record the measurements. Enter the computed calibration values, adjust the set point, record the result, and prepare the controller for shipment.",
                     "omitted_constraint_ids": [c["id"] for c in constraints]},
