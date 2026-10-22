@@ -27,12 +27,12 @@ manifest.
 
 `scripts/export_demo_data.py` uses only the Python standard library. It binds the
 source, candidate, legacy candidate and audit document to the review packet's
-SHA-256 hashes, checks source spans, decision-reference namespaces and the corpus
-verification count, and writes deterministic `demo/data/epa.json`. The manifest is
-authoritative for eligibility, rather than `quality.review_status`. The export
-fails closed if this slice's candidate status changes. Human verification requires
-the repository's independent evidence workflow; UI interactions cannot confer it.
-No review edits or local acceptance are implemented in this slice.
+SHA-256 hashes, checks source spans and decision-reference namespaces, derives the
+corpus verification count, and writes deterministic `demo/data/epa.json`. The
+manifest is authoritative for eligibility, rather than `quality.review_status`. The
+export fails closed if this slice's candidate status changes. Human verification
+requires the repository's independent evidence workflow; UI interactions cannot
+confer it. No review edits or local acceptance are implemented in this slice.
 
 Offsets index Unicode code points in the frozen text, end exclusive. Only the
 1,873-character procedure excerpt is bundled; original absolute offsets and its
