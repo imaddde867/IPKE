@@ -1,6 +1,10 @@
 # IPKE Constraint Type Taxonomy
 
-Locked vocabulary for `constraint.type` and `constraint.enforcement` in `datasets/paper/gold/*.json`. All annotators must use these values; any deviation invalidates the annotation for paper-grade evaluation.
+Locked vocabulary for `constraint.type` and `constraint.enforcement` in
+`datasets/paper/gold/*.json` and `datasets/paper/production/*.json`. All annotators must
+use these values; any deviation invalidates the annotation for paper-grade evaluation.
+The retained `gold/` files are agent-audited candidates, not human-verified production
+gold.
 
 ## Design rationale
 
@@ -72,7 +76,9 @@ replace source review in a production annotation.
 - Every constraint MUST have `enforcement` ∈ {must, should, may}.
 - Every constraint MUST have `attached_to` listing at least one step ID (or `applies_to` for procedure-level constraints).
 - Every constraint text MUST be drawn from the source verbatim or near-verbatim (annotator may correct OCR artifacts, normalise whitespace, expand contractions; may NOT paraphrase or summarise).
-- Every accepted constraint and governed step MUST have exact end-exclusive Unicode source offsets.
+- Production annotations MUST carry exact end-exclusive Unicode source offsets for every
+  accepted step and constraint. The retained candidates predate this requirement and
+  carry section-level provenance only; see the datasheet.
 
 ## Relationship to PAGED and Carriero & Celino
 
@@ -84,26 +90,26 @@ them to actions via `Constraint Flow` edges (5,807 of them), using fixed
 relation templates such as *"For {Action}, pay attention to that
 {ActionConstraint}"* and *"{Action} require access to {DataConstraint}"*.
 
-IPKE-Bench differs on four axes that a reviewer can verify, none of which is
-"presence of constraint edges":
+The IPKE evaluation design differs on four axes that a reviewer can verify,
+none of which is "presence of constraint edges":
 
 1. **Semantic typing depth.** PAGED collapses all constraints into
-   data-vs-action (2 types). IPKE-Bench distinguishes six —
+   data-vs-action (2 types). The IPKE taxonomy distinguishes six —
    precondition, postcondition, guard, parameter, role_assignment,
    reference — which separates, e.g., a *guard* ("do not proceed until
    pressure < 5 bar") from a *parameter* ("torque to 12 N·m") that PAGED's
    `ActionConstraint` would merge.
 
-2. **The enforcement (deontic) axis — PAGED has none.** IPKE-Bench scores an
+2. **The enforcement (deontic) axis — PAGED has none.** IPKE scores an
    orthogonal must / should / may grade drawn from the modal verbs of the
    source ("shall" / "should" / "may"). In a regulated SOP this is the line
    between a violation and a suggestion; no procedural-graph benchmark
-   currently measures it. This is the sharpest single point of novelty and
-   should be framed as co-headline with attachment, not a footnote.
+   currently measures it. It is a differentiating axis of the evaluation
+   design, not a novelty claim by itself.
 
 3. **Attachment scored by exact step-id F1, not text overlap.** PAGED evaluates
    its textual elements (actor / action / constraint) with a BLEU-based
-   surface-form score. IPKE-Bench scores the *attachment edge itself* —
+   surface-form score. IPKE scores the *attachment edge itself* —
    whether the constraint is bound to the correct step id — as strict + fuzzy
    precision/recall. We measure the binding; PAGED measures the string.
 
@@ -111,32 +117,36 @@ IPKE-Bench differs on four axes that a reviewer can verify, none of which is
    is too costly and derives its gold from a pre-existing BPMN business-process
    model collection (Dumas et al., 2018) plus WikiHow-trained segmentation and
    hand-written templates — i.e. template-derived silver over business-process /
-   WikiHow-style text. IPKE-Bench is human-verified gold over real regulated
-   safety-critical SOPs (EPA / NASA / NIOSH / USGS). Small-and-verified is a
-   deliberate counterpart to large-and-templated, not a deficiency (see the
-   scale-asymmetry note in the datasheet).
+   WikiHow-style text. The IPKE corpus targets real regulated
+   safety-critical SOPs (EPA / NASA / NIOSH / USGS), but its current annotations
+   are agent-audited candidates and human verification is pending.
+   Small-and-verified is a deliberate counterpart to large-and-templated only
+   after that verification lands; until then it is small-and-source-grounded
+   (see the datasheet).
 
-A finding *inside* PAGED supports the IPKE thesis directly: PAGED reports that
+A finding *inside* PAGED supports the IPKE direction directly: PAGED reports that
 LLMs reach state-of-the-art on extracting element *text* (actor/action/
 constraint) but stay below ~0.5 F1 on gateway/flow *structure* prediction.
 Extracting constraint text is easy; getting the logical binding right is where
-models fail — which is precisely the edge IPKE-Bench isolates and scores.
+models fail — which is precisely the edge the IPKE evaluation isolates.
 
-Carriero & Celino 2024 extracts steps, actions, objects, equipment, and temporal information but does not represent guards, role assignments, or parameter constraints. IPKE-Bench's taxonomy is a strict superset of their schema with respect to constraint coverage.
+Carriero & Celino 2024 extracts steps, actions, objects, equipment, and temporal information but does not represent guards, role assignments, or parameter constraints. The IPKE taxonomy is a strict superset of their schema with respect to constraint coverage.
 
-The taxonomy is therefore *additive* to the existing benchmark map and is the methodological contribution of the IPKE-Bench Resource Paper, alongside the dataset itself.
+The taxonomy is additive to the existing benchmark map and is supporting
+infrastructure for the IPKE method study, not the paper's primary contribution.
 
 ### Capability comparison (drop-in for Related Work)
 
-| Axis | PAGED (ACL 2024) | Carriero & Celino 2024 | **IPKE-Bench** |
+| Axis | PAGED (ACL 2024) | Carriero & Celino 2024 | **IPKE corpus (candidate)** |
 |---|---|---|---|
 | Constraint types | 2 (data / action) | 0 (no constraint schema) | **6 typed** |
 | Enforcement (must/should/may) | ✗ | ✗ | **✓** |
 | Attachment metric | BLEU text overlap | — | **exact step-id F1 (strict + fuzzy)** |
-| Gold provenance | template-derived silver (BPMN + WikiHow) | expert (small) | **human-verified** |
+| Gold provenance | template-derived silver (BPMN + WikiHow) | expert (small) | **agent-audited candidates; human verification pending** |
 | Domain | business process / WikiHow | recipes / how-to | **regulated safety SOPs** |
-| Scale | 3,394 docs | small | 8 docs (diagnostic, verified) |
+| Scale | 3,394 docs | small | **8 candidate docs (5 manifest-included)** |
 
 ## Change log
 
-- 2026-06-13 — initial lock based on observed types across 8 reviewed seed gold files (PR #85).
+- 2026-06-13 — initial lock based on observed types across 8 agent-reviewed seed candidates (PR #85).
+- 2026-10-23 — correct verification and contribution claims after the method-first reset.

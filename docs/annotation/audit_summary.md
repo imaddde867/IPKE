@@ -1,4 +1,4 @@
-# IPKE-Bench Gold Audit — Pre-Reannotation Baseline
+# IPKE Seed-Corpus Gold Audit - Pre-Reannotation Baseline
 
 > **Historical snapshot only.** This audit predates the method-first reset, human-evidence
 > gate, and July 2026 manual source audits. `review_status = "reviewed"` is structural
