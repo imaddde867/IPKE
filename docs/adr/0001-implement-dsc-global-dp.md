@@ -88,5 +88,6 @@ Metric: avg_parent_cohesion (proxy for Φ — no gold annotations exist for this
 
 Δ = DP − heuristic = **+0.0127**
 
-**Verdict: PASS** — DP Φ > heuristic Φ. Exceeds the pre-registered success criterion
-(DP Φ ≥ heuristic Φ). Kill criterion not triggered. DP ships.
+**Verdict: PASS** — DP cohesion proxy > heuristic cohesion proxy (0.3473 vs 0.3346). Exceeds
+the pre-registered success criterion (DP cohesion proxy ≥ heuristic cohesion proxy, standing
+in for Φ because this document has no gold annotations). Kill criterion not triggered. DP ships.

@@ -126,7 +126,7 @@ The annotator MAY NOT:
 - summarise multi-sentence constraints into one,
 - introduce wording not in the source.
 
-The reason: the IPKE-Bench evaluation uses both exact-match and fuzzy semantic alignment (cos ≥ 0.75) for constraint comparison. Paraphrased gold widens the gap between gold and any extractor that returns the source-faithful text — including human annotators in the second pass. This was the root cause of the κ = 0.531 → 0.430 drop on OLSK in the seed corpus.
+The reason: IPKE evaluation uses both exact-match and fuzzy semantic alignment (cos ≥ 0.75) for constraint comparison. Paraphrased gold widens the gap between gold and any extractor that returns the source-faithful text — including human annotators in the second pass. This was the root cause of the κ = 0.531 → 0.430 drop on OLSK in the seed corpus.
 
 ## Step-constraint cardinality
 

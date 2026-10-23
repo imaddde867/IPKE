@@ -22,6 +22,11 @@ This module provides modular, extensible prompting strategies for procedural kno
 
 ### P1: Few-Shot In-Context Learning (FewShotPromptStrategy)
 
+> **Warning: not paper-eligible as implemented.** The examples in `few_shot.py` use legacy
+> ad-hoc types (`temporal`, `schedule`, `environmental_guard`) that are outside the locked
+> six-type taxonomy in `docs/annotation/constraint-types.md`. P1 output cannot be scored
+> against production gold until those examples are aligned with the locked vocabulary.
+
 **Approach**: In-context learning with 2 annotated examples (Brown et al., 2020)
 
 **Key Features**:

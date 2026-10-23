@@ -40,7 +40,7 @@ documents. The later full-subprocedure, agent-reviewed pass contains 256 steps a
 constraints. These counts describe different annotation regimes. They are not an
 extractor-quality result and are not the method-paper headline.
 
-**Cross-regime illustration (labelled).** The fixed thin-era LLM draft holds 32 constraints vs the 231 reviewed (**7.22× expansion**); at the Tier-A matcher (SBERT cos ≥ 0.75) it recovers 6.1%, at cos ≥ 0.50 it recovers 37.7%. Draft and gold come from different annotation regimes — annotation-economics evidence, not an extractor-quality claim. Like-for-like extractor comparisons on the fully verified corpus are planned.
+**Cross-regime illustration (labelled).** The fixed thin-era LLM draft holds 32 constraints vs the 231 agent-reviewed candidates (**7.22× expansion**); at the Tier-A matcher (SBERT cos ≥ 0.75) it recovers 6.1%, at cos ≥ 0.50 it recovers 37.7%. Draft and candidates come from different annotation regimes — annotation-economics evidence, not an extractor-quality claim. Like-for-like extractor comparisons on the fully verified corpus are planned.
 
 Regenerate (informational) with:
 
@@ -53,11 +53,13 @@ Reports land in `datasets/paper/reports/constraint_blindness_v2_sbert{050,075}.j
 
 ## Corpus
 
-| Released | Target |
-|---|---|
-| 8 (seed corpus, 2026-06-13) | 12-15 (planned expansion) |
+| Candidate files | Manifest-included | Target |
+|---|---|---|
+| 8 (seed corpus, 2026-06-13) | 5 | 12 eligible procedures (planned expansion) |
 
-Per-document statistics: see `docs/dataset/datasheet.md` §2.3.
+The other three candidates are excluded: NASA is a requirements block, and OLSK and NIOSH
+need manual rebuilds. See `datasets/paper/corpus_manifest.json` and
+`docs/dataset/datasheet.md` §2.3 for per-document status and statistics.
 
 Target additions for genre diversity:
 
@@ -107,6 +109,6 @@ Pre-publication, cite the GitHub repository. A formal BibTeX entry will land in 
 | Annotation guidelines + independent annotator workflow | ✅ shipped |
 | Paper-grade validator + unit tests | ✅ shipped |
 | Datasheet (Gebru format) | ✅ shipped |
-| Seed-corpus source texts, annotations, provenance manifest | ✅ released |
-| Human verification of seed annotations | 🟡 in progress (`docs/annotation/manual-review/`) |
+| Seed-corpus source texts, annotations, provenance manifest | ✅ committed as candidates |
+| Human verification of seed annotations | ⏳ not started (0 production packages) |
 | Corpus expansion beyond 8 documents | 🟡 candidate sources identified |

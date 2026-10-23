@@ -9,8 +9,8 @@ full datasheet.
 ## Layout
 
 - `text/` — plain-text extracted source documents.
-- `gold/` — seed-corpus annotations (model-assisted drafting, agent audit, human manual
-  review; review records in `docs/annotation/manual-review/`). Schema:
+- `gold/` — seed-corpus annotations (model-assisted drafting, agent audit, and manual
+  source-audit notes; not human-verified gold). Schema:
   `schemas/ipke_annotation.schema.json`.
 - `segments/` — heading-aware segmentation of each source document.
 - `second_pass/` — source-only blind second-pass annotations with their source texts.
@@ -34,8 +34,12 @@ Priority: publicly licensable, stable URL, citable, varied procedure types and d
 2. Equipment / maintenance: OLSK CNC, USGS field sampling, public maintenance SOPs
 3. Quality / process: ISO-aligned public process guides
 
-All eight released sources are US federal works (public domain) or open-licensed
+All eight source documents are US federal works (public domain) or open-licensed
 (CC BY-SA). Private or partner-restricted SOPs must never be committed here.
+
+Current status: five documents are manifest-included; NASA, NIOSH, and OLSK are excluded.
+No file has completed the production-human evidence protocol, so `gold/` is a candidate
+inventory, not released benchmark gold.
 
 ## Rules
 
