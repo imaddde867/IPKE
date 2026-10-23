@@ -1,7 +1,7 @@
 # IPKE Annotation Schema
 
-IPKE annotations are procedure-level JSON files aligned to the existing
-`datasets/archive/test_data/gold/` shape. They are not standalone span annotations.
+IPKE annotations are procedure-level JSON files aligned to the
+`datasets/archive/gold_human/` shape. They are not standalone span annotations.
 
 `schemas/ipke_annotation.schema.json` is the permissive, candidate-compatible structural
 schema. The current `datasets/paper/gold/` files are immutable legacy candidates.

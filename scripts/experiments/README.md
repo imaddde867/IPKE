@@ -6,7 +6,7 @@ The `scripts/experiments` directory provides reproducible sweeps for every chunk
 - Restarts **only** the target container (`--service-name` / `--container-name`) so the other methods stay untouched.
 - Waits for `/health`, runs HTTP extraction on the selected documents, converts the payload to Tier‑B graphs, and stores everything under `results/experiments/<method>/<config_id>/`.
 - Captures Tier‑A and Tier‑B metrics with `src/evaluation/metrics.py`, logs docker output, and records provenance metadata (git SHA, command line, env overrides, duration, document-level chunk stats).
-- Appends a CSV summary with the clean headline metrics you requested: `StepF1`, `AdjacencyF1`, `Kendall`, `ConstraintCoverage`, `ConstraintAttachmentF1`, `Φ` (Procedural Fidelity Score), `GraphF1`, `NEXT_EdgeF1`, `Logic_EdgeF1`, `ConstraintAttachmentF1_TierB`.
+- Appends a CSV summary with the headline metrics: `StepF1`, `AdjacencyF1`, `Kendall`, `ConstraintCoverage`, `ConstraintAttachmentF1`, `Φ` (Procedural Fidelity Score), `GraphF1`, `NEXT_EdgeF1`, `Logic_EdgeF1`, `ConstraintAttachmentF1_TierB`.
 
 > Procedural Fidelity Score: `Φ = 0.5 * ConstraintCoverage + 0.3 * StepF1 + 0.2 * Kendall`
 
@@ -62,7 +62,7 @@ Other common options:
 4. **Document the winning settings:** copy the env tuples from `metadata.json` into your lab notebook / thesis appendix.
 5. **Final 3×3 grid:** Once the “best” configuration per method is fixed, restart all three services with those env values and run `python scripts/experiments/run_all_chunking_experiments.py --documents datasets/archive/test_data/text/3m_marine_oem_sop.txt datasets/archive/test_data/text/DOA_Food_Man_Proc_Stor.txt datasets/archive/test_data/text/op_firesafety_guideline.txt`. The resulting timestamped directory under `results/` plus the evaluation summaries from the sweep form the clean experimental record for your research chapter.
 
-Feel free to mix and match inputs (e.g., run semantic sweeps on just one doc by passing `--documents path/to/doc.txt`) or tighten the grids to zoom into promising regions. The helpers intentionally keep everything ASCII and scriptable for lab automation / CI.*** End Patch
+Feel free to mix and match inputs (e.g., run semantic sweeps on just one doc by passing `--documents path/to/doc.txt`) or tighten the grids to zoom into promising regions. The helpers intentionally keep everything ASCII and scriptable for lab automation / CI.
 
 ## Related utilities
 
