@@ -4,8 +4,14 @@ Date: 2026-05-27
 
 This note records a real-hardware IPKE run on consumer Blackwell hardware. Treat it as an
 engineering validation artifact, not as a paper result table. The run proves the pipeline can
-execute end to end on the target local-GPU stack, but the evaluation numbers are not comparable
-to the thesis baseline until the constraint-gold format issue is fixed.
+execute end to end on the target local-GPU stack.
+
+> **Resolution (2026-10-23).** The nested-gold normalization bug described below was fixed in
+> `src/evaluation/metrics_tier_a.py::normalize_doc_constraints`, which now flattens
+> `steps[].constraints[]` into the flat list the evaluator expects. Regression tests live in
+> `tests/evaluation/test_strict_paper_metrics.py` and
+> `tests/evaluation/test_constraint_attachment_metric.py`. The Phi values in this note are
+> historical and remain non-comparable; rerun before citing any metric.
 
 ## Environment
 
@@ -55,19 +61,20 @@ about method quality.
 | Fire Safety | 0.248 | 0.462 | 0.934 | 0.261 |
 | Macro average | 0.251 | 0.502 | 0.891 | 0.253 |
 
-Do not compare these Phi values directly to the thesis headline result. The run surfaced a likely
-evaluation-interface problem: the current gold files store constraints under each step, while the
-evaluator expects top-level constraints. That makes ConstraintCoverage collapse to zero and caps
-Phi at `0.3 * StepF1 + 0.2 * Kendall` for this run.
+Do not compare these Phi values directly to the thesis headline result. The run surfaced an
+evaluation-interface problem that has since been fixed: the gold files store constraints under
+each step, while the evaluator expected top-level constraints. At the time, that made
+ConstraintCoverage collapse to zero and capped Phi at `0.3 * StepF1 + 0.2 * Kendall` for this
+run. `normalize_doc_constraints` now handles both shapes.
 
 The high Kendall values are still worth noting as a diagnostic signal: P3 preserved ordering well
-in this run. Step recall and constraint scoring need a corrected evaluation path before they can
-support ECIR claims.
+in this run. Step recall and constraint scoring should be recomputed with the fixed evaluator
+before they support method-paper claims.
 
 ## Implications For The Paper Push
 
 1. Use this note as reproducibility context for local GPU setup, not as an experiment result.
-2. Fix constraint loading or gold normalization before running the next metric table.
+2. Keep `normalize_doc_constraints` regression coverage green before running the next metric table.
 3. Keep Python below 3.14 until the `spacy` / `thinc` / `blis` chain is upgraded and tested.
 4. Keep platform-specific LLM wheels behind uv environment markers.
 5. Record hardware, CUDA version, model, quantization, seed, temperature, backend, and library

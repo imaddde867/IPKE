@@ -75,14 +75,14 @@ uv pip install llama-cpp-python --force-reinstall
 Download the GGUF model:
 
 ```bash
-# Place at: models/mistral-7b-instruct-v0.2.Q4_K_M.gguf
+# Place at: models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf
 # Source: https://huggingface.co/TheBloke/Mistral-7B-Instruct-v0.2-GGUF
 ```
 
 Set the model path:
 
 ```bash
-export LLM_MODEL_PATH=models/mistral-7b-instruct-v0.2.Q4_K_M.gguf
+export LLM_MODEL_PATH=models/llm/mistral-7b-instruct-v0.2.Q4_K_M.gguf
 ```
 
 ---

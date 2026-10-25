@@ -2,7 +2,8 @@
 
 IPKE extracts **Procedural Knowledge Graphs (PKGs)** from safety-critical industrial and
 regulatory documents using local language models. A PKG represents a procedure as ordered
-steps plus typed constraints — preconditions, guards, parameters, warnings — explicitly
+steps plus typed constraints — preconditions, postconditions, guards, parameters,
+role assignments, and references — explicitly
 attached to the steps they govern.
 
 Everything runs locally on Metal or CUDA; no cloud APIs. IPKE is built for
@@ -25,9 +26,11 @@ privacy-preserving use in academic and regulated industrial settings.
 
 Eight rights-cleared procedural documents across five source families (US EPA, NASA,
 NIOSH, USGS, and the open-hardware Open Lab Starter Kit): US federal public-domain works
-plus CC BY-SA material. Each document carries source-grounded annotations with exact
-offsets for steps, typed constraints, and attachments under a locked taxonomy of six
-constraint types × three enforcement levels (`must` / `should` / `may`).
+plus CC BY-SA material. Five are currently manifest-included; three are retained for
+provenance and excluded pending rebuild. Candidate annotations carry typed constraints,
+explicit attachments, and a locked six-type × three-enforcement taxonomy
+(`must` / `should` / `may`). Exact per-item source offsets are required for production
+annotations and currently exist only in the EPA MFC review candidate.
 
 - Datasheet: [docs/dataset/datasheet.md](docs/dataset/datasheet.md) · Provenance:
   `datasets/paper/public_sources_manifest.csv` (per-document license + SHA-256)
@@ -38,10 +41,10 @@ constraint types × three enforcement levels (`must` / `should` / `may`).
 ### Motivating result
 
 Across the seed corpus, an LLM-drafted annotation pass produced **7.22× fewer
-constraints** than the reviewed gold (32 vs 231); at the Tier-A semantic matcher
-(SBERT cosine ≥ 0.75) it recovered only **6.1%** of reviewed constraints (**37.7%** at
-cosine ≥ 0.50). Draft and gold come from different annotation regimes, so this is
-annotation-economics evidence about naive LLM extraction, not an extractor-quality
+constraints** than the agent-reviewed candidates (32 vs 231); at the Tier-A semantic
+matcher (SBERT cosine ≥ 0.75) it recovered only **6.1%** of those constraints (**37.7%**
+at cosine ≥ 0.50). Draft and candidates come from different annotation regimes, so this
+is annotation-economics evidence about naive LLM extraction, not an extractor-quality
 claim. Reproduce with `make eval-blindness`; see [BENCHMARK.md](BENCHMARK.md).
 
 ## Quickstart

@@ -20,19 +20,21 @@ IPKE's Dual Semantic Chunker (DSC):
 
 | Param | Default | How set |
 |-------|---------|---------|
-| `dsc_lambda` | 0.05 | Calibrated on `niosh_nmam_surface_sampling_guidance` (held-out, not in 8-doc eval set). Sweep {0.05..0.50}; peak avg_parent_cohesion=0.347 at λ=0.05. See ADR-0001. |
-| `dsc_beta` | 0.2 | Manually chosen. Sensitivity analysis over {0.1, 0.2, 0.3} required in ECIR paper. |
+| `dsc_lambda` | 0.05 | Calibrated on `niosh_nmam_surface_sampling_guidance` (held-out, not in 8-candidate eval set). Sweep {0.05..0.50}; peak avg_parent_cohesion=0.347 at λ=0.05. See ADR-0001. |
+| `dsc_beta` | 0.2 | Manually chosen. Sensitivity analysis over {0.1, 0.2, 0.3} required for the method paper. |
 
 ## Paper Status
 
-The DP implementation matches the global objective claimed in the thesis (§4.1.2) and ECIR paper.
-POC validation completed 2026-06-07: DP Φ=0.3473 vs heuristic Φ=0.3346 (Δ=+0.0127, PASS).
+The DP implementation matches the global objective claimed in the thesis (§4.1.2) and the method paper.
+POC validation completed 2026-06-07: DP avg_parent_cohesion=0.3473 vs heuristic 0.3346
+(Δ=+0.0127, PASS). That cohesion score is a proxy for Φ, not Φ itself; this document has no
+gold annotations.
 See ADR-0001 for full calibration results and kill-criterion record.
 
 ## What's next
 
-- **Multi-seed sweep** (issue #60): blocked until this issue was closed — now unblocked.
-  Run `{DP parents + breakpoint children}` vs `{heuristic parents + breakpoint children}` on the
-  8-doc eval set across multiple seeds. Reports StepF1, ConstraintCoverage, Φ.
-- **β sensitivity analysis**: sweep β ∈ {0.1, 0.2, 0.3}, report in ECIR paper.
+- **Multi-seed sweep** (issue #60): run
+  `{DP parents + breakpoint children}` vs `{heuristic parents + breakpoint children}` on the
+  8-candidate eval set across multiple seeds. Reports StepF1, ConstraintCoverage, Φ.
+- **β sensitivity analysis**: sweep β ∈ {0.1, 0.2, 0.3}, report in the method paper.
 - `_compute_boundaries()` (child breakpoint refinement) is unchanged and out of scope for DP work.
