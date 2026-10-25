@@ -156,3 +156,10 @@ please cite the repository:
 ---
 
 Turku University of Applied Sciences · 2025–2026
+
+### Static research console
+
+Inspect the EPA calibration candidate, exact source spans, omitted summary constraints,
+and pending human decisions in the [static research console](demo/README.md).
+Run `python -m http.server 8765 --directory demo` and open `http://localhost:8765`.
+This demonstration uses agent-generated candidates, not human-verified evidence.

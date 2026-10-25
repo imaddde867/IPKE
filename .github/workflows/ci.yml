@@ -30,6 +30,11 @@ jobs:
       - name: Run tests
         run: uv run pytest
 
+      - name: Check static demo export
+        run: |
+          python scripts/export_demo_data.py --check
+          node --check demo/app.js
+
       - name: Check Make targets
         run: |
           make -n test
