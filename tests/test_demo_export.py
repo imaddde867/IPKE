@@ -60,6 +60,9 @@ class DemoExportTests(unittest.TestCase):
             ("review_packets/", lambda p: p["proposed_step_decisions"][0]["input_refs"].append("legacy:S999")),
             ("review_packets/", lambda p: p["proposed_constraint_decisions"][0]["output_refs"].append("review:C999")),
             ("review_packets/", lambda p: p["proposed_constraint_decisions"][0]["input_refs"].append("review:C1")),
+            ("review_packets/", lambda p: p["proposed_constraint_decisions"][1].update(output_refs=["review:C4"])),
+            ("review_packets/", lambda p: p["proposed_constraint_decisions"][0].update(action="accept")),
+            ("review_candidates/", lambda a: a["constraints"][0].update(attached_to=["S999"])),
         ]
         for path_part, mutate in mutations:
             def changed(root, path):
@@ -70,6 +73,19 @@ class DemoExportTests(unittest.TestCase):
             with self.subTest(path=path_part), patch("scripts.export_demo_data.read_json", side_effect=changed):
                 with self.assertRaises(ValueError):
                     build_data()
+
+    def test_empty_local_attachment_does_not_mask_procedure_attachment(self):
+        from scripts.export_demo_data import read_json
+
+        def changed(root, path):
+            obj = read_json(root, path)
+            if "review_candidates/" in path:
+                obj["constraints"][0]["attached_to"] = []
+            return obj
+
+        with patch("scripts.export_demo_data.read_json", side_effect=changed):
+            data = build_data()
+        self.assertIn("S12", data["constraints"][-1]["applies_to"])
 
     def test_corpus_verification_count_is_derived(self):
         from scripts.export_demo_data import read_json
